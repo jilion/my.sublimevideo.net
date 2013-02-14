@@ -38,7 +38,7 @@ module Stats
 
         while last_stat_day < 1.day.ago.midnight do
           last_stat_day += 1.day
-          delay(queue: 'low').create_revenues_stat(last_stat_day)
+          create_revenues_stat(last_stat_day)
         end
       end
 
@@ -60,7 +60,7 @@ module Stats
           r: Hash.new { |h,k| h[k] = Hash.new(0) }
         }
 
-        ::Site.not_archived.find_each(batch_size: 100) do |site|
+        ::Site.not_archived.find_each(batch_size: 1000) do |site|
           invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site)
 
           invoice_service.invoice.invoice_items.each do |invoice_item|

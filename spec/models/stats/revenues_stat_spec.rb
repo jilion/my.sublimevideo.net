@@ -21,9 +21,7 @@ describe Stats::RevenuesStat do
 
     describe '.create_stats' do
       before do
-        Sidekiq::Worker.clear_all
         described_class.create_stats
-        Sidekiq::Worker.drain_all
       end
 
       it 'creates revenues_stats stats for the last 5 days' do
@@ -31,11 +29,12 @@ describe Stats::RevenuesStat do
       end
 
       it 'creates revenues_stats stats for 5 days ago' do
-        billings_stats = described_class.all.entries
-
         billings_stat = described_class.all.entries[0]
         billings_stat['d'].should eq 5.days.ago.midnight
-        billings_stat['r'].should == {}
+        billings_stat['r'].should == {
+          'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round },
+          'stats' => { 'realtime' => (@stats_addon_plan_2.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round }
+        }
       end
 
       it 'creates revenues_stats stats for 4 days ago' do
@@ -51,7 +50,8 @@ describe Stats::RevenuesStat do
         billings_stat = described_class.all.entries[2]
         billings_stat['d'].should eq 3.days.ago.midnight
         billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round }
+          'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round },
+          'support' => { 'vip' => (@support_addon_plan_2.price.to_f / Time.days_in_month(2.days.ago.month, 2.days.ago.year)).round }
         }
       end
 
@@ -60,7 +60,8 @@ describe Stats::RevenuesStat do
         billings_stat['d'].should eq 2.days.ago.midnight
         billings_stat['r'].should == {
           'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(2.days.ago.month, 2.days.ago.year)).round },
-          'support' => { 'vip' => (@support_addon_plan_2.price.to_f / Time.days_in_month(2.days.ago.month, 2.days.ago.year)).round }
+          'support' => { 'vip' => (@support_addon_plan_2.price.to_f / Time.days_in_month(2.days.ago.month, 2.days.ago.year)).round },
+          'logo' => { 'disabled' => (@logo_addon_plan_2.price.to_f / Time.days_in_month(1.day.ago.month, 1.day.ago.year)).round }
         }
       end
 
