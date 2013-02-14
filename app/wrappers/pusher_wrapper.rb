@@ -16,18 +16,18 @@ class PusherWrapper
 
   def self.handle_webhook(webhook)
     webhook.events.each do |event|
+      channel = PusherChannel.new(event["channel"])
       case event["name"]
-      when 'channel_occupied'
-        Sidekiq.redis { |con| con.sadd("pusher:channels", event["channel"]) }
-      when 'channel_vacated'
-        Sidekiq.redis { |con| con.srem("pusher:channels", event["channel"]) }
+      when 'channel_occupied'; channel.occupied!
+      when 'channel_vacated'; channel.vacated!
       end
     end
   end
 
   def self.trigger(channel_name, event_name, data)
-    if Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name) }
-      Pusher.trigger(channel_name, event_name, data)
+    channel = PusherChannel.new(channel_name)
+    if channel.public? || channel.occupied?
+      Pusher.trigger(channel.to_s, event_name, data)
       true
     else
       false
@@ -35,4 +35,6 @@ class PusherWrapper
   rescue Pusher::Error
     false
   end
+
+
 end

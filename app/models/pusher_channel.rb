@@ -12,4 +12,31 @@ class PusherChannel
     end
   end
 
+  def occupied!
+    Sidekiq.redis { |con| con.sadd("pusher:channels", name) }
+  end
+
+  def vacated!
+    Sidekiq.redis { |con| con.srem("pusher:channels", name) }
+  end
+
+  def occupied?
+    Sidekiq.redis { |con| con.sismember("pusher:channels", name) }
+  end
+
+  def vacated?
+    !occupied?
+  end
+
+  def public?
+    !private?
+  end
+
+  def private?
+    name =~ /^private-.*/
+  end
+
+  def to_s
+    name
+  end
 end
