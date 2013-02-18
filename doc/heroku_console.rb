@@ -35,11 +35,11 @@ end
 
 # for old plans
 d = Time.utc(2012,1,1)
-a = Stats::SitesStat.where(d: d).first[:plans_count].inject({}) do |hash, (plan_id, c)|
+a = SitesTrend.where(d: d).first[:plans_count].inject({}) do |hash, (plan_id, c)|
   hash[Plan.find(plan_id).title] = c if plan_id.present?
   hash
 end
 puts "Date: #{d}"; puts a
 
 # for new plans
-Stats::SitesStat.where(d: Time.utc(2011,12,1)).first[:pa]
+SitesTrend.where(d: Time.utc(2011,12,1)).first[:pa]

@@ -275,23 +275,23 @@ FactoryGirl.define do
   # ================
   # = Stats models =
   # ================
-  factory :billable_items_stat, class: Stats::BillableItemsStat do
+  factory :billable_items_trend do
   end
-  factory :billings_stat, class: Stats::BillingsStat do
+  factory :billings_trend do
   end
-  factory :revenues_stat, class: Stats::RevenuesStat do
+  factory :revenues_trend do
   end
-  factory :site_stats_stat, class: Stats::SiteStatsStat do
+  factory :site_stats_trend do
   end
-  factory :site_usages_stat, class: Stats::SiteUsagesStat do
+  factory :site_usages_trend do
   end
-  factory :sites_stat, class: Stats::SitesStat do
+  factory :sites_trend do
   end
-  factory :tailor_made_player_requests_stat, class: Stats::TailorMadePlayerRequestsStat do
+  factory :tailor_made_player_requests_trend do
   end
-  factory :tweets_stat, class: Stats::TweetsStat do
+  factory :tweets_trend do
   end
-  factory :users_stat, class: Stats::UsersStat do
+  factory :users_trend do
   end
 
   # ==============

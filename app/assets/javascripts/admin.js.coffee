@@ -9,7 +9,7 @@
 #= require_tree ./ui
 #= require_tree ./admin/form
 #= require_tree ./admin/app
-#= require admin/stats
+#= require admin/trends
 
 window.MySublimeVideo =
   UI: {}

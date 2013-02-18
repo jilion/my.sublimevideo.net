@@ -25,13 +25,13 @@
           %li= link_to "Total / month", [:monthly, :admin, :invoices]
 
     .popup_menu
-      %h3= link_to "Stats", [:admin, :stats]
+      %h3= link_to "Stats", [:admin, :trends]
       %ul
-        %li= link_to "Dashboard", [:admin, :stats]
+        %li= link_to "Dashboard", [:admin, :trends]
         %li= link_to "Tweets", [:admin, :tweets]
-        %li= link_to "Countries", single_admin_stats_path(page: 'countries')
-        %li= link_to "Employees", single_admin_stats_path(page: 'employees')
-        %li= link_to "Videos served", single_admin_stats_path(page: 'videos_served')
+        %li= link_to "Countries", admin_single_stat_path(page: 'countries')
+        %li= link_to "Employees", admin_single_stat_path(page: 'employees')
+        %li= link_to "Videos served", admin_single_stat_path(page: 'videos_served')
         -#%li= link_to "More...", [:more, :admin, :stats]
 
     - if has_role?('god')

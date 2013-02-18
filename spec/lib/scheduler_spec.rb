@@ -16,15 +16,15 @@ require 'scheduler'
 Transaction = Class.new unless defined?(Transaction)
 User = Class.new unless defined?(User)
 Stats = Module.new unless defined?(Stats)
-Stats::UsersStat = Class.new unless defined?(Stats::UsersStat)
-Stats::SitesStat = Class.new unless defined?(Stats::SitesStat)
-Stats::BillingsStat = Class.new unless defined?(Stats::BillingsStat)
-Stats::RevenuesStat = Class.new unless defined?(Stats::RevenuesStat)
-Stats::BillableItemsStat = Class.new unless defined?(Stats::BillableItemsStat)
-Stats::SiteStatsStat = Class.new unless defined?(Stats::SiteStatsStat)
-Stats::SiteUsagesStat = Class.new unless defined?(Stats::SiteUsagesStat)
-Stats::TweetsStat = Class.new unless defined?(Stats::TweetsStat)
-Stats::TailorMadePlayerRequestsStat = Class.new unless defined?(Stats::TailorMadePlayerRequestsStat)
+UsersTrend = Class.new unless defined?(UsersTrend)
+SitesTrend = Class.new unless defined?(SitesTrend)
+BillingsTrend = Class.new unless defined?(BillingsTrend)
+RevenuesTrend = Class.new unless defined?(RevenuesTrend)
+BillableItemsTrend = Class.new unless defined?(BillableItemsTrend)
+SiteStatsTrend = Class.new unless defined?(SiteStatsTrend)
+SiteUsagesTrend = Class.new unless defined?(SiteUsagesTrend)
+TweetsTrend = Class.new unless defined?(TweetsTrend)
+TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
 Tweet = Class.new unless defined?(Tweet)
 Log = Class.new unless defined?(Log)
 Log::Voxcast = Class.new unless defined?(Log::Voxcast)
@@ -110,72 +110,72 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::UsersStat.create_stats" do
-      Stats::UsersStat.should delay(:create_stats,
+    it "schedules UsersTrend.create_trends" do
+      UsersTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SitesStat.create_stats" do
-      Stats::SitesStat.should delay(:create_stats,
+    it "schedules SitesTrend.create_trends" do
+      SitesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::BillingsStat.create_stats" do
-      Stats::BillingsStat.should delay(:create_stats,
+    it "schedules BillingsTrend.create_trends" do
+      BillingsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::RevenuesStat.create_stats" do
-      Stats::RevenuesStat.should delay(:create_stats,
+    it "schedules RevenuesTrend.create_trends" do
+      RevenuesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::BillingsStat.create_stats" do
-      Stats::BillableItemsStat.should delay(:create_stats,
+    it "schedules BillingsTrend.create_trends" do
+      BillableItemsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SiteStatsStat.create_stats" do
-      Stats::SiteStatsStat.should delay(:create_stats,
+    it "schedules SiteStatsTrend.create_trends" do
+      SiteStatsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SiteUsagesStat.create_stats" do
-      Stats::SiteUsagesStat.should delay(:create_stats,
+    it "schedules SiteUsagesTrend.create_trends" do
+      SiteUsagesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::TweetsStat.create_stats" do
-      Stats::TweetsStat.should delay(:create_stats,
+    it "schedules TweetsTrend.create_trends" do
+      TweetsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::TailorMadePlayerRequestsStat.create_stats" do
-      Stats::TailorMadePlayerRequestsStat.should delay(:create_stats,
+    it "schedules TailorMadePlayerRequestsTrend.create_trends" do
+      TailorMadePlayerRequestsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
