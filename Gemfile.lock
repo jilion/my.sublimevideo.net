@@ -369,7 +369,7 @@ GEM
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     moped (1.4.2)
-    multi_json (1.6.0)
+    multi_json (1.6.1)
     multi_xml (0.5.3)
     multipart-post (1.1.5)
     net-scp (1.0.4)
@@ -537,6 +537,11 @@ GEM
       haml
       jquery-rails
       rails
+    sublime_video_private_api (1.0.2)
+      her
+      kaminari
+      rails (>= 3.2.12)
+      responders
     terminal-table (1.4.5)
     thin (1.5.0)
       daemons (>= 1.0.9)
@@ -662,7 +667,6 @@ DEPENDENCIES
   haml
   haml_coffee_assets
   has_scope
-  her
   hpricot
   jasminerice
   json
@@ -723,6 +727,7 @@ DEPENDENCIES
   stat_request_parser
   state_machine
   sublime_video_layout (~> 2.0)
+  sublime_video_private_api (~> 1.0)
   thin
   timecop
   tinder

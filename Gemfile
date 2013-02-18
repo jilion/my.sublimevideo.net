@@ -7,6 +7,7 @@ gem 'bundler'
 
 gem 'rails', '3.2.12'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
+gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
 
 # Databases
 gem 'pg'
@@ -34,9 +35,6 @@ gem 'devise-async'
 gem 'oauth'
 gem 'oauth-plugin'
 gem 'acts_as_api'
-
-# Internals API
-gem 'her'
 
 # Internals
 gem 'dalli'
