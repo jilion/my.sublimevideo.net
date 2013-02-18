@@ -115,9 +115,10 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
-      resources :stats, only: [:index] do
+      get 'stats/single/:page' => 'stats#show', as: 'single_stat'
+
+      resources :trends, only: [:index] do
         collection do
-          get '/single/:page' => 'stats#show', as: 'single'
           get :more
           get :billings
           get :revenues
