@@ -32,22 +32,22 @@ describe TailorMadePlayerRequestsTrend do
 
     describe ".update_trends" do
       before {
-        TailorMadePlayerRequestsTrend.create(d: 2.days.ago.midnight, n: {
+        described_class.create(d: 2.days.ago.midnight, n: {
           'agency' => 2, 'platform' => 2
         })
-        TailorMadePlayerRequestsTrend.create(d: 1.days.ago.midnight, n: {
+        described_class.create(d: 1.days.ago.midnight, n: {
           'agency' => 2, 'platform' => 2
         })
       }
 
       it "updates tailor_made_player_requests_stats for all days" do
-        described_class.update_stats
+        described_class.update_trends
         described_class.order_by(d: 1).first.n.should eq({ 'agency' => 5, 'platform' => 5 })
         described_class.order_by(d: 1).last.n.should eq({ 'agency' => 5, 'platform' => 5 })
       end
 
       it "updates tailor_made_player_requests_stats for the given day" do
-        described_class.update_stats(1.day.ago.midnight)
+        described_class.update_trends(1.day.ago.midnight)
         described_class.order_by(d: 1).first.n.should eq({ 'agency' => 2, 'platform' => 2 })
         described_class.order_by(d: 1).last.n.should eq({ 'agency' => 5, 'platform' => 5 })
       end
