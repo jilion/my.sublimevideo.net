@@ -537,7 +537,7 @@ GEM
       haml
       jquery-rails
       rails
-    sublime_video_private_api (1.0.2)
+    sublime_video_private_api (1.0.4)
       her
       kaminari
       rails (>= 3.2.12)
