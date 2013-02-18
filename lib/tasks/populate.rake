@@ -78,7 +78,7 @@ namespace :db do
       timed { Populate.recurring_stats(args.token) }
     end
 
-    desc "Create fake users & sites stats for the admin dashboard"
+    desc "Create fake trends for the admin dashboard"
     task trends: :environment do
       timed { Populate.trends }
     end
