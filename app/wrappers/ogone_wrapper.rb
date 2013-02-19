@@ -2,7 +2,7 @@ module OgoneWrapper
   include Configurator
 
   config_file 'ogone.yml'
-  config_accessor :login, :user, :password, :signature, :signature_out
+  config_accessor :login, :user, :password, :signature, :signature_out, :signature_encryptor, :created_after_10_may_2010, :currency
 
   class << self
 
@@ -38,8 +38,16 @@ module OgoneWrapper
 
     def gateway
       ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? ? :production : :test
-
-      gateway_config = yml_options.merge(login: login, user: user, password: password, signature: signature, signature_out: signature_out)
+      gateway_config = {
+        signature_encryptor: signature_encryptor,
+        created_after_10_may_2010: created_after_10_may_2010,
+        currency: currency,
+        login: login,
+        user: user,
+        password: password,
+        signature: signature,
+        signature_out: signature_out
+      }
       @gateway ||= ActiveMerchant::Billing::OgoneGateway.new(gateway_config)
     end
 
