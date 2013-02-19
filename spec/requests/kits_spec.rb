@@ -68,11 +68,11 @@ feature 'New kit' do
     find('video#standard')['data-settings'].should include 'player-kit: 1'
 
     select 'Flat', from: 'Player design:'
-    sleep 1
+    # sleep 1
     find('video#standard')['data-settings'].should include 'player-kit: 2'
 
     select 'Light', from: 'Player design:'
-    sleep 1
+    # sleep 1
     find('video#standard')['data-settings'].should include 'player-kit: 3'
   end
 
@@ -81,7 +81,7 @@ feature 'New kit' do
     find('#kit_setting-initial-overlay_enable[value="1"]').should be_checked
     uncheck 'kit_setting-initial-overlay_enable'
     select 'Flat', from: 'Player design:'
-    sleep 1
+    # sleep 1
     find('#kit_setting-initial-overlay_enable[value="1"]').should_not be_checked
   end
 
