@@ -44,8 +44,11 @@ class BillableItem < ActiveRecord::Base
 
   scope :app_designs, -> { where(item_type: 'App::Design') }
   scope :addon_plans, -> { where(item_type: 'AddonPlan') }
-  scope :active,      -> { where { state >> ACTIVE_STATES } }
+
+  # States
+  scope :beta,        -> { where(state: 'beta') }
   scope :subscribed,  -> { where(state: 'subscribed') }
+  scope :active,      -> { where { state >> ACTIVE_STATES } }
   scope :paid,        -> do
     where{
       ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |

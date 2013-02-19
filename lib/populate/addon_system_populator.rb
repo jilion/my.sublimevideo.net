@@ -3,7 +3,7 @@ class AddonSystemPopulator < Populator
   def execute
     PopulateHelpers.empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
-    [App::Component, App::Design, Addon, App::Plugin, AddonPlan, App::SettingsTemplate].each do |klass, new_records|
+    [App::Component, App::ComponentVersion, App::Design, Addon, App::Plugin, AddonPlan, App::SettingsTemplate].each do |klass, new_records|
       seeds_method = klass.to_s.underscore.gsub('/', '_') + '_seeds'
       send(seeds_method).each do |attributes|
         attributes = attributes.call if attributes.respond_to?(:call)
@@ -38,8 +38,8 @@ class AddonSystemPopulator < Populator
 
   def app_component_version_seeds
     [
-      { component: App::Component.get('app'), version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-      { component: App::Component.get('twit'), version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+      { component: App::Component.get('app'),   version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+      { component: App::Component.get('twit'),  version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
       { component: App::Component.get('html5'), version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
       { component: App::Component.get('svnet'), version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
     ]

@@ -6,6 +6,10 @@ class SiteManager
     new(::Site.find(site_id)).update_billable_items({}, { addon_name => addon_plan_id })
   end
 
+  def self.update_billable_items(site_id, app_designs, addon_plans, options = {})
+    new(::Site.find(site_id)).update_billable_items(app_designs, addon_plans, options)
+  end
+
   def initialize(site)
     @site = site
   end
@@ -123,38 +127,46 @@ class SiteManager
 
   def update_design_subscriptions(design_subscriptions, options = {})
     design_subscriptions.each do |design_name, design_id|
-      design = App::Design.get(design_name)
-
-      case design_id
-      when '0'
-        cancel_design(design)
-      else
-        if billable_item = site.billable_items.app_designs.where(item_id: design.id).first
-          update_billable_item_state!(billable_item, design, options)
-        elsif design.not_custom? || options[:allow_custom]
-          build_subscription(design, options)
-        end
-      end
+      update_design_subscription(design_name, design_id, options)
     end
   end
 
   def update_addon_subscriptions(addon_plan_subscriptions, options = {})
     addon_plan_subscriptions.each do |addon_name, addon_plan_id|
-      addon = Addon.get(addon_name)
+      update_addon_subscription(addon_name, addon_plan_id, options)
+    end
+  end
 
-      case addon_plan_id
-      when '0'
-        cancel_addon(addon)
-      else
-        addon_plan = AddonPlan.find(addon_plan_id)
+  def update_design_subscription(design_name, design_id, options)
+    design = App::Design.get(design_name)
 
-        cancel_addon(addon, except_addon_plan: addon_plan)
+    case design_id
+    when '0'
+      cancel_design(design)
+    else
+      if billable_item = site.billable_items.app_designs.where(item_id: design.id).first
+        update_billable_item_state!(billable_item, options)
+      elsif design.not_custom? || options[:allow_custom]
+        build_subscription(design, options)
+      end
+    end
+  end
 
-        if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
-          update_billable_item_state!(billable_item, addon_plan, options)
-        elsif addon_plan.not_custom? || options[:allow_custom]
-          build_subscription(addon_plan, options)
-        end
+  def update_addon_subscription(addon_name, addon_plan_id, options)
+    addon = Addon.get(addon_name)
+
+    case addon_plan_id
+    when '0'
+      cancel_addon(addon)
+    else
+      addon_plan = AddonPlan.find(addon_plan_id)
+
+      cancel_addon(addon, except_addon_plan: addon_plan)
+
+      if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
+        update_billable_item_state!(billable_item, options)
+      elsif addon_plan.not_custom? || options[:allow_custom]
+        build_subscription(addon_plan, options)
       end
     end
   end
@@ -170,30 +182,30 @@ class SiteManager
     site.billable_items.addon_plans.where{ item_id >> addon_plan_ids_to_cancel }.destroy_all
   end
 
-  def update_billable_item_state!(billable_item, item, options)
-    new_state = new_billable_item_state(item, options)
+  def update_billable_item_state!(billable_item, options)
+    new_state = new_billable_item_state(billable_item.item, options)
     return if new_state == billable_item.state
 
     billable_item.state = new_state
     billable_item.save!
   end
 
-  def build_subscription(item, options)
-    site.billable_items.build({ item: item, state: new_billable_item_state(item, options) }, without_protection: true)
+  def build_subscription(design_or_addon, options)
+    site.billable_items.build({ item: design_or_addon, state: new_billable_item_state(design_or_addon, options) }, without_protection: true)
   end
 
-  def new_billable_item_state(new_billable_item, options = {})
+  def new_billable_item_state(design_or_addon, options = {})
     if options[:suspended]
       'suspended'
     elsif options[:force]
-      if new_billable_item.beta? || !new_billable_item.free?
+      if design_or_addon.beta? || !design_or_addon.free?
         options[:force]
       else
         'subscribed'
       end
-    elsif new_billable_item.beta?
+    elsif design_or_addon.beta?
       'beta'
-    elsif new_billable_item.free? || site.out_of_trial?(new_billable_item)
+    elsif design_or_addon.free? || site.out_of_trial?(design_or_addon)
       'subscribed'
     else
       'trial'
