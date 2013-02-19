@@ -2,14 +2,14 @@ module SitesTasks
   def self.regenerate_templates(options = {})
     Site.select(:id).where(token: SiteToken.tokens).each do |site|
       LoaderGenerator.delay(queue: 'high').update_all_stages!(site.id) if options[:loaders]
-      SettingsGenerator.delay(queue: 'high').update_all_types!(site.id) if options[:settings]
+      SettingsGenerator.delay(queue: 'high').update_all!(site.id) if options[:settings]
     end
     puts "Important sites scheduled..."
 
     scheduled = 0
     Site.active.select(:id).order{ last_30_days_main_video_views.desc }.find_each do |site|
       LoaderGenerator.delay(queue: 'loader').update_all_stages!(site.id) if options[:loaders]
-      SettingsGenerator.delay(queue: 'low').update_all_types!(site.id) if options[:settings]
+      SettingsGenerator.delay(queue: 'low').update_all!(site.id) if options[:settings]
 
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?

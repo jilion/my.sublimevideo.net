@@ -22,7 +22,7 @@ class SiteManager
       site.save!
     end
     LoaderGenerator.delay.update_all_stages!(site.id)
-    SettingsGenerator.delay.update_all_types!(site.id)
+    SettingsGenerator.delay.update_all!(site.id)
     RankSetter.delay(queue: 'low').set_ranks(site.id)
     Librato.increment 'sites.events', source: 'create'
     true
@@ -36,7 +36,7 @@ class SiteManager
       site.settings_updated_at = Time.now.utc
       site.save!
     end
-    SettingsGenerator.delay.update_all_types!(site.id)
+    SettingsGenerator.delay.update_all!(site.id)
     Librato.increment 'sites.events', source: 'update'
     true
   rescue ActiveRecord::RecordInvalid
@@ -55,7 +55,7 @@ class SiteManager
       site.save!
     end
     LoaderGenerator.delay.update_all_stages!(site.id)
-    SettingsGenerator.delay.update_all_types!(site.id)
+    SettingsGenerator.delay.update_all!(site.id)
   end
 
   # called from app/models/site.rb

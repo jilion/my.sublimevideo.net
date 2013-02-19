@@ -69,7 +69,7 @@ describe KitManager do
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all_types!).with(kit.site_id)
+      SettingsGenerator.should delay(:update_all!).with(kit.site_id)
 
       service.save(params)
     end

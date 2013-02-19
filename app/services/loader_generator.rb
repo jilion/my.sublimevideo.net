@@ -7,7 +7,7 @@ class LoaderGenerator
 
   attr_reader :site, :stage, :options
 
-  def_instance_delegators :site, :token, :player_mode
+  def_instance_delegators :site, :token
   def_instance_delegators :cdn_file, :upload!, :delete!, :present?
 
   def self.update_all_stages!(site_id, options = {})
