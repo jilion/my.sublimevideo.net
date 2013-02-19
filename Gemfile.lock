@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git://github.com/jilion/configurator.git
-  revision: 2893694b2fc95388f809930f6ddf44616a5a7e6e
+  revision: 3a8df3f51dea0e414bc9cd86fea1f85b1a30745a
   specs:
     configurator (1.0.0)
       activesupport (>= 3.2.12)
@@ -387,7 +387,7 @@ GEM
     newrelic_moped (0.0.4.1)
       moped
       newrelic_rpm (~> 3.5.1)
-    newrelic_rpm (3.5.6.46)
+    newrelic_rpm (3.5.6.55)
     nokogiri (1.5.6)
     oauth (0.4.7)
     oauth-plugin (0.4.1)
