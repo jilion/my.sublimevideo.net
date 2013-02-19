@@ -5,7 +5,6 @@ class SiteManager
   def self.subscribe_site_to_addon(site_id, addon_name, addon_plan_id)
     new(::Site.find(site_id)).update_billable_items({}, { addon_name => addon_plan_id })
   end
-  end
 
   def initialize(site)
     @site = site
