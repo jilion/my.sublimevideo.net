@@ -48,21 +48,9 @@ describe Log::Voxcast do
       end
     end
 
-    it "should parse and create usages from trackers on parse" do
-      SiteUsage.should_receive(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-    end
-
-    it "should set parsed_at on parse" do
-      SiteUsage.stub(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-      subject.reload.parsed_at.should >= subject.created_at
-    end
-
     it "should delay parse_log methods after create" do
       described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, id: 'log_id', file: log_file)
@@ -84,21 +72,9 @@ describe Log::Voxcast do
       end
     end
 
-    it "should parse and create usages from trackers on parse" do
-      SiteUsage.should_receive(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-    end
-
-    it "should set parsed_at on parse" do
-      SiteUsage.stub(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-      subject.reload.parsed_at.should >= subject.created_at
-    end
-
     it "should delay parse_log methods after create" do
       described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id', file: log_file)
@@ -173,13 +149,6 @@ describe Log::Voxcast do
           Log::Voxcast.next_ended_at.should eq Time.utc(2011,7,7,9,39)
         end
       end
-    end
-
-    it "should have config values" do
-      Log::Voxcast.config.should == {
-        file_format_class_name: "VoxcastSitesLogFileFormat",
-        store_dir: "voxcast"
-      }
     end
 
     describe ".parse_log_for_stats" do

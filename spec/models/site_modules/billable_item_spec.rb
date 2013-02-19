@@ -58,21 +58,21 @@ describe SiteModules::BillableItem, :addons do
     end
   end
 
-  describe '#out_of_trial_on?' do
+  describe '#trial_ends_on?' do
     before do
       create(:billable_item_activity, site: site, item: @logo_addon_plan_1, state: 'trial', created_at: 29.days.ago)
       create(:billable_item_activity, site: site, item: @support_addon_plan_2, state: 'beta', created_at: 30.days.ago)
       create(:billable_item_activity, site: site, item: @stats_addon_plan_2, state: 'subscribed', created_at: 31.days.ago)
     end
 
-    it { site.out_of_trial_on?(@logo_addon_plan_1, 5.days.from_now).should be_false }
-    it { site.out_of_trial_on?(@logo_addon_plan_1, 2.days.from_now).should be_true }
-    it { site.out_of_trial_on?(@logo_addon_plan_1, 1.day.from_now).should be_false }
+    it { site.trial_ends_on?(@logo_addon_plan_1, 5.days.from_now).should be_false }
+    it { site.trial_ends_on?(@logo_addon_plan_1, 2.days.from_now).should be_true }
+    it { site.trial_ends_on?(@logo_addon_plan_1, 1.day.from_now).should be_false }
 
-    it { site.out_of_trial_on?(@support_addon_plan_2, 2.days.from_now).should be_false }
-    it { site.out_of_trial_on?(@support_addon_plan_2, 1.day.from_now).should be_false }
+    it { site.trial_ends_on?(@support_addon_plan_2, 2.days.from_now).should be_false }
+    it { site.trial_ends_on?(@support_addon_plan_2, 1.day.from_now).should be_false }
 
-    it { site.out_of_trial_on?(@stats_addon_plan_2, 1.day.ago).should be_false }
+    it { site.trial_ends_on?(@stats_addon_plan_2, 1.day.ago).should be_false }
   end
 
   describe '#out_of_trial?' do

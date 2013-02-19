@@ -1,5 +1,3 @@
-require 'configurator'
-
 class BusinessModel
   include Configurator
 

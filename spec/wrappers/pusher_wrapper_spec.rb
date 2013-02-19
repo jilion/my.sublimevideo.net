@@ -1,11 +1,11 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'pusher'
-require 'sidekiq'
-require 'config/redis'
 
+require 'models/pusher_channel'
 require 'wrappers/pusher_wrapper'
 
-describe PusherWrapper, :redis do
+describe PusherWrapper do
   before { Pusher.url = 'http://c76b85222fbec28c8508:7ab0d643924b2bcc23d2@api.pusherapp.com/apps/8211' }
 
   describe ".authenticated_response" do
@@ -23,9 +23,11 @@ describe PusherWrapper, :redis do
   end
 
   describe ".handle_webhook" do
-    let(:webhook) { stub(:webhook) }
+    let(:webhook) { stub(:webhook, events: [event] ) }
     let(:channel_name) { 'channel_name' }
-    before { webhook.stub(:events) { [event] } }
+    let(:channel) { mock(PusherChannel) }
+
+    before { PusherChannel.should_receive(:new).with(channel_name) { channel } }
 
     context "with 'channel_occupied' event" do
       let(:event) { {
@@ -33,9 +35,9 @@ describe PusherWrapper, :redis do
         'channel' => channel_name
       } }
 
-      it "adds channel_name to Redis Set" do
+      it "set channel occupied" do
+        channel.should_receive(:occupied!)
         PusherWrapper.handle_webhook(webhook)
-        Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name).should be_true }
       end
     end
 
@@ -45,33 +47,48 @@ describe PusherWrapper, :redis do
         'channel' => channel_name
       } }
 
-      it "removes existing channel_name from Redis Set" do
-        Sidekiq.redis { |con| con.sadd("pusher:channels", channel_name) }
+      it "set channel vacated" do
+        channel.should_receive(:vacated!)
         PusherWrapper.handle_webhook(webhook)
-        Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name).should be_false }
       end
     end
   end
 
   describe ".trigger" do
-    let(:channel_name) { 'channel_name' }
     let(:event_name) { 'event_name' }
     let(:data) { { some: 'data' } }
+    let(:channel_name) { 'channel_name' }
+    let(:channel) { mock(PusherChannel, to_s: channel_name) }
+    before { PusherChannel.should_receive(:new).with(channel_name) { channel } }
 
-    context "with channel occupied" do
-      before {  Sidekiq.redis { |con| con.sadd("pusher:channels", channel_name) } }
+    context "with public channel" do
+      before { channel.stub(:public?) { true } }
 
-      it "triggers Pusher channel_name" do
-        Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name) }
+      it "doesn't triggers Pusher channel_name" do
         Pusher.should_receive(:trigger).with(channel_name, event_name, data)
         PusherWrapper.trigger(channel_name, event_name, data).should be_true
       end
     end
 
-    context "with channel vacated" do
-      it "triggers Pusher channel_name" do
-        Pusher.should_not_receive(:trigger)
-        PusherWrapper.trigger(channel_name, event_name, data).should be_false
+    context "with private channel" do
+      before { channel.stub(:public?) { false } }
+
+      context "occupied" do
+        before { channel.stub(:occupied?) { true } }
+
+        it "triggers Pusher channel_name" do
+          Pusher.should_receive(:trigger).with(channel_name, event_name, data)
+          PusherWrapper.trigger(channel_name, event_name, data).should be_true
+        end
+      end
+
+      context "vacated" do
+        before { channel.stub(:occupied?) { false } }
+
+        it "doesn't triggers Pusher channel_name" do
+          Pusher.should_not_receive(:trigger)
+          PusherWrapper.trigger(channel_name, event_name, data).should be_false
+        end
       end
     end
   end

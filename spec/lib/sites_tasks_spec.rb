@@ -11,7 +11,7 @@ describe SitesTasks do
     it 'regenerates loader and license of all sites' do
       LoaderGenerator.should delay(:update_all_stages!).with(site.id)
       described_class.regenerate_templates(loaders: true)
-      SettingsGenerator.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all!).with(site.id)
 
       described_class.regenerate_templates(settings: true)
     end

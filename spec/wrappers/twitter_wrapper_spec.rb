@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'twitter'
 require 'rescue_me'
 

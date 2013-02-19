@@ -11,17 +11,17 @@ class Log::Voxcast < ::Log
 
   attr_accessible :file
 
-  # ================
-  # = Associations =
-  # ================
-
-  has_many :usages, class_name: "SiteUsage", foreign_key: :log_id
-
   # ===============
   # = Validations =
   # ===============
 
   validates :file, presence: true
+
+  # =============
+  # = Callbacks =
+  # =============
+
+  after_create :delay_parse
 
   # =================
   # = Class Methods =
@@ -71,12 +71,6 @@ class Log::Voxcast < ::Log
   # = Instance Methods =
   # ====================
 
-  # Used in Log#parse_log
-  def parse_and_create_usages!
-    trackers = trackers(self.class.config[:file_format_class_name])
-    SiteUsage.create_usages_from_trackers!(self, trackers)
-  end
-
   def parse_and_create_stats!
     trackers = trackers('VoxcastStatsLogFileFormat')
     Stat.create_stats_from_trackers!(self, trackers)
@@ -114,7 +108,6 @@ private
   def delay_parse
     self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_stats(id)
     self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
-    self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
   end

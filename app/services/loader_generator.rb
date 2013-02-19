@@ -5,9 +5,9 @@ class LoaderGenerator
 
   IMPORTANT_SITE_TOKENS = %w[utcf6unc]
 
-  attr_accessor :site
+  attr_reader :site, :stage, :options
 
-  def_instance_delegators :site, :token, :player_mode
+  def_instance_delegators :site, :token
   def_instance_delegators :cdn_file, :upload!, :delete!, :present?
 
   def self.update_all_stages!(site_id, options = {})
@@ -52,9 +52,9 @@ class LoaderGenerator
   def cdn_file
     @cdn_file ||= CDNFile.new(
       file,
-      destinations,
+      destination,
       s3_options,
-      @options
+      options
     )
   end
 
@@ -81,7 +81,7 @@ private
   end
 
   def generate_file
-    template_path = Rails.root.join('app', 'templates', 'app', template_file)
+    template_path = Rails.root.join('app', 'templates', template_file)
     template = ERB.new(File.new(template_path).read)
     file = Tempfile.new("l-#{@site.token}.js", Rails.root.join('tmp'))
     file.print template.result(binding)
@@ -90,33 +90,22 @@ private
   end
 
   def components_dependencies
-    @components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(@site, @stage)
+    @components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
   end
 
   def template_file
-    case @stage
-    when 'stable'
-      "loader-old.js.erb"
-    else
-      "loader-#{@stage}.js.erb"
-    end
+    "loader-#{stage}.js.erb"
   end
 
-  def destinations
-    case @stage
-    when 'stable'
-      [{
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: "js/#{token}.js"
-      },{
-        bucket: S3Wrapper.buckets['loaders'],
-        path: "loaders/#{token}.js"
-      }]
+  def destination
+    { bucket: S3Wrapper.buckets['sublimevideo'], path: path }
+  end
+
+  def path
+    if stage == 'stable'
+      "js/#{token}.js"
     else
-      [{
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: "js/#{token}-#{@stage}.js"
-      }]
+      "js/#{token}-#{stage}.js"
     end
   end
 
@@ -129,7 +118,7 @@ private
   end
 
   def cache_control
-    case @stage
+    case stage
     when 'alpha'
       'no-cache'
     else

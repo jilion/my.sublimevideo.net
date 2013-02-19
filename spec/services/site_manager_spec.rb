@@ -76,7 +76,7 @@ describe SiteManager do
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all!).with(site.id)
       service.create
     end
 
@@ -116,7 +116,7 @@ describe SiteManager do
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all!).with(site.id)
       service.update(attributes)
     end
 
@@ -163,7 +163,7 @@ describe SiteManager do
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all!).with(site.id)
       service.update_billable_items({}, {})
     end
   end

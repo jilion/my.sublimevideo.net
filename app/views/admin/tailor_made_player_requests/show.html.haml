@@ -39,8 +39,8 @@
   = @tailor_made_player_request.document? ? link_to('View document', @tailor_made_player_request.document_url) : 'N/A'
 
 %p
-  %strong Highrise case:
-  = link_to "https://jilion.highrisehq.com/kases/#{@tailor_made_player_request.highrise_kase_id}", "https://jilion.highrisehq.com/kases/#{@tailor_made_player_request.highrise_kase_id}"
+  %strong Zendesk ticket:
+  = link_to "https://sublimevideo.zendesk.com/agent/#/tickets/#{@tailor_made_player_request.zendesk_ticket_id}", "https://sublimevideo.zendesk.com/agent/#/tickets/#{@tailor_made_player_request.zendesk_ticket_id}"
 
 %br
 %hr

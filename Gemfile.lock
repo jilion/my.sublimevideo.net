@@ -7,6 +7,13 @@ GIT
       thor (~> 0.14)
 
 GIT
+  remote: git://github.com/jilion/configurator.git
+  revision: 3a8df3f51dea0e414bc9cd86fea1f85b1a30745a
+  specs:
+    configurator (1.0.0)
+      activesupport (>= 3.2.12)
+
+GIT
   remote: git://github.com/jilion/premailer.git
   revision: 1efecb6763807f1f3a77e309456986c9b572ad9a
   specs:
@@ -66,9 +73,9 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
+  remote: https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/
   specs:
-    PageRankr (4.0.0)
+    PageRankr (4.1.0)
       httparty (>= 0.9.0)
       json (>= 1.4.6)
       jsonpath (>= 0.4.2)
@@ -90,7 +97,7 @@ GEM
     active_utils (1.0.5)
       activesupport (>= 2.3.11)
       i18n
-    activemerchant (1.29.3)
+    activemerchant (1.30.0)
       active_utils (>= 1.0.2)
       activesupport (>= 2.3.14)
       builder (>= 2.0.0)
@@ -131,47 +138,31 @@ GEM
     asset_sync (0.5.4)
       activemodel
       fog
-    aws (2.7.0)
-      http_connection
-      http_connection
-      uuidtools
-      uuidtools
-      xml-simple
-      xml-simple
     bcrypt-ruby (3.0.1)
-    better_errors (0.5.0)
+    better_errors (0.6.0)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
-    binding_of_caller (0.6.8)
+    binding_of_caller (0.7.1)
+      debug_inspector (>= 0.0.1)
     bourne (1.2.1)
       mocha (= 0.12.7)
-    brakeman (1.9.1)
-      erubis (~> 2.6)
-      fastercsv (~> 1.5)
-      haml (~> 3.0)
-      highline (~> 1.6)
-      multi_json (~> 1.3)
-      ruby2ruby (~> 2.0)
-      ruby_parser (~> 3.1.1)
-      sass (~> 3.0)
-      terminal-table (~> 1.4)
     builder (3.0.4)
     bullet (4.3.0)
       uniform_notifier
-    capybara (1.1.4)
+    capybara (2.0.2)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
-      xpath (~> 0.1.4)
-    capybara-email (1.0.2)
-      capybara (~> 1.0)
+      xpath (~> 1.0.0)
+    capybara-email (2.0.2)
+      capybara (~> 2.0.0)
       mail
     carrierwave (0.8.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
-    carrierwave-mongoid (0.4.0)
+    carrierwave-mongoid (0.5.0)
       carrierwave (~> 0.8.0)
       mongoid (~> 3.0)
       mongoid-grid_fs (~> 1.3)
@@ -185,9 +176,6 @@ GEM
     cocaine (0.5.1)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.0.8)
-    coffee-filter (0.1.3)
-      coffee-script (>= 2.2.0)
-      haml (< 4.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
@@ -196,7 +184,6 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     columnize (0.3.6)
-    configuration (1.3.2)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
     countries (0.8.4)
@@ -213,6 +200,7 @@ GEM
     daemons (1.1.9)
     dalli (2.6.2)
     database_cleaner (0.9.1)
+    debug_inspector (0.0.2)
     debugger (1.3.1)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.1.1)
@@ -232,7 +220,7 @@ GEM
       devise (>= 2.1.1)
       railties (~> 3.0)
     diff-lcs (1.1.3)
-    display_case (0.0.5)
+    display_case (0.0.6)
     eco (1.0.0)
       coffee-script
       eco-source
@@ -255,7 +243,7 @@ GEM
       http_parser.rb (~> 0.5.3)
     erubis (2.7.0)
     eventmachine (1.0.0)
-    excon (0.16.10)
+    excon (0.17.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
     facter (1.6.17)
@@ -268,11 +256,10 @@ GEM
       multipart-post (~> 1.1)
     faraday_middleware (0.9.0)
       faraday (>= 0.7.4, < 0.9)
-    fastercsv (1.5.5)
-    faye-websocket (0.4.6)
+    faye-websocket (0.4.7)
       eventmachine (>= 0.12.0)
     ffaker (1.15.0)
-    ffi (1.3.1)
+    ffi (1.4.0)
     fog (1.9.0)
       builder
       excon (~> 0.14)
@@ -301,12 +288,13 @@ GEM
       multi_json (~> 1.0)
     guard-pow (1.0.0)
       guard (>= 1.1)
-    guard-rspec (2.4.0)
+    guard-rspec (2.4.1)
       guard (>= 1.1)
       rspec (~> 2.11)
     guard-shell (0.5.1)
       guard (>= 1.1.0)
-    haml (3.1.8)
+    haml (4.0.0)
+      tilt
     haml_coffee_assets (1.11.1)
       coffee-script (>= 1.0.0)
       sprockets (>= 2.0.3)
@@ -317,11 +305,9 @@ GEM
       activesupport (>= 3.0.0)
       faraday (~> 0.8)
       multi_json (~> 1.5)
-    highline (1.6.15)
     hike (1.2.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
-    http_connection (1.4.2)
     http_parser.rb (0.5.3)
     httparty (0.10.2)
       multi_json (~> 1.0)
@@ -374,16 +360,16 @@ GEM
       metaclass (~> 0.0.1)
     money (5.1.0)
       i18n (~> 0.6.0)
-    mongoid (3.0.22)
-      activemodel (~> 3.1)
-      moped (~> 1.2)
+    mongoid (3.1.1)
+      activemodel (~> 3.2)
+      moped (~> 1.4.2)
       origin (~> 1.0)
       tzinfo (~> 0.3.22)
     mongoid-grid_fs (1.7.0)
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     moped (1.4.2)
-    multi_json (1.6.0)
+    multi_json (1.6.1)
     multi_xml (0.5.3)
     multipart-post (1.1.5)
     net-scp (1.0.4)
@@ -395,7 +381,7 @@ GEM
     newrelic_moped (0.0.4.1)
       moped
       newrelic_rpm (~> 3.5.1)
-    newrelic_rpm (3.5.6.46)
+    newrelic_rpm (3.5.6.55)
     nokogiri (1.5.6)
     oauth (0.4.7)
     oauth-plugin (0.4.1)
@@ -412,18 +398,16 @@ GEM
       rack (~> 1.2)
     origin (1.0.11)
     orm_adapter (0.4.0)
-    paper_trail (2.7.0)
+    paper_trail (2.7.1)
       activerecord (~> 3.0)
       railties (~> 3.0)
     paranoia (1.2.0)
       activerecord (>= 3.0.0)
     pg (0.14.1)
-    poltergeist (1.0.2)
-      capybara (~> 1.1)
-      childprocess (~> 0.3)
+    poltergeist (1.1.0)
+      capybara (~> 2.0, >= 2.0.1)
       faye-websocket (~> 0.4, >= 0.4.4)
       http_parser.rb (~> 0.5.3)
-      multi_json (~> 1.0)
     polyamorous (0.5.0)
       activerecord (~> 3.0)
     polyglot (0.3.3)
@@ -503,12 +487,7 @@ GEM
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
     ruby-hmac (0.4.0)
-    ruby2ruby (2.0.3)
-      ruby_parser (~> 3.1)
-      sexp_processor (~> 4.0)
     ruby_gntp (0.3.4)
-    ruby_parser (3.1.1)
-      sexp_processor (~> 4.1)
     rubyzip (0.9.9)
     s3etag (0.0.1)
     sass (3.2.5)
@@ -521,12 +500,11 @@ GEM
       multi_json (~> 1.0)
       rubyzip
       websocket (~> 1.0.4)
-    sexp_processor (4.1.4)
     sextant (0.2.3)
       activesupport (>= 3.2)
       rails (>= 3.2)
-    show_me_the_cookies (1.1.4)
-      capybara (~> 1.0)
+    show_me_the_cookies (2.0.0)
+      capybara (~> 2.0)
     sidekiq (2.7.2)
       celluloid (~> 0.12.0)
       connection_pool (~> 1.0)
@@ -552,11 +530,16 @@ GEM
     stat_request_parser (1.2.1)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.5.20)
+    sublime_video_layout (2.5.21)
       coffee-rails
       haml
       jquery-rails
       rails
+    sublime_video_private_api (1.0.4)
+      her
+      kaminari
+      rails (>= 3.2.12)
+      responders
     terminal-table (1.4.5)
     thin (1.5.0)
       daemons (>= 1.0.9)
@@ -594,7 +577,6 @@ GEM
       multi_json (~> 1.0, >= 1.0.2)
     uniform_notifier (1.1.1)
     uniquify (0.1.0)
-    uuidtools (2.1.3)
     vcr (1.10.3)
     vimeo (1.5.3)
       httparty (>= 0.4.5)
@@ -610,7 +592,7 @@ GEM
     websocket (1.0.7)
     wirble (0.1.3)
     xml-simple (1.0.16)
-    xpath (0.1.4)
+    xpath (1.0.0)
       nokogiri (~> 1.3)
     yajl-ruby (1.1.0)
     youtube_it (2.1.13)
@@ -643,10 +625,8 @@ DEPENDENCIES
   annotate
   array_stats
   asset_sync
-  aws
   better_errors
   binding_of_caller
-  brakeman
   bullet
   bundler
   capybara
@@ -655,9 +635,8 @@ DEPENDENCIES
   carrierwave-mongoid
   chosen-rails!
   cocaine
-  coffee-filter
   coffee-rails
-  configuration
+  configurator!
   countries
   crack
   createsend
@@ -684,7 +663,6 @@ DEPENDENCIES
   haml
   haml_coffee_assets
   has_scope
-  her
   hpricot
   jasminerice
   json
@@ -745,6 +723,7 @@ DEPENDENCIES
   stat_request_parser
   state_machine
   sublime_video_layout (~> 2.0)
+  sublime_video_private_api (~> 1.0)
   thin
   timecop
   tinder

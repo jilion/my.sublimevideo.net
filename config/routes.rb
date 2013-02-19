@@ -115,9 +115,10 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
-      resources :stats, only: [:index] do
+      get 'stats/single/:page' => 'stats#show', as: 'single_stat'
+
+      resources :trends, only: [:index] do
         collection do
-          get '/single/:page' => 'stats#show', as: 'single'
           get :more
           get :billings
           get :revenues
@@ -143,8 +144,6 @@ MySublimeVideo::Application.routes.draw do
         resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'
         resources :mail_logs,      only: [:show],                         path: 'logs'
       end
-
-      resources :releases, only: [:index, :create, :update]
 
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'
       namespace :app do

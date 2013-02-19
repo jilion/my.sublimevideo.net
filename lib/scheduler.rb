@@ -26,15 +26,15 @@ module Scheduler
 
     CreditCardExpirationNotifier.delay(options).send_emails
     NewInactiveUserNotifier.delay(options).send_emails
-    Stats::UsersStat.delay(options).create_stats
-    Stats::SitesStat.delay(options).create_stats
-    Stats::BillingsStat.delay(options).create_stats
-    Stats::RevenuesStat.delay(options).create_stats
-    Stats::BillableItemsStat.delay(options).create_stats
-    Stats::SiteStatsStat.delay(options).create_stats
-    Stats::SiteUsagesStat.delay(options).create_stats
-    Stats::TweetsStat.delay(options).create_stats
-    Stats::TailorMadePlayerRequestsStat.delay(options).create_stats
+    UsersTrend.delay(options).create_trends
+    SitesTrend.delay(options).create_trends
+    BillingsTrend.delay(options).create_trends
+    RevenuesTrend.delay(options).create_trends
+    BillableItemsTrend.delay(options).create_trends
+    SiteStatsTrend.delay(options).create_trends
+    SiteUsagesTrend.delay(options).create_trends
+    TweetsTrend.delay(options).create_trends
+    TailorMadePlayerRequestsTrend.delay(options).create_trends
   end
 
   def self.schedule_hourly_tasks
@@ -44,9 +44,6 @@ module Scheduler
     }
 
     Tweet.delay(options).save_new_tweets_and_sync_favorite_tweets
-    Log::Amazon::S3::Player.delay(options).fetch_and_create_new_logs
-    Log::Amazon::S3::Loaders.delay(options).fetch_and_create_new_logs
-    Log::Amazon::S3::Licenses.delay(options).fetch_and_create_new_logs
   end
 
   def self.schedule_frequent_tasks

@@ -3,7 +3,7 @@ class TrialHandler
     BusinessModel.days_before_trial_end.each do |days_before_trial_end|
       Site.select('DISTINCT("sites".*)').not_archived.joins(:billable_items)
       .where { billable_items.state == 'trial' }.find_each(batch_size: 100) do |site|
-        site.billable_items.select { |bi| site.out_of_trial_on?(bi.item, days_before_trial_end.days.from_now) }.each do |billable_item|
+        site.billable_items.select { |bi| site.trial_ends_on?(bi.item, days_before_trial_end.days.from_now) }.each do |billable_item|
           BillingMailer.delay.trial_will_expire(billable_item.id)
         end
       end

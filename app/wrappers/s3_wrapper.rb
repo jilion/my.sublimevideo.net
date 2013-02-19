@@ -1,5 +1,3 @@
-require 'configurator'
-
 module S3Wrapper
   include Configurator
 
@@ -10,37 +8,6 @@ module S3Wrapper
 
     def bucket_url(bucket)
       "https://s3.amazonaws.com/#{bucket}/"
-    end
-
-    def logs_name_list(options = {})
-      keys_names(logs_bucket, options)
-    end
-
-    def keys_names(bucket, options = {})
-      remove_prefix = options.delete(:remove_prefix)
-      keys  = bucket.keys(options)
-      names = keys.map! { |key| key.name }
-      if remove_prefix && options['prefix']
-        names.map! { |name| name.gsub(options['prefix'], '') }
-        names.delete_if { |name| name.blank? || name == '/' }
-      end
-      names
-    end
-
-    def sublimevideo_bucket
-      @sublimevideo_bucket ||= client.bucket(buckets['sublimevideo'])
-    end
-
-    def player_bucket
-      @player_bucket ||= client.bucket(buckets['player'])
-    end
-
-    def logs_bucket
-      @logs_bucket ||= client.bucket(buckets['logs'])
-    end
-
-    def client
-      @client ||= Aws::S3.new(access_key_id, secret_access_key)
     end
 
     def fog_connection

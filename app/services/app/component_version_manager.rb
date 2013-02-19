@@ -13,7 +13,7 @@ module App
         CampfireWrapper.delay.post("#{campfire_message} released")
       end
       true
-    rescue ::ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid
       false
     end
 

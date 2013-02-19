@@ -1,4 +1,4 @@
-%tr{ id: dom_id(video_tag), data: { "video-tag-uid" => video_tag.uid }, class: cycle("", "alt") }
+%tr{ id: dom_id(video_tag), data: { video_tag_uid: video_tag.uid }, class: cycle('', 'alt') }
   %td.video_tag
     .wrap
       .duration= duration_string(video_tag.duration)

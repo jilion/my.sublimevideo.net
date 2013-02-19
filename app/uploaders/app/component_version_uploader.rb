@@ -34,15 +34,15 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
 
   def store_zip_content(new_file)
     # new_file not used because nil
-    App::ComponentVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
+    zip_content_uploader.store_zip_content(file.path)
   end
 
   def remove_zip_content
-    App::ComponentVersionZipContentUploader.remove_zip_content(zip_content_upload_path)
+    zip_content_uploader.remove_zip_content
   end
 
-  def zip_content_upload_path
-    Pathname.new("c/#{model.token}/#{model.version}/")
+  def zip_content_uploader
+    upload_path = Pathname.new("c/#{model.token}/#{model.version}/")
+    App::ComponentVersionZipContentUploader.new(upload_path)
   end
-
 end

@@ -3,33 +3,31 @@ require 'tempfile'
 class SettingsGenerator
   extend Forwardable
 
-  TYPES = %w[license settings]
+  attr_reader :site, :options
 
   def_instance_delegators :cdn_file, :upload!, :delete!, :present?
 
-  def self.update_all_types!(site_id, options = {})
-    site = ::Site.find(site_id)
-    self::TYPES.each do |type|
-      if site.state == 'active'
-        new(site, type, options).upload!
-        Librato.increment 'settings.update', source: type
-      else
-        new(site, type, options).delete!
-        Librato.increment 'settings.delete', source: type
-      end
+  def self.update_all!(site_id, options = {})
+    site = Site.find(site_id)
+    if site.state == 'active'
+      new(site, options).upload!
+      Librato.increment 'settings.update', source: 'settings'
+    else
+      new(site, options).delete!
+      Librato.increment 'settings.delete', source: 'settings'
     end
   end
 
-  def initialize(site, type, options = {})
-    @site, @type, @options = site, type, options
+  def initialize(site, options = {})
+    @site, @options = site, options
   end
 
   def cdn_file
     @cdn_file ||= CDNFile.new(
       file,
-      destinations,
+      destination,
       s3_options,
-      @options
+      options
     )
   end
 
@@ -37,28 +35,14 @@ class SettingsGenerator
     @file ||= generate_file
   end
 
-  def old_license
-    hash = { h: [@site.hostname], d: [] }
-    hash[:h] += @site.extra_hostnames.split(/,\s*/) if @site.extra_hostnames?
-    hash[:d] += @site.staging_hostnames.split(/,\s*/) if @site.staging_hostnames?
-    hash[:d] += @site.dev_hostnames.split(/,\s*/) if @site.dev_hostnames?
-    hash[:w]  = @site.wildcard if @site.wildcard?
-    hash[:p]  = @site.path if @site.path?
-    hash[:b]  = false if @site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
-    hash[:s]  = true # SSL Always true now
-    hash[:r]  = true if @site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
-    hash[:m]  = @site.player_mode
-    hash
-  end
-
   def license
-    hash = { hosts: [@site.hostname] }
-    hash[:hosts]        += (@site.extra_hostnames || '').split(/,\s*/)
-    hash[:staging_hosts] = (@site.staging_hostnames || '').split(/,\s*/)
-    hash[:dev_hosts]     = (@site.dev_hostnames || '').split(/,\s*/)
-    hash[:path]          = @site.path
-    hash[:wildcard]      = @site.wildcard
-    hash[:stage]         = @site.accessible_stage
+    hash = { hosts: [site.hostname] }
+    hash[:hosts]        += (site.extra_hostnames || '').split(/,\s*/)
+    hash[:staging_hosts] = (site.staging_hostnames || '').split(/,\s*/)
+    hash[:dev_hosts]     = (site.dev_hostnames || '').split(/,\s*/)
+    hash[:path]          = site.path
+    hash[:wildcard]      = site.wildcard
+    hash[:stage]         = site.accessible_stage
     hash
   end
 
@@ -73,7 +57,7 @@ class SettingsGenerator
   end
 
   def kits
-    @site.kits.includes(:design).order(:identifier).inject({}) do |hash, kit|
+    site.kits.includes(:design).order(:identifier).inject({}) do |hash, kit|
       hash[kit.identifier] = {}
       hash[kit.identifier][:skin] = { id: kit.skin_token }
       hash[kit.identifier][:plugins] = kits_plugins(kit, nil)
@@ -82,7 +66,7 @@ class SettingsGenerator
   end
 
   def default_kit
-    @site.default_kit.identifier
+    site.default_kit.identifier
   end
 
   def mangle(hash)
@@ -92,7 +76,7 @@ class SettingsGenerator
 private
 
   def addon_plans
-    @addon_plans ||= @site.addon_plans.includes(:addon, settings_templates: :plugin).order(:id)
+    @addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin).order(:id)
   end
 
   def addon_plans_without_plugins
@@ -149,7 +133,7 @@ private
   end
 
   def generate_file
-    template_path = Rails.root.join('app', 'templates', 'app', template_file)
+    template_path = Rails.root.join('app', 'templates', template_file)
     template = ERB.new(File.new(template_path).read)
     file = Tempfile.new("s-#{@site.token}.js", Rails.root.join('tmp'))
     file.print template.result(binding)
@@ -158,30 +142,11 @@ private
   end
 
   def template_file
-    case @type
-    when 'license'
-      'settings-old.js.erb'
-    when 'settings'
-      'settings.js.erb'
-    end
+    'settings.js.erb'
   end
 
-  def destinations
-    case @type
-    when 'license'
-      [{
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: "l/#{@site.token}.js"
-      },{
-        bucket: S3Wrapper.buckets['licenses'],
-        path: "licenses/#{@site.token}.js"
-      }]
-    when 'settings'
-      [{
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: "s/#{@site.token}.js"
-      }]
-    end
+  def destination
+    { bucket: S3Wrapper.buckets['sublimevideo'], path: "s/#{site.token}.js" }
   end
 
   def s3_options
@@ -191,5 +156,4 @@ private
       'x-amz-acl'     => 'public-read'
     }
   end
-
 end

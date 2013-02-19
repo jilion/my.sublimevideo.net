@@ -7,14 +7,14 @@ class KitManager
 
   def save(params)
     creation = kit.site.new_record?
-    ::Kit.transaction do
+    Kit.transaction do
       kit.name          = params.delete(:name)
       kit.app_design_id = params.delete(:app_design_id)
       kit.settings      = SettingsSanitizer.new(kit, params.delete(:settings)).sanitize
       kit.save!
       kit.site.touch(:settings_updated_at)
     end
-    SettingsGenerator.delay.update_all_types!(kit.site_id)
+    SettingsGenerator.delay.update_all!(kit.site_id)
     Librato.increment 'kits.events', source: creation ? 'create' : 'update'
     true
   rescue ActiveRecord::RecordInvalid

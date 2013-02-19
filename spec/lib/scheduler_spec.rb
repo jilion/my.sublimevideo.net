@@ -13,28 +13,21 @@ require 'services/credit_card_expiration_notifier'
 require 'services/new_inactive_user_notifier'
 require 'scheduler'
 
-unless defined?(ActiveRecord)
-  Transaction = Class.new
-  User = Class.new
-  Stats = Class.new
-  Stats::UsersStat = Class.new
-  Stats::SitesStat = Class.new
-  Stats::BillingsStat = Class.new
-  Stats::RevenuesStat = Class.new
-  Stats::BillableItemsStat = Class.new
-  Stats::SiteStatsStat = Class.new
-  Stats::SiteUsagesStat = Class.new
-  Stats::TweetsStat = Class.new
-  Stats::TailorMadePlayerRequestsStat = Class.new
-  Tweet = Class.new
-  Log = Class.new
-  Log::Amazon = Class.new
-  Log::Voxcast = Class.new
-  Log::Amazon::S3 = Class.new
-  Log::Amazon::S3::Player = Class.new
-  Log::Amazon::S3::Loaders = Class.new
-  Log::Amazon::S3::Licenses = Class.new
-end
+Transaction = Class.new unless defined?(Transaction)
+User = Class.new unless defined?(User)
+Stats = Module.new unless defined?(Stats)
+UsersTrend = Class.new unless defined?(UsersTrend)
+SitesTrend = Class.new unless defined?(SitesTrend)
+BillingsTrend = Class.new unless defined?(BillingsTrend)
+RevenuesTrend = Class.new unless defined?(RevenuesTrend)
+BillableItemsTrend = Class.new unless defined?(BillableItemsTrend)
+SiteStatsTrend = Class.new unless defined?(SiteStatsTrend)
+SiteUsagesTrend = Class.new unless defined?(SiteUsagesTrend)
+TweetsTrend = Class.new unless defined?(TweetsTrend)
+TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
+Tweet = Class.new unless defined?(Tweet)
+Log = Class.new unless defined?(Log)
+Log::Voxcast = Class.new unless defined?(Log::Voxcast)
 
 describe Scheduler do
 
@@ -117,72 +110,72 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::UsersStat.create_stats" do
-      Stats::UsersStat.should delay(:create_stats,
+    it "schedules UsersTrend.create_trends" do
+      UsersTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SitesStat.create_stats" do
-      Stats::SitesStat.should delay(:create_stats,
+    it "schedules SitesTrend.create_trends" do
+      SitesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::BillingsStat.create_stats" do
-      Stats::BillingsStat.should delay(:create_stats,
+    it "schedules BillingsTrend.create_trends" do
+      BillingsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::RevenuesStat.create_stats" do
-      Stats::RevenuesStat.should delay(:create_stats,
+    it "schedules RevenuesTrend.create_trends" do
+      RevenuesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::BillingsStat.create_stats" do
-      Stats::BillableItemsStat.should delay(:create_stats,
+    it "schedules BillingsTrend.create_trends" do
+      BillableItemsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SiteStatsStat.create_stats" do
-      Stats::SiteStatsStat.should delay(:create_stats,
+    it "schedules SiteStatsTrend.create_trends" do
+      SiteStatsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SiteUsagesStat.create_stats" do
-      Stats::SiteUsagesStat.should delay(:create_stats,
+    it "schedules SiteUsagesTrend.create_trends" do
+      SiteUsagesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::TweetsStat.create_stats" do
-      Stats::TweetsStat.should delay(:create_stats,
+    it "schedules TweetsTrend.create_trends" do
+      TweetsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::TailorMadePlayerRequestsStat.create_stats" do
-      Stats::TailorMadePlayerRequestsStat.should delay(:create_stats,
+    it "schedules TailorMadePlayerRequestsTrend.create_trends" do
+      TailorMadePlayerRequestsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
@@ -193,30 +186,6 @@ describe Scheduler do
   describe ".schedule_hourly_tasks" do
     it "schedules Tweet.save_new_tweets_and_sync_favorite_tweets" do
       Tweet.should delay(:save_new_tweets_and_sync_favorite_tweets,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
-      )
-      described_class.schedule_hourly_tasks
-    end
-
-    it "schedules Log::Amazon::S3::Player.fetch_and_create_new_logs" do
-      Log::Amazon::S3::Player.should delay(:fetch_and_create_new_logs,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
-      )
-      described_class.schedule_hourly_tasks
-    end
-
-    it "schedules Log::Amazon::S3::Loaders.fetch_and_create_new_logs" do
-      Log::Amazon::S3::Loaders.should delay(:fetch_and_create_new_logs,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
-      )
-      described_class.schedule_hourly_tasks
-    end
-
-    it "schedules Log::Amazon::S3::Licenses.fetch_and_create_new_logs" do
-      Log::Amazon::S3::Licenses.should delay(:fetch_and_create_new_logs,
         at:    1.hour.from_now.change(min: 0).to_i,
         queue: "low"
       )

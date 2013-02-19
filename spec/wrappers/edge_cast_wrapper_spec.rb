@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'edge_cast'
 
 require 'wrappers/edge_cast_wrapper'

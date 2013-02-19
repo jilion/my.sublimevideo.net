@@ -63,18 +63,18 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                            admin_invoices GET      /invoices(.:format)                                       admin/invoices#index
                        edit_admin_invoice GET      /invoices/:id/edit(.:format)                              admin/invoices#edit
                             admin_invoice GET      /invoices/:id(.:format)                                   admin/invoices#show
-                       single_admin_stats GET      /stats/single/:page(.:format)                             admin/stats#show
-                         more_admin_stats GET      /stats/more(.:format)                                     admin/stats#more
-                     billings_admin_stats GET      /stats/billings(.:format)                                 admin/stats#billings
-                     revenues_admin_stats GET      /stats/revenues(.:format)                                 admin/stats#revenues
-               billable_items_admin_stats GET      /stats/billable_items(.:format)                           admin/stats#billable_items
-                        users_admin_stats GET      /stats/users(.:format)                                    admin/stats#users
-                        sites_admin_stats GET      /stats/sites(.:format)                                    admin/stats#sites
-                   site_stats_admin_stats GET      /stats/site_stats(.:format)                               admin/stats#site_stats
-                  site_usages_admin_stats GET      /stats/site_usages(.:format)                              admin/stats#site_usages
-                       tweets_admin_stats GET      /stats/tweets(.:format)                                   admin/stats#tweets
-  tailor_made_player_requests_admin_stats GET      /stats/tailor_made_player_requests(.:format)              admin/stats#tailor_made_player_requests
-                              admin_stats GET      /stats(.:format)                                          admin/stats#index
+                        admin_single_stat GET      /stats/single/:page(.:format)                             admin/stats#show
+                        more_admin_trends GET      /trends/more(.:format)                                    admin/trends#more
+                    billings_admin_trends GET      /trends/billings(.:format)                                admin/trends#billings
+                    revenues_admin_trends GET      /trends/revenues(.:format)                                admin/trends#revenues
+              billable_items_admin_trends GET      /trends/billable_items(.:format)                          admin/trends#billable_items
+                       users_admin_trends GET      /trends/users(.:format)                                   admin/trends#users
+                       sites_admin_trends GET      /trends/sites(.:format)                                   admin/trends#sites
+                  site_stats_admin_trends GET      /trends/site_stats(.:format)                              admin/trends#site_stats
+                 site_usages_admin_trends GET      /trends/site_usages(.:format)                             admin/trends#site_usages
+                      tweets_admin_trends GET      /trends/tweets(.:format)                                  admin/trends#tweets
+ tailor_made_player_requests_admin_trends GET      /trends/tailor_made_player_requests(.:format)             admin/trends#tailor_made_player_requests
+                             admin_trends GET      /trends(.:format)                                         admin/trends#index
                      favorite_admin_tweet PUT      /tweets/:id/favorite(.:format)                            admin/tweets#favorite
                              admin_tweets GET      /tweets(.:format)                                         admin/tweets#index
                               admin_deals GET      /deals(.:format)                                          admin/deals#index
@@ -87,9 +87,6 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                  edit_admin_mail_template GET      /mails/templates/:id/edit(.:format)                       admin/mail_templates#edit
                       admin_mail_template PUT      /mails/templates/:id(.:format)                            admin/mail_templates#update
                            admin_mail_log GET      /mails/logs/:id(.:format)                                 admin/mail_logs#show
-                           admin_releases GET      /releases(.:format)                                       admin/releases#index
-                                          POST     /releases(.:format)                                       admin/releases#create
-                            admin_release PUT      /releases/:id(.:format)                                   admin/releases#update
                                 admin_app GET      /app(.:format)                                            :controller#:action
              admin_app_component_versions GET      /app/components/:component_id/versions(.:format)          admin/app/component_versions#index
                                           POST     /app/components/:component_id/versions(.:format)          admin/app/component_versions#create

@@ -1,5 +1,3 @@
-require 'configurator'
-
 module PreviewKit
   include Configurator
 
