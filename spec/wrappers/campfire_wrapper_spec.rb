@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'active_support/core_ext'
 require 'tinder'
 require 'config/vcr'

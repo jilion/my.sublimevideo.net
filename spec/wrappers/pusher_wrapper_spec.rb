@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'pusher'
 
 require 'models/pusher_channel'

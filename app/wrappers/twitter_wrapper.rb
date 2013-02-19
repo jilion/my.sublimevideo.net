@@ -1,5 +1,3 @@
-require 'configurator'
-
 module TwitterWrapper
   include Configurator
 

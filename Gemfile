@@ -42,7 +42,7 @@ gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
-gem 'configuration'
+gem 'configurator', github: 'jilion/configurator'
 gem 'libxml-ruby', require: 'libxml'
 gem 'yajl-ruby', require: 'yajl' # json
 

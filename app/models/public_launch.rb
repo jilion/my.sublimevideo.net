@@ -1,5 +1,3 @@
-require 'configurator'
-
 class PublicLaunch
   include Configurator
 

@@ -7,6 +7,13 @@ GIT
       thor (~> 0.14)
 
 GIT
+  remote: git://github.com/jilion/configurator.git
+  revision: 2893694b2fc95388f809930f6ddf44616a5a7e6e
+  specs:
+    configurator (1.0.0)
+      activesupport (>= 3.2.12)
+
+GIT
   remote: git://github.com/jilion/premailer.git
   revision: 1efecb6763807f1f3a77e309456986c9b572ad9a
   specs:
@@ -183,7 +190,6 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     columnize (0.3.6)
-    configuration (1.3.2)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
     countries (0.8.4)
@@ -640,7 +646,7 @@ DEPENDENCIES
   chosen-rails!
   cocaine
   coffee-rails
-  configuration
+  configurator!
   countries
   crack
   createsend
