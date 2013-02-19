@@ -1,5 +1,4 @@
 require 'tempfile'
-require 'configurator'
 
 module VoxcastWrapper
   include Configurator

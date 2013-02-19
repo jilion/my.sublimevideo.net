@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-require 'timecop'
+require 'configurator'
 
 require 'models/public_launch'
 

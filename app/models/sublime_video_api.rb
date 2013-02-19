@@ -1,5 +1,3 @@
-require 'configurator'
-
 class SublimeVideoApi
   include Configurator
 

@@ -1,6 +1,3 @@
-require 'zendesk_api'
-require 'configurator'
-
 module ZendeskWrapper
   include Configurator
 

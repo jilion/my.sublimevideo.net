@@ -1,5 +1,3 @@
-require 'configurator'
-
 class PusherWrapper
   include Configurator
 

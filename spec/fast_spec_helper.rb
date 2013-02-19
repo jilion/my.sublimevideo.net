@@ -1,5 +1,7 @@
 $LOAD_PATH.unshift("#{Dir.pwd}/app") unless $LOAD_PATH.include?("#{Dir.pwd}/app")
 
+ENV["RAILS_ENV"] ||= 'test'
+
 require 'bundler/setup'
 require_relative 'config/rspec'
 

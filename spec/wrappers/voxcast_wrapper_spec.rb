@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'voxel_hapi'
 require 'rescue_me'
 require 'config/vcr'

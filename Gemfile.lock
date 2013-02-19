@@ -7,6 +7,13 @@ GIT
       thor (~> 0.14)
 
 GIT
+  remote: git://github.com/jilion/configurator.git
+  revision: 2893694b2fc95388f809930f6ddf44616a5a7e6e
+  specs:
+    configurator (1.0.0)
+      activesupport (>= 3.2.12)
+
+GIT
   remote: git://github.com/jilion/premailer.git
   revision: 1efecb6763807f1f3a77e309456986c9b572ad9a
   specs:
@@ -66,7 +73,7 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
+  remote: https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/
   specs:
     PageRankr (4.0.0)
       httparty (>= 0.9.0)
@@ -183,7 +190,6 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     columnize (0.3.6)
-    configuration (1.3.2)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
     countries (0.8.4)
@@ -369,7 +375,7 @@ GEM
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     moped (1.4.2)
-    multi_json (1.6.0)
+    multi_json (1.6.1)
     multi_xml (0.5.3)
     multipart-post (1.1.5)
     net-scp (1.0.4)
@@ -537,6 +543,11 @@ GEM
       haml
       jquery-rails
       rails
+    sublime_video_private_api (1.0.4)
+      her
+      kaminari
+      rails (>= 3.2.12)
+      responders
     terminal-table (1.4.5)
     thin (1.5.0)
       daemons (>= 1.0.9)
@@ -635,7 +646,7 @@ DEPENDENCIES
   chosen-rails!
   cocaine
   coffee-rails
-  configuration
+  configurator!
   countries
   crack
   createsend
@@ -662,7 +673,6 @@ DEPENDENCIES
   haml
   haml_coffee_assets
   has_scope
-  her
   hpricot
   jasminerice
   json
@@ -723,6 +733,7 @@ DEPENDENCIES
   stat_request_parser
   state_machine
   sublime_video_layout (~> 2.0)
+  sublime_video_private_api (~> 1.0)
   thin
   timecop
   tinder

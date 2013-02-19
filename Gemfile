@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com account
+source 'https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/' # thibaud@jilion.com account
 
 ruby '1.9.3'
 
@@ -7,6 +7,7 @@ gem 'bundler'
 
 gem 'rails', '3.2.12'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
+gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
 
 # Databases
 gem 'pg'
@@ -35,16 +36,13 @@ gem 'oauth'
 gem 'oauth-plugin'
 gem 'acts_as_api'
 
-# Internals API
-gem 'her'
-
 # Internals
 gem 'dalli'
 gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
-gem 'configuration'
+gem 'configurator', github: 'jilion/configurator'
 gem 'libxml-ruby', require: 'libxml'
 gem 'yajl-ruby', require: 'yajl' # json
 

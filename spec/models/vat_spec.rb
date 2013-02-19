@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 
 require 'models/vat'
 
