@@ -145,8 +145,6 @@ MySublimeVideo::Application.routes.draw do
         resources :mail_logs,      only: [:show],                         path: 'logs'
       end
 
-      resources :releases, only: [:index, :create, :update]
-
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'
       namespace :app do
         resources :components, only: [:index, :create, :show, :update, :destroy] do

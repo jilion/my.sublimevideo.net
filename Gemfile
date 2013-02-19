@@ -55,7 +55,6 @@ gem 'paranoia'
 gem 'responders'
 gem 'has_scope'
 
-gem 'aws'
 gem 'fog'
 gem 's3etag'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
