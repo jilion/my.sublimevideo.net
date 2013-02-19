@@ -26,7 +26,7 @@ class MailLetter
     when 'dev'
       User.where(email: DEV_TEAM_EMAILS)
     else
-      User.send(@criteria)
+      eval("User.#{@criteria}")
     end
 
     users.not_archived.all.uniq.each do |user|

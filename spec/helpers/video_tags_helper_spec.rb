@@ -1,6 +1,7 @@
 require 'fast_spec_helper'
 require 'action_view'
-require File.expand_path('app/helpers/video_tags_helper')
+
+require 'helpers/video_tags_helper'
 
 describe VideoTagsHelper do
   let(:video_tag) { mock('VideoTag',

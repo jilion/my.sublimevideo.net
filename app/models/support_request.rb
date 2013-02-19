@@ -1,10 +1,8 @@
 # coding: utf-8
 require 'active_model'
-require_dependency 'users/support_manager'
 
 SupportRequest = Struct.new(:params) do
   include ActiveModel::Validations
-
   attr_accessor :site_token, :stage, :subject, :message, :test_page, :env, :uploads
 
   validates :user, :subject, :message, presence: true
@@ -47,7 +45,7 @@ SupportRequest = Struct.new(:params) do
 
   def to_params
     parameters = { subject: subject, comment: { value: comment }, uploads: params[:uploads], external_id: user.id }
-    parameters[:tags] = ["#{Users::SupportManager.new(user).level}-support"]
+    parameters[:tags] = ["#{UserSupportManager.new(user).level}-support"]
     parameters[:tags] << "stage-#{stage}" if stage.present?
     if user.zendesk_id?
       parameters[:requester_id] = user.zendesk_id

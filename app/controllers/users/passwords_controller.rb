@@ -1,7 +1,5 @@
-require_dependency 'controller_helpers/custom_devise_paths'
-
 class Users::PasswordsController < Devise::PasswordsController
-  include ControllerHelpers::CustomDevisePaths
+  include CustomDevisePathsControllerHelper
 
   helper :all
 

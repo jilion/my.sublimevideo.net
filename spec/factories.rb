@@ -1,5 +1,3 @@
-require_dependency 'business_model'
-
 FactoryGirl.define do
 
   # ===============
@@ -67,18 +65,6 @@ FactoryGirl.define do
   # ==============
   factory :log_voxcast, class: Log::Voxcast do
     name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
-  end
-
-  factory :log_s3_player, class: Log::Amazon::S3::Player do
-    name "2010-07-16-05-22-13-8C4ECFE09170CCD5"
-  end
-
-  factory :log_s3_loaders, class: Log::Amazon::S3::Loaders do
-    name "2010-07-14-09-22-26-63B226D3944909C8"
-  end
-
-  factory :log_s3_licenses, class: Log::Amazon::S3::Licenses do
-    name "2010-07-14-11-29-03-BDECA2599C0ADB7D"
   end
 
   factory :site_usage do
@@ -289,13 +275,23 @@ FactoryGirl.define do
   # ================
   # = Stats models =
   # ================
-  factory :users_stat, class: Stats::UsersStat do
+  factory :billable_items_trend do
   end
-
-  factory :sites_stat, class: Stats::SitesStat do
+  factory :billings_trend do
   end
-
-  factory :tweets_stat, class: Stats::TweetsStat do
+  factory :revenues_trend do
+  end
+  factory :site_stats_trend do
+  end
+  factory :site_usages_trend do
+  end
+  factory :sites_trend do
+  end
+  factory :tailor_made_player_requests_trend do
+  end
+  factory :tweets_trend do
+  end
+  factory :users_trend do
   end
 
   # ==============

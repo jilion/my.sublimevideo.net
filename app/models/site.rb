@@ -1,19 +1,7 @@
-require_dependency 'hostname'
-require_dependency 'stage'
-require_dependency 'validators/hostname_validator'
-require_dependency 'validators/dev_hostnames_validator'
-require_dependency 'validators/extra_hostnames_validator'
-require_dependency 'service/loader'
-require_dependency 'service/settings'
-require_dependency 'service/site'
-
 class Site < ActiveRecord::Base
-  include SiteModules::Activity
   include SiteModules::BillableItem
-  include SiteModules::Api
   include SiteModules::Billing
   include SiteModules::Referrer
-  include SiteModules::Scope
   include SiteModules::Usage
 
   DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
@@ -36,6 +24,28 @@ class Site < ActiveRecord::Base
   serialize :last_30_days_billable_video_views_array, Array
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
+
+  # =======
+  # = API =
+  # =======
+
+  acts_as_api
+
+  api_accessible :v1_self_private do |template|
+    template.add :token
+    template.add :hostname, as: :main_domain
+    template.add lambda { |site| site.extra_hostnames.try(:split, ', ') || [] }, as: :extra_domains
+    template.add lambda { |site| site.dev_hostnames.try(:split, ', ') || [] }, as: :dev_domains
+    template.add lambda { |site| site.staging_hostnames.try(:split, ', ') || [] }, as: :staging_domains
+    template.add lambda { |site| site.wildcard? }, as: :wildcard
+    template.add lambda { |site| site.path || '' }, as: :path
+    template.add :accessible_stage
+  end
+
+  api_accessible :v1_usage_private do |template|
+    template.add :token
+    template.add lambda { |site| site.usages.between(day: 60.days.ago.midnight..Time.now.utc.end_of_day) }, as: :usage, template: :v1_self_private
+  end
 
   # ================
   # = Associations =
@@ -80,10 +90,13 @@ class Site < ActiveRecord::Base
     SiteUsage.where(site_id: id)
   end
   def referrers
-    ::Referrer.where(token: token)
+    Referrer.where(token: token)
   end
   def day_stats
     Stat::Site::Day.where(t: token)
+  end
+  def views
+    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   # ===============
@@ -112,8 +125,8 @@ class Site < ActiveRecord::Base
   after_save ->(site) do
     if site.accessible_stage_changed?
       # Delay for 5 seconds to be sure that commit transaction is done.
-      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
+      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
+      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
   end
 
@@ -128,28 +141,124 @@ class Site < ActiveRecord::Base
 
     after_transition ->(site) do
       # Delay for 5 seconds to be sure that commit transaction is done.
-      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
+      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
+      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
 
     before_transition :on => :suspend do |site, transition|
-      Service::Site.new(site).suspend_billable_items
+      SiteManager.new(site).suspend_billable_items
       Librato.increment 'sites.events', source: 'suspend'
     end
 
     before_transition :on => :unsuspend do |site, transition|
-      Service::Site.new(site).unsuspend_billable_items
+      SiteManager.new(site).unsuspend_billable_items
       Librato.increment 'sites.events', source: 'unsuspend'
     end
 
     before_transition :on => :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
-      Service::Site.new(site).cancel_billable_items
+      SiteManager.new(site).cancel_billable_items
       Librato.increment 'sites.events', source: 'archive'
       site.archived_at = Time.now.utc
     end
   end
+
+  # ==========
+  # = Scopes =
+  # ==========
+
+  # state
+  scope :active,       where{ state == 'active' }
+  scope :inactive,     where{ state != 'active' }
+  scope :suspended,    where{ state == 'suspended' }
+  scope :archived,     where{ state == 'archived' }
+  scope :not_archived, where{ state != 'archived' }
+  # legacy
+  scope :refunded,  where{ (state == 'archived') & (refunded_at != nil) }
+
+  # attributes queries
+  scope :with_wildcard,              where{ wildcard == true }
+  scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
+  scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
+  scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+
+  # addons
+  scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
+  scope :paying_ids, -> { active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
+  scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
+  def self.with_addon_plan(full_addon_name)
+    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
+
+    active.includes(:billable_items)
+    .where { billable_items.item_type == addon_plan.class.to_s }
+    .where { billable_items.item_id == addon_plan.id }
+  end
+
+  def self.in_beta_trial_ended_after(full_addon_name, timestamp)
+    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
+
+    active.includes(:billable_item_activities).where{ billable_item_activities.state == 'beta' }
+    .where{ billable_item_activities.item_type == addon_plan.class.to_s }
+    .where{ billable_item_activities.item_id == addon_plan.id }
+    .where{ date_trunc('day', created_at) <= (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }
+  end
+
+  # admin
+  scope :user_id, ->(user_id) { where(user_id: user_id) }
+
+  # sort
+  scope :by_hostname,                ->(way = 'asc')  { order("#{quoted_table_name()}.hostname #{way}, #{quoted_table_name()}.token #{way}") }
+  scope :by_user,                    ->(way = 'desc') { includes(:user).order("name #{way}, email #{way}") }
+  scope :by_state,                   ->(way = 'desc') { order("#{quoted_table_name()}.state #{way}") }
+  scope :by_google_rank,             ->(way = 'desc') { where{ google_rank >= 0 }.order("#{quoted_table_name()}.google_rank #{way}") }
+  scope :by_alexa_rank,              ->(way = 'desc') { where{ alexa_rank >= 1 }.order("#{quoted_table_name()}.alexa_rank #{way}") }
+  scope :by_date,                    ->(way = 'desc') { order("#{quoted_table_name()}.created_at #{way}") }
+  scope :by_trial_started_at,        ->(way = 'desc') { order("#{quoted_table_name()}.trial_started_at #{way}") }
+  scope :by_last_30_days_video_tags, ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_video_tags #{way}") }
+  scope :by_last_30_days_billable_video_views, ->(way = 'desc') {
+    order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) #{way}")
+  }
+  scope :with_min_billable_video_views, ->(min) {
+    where("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) >= #{min}")
+  }
+  scope :by_last_30_days_extra_video_views_percentage, ->(way = 'desc') {
+    order("CASE WHEN (sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) > 0
+    THEN (sites.last_30_days_extra_video_views / CAST(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views AS DECIMAL))
+    ELSE -1 END #{way}")
+  }
+
+  def self.search(q)
+    joins(:user).where{
+      (lower(user.email) =~ lower("%#{q}%")) |
+      (lower(user.name) =~ lower("%#{q}%")) |
+      (lower(:token) =~ lower("%#{q}%")) |
+      (lower(:hostname) =~ lower("%#{q}%")) |
+      (lower(:extra_hostnames) =~ lower("%#{q}%")) |
+      (lower(:staging_hostnames) =~ lower("%#{q}%")) |
+      (lower(:dev_hostnames) =~ lower("%#{q}%"))
+    }
+  end
+
+  def self.with_page_loads_in_the_last_30_days
+    fields_to_add = %w[m e em].inject([]) do |array, sub_field|
+      array << "$pv.#{sub_field}"; array
+    end
+
+    stats = Stat::Site::Day.collection.aggregate([
+      { :$match => { d: { :$gte => 30.days.ago.midnight } } },
+      { :$project => {
+          _id: 0,
+          t: 1,
+          pvTot: { :$add => fields_to_add } } },
+      { :$group => {
+        _id: '$t',
+        pvTotSum: { :$sum => '$pvTot' }, } }
+    ])
+
+    where(token: stats.select { |stat| stat['pvTotSum'] > 0 }.map { |s| s['_id'] })
+  end
+
 
   def self.to_backbone_json
     all.map(&:to_backbone_json)
@@ -161,7 +270,7 @@ class Site < ActiveRecord::Base
 
   %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|
     define_method "#{method_name}=" do |attribute|
-      write_attribute(method_name, Hostname.clean(attribute))
+      write_attribute(method_name, HostnameHandler.clean(attribute))
     end
   end
 

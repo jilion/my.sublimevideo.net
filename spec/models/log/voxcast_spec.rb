@@ -48,21 +48,9 @@ describe Log::Voxcast do
       end
     end
 
-    it "should parse and create usages from trackers on parse" do
-      SiteUsage.should_receive(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-    end
-
-    it "should set parsed_at on parse" do
-      SiteUsage.stub(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-      subject.reload.parsed_at.should >= subject.created_at
-    end
-
     it "should delay parse_log methods after create" do
       described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, id: 'log_id', file: log_file)
@@ -84,21 +72,9 @@ describe Log::Voxcast do
       end
     end
 
-    it "should parse and create usages from trackers on parse" do
-      SiteUsage.should_receive(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-    end
-
-    it "should set parsed_at on parse" do
-      SiteUsage.stub(:create_usages_from_trackers!)
-      described_class.parse_log(subject.id)
-      subject.reload.parsed_at.should >= subject.created_at
-    end
-
     it "should delay parse_log methods after create" do
       described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id', file: log_file)
@@ -175,17 +151,10 @@ describe Log::Voxcast do
       end
     end
 
-    it "should have config values" do
-      Log::Voxcast.config.should == {
-        file_format_class_name: "LogsFileFormat::VoxcastSites",
-        store_dir: "voxcast"
-      }
-    end
-
     describe ".parse_log_for_stats" do
       before do
         log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
-        CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+        VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
         @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
       end
 
@@ -208,30 +177,30 @@ describe Log::Voxcast do
   describe "Instance Methods" do
     let(:log_file) { fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
     before do
-      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
     end
 
     describe "#parse_and_create_stats!" do
       it "analyzes logs" do
-        CDN::VoxcastWrapper.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastStats')
+        VoxcastWrapper.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'VoxcastStatsLogFileFormat')
         Stat.should_receive(:create_stats_from_trackers!)
         @log.parse_and_create_stats!
       end
     end
     describe "#parse_and_create_referrers!" do
       it "analyzes logs" do
-        CDN::VoxcastWrapper.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastReferrers')
+        VoxcastWrapper.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'VoxcastReferrersLogFileFormat')
         Referrer.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_referrers!
       end
     end
     describe "#parse_and_create_user_agents!" do
       it "analyzes logs" do
-        CDN::VoxcastWrapper.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastUserAgents')
+        VoxcastWrapper.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'VoxcastUserAgentsLogFileFormat')
         UsrAgent.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_user_agents!
       end
@@ -241,7 +210,7 @@ describe Log::Voxcast do
 
       it "analyzes logs" do
         video_tags_trackers = stub
-        @log.should_receive(:trackers).with('LogsFileFormat::VoxcastVideoTags', title: :video_tags) { video_tags_trackers }
+        @log.should_receive(:trackers).with('VoxcastVideoTagsLogFileFormat', title: :video_tags) { video_tags_trackers }
         VideoTagTrackersParser.should_receive(:extract_video_tags_data).with(video_tags_trackers) { video_tags_data }
         VideoTagUpdater.should delay(:update).with('site_token', 'uid', { 'video' => 'data' })
         @log.parse_and_create_video_tags!

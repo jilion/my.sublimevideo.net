@@ -1,6 +1,4 @@
 # coding: utf-8
-require_dependency 'twitter_api'
-
 class Tweet
   include Mongoid::Document
 
@@ -66,11 +64,11 @@ class Tweet
     end
 
     def remote_search(keyword, options = {})
-      TwitterApi.search("\"#{keyword}\"", result_type: 'recent', count: 100, since_id: options[:max_id])
+      TwitterWrapper.search("\"#{keyword}\"", result_type: 'recent', count: 100, since_id: options[:max_id])
     end
 
     def remote_favorites(options = {})
-      TwitterApi.favorites('sublimevideo', page: options[:page], include_entities: options[:include_entities])
+      TwitterWrapper.favorites('sublimevideo', page: options[:page], include_entities: options[:include_entities])
     end
 
     def create_from_twitter_tweet!(tweet)
@@ -106,7 +104,7 @@ class Tweet
       end
 
       # if to_remove.present?
-      #   Notify.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
+      #   Notifier.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
       #   to_remove.each do |fav_tweet_id_to_remove|
       #     if tweet = self.where(tweet_id: fav_tweet_id_to_remove).first
       #       tweet.update_attribute(:favorited, false)
@@ -172,9 +170,9 @@ class Tweet
 
   def favorite!
     result = if favorited?
-      TwitterApi.favorite_destroy(self.tweet_id)
+      TwitterWrapper.favorite_destroy(self.tweet_id)
     else
-      TwitterApi.favorite_create(self.tweet_id)
+      TwitterWrapper.favorite_create(self.tweet_id)
     end
     self.update_attribute(:favorited, !favorited) unless result.nil?
   end

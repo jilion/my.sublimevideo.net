@@ -123,7 +123,7 @@ describe Tweet do
           subject.should_not be_favorited
           subject.favorite!
           subject.should be_favorited
-          TwitterApi.status(56351930166935552).favorited.should be_true
+          TwitterWrapper.status(56351930166935552).favorited.should be_true
         end
       end
 
@@ -134,10 +134,10 @@ describe Tweet do
           subject.should_not be_favorited
           subject.favorite!
           subject.should be_favorited
-          TwitterApi.status(56351930166935552).favorited.should be_true
+          TwitterWrapper.status(56351930166935552).favorited.should be_true
           subject.favorite!
           subject.should_not be_favorited
-          TwitterApi.status(56351930166935552).favorited.should be_false
+          TwitterWrapper.status(56351930166935552).favorited.should be_false
         end
       end
     end

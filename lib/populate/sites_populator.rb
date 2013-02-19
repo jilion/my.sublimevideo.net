@@ -1,8 +1,3 @@
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-require_dependency 'service/site'
-require_dependency 'service/trial'
-
 class SitesPopulator < Populator
 
   BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com mattrunks.com zeldman.com devour.com deaxon.com veerle.duoh.com]
@@ -15,7 +10,7 @@ class SitesPopulator < Populator
         created_at = rand(24).months.ago
         Timecop.travel(created_at)
         site = user.sites.build(hostname: hostname)
-        service = Service::Site.new(site).tap { |s| s.create }
+        service = SiteManager.new(site).tap { |s| s.create }
         if rand >= 0.3
           app_designs, addon_plans = {}, {}
           App::Design.custom.each do |design|
@@ -30,7 +25,7 @@ class SitesPopulator < Populator
         if rand >= 0.5
           Timecop.return
           Timecop.travel(created_at + 30.days)
-          Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
+          TrialHandler.activate_billable_items_out_of_trial_for_site!(site.id)
         end
         Timecop.return
         puts "#{site.hostname} created for #{user.name}"

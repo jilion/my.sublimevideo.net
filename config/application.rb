@@ -72,9 +72,9 @@ module MySublimeVideo
     # Use sql format for db schema
     config.active_record.schema_format = :sql
 
-    require 'my_sublime_video/console'
+    require 'console_methods'
     console do
-      Rails::ConsoleMethods.send :include, MySublimeVideo::Console
+      Rails::ConsoleMethods.send :include, ConsoleMethods
     end
 
   end

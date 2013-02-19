@@ -30,7 +30,7 @@ module SiteModules::BillableItem
     addon_plans.includes(:addon).where{ addons.name == addon_name }.first
   end
 
-  def out_of_trial_on?(design_or_addon_plan, timestamp)
+  def trial_ends_on?(design_or_addon_plan, timestamp)
     billable_item_activities.where(item_type: design_or_addon_plan.class.to_s)
     .where(item_id: design_or_addon_plan.id).where(state: 'trial')
     .where{ date_trunc('day', created_at) == (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }.exists?

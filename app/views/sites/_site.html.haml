@@ -1,11 +1,11 @@
 - site = exhibit(site)
-- assistant = Service::Assistant.new(site)
-%tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
+- assistant = SiteSetupAssistant.new(site)
+%tr{ id: dom_id(site), data: { site_token: site.token }, class: cycle('', 'alt') }
   = render 'sites/td_hostname', site: site
   = render 'sites/td_usage', site: site
   = render 'sites/td_videos', site: site, assistant: assistant
 
-  %td.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
+  %td.status{ data: { cdn_updated_at: cdn_updated_at(site) } }
     .wrap
       - if assistant.setup_done?
         - if site.invoices_failed?

@@ -7,6 +7,6 @@
     %li
       = link_to("##{support_request.id} #{support_request.subject.humanize}", "#{ZendeskWrapper.base_url}/tickets/#{support_request.id}", onclick: "window.open(this); return false")
       - if support_request.solved_at
-      = "(solved in #{display_integer(support_request.resolution_time/24)} days)"
+        = "(solved in #{display_integer(support_request.resolution_time/24)} days)"
       - else
         = "(opened #{time_ago_in_words(support_request.created_at)} ago)"

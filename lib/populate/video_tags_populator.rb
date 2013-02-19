@@ -1,6 +1,3 @@
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-
 class VideoTagsPopulator < Populator
 
   def execute(site)

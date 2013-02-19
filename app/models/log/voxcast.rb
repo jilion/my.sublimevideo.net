@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'thread'
-require_dependency 'recurring_job'
 require_dependency 'video_tag_trackers_parser'
 require_dependency 'video_tag_updater'
 
@@ -12,17 +11,17 @@ class Log::Voxcast < ::Log
 
   attr_accessible :file
 
-  # ================
-  # = Associations =
-  # ================
-
-  has_many :usages, class_name: "SiteUsage", foreign_key: :log_id
-
   # ===============
   # = Validations =
   # ===============
 
   validates :file, presence: true
+
+  # =============
+  # = Callbacks =
+  # =============
+
+  after_create :delay_parse
 
   # =================
   # = Class Methods =
@@ -33,7 +32,7 @@ class Log::Voxcast < ::Log
       new_ended_at = next_ended_at
       while new_ended_at < Time.now.utc
         new_name = log_filename(new_ended_at)
-        log_file = CDN::VoxcastWrapper.download_log(new_name)
+        log_file = VoxcastWrapper.download_log(new_name)
         with(safe: true).create(
           name: new_name,
           file: log_file
@@ -48,11 +47,11 @@ class Log::Voxcast < ::Log
   end
 
   def self.log_filename(ended_at)
-    "#{CDN::VoxcastWrapper.hostname}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
+    "#{VoxcastWrapper.hostname}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
   end
 
   def self.next_ended_at
-    (where(hostname: CDN::VoxcastWrapper.hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
+    (where(hostname: VoxcastWrapper.hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
       1.minute.ago.change(sec: 0)) + 60.seconds
   end
 
@@ -72,29 +71,23 @@ class Log::Voxcast < ::Log
   # = Instance Methods =
   # ====================
 
-  # Used in Log#parse_log
-  def parse_and_create_usages!
-    trackers = trackers(self.class.config[:file_format_class_name])
-    SiteUsage.create_usages_from_trackers!(self, trackers)
-  end
-
   def parse_and_create_stats!
-    trackers = trackers('LogsFileFormat::VoxcastStats')
+    trackers = trackers('VoxcastStatsLogFileFormat')
     Stat.create_stats_from_trackers!(self, trackers)
   end
 
   def parse_and_create_referrers!
-    trackers = trackers('LogsFileFormat::VoxcastReferrers')
+    trackers = trackers('VoxcastReferrersLogFileFormat')
     Referrer.create_or_update_from_trackers!(trackers)
   end
 
   def parse_and_create_user_agents!
-    trackers = trackers('LogsFileFormat::VoxcastUserAgents')
+    trackers = trackers('VoxcastUserAgentsLogFileFormat')
     UsrAgent.create_or_update_from_trackers!(self, trackers)
   end
 
   def parse_and_create_video_tags!
-    video_tags_trackers  = trackers('LogsFileFormat::VoxcastVideoTags', title: :video_tags)
+    video_tags_trackers  = trackers('VoxcastVideoTagsLogFileFormat', title: :video_tags)
     video_tags_data = VideoTagTrackersParser.extract_video_tags_data(video_tags_trackers)
     video_tags_data.each do |(site_token, uid), data|
       VideoTagUpdater.delay.update(site_token, uid, data)
@@ -115,7 +108,6 @@ private
   def delay_parse
     self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_stats(id)
     self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
-    self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
   end

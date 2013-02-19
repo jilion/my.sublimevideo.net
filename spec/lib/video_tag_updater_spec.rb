@@ -1,8 +1,9 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/video_tag_updater')
-
 require 'sidekiq'
-require File.expand_path('spec/support/sidekiq_custom_matchers')
+require 'support/sidekiq_custom_matchers'
+
+require 'wrappers/pusher_wrapper'
+require File.expand_path('lib/video_tag_updater')
 
 unless defined?(ActiveRecord)
   Site = Class.new

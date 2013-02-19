@@ -1,6 +1,3 @@
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-
 class TrendsPopulator < Populator
 
   def execute
@@ -14,7 +11,7 @@ class TrendsPopulator < Populator
   private
 
   def generate_users_trends(start_at = 2.years.ago)
-    PopulateHelpers.empty_tables(Stats::UsersStat)
+    PopulateHelpers.empty_tables(UsersTrend)
 
     day = start_at.midnight
     hash = { fr: 0, pa: 0, su: 0, ar: 0 }
@@ -26,16 +23,16 @@ class TrendsPopulator < Populator
       hash[:su] += rand(2)
       hash[:ar] += rand(4)
 
-      Stats::UsersStat.create(hash)
+      UsersTrend.create(hash)
 
       day += 1.day
     end
 
-    puts "#{Stats::UsersStat.count} days of users trends generated!"
+    puts "#{UsersTrend.count} days of users trends generated!"
   end
 
   def generate_sites_trends(start_at = 2.years.ago)
-    PopulateHelpers.empty_tables(Stats::SitesStat)
+    PopulateHelpers.empty_tables(SitesTrend)
 
     day = start_at.midnight
     hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0 }
@@ -55,16 +52,16 @@ class TrendsPopulator < Populator
       hash[:su] += rand(3)
       hash[:ar] += rand(6)
 
-      Stats::SitesStat.create(hash)
+      SitesTrend.create(hash)
 
       day += 1.day
     end
 
-    puts "#{Stats::SitesStat.count} days of sites trends generated!"
+    puts "#{SitesTrend.count} days of sites trends generated!"
   end
 
   def generate_billable_items_trends(start_at = 2.years.ago)
-    PopulateHelpers.empty_tables(Stats::BillableItemsStat)
+    PopulateHelpers.empty_tables(BillableItemsTrend)
 
     day = start_at.midnight
     hash = { be: { 'design' => Hash.new(0) }, tr: { 'design' => Hash.new(0) }, sb: { 'design' => Hash.new(0) }, sp: { 'design' => Hash.new(0) }, su: { 'design' => Hash.new(0) } }
@@ -93,28 +90,28 @@ class TrendsPopulator < Populator
         hash[:su][addon_plan.addon.name][addon_plan.name] += rand(20)
       end
 
-      Stats::BillableItemsStat.create(hash)
+      BillableItemsTrend.create(hash)
 
       day += 1.day
     end
 
-    puts "#{Stats::BillableItemsStat.count} days of billable items trends generated!"
+    puts "#{BillableItemsTrend.count} days of billable items trends generated!"
   end
 
   def generate_billings_trends
-    PopulateHelpers.empty_tables(Stats::BillingsStat)
+    PopulateHelpers.empty_tables(BillingsTrend)
 
-    Stats::BillingsStat.create_stats
+    BillingsTrend.create_trends
 
-    puts "#{Stats::BillingsStat.count} days of billings trends generated!"
+    puts "#{BillingsTrend.count} days of billings trends generated!"
   end
 
   def generate_revenues_trends
-    PopulateHelpers.empty_tables(Stats::RevenuesStat)
+    PopulateHelpers.empty_tables(RevenuesTrend)
 
-    Stats::RevenuesStat.create_stats
+    RevenuesTrend.create_trends
 
-    puts "#{Stats::RevenuesStat.count} days of revenues trends generated!"
+    puts "#{RevenuesTrend.count} days of revenues trends generated!"
   end
 
 end
