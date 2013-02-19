@@ -1,9 +1,10 @@
 class SiteManager
   attr_reader :site
 
-  # One time
-  def self.subscribe_site_to_embed_addon(site_id, embed_addon_id)
-    new(::Site.find(site_id)).update_billable_items({}, { 'embed' => embed_addon_id })
+  # Delayable methods
+  def self.subscribe_site_to_addon(site_id, addon_name, addon_plan_id)
+    new(::Site.find(site_id)).update_billable_items({}, { addon_name => addon_plan_id })
+  end
   end
 
   def initialize(site)

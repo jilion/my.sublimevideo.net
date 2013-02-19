@@ -17,7 +17,7 @@ describe SitesTasks do
     end
   end
 
-  describe '.subscribe_all_sites_to_embed_addon', :addons do
+  describe '.subscribe_all_sites_to_free_addon', :addons do
     let!(:site1) { create(:site) }
     let!(:site2) { create(:site) }
     let!(:archived_site) { create(:site, state: 'archived') }
@@ -26,9 +26,9 @@ describe SitesTasks do
     end
 
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      SiteManager.should delay(:subscribe_site_to_embed_addon).with(site2.id, @embed_addon_plan_1.id)
+      SiteManager.should delay(:subscribe_site_to_free_addon).with(site2.id, @embed_addon_plan_1.id)
 
-      described_class.subscribe_all_sites_to_embed_addon
+      described_class.subscribe_all_sites_to_free_addon('embed', 'standard')
     end
   end
 

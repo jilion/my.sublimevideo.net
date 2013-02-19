@@ -24,7 +24,7 @@ describe SiteManager do
     Librato.stub(:increment)
   }
 
-  describe '.subscribe_site_to_embed_addon' do
+  describe '.subscribe_site_to_addon' do
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
       Site.should_receive(:find) { site }
       SiteManager.should_receive(:new).with(site) do |service|
@@ -32,7 +32,7 @@ describe SiteManager do
         service
       end
 
-      described_class.subscribe_site_to_embed_addon(site.id, 42)
+      described_class.subscribe_site_to_addon(site.id, 'embed', 42)
     end
   end
 

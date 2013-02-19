@@ -39,6 +39,6 @@ namespace :sites do
 
   desc "Subscribes all sites to the embed add-on"
   task subscribe_all_sites_to_embed_addon: :environment do
-    timed { puts SitesTasks.subscribe_all_sites_to_embed_addon }
+    timed { puts SitesTasks.subscribe_all_sites_to_free_addon('embed', 'standard') }
   end
 end
