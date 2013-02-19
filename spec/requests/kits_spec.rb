@@ -81,6 +81,7 @@ feature 'New kit' do
     find('#kit_setting-initial-overlay_enable[value="1"]').should be_checked
     uncheck 'kit_setting-initial-overlay_enable'
     select 'Flat', from: 'Player design:'
+    sleep 1
     find('#kit_setting-initial-overlay_enable[value="1"]').should_not be_checked
   end
 
