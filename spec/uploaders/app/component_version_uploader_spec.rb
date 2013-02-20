@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'zip/zip'
 require 'rails/railtie'
 require 'fog'
@@ -20,9 +21,10 @@ describe App::ComponentVersionUploader, :fog_mock do
   )}
   let(:zip) { fixture_file('app/e.zip') }
   let(:uploader) { App::ComponentVersionUploader.new(component_version, :zip) }
+  let(:zip_content_uploader) { stub(App::ComponentVersionUploader).as_null_object }
 
   before { Rails.stub(:env) { mock('test', to_s: 'test', test?: true) } }
-  before { App::ComponentVersionZipContentUploader.stub(:store_zip_content) }
+  before { App::ComponentVersionZipContentUploader.stub(:new) { zip_content_uploader } }
 
   context "on store!" do
     before { uploader.store!(zip) }
@@ -46,10 +48,10 @@ describe App::ComponentVersionUploader, :fog_mock do
 
   describe "after store callback" do
     it "uploads zip content on sublimevideo S3 bucket" do
-      App::ComponentVersionZipContentUploader.should_receive(:store_zip_content).with(
-        kind_of(String),
-        Pathname.new('c/e/2.0.0/')
-      )
+      App::ComponentVersionZipContentUploader.should_receive(:new).with(Pathname.new('c/e/2.0.0/')) { |mock|
+        mock.should_receive(:store_zip_content).with(kind_of(String))
+        mock
+      }
       uploader.store!(zip)
     end
   end
@@ -58,9 +60,10 @@ describe App::ComponentVersionUploader, :fog_mock do
     before { uploader.store!(zip) }
 
     it "remove zip content on sublimevideo S3 bucket" do
-      App::ComponentVersionZipContentUploader.should_receive(:remove_zip_content).with(
-        Pathname.new('c/e/2.0.0/')
-      )
+      App::ComponentVersionZipContentUploader.should_receive(:new).with(Pathname.new('c/e/2.0.0/')) { |mock|
+        mock.should_receive(:remove_zip_content)
+        mock
+      }
       uploader.remove!
     end
   end

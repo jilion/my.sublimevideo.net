@@ -75,7 +75,7 @@ module Populate
     def sites
       Populate.users if User.all.empty?
       Populate.plans if Plan.all.empty?
-      delete_all_files_in_public('uploads/licenses', 'uploads/loaders')
+      delete_all_files_in_public('uploads/settings', 'uploads/loaders')
       SitesPopulator.new.execute
     end
 

@@ -14,6 +14,7 @@ class App::Design < ActiveRecord::Base
 
   after_save :clear_caches
 
+  scope :beta,   -> { where(stable_at: nil) }
   scope :custom, -> { where { availability == 'custom' } }
   scope :paid,   -> { where { price > 0 } }
 

@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'rails/railtie'
 require 'fog'
 require 'config/carrierwave' # for fog_mock
@@ -35,12 +36,12 @@ describe SettingsGenerator, :fog_mock do
     wildcard: true, wildcard?: true,
     path: 'path', path?: true,
     addon_plan_is_active?: true,
-    accessible_stage: 'stable', player_mode: 'stable',
+    accessible_stage: 'stable',
     default_kit: stub(identifier: '1')
   )}
-  let(:settings) { described_class.new(site, 'settings') }
+  let(:settings) { described_class.new(site) }
 
-  describe ".update_all_types!" do
+  describe ".update_all!" do
     before { Site.stub(:find) { site } }
 
     context "site active" do
@@ -49,116 +50,42 @@ describe SettingsGenerator, :fog_mock do
       it "uploads all settings types when accessible_stage is 'beta'" do
         site.stub(:accessible_stage) { 'beta' }
         site.stub(:player_mode) { 'beta' }
-        described_class.update_all_types!(site.id)
-        described_class.new(site, 'license').cdn_file.should be_present
-        described_class.new(site, 'settings').cdn_file.should be_present
+        described_class.update_all!(site.id)
+        described_class.new(site).cdn_file.should be_present
       end
 
       it "uploads all settings types when accessible_stage is 'stable'" do
-        described_class.update_all_types!(site.id)
-        described_class.new(site, 'license').should be_present
-        described_class.new(site, 'settings').should be_present
+        described_class.update_all!(site.id)
+        described_class.new(site).should be_present
       end
 
       it "increments metrics" do
-        Librato.should_receive(:increment).with('settings.update', source: 'license')
         Librato.should_receive(:increment).with('settings.update', source: 'settings')
-        described_class.update_all_types!(site.id)
+        described_class.update_all!(site.id)
       end
 
       context "when suspended" do
         before { site.stub(:state) { 'suspended' } }
 
         it "removes all settings types" do
-          described_class.update_all_types!(site.id)
-          described_class.new(site, 'license').should_not be_present
-          described_class.new(site, 'settings').should_not be_present
+          described_class.update_all!(site.id)
+          described_class.new(site).should_not be_present
         end
 
         it "increments metrics" do
-          Librato.should_receive(:increment).with('settings.delete', source: 'license')
           Librato.should_receive(:increment).with('settings.delete', source: 'settings')
-          described_class.update_all_types!(site.id)
+          described_class.update_all!(site.id)
         end
       end
     end
   end
 
   describe "file" do
-    context "with license type" do
-      let(:file) { described_class.new(site, 'license').file }
+    let(:file) { described_class.new(site).file }
 
-      it "has good content" do
-        File.open(file) do |f|
-          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test-staging.net\",\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":false,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
-        end
-      end
-    end
-
-    context "with settings type" do
-      let(:file) { described_class.new(site, 'settings').file }
-
-      it "has good content" do
-        File.open(file) do |f|
-          f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
-        end
-      end
-    end
-  end
-
-  describe "#old_license" do
-    describe "common settings" do
-
-      it "includes everything" do
-        settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
-      end
-
-      context "without extra_hostnames" do
-        before { site.stub(extra_hostnames?: false) }
-
-        it "removes extra_hostnames from h: []" do
-          settings.old_license.should == { h: ['test.com'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
-        end
-      end
-
-      context "without path" do
-        before { site.stub(path?: false) }
-
-        it "doesn't include path key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, b: false, s: true, r: true, m: 'stable' }
-        end
-      end
-
-      context "without wildcard" do
-        before { site.stub(wildcard?: false) }
-
-        it "doesn't include wildcard key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], p: "path", b: false, s: true, r: true, m: 'stable' }
-        end
-      end
-
-      context "without the logo/disabled add-on" do
-        before do
-          logo_disabled_addon = stub
-          AddonPlan.should_receive(:get).with('logo', 'disabled').and_return(logo_disabled_addon)
-          site.should_receive(:addon_plan_is_active?).with(logo_disabled_addon).and_return(false)
-        end
-
-        it "doesn't include b: key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", s: true, r: true, m: 'stable' }
-        end
-      end
-
-      context "without realtime addons" do
-        before do
-          stats_realtime_addon = stub
-          AddonPlan.should_receive(:get).with('stats', 'realtime').and_return(stats_realtime_addon)
-          site.should_receive(:addon_plan_is_active?).with(stats_realtime_addon).and_return(false)
-        end
-
-        it "doesn't includes r key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", b: false, s: true, m: 'stable' }
-        end
+    it "has good content" do
+      File.open(file) do |f|
+        f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
       end
     end
   end
