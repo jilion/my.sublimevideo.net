@@ -26,7 +26,6 @@ MySublimeVideo::Application.routes.draw do
 
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
-  match '/admin(/*rest)' => redirect { |params, req| "#{https_if_prod_or_staging}://admin.#{req.domain}/#{params[:rest]}" }
 
   namespace 'api' do
     # Legacy routes
@@ -45,7 +44,7 @@ MySublimeVideo::Application.routes.draw do
   scope module: 'api', as: 'api' do
     constraints SubdomainConstraint.new('api') do
 
-      match 'test_request' => 'apis#test_request'
+      get 'test_request' => 'apis#test_request'
       resources :sites, only: [:index, :show] do
         member do
           get :usage
