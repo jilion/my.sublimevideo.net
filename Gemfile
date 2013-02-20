@@ -56,6 +56,7 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
+gem 'excon', '~> 0.16.0' # https://github.com/fog/fog/issues/1580
 gem 's3etag'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
