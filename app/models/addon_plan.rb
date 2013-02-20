@@ -19,6 +19,7 @@ class AddonPlan < ActiveRecord::Base
   validates :required_stage, inclusion: Stage.stages
   validates :price, numericality: true
 
+  scope :beta,    -> { where(stable_at: nil) }
   scope :paid,    -> { where{ (stable_at != nil) & (price > 0) } }
   scope :custom,  -> { where{ availability == 'custom' } }
   scope :visible, -> { where{ availability != 'hidden' } }

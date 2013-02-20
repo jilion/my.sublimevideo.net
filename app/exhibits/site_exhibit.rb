@@ -1,5 +1,5 @@
 class SiteExhibit < DisplayCase::Exhibit
-  def self.applicable_to?(object)
+  def self.applicable_to?(object, context)
     object.class.name == 'Site'
   end
 

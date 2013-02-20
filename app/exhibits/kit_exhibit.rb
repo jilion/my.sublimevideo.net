@@ -1,7 +1,7 @@
 # coding: utf-8
 class KitExhibit < DisplayCase::Exhibit
 
-  def self.applicable_to?(object)
+  def self.applicable_to?(object, context)
     object.class.name == 'Kit'
   end
 

@@ -19,8 +19,8 @@
 9. Install Redis: `$ brew install redis` (and follow the installation instructions);
 10. Install the app's gems: `$ bundle install`. If there's any issue at this step, the solution is usually to re-install Ruby, but you should ask a developer before;
 11. [If you're using rbenv] Installs shims for all Ruby binaries known to `rbenv`: `$ rbenv rehash`;
-12. Run the populate task: `$ dbrp user=<index between 0 and 5>` (0 is Mehdi, 5 is Andrea) or just `dbrp` if you need to warm the room;
-13. Link your app to Pow: `powder link && cd ~/.pow && mv my.sublimevideo.net my.sublimevideo && mysv`;
+12. Run the populate task: `$ rake 'db:populate:all[<yourfirstname>]'` (e.g. 'remy');
+13. Link your app to Pow: `$ powder link && cd ~/.pow && mv my.sublimevideo.net my.sublimevideo && mysv`;
 14. Also links `admin` and `api` subdomains to the same app: `$ cp ~/.pow/my.sublimevideo ~/.pow/api.sublimevideo && cp ~/.pow/my.sublimevideo ~/.pow/admin.sublimevideo`;
 15. Open http://my.sublimevideo.dev in your favorite browser (Chrome recommended!) and log with your account: `yourfirstname@jilion.com`/`123456` (same for the admin).
 

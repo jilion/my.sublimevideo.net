@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'rails/railtie'
 require 'sidekiq'
 require 'config/sidekiq'
@@ -29,7 +30,7 @@ describe LoaderGenerator, :fog_mock do
   let(:site) { mock("Site",
     id: 1,
     token: 'abcd1234',
-    accessible_stage: 'beta', player_mode: 'beta',
+    accessible_stage: 'beta',
     active?: true
   )}
   let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false) }
@@ -239,26 +240,16 @@ describe LoaderGenerator, :fog_mock do
             object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
             object_headers['Cache-Control'].should eq 's-maxage=300, max-age=120, public'
           end
-          it "includes good loader version" do
-            object = S3Wrapper.fog_connection.get_object(bucket, path)
-            object.body.should include '/p/beta/sublime.js'
-          end
         end
       end
 
       context "when site accessible_stage is alpha" do
         before do
           site.stub(:accessible_stage) { 'alpha' }
-          site.stub(:player_mode) { 'dev' }
         end
 
         describe "S3 object" do
           before { loader.upload! }
-
-          it "includes good loader version" do
-            object = S3Wrapper.fog_connection.get_object(bucket, path)
-            object.body.should include '/p/dev/sublime.js'
-          end
 
           context "-alpha file" do
             let(:loader) { described_class.new(site, 'alpha') }

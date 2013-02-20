@@ -37,8 +37,8 @@ namespace :sites do
     timed { Site.update_last_30_days_counters_for_not_archived_sites }
   end
 
-  desc "Subscribes all sites to the embed add-on"
-  task subscribe_all_sites_to_embed_addon: :environment do
-    timed { puts SitesTasks.subscribe_all_sites_to_embed_addon }
+  desc "Exit beta"
+  task exit_beta: :environment do
+    timed { puts SitesTasks.exit_beta }
   end
 end

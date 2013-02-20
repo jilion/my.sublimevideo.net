@@ -10,7 +10,7 @@
       %p= "Congratulations! You're now ready to use SublimeVideo on #{hostname_or_token(@site)}."
 
       %p You just need to put the following loader code in the header of your site:
-      .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(@site, 'beta'), readonly: true, onclick: "this.focus();this.select();"
+      .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(@site), readonly: true, onclick: "this.focus();this.select();"
 
       - unless params[:lightbox_code_for_textarea].blank?
         %p Then insert the following Lightbox-opening trigger code in the page you want to publish it:

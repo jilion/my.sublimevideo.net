@@ -1,14 +1,12 @@
 require 'tempfile'
 
 class LoaderGenerator
-  extend Forwardable
-
   IMPORTANT_SITE_TOKENS = %w[utcf6unc]
 
   attr_reader :site, :stage, :options
 
-  def_instance_delegators :site, :token, :player_mode
-  def_instance_delegators :cdn_file, :upload!, :delete!, :present?
+  delegate :token, to: :site
+  delegate :upload!, :delete!, to: :cdn_file
 
   def self.update_all_stages!(site_id, options = {})
     site = Site.find(site_id)
@@ -50,12 +48,7 @@ class LoaderGenerator
   end
 
   def cdn_file
-    @cdn_file ||= CDNFile.new(
-      file,
-      destination,
-      s3_options,
-      options
-    )
+    @cdn_file ||= CDNFile.new(file, path, s3_headers)
   end
 
   def file
@@ -97,10 +90,6 @@ private
     "loader-#{stage}.js.erb"
   end
 
-  def destination
-    { bucket: S3Wrapper.buckets['sublimevideo'], path: path }
-  end
-
   def path
     if stage == 'stable'
       "js/#{token}.js"
@@ -109,7 +98,7 @@ private
     end
   end
 
-  def s3_options
+  def s3_headers
     {
       'Cache-Control' => cache_control,
       'Content-Type'  => 'text/javascript',

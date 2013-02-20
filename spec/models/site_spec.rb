@@ -255,7 +255,7 @@ describe Site, :addons do
 
       it "delays SettingsGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          SettingsGenerator.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
+          SettingsGenerator.should delay(:update_all!, at: 5.seconds.from_now.to_i).with(site.id)
           site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
         end
       end
@@ -277,7 +277,7 @@ describe Site, :addons do
 
       it "delays SettingsGenerator update" do
         Timecop.freeze do
-          SettingsGenerator.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
+          SettingsGenerator.should delay(:update_all!, at: 5.seconds.from_now.to_i).with(site.id)
           site.suspend
         end
       end

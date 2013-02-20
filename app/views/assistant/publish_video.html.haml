@@ -4,7 +4,6 @@
 = render 'assistant/step_guide', current_step: 'publish_video'
 
 #video_code.assistant
-  = beta_loader_required(@site)
   %h3.assistant_title= "Publish a video on #{hostname_or_token(@site)}"
   = form_tag assistant_summary_url(@site), id: 'video_code_form', class: 'disableable', data: { assistant: true } do
     = hidden_field_tag 'lightbox_code_for_textarea', ''

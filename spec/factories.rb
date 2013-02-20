@@ -71,10 +71,6 @@ FactoryGirl.define do
     site
   end
 
-  factory :release do
-    zip { File.new(Rails.root.join('spec/fixtures/release.zip')) }
-  end
-
   factory :referrer do
     url   "http://bob.com"
     token { '123456' }
@@ -269,7 +265,7 @@ FactoryGirl.define do
     st   { FactoryGirl.create(:site).token }
     from { 30.days.ago.midnight.to_i }
     to   { 1.days.ago.midnight.to_i }
-    file { File.new(Rails.root.join('spec/fixtures/release.zip')) }
+    file { File.new(Rails.root.join('spec/fixtures/zip.zip')) }
   end
 
   # ================

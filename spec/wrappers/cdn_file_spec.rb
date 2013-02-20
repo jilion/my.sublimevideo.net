@@ -1,45 +1,33 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'rails/railtie'
-require 'sidekiq'
-require 'config/sidekiq'
 require 'support/fixtures_helpers'
-require 'support/sidekiq_custom_matchers'
 require 'config/carrierwave' # for fog_mock
 
-require 'wrappers/edge_cast_wrapper'
-require 'wrappers/voxcast_wrapper'
-require 'wrappers/cdn'
 require 'wrappers/s3_wrapper'
 require 'wrappers/cdn_file'
 
 describe CDNFile, :fog_mock do
   let(:file) { fixture_file('cdn/file.js', 'r') }
   let(:file2) { fixture_file('cdn/file2.js', 'r') }
-  let(:destination) { {
-    bucket: S3Wrapper.buckets['sublimevideo'],
-    path: "js/token.js"
-  } }
-  let(:s3_options) { {
+  let(:path) { "js/token.js" }
+  let(:headers) { {
     'Cache-Control' => 'max-age=60, public', # 2 minutes
     'Content-Type'  => 'text/javascript',
     'x-amz-acl'     => 'public-read'
   } }
-  let(:cdn_file) { CDNFile.new(file, destination, s3_options) }
+  let(:cdn_file) { CDNFile.new(file, path, headers) }
 
   describe "#upload!" do
-    it "uploads file to all destinations" do
+    it "uploads files" do
+      cdn_file.should_not be_present
       cdn_file.upload!
-      S3Wrapper.fog_connection.head_object(
-        destination[:bucket],
-        destination[:path]
-      ).headers.should be_present
+      cdn_file.should be_present
     end
 
     describe "s3 object(s)" do
       before { cdn_file.upload! }
-
-      let(:bucket) { destination[:bucket] }
-      let(:path)   { destination[:path] }
+      let(:bucket) { cdn_file.bucket }
 
       it "is public" do
         object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body

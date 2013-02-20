@@ -126,7 +126,7 @@ class Site < ActiveRecord::Base
     if site.accessible_stage_changed?
       # Delay for 5 seconds to be sure that commit transaction is done.
       LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
+      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
     end
   end
 
@@ -142,7 +142,7 @@ class Site < ActiveRecord::Base
     after_transition ->(site) do
       # Delay for 5 seconds to be sure that commit transaction is done.
       LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
+      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
     end
 
     before_transition :on => :suspend do |site, transition|
@@ -284,11 +284,6 @@ class Site < ActiveRecord::Base
 
   def unmemoize_all
     unmemoize_all_usages
-  end
-
-  # for old loader/license templates
-  def player_mode
-    accessible_stage == 'alpha' ? "dev" : accessible_stage
   end
 
 end

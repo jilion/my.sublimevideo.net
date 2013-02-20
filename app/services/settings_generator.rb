@@ -1,56 +1,31 @@
 require 'tempfile'
 
 class SettingsGenerator
-  extend Forwardable
+  attr_reader :site, :options
 
-  TYPES = %w[license settings]
+  delegate :upload!, :delete!, :present?, to: :cdn_file
 
-  attr_reader :site, :type, :options
-
-  def_instance_delegators :cdn_file, :upload!, :delete!, :present?
-
-  def self.update_all_types!(site_id, options = {})
+  def self.update_all!(site_id, options = {})
     site = Site.find(site_id)
-    self::TYPES.each do |type|
-      if site.state == 'active'
-        new(site, type, options).upload!
-        Librato.increment 'settings.update', source: type
-      else
-        new(site, type, options).delete!
-        Librato.increment 'settings.delete', source: type
-      end
+    if site.state == 'active'
+      new(site, options).upload!
+      Librato.increment 'settings.update', source: 'settings'
+    else
+      new(site, options).delete!
+      Librato.increment 'settings.delete', source: 'settings'
     end
   end
 
-  def initialize(site, type, options = {})
-    @site, @type, @options = site, type, options
+  def initialize(site, options = {})
+    @site, @options = site, options
   end
 
   def cdn_file
-    @cdn_file ||= CDNFile.new(
-      file,
-      destination,
-      s3_options,
-      options
-    )
+    @cdn_file ||= CDNFile.new(file, path, s3_headers)
   end
 
   def file
     @file ||= generate_file
-  end
-
-  def old_license
-    hash = { h: [site.hostname], d: [] }
-    hash[:h] += site.extra_hostnames.split(/,\s*/) if site.extra_hostnames?
-    hash[:d] += site.staging_hostnames.split(/,\s*/) if site.staging_hostnames?
-    hash[:d] += site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?
-    hash[:w]  = site.wildcard if site.wildcard?
-    hash[:p]  = site.path if site.path?
-    hash[:b]  = false if site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
-    hash[:s]  = true # SSL Always true now
-    hash[:r]  = true if site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
-    hash[:m]  = site.player_mode
-    hash
   end
 
   def license
@@ -160,35 +135,18 @@ private
   end
 
   def template_file
-    case type
-    when 'license'
-      'settings-stable.js.erb'
-    when 'settings'
-      'settings.js.erb'
-    end
+    'settings.js.erb'
   end
 
-  def destination
-    case type
-    when 'license'
-      {
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: "l/#{site.token}.js"
-      }
-    when 'settings'
-      {
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: "s/#{site.token}.js"
-      }
-    end
+  def path
+    "s/#{site.token}.js"
   end
 
-  def s3_options
+  def s3_headers
     {
       'Cache-Control' => 's-maxage=300, max-age=120, public', # 5 minutes / 2 minutes
       'Content-Type'  => 'text/javascript',
       'x-amz-acl'     => 'public-read'
     }
   end
-
 end

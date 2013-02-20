@@ -10,7 +10,7 @@ FactoryGirl.define do
 
   factory :app_component_version, class: App::ComponentVersion do
     component { FactoryGirl.create(:app_component) }
-    zip       { File.new(Rails.root.join('spec/fixtures/release.zip')) }
+    zip       { File.new(Rails.root.join('spec/fixtures/zip.zip')) }
     version   '1.0.0'
   end
 
