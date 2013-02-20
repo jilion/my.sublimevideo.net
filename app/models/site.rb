@@ -174,8 +174,6 @@ class Site < ActiveRecord::Base
   scope :suspended,    where{ state == 'suspended' }
   scope :archived,     where{ state == 'archived' }
   scope :not_archived, where{ state != 'archived' }
-  # legacy
-  scope :refunded,  where{ (state == 'archived') & (refunded_at != nil) }
 
   # attributes queries
   scope :with_wildcard,              where{ wildcard == true }
@@ -258,7 +256,6 @@ class Site < ActiveRecord::Base
 
     where(token: stats.select { |stat| stat['pvTotSum'] > 0 }.map { |s| s['_id'] })
   end
-
 
   def self.to_backbone_json
     all.map(&:to_backbone_json)

@@ -28,15 +28,6 @@
       - else
         = "Created: #{display_time(invoice.created_at)}"
 
-  %td.invoice_items_count
-    %small
-      %strong
-        - if invoice.renew
-          = "Renew"
-        - else
-          = "New"
-      = "/ #{invoice.first_paid_item.cycle}" if invoice.first_paid_item.respond_to?(:cycle)
-
   %td.amount
     %small= display_amount(invoice.amount)
 

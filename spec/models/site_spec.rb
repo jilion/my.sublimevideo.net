@@ -540,17 +540,6 @@ describe Site, :addons do
       specify { Site.between(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).all.should =~ [@site3] }
     end
 
-
-    describe ".refunded" do
-      before do
-        @site_refunded_1     = create(:site, user: user, state: 'archived', refunded_at: Time.now.utc)
-        @site_not_refunded_1 = create(:site, user: user, refunded_at: Time.now.utc)
-        @site_not_refunded_2 = create(:site, user: user, state: 'archived', refunded_at: nil)
-      end
-
-      specify { Site.refunded.all.should =~ [@site_refunded_1] }
-    end
-
     describe '.with_page_loads_in_the_last_30_days' do
       let(:site1) { create(:site) }
       let(:site2) { create(:site) }

@@ -10,7 +10,7 @@ class Admin::InvoicesController < Admin::AdminController
   has_scope :open do |controller, scope|
     scope.open
   end
-  has_scope :waiting, :refunded, :failed, :renew, :user_id, :site_id, :by_id, :by_date, :by_amount, :by_user, :by_invoice_items_count, :search
+  has_scope :waiting, :failed, :renew, :user_id, :site_id, :by_id, :by_date, :by_amount, :by_user, :search
 
   # GET /invoices
   def index

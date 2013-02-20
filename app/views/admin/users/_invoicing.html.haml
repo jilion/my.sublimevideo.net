@@ -7,15 +7,6 @@
     = "in #{content_tag(:strong, pluralize(paid_invoices.size, 'invoice'))}".html_safe
     = "(average #{content_tag(:strong, display_amount(total_invoiced / paid_invoices.size.to_f))} / invoice)".html_safe
 
-- refunded_invoices = user.invoices.refunded
-- if refunded_invoices.present?
-  - total_invoiced = refunded_invoices.sum(:amount)
-  %p
-    = "Total refunded: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: user.id))
-    = "in #{content_tag(:strong, pluralize(refunded_invoices.size, 'invoice'))}".html_safe
-    = "(average #{content_tag(:strong, display_amount(total_invoiced / refunded_invoices.size.to_f))} / invoice)".html_safe
-
 - unpaid_invoices = user.invoices.where(invoices: { state: %w[open waiting failed] })
 - if unpaid_invoices.present?
   - total_invoiced = unpaid_invoices.sum(:amount)
