@@ -1,4 +1,8 @@
+require 'findable_and_cached'
+
 class App::Component < ActiveRecord::Base
+  include FindableAndCached
+
   APP_TOKEN = 'sa'
 
   attr_accessible :name, :token, as: :admin
@@ -19,16 +23,6 @@ class App::Component < ActiveRecord::Base
     Rails.cache.fetch [self, 'app_component'] do
       self.where(token: APP_TOKEN).first
     end
-  end
-
-  def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s.dup] do
-      self.where(name: name).first
-    end
-  end
-
-  class << self
-    alias_method :get, :find_cached_by_name
   end
 
   def app_component?
@@ -55,11 +49,9 @@ class App::Component < ActiveRecord::Base
     designs_sites.scoped
   end
 
-  private
-
   def clear_caches
+    super
     Rails.cache.clear [self.class, 'app_component']
-    Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 
 end

@@ -1,4 +1,8 @@
+require 'findable_and_cached'
+
 class Addon < ActiveRecord::Base
+  include FindableAndCached
+
   attr_accessible :name, :design_dependent, :parent_addon, :kind, as: :admin
 
   belongs_to :parent_addon, class_name: 'Addon'
@@ -17,12 +21,6 @@ class Addon < ActiveRecord::Base
   scope :visible,         -> { includes(:plans).merge(AddonPlan.visible) }
   scope :public,          -> { includes(:plans).merge(AddonPlan.public) }
 
-  def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s.dup] do
-      self.where(name: name.to_s).first
-    end
-  end
-
   def free_plan
     plans.where(price: 0).first
   end
@@ -31,15 +29,6 @@ class Addon < ActiveRecord::Base
     I18n.t("addons.#{name}")
   end
 
-  class << self
-    alias_method :get, :find_cached_by_name
-  end
-
-  private
-
-  def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_name', name]
-  end
 end
 
 # == Schema Information

@@ -1,4 +1,8 @@
+require 'findable_and_cached'
+
 class App::Design < ActiveRecord::Base
+  include FindableAndCached
+
   AVAILABILITIES = %w[public custom]
 
   attr_accessible :component, :skin_token, :name, :price, :availability, :required_stage, :stable_at, as: :admin
@@ -17,16 +21,6 @@ class App::Design < ActiveRecord::Base
   scope :beta,   -> { where(stable_at: nil) }
   scope :custom, -> { where { availability == 'custom' } }
   scope :paid,   -> { where { price > 0 } }
-
-  def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s.dup] do
-      self.where(name: name.to_s).first
-    end
-  end
-
-  class << self
-    alias_method :get, :find_cached_by_name
-  end
 
   def available_for_subscription?(site)
     case availability
@@ -53,11 +47,6 @@ class App::Design < ActiveRecord::Base
     I18n.t("app_designs.#{name}")
   end
 
-  private
-
-  def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_name', name]
-  end
 end
 
 # == Schema Information

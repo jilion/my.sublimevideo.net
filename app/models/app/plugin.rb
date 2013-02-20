@@ -1,4 +1,8 @@
+require 'findable_and_cached'
+
 class App::Plugin < ActiveRecord::Base
+  include FindableAndCached
+
   serialize :condition, Hash
 
   attr_accessible :addon, :design, :component, :token, :name, as: :admin
@@ -12,22 +16,6 @@ class App::Plugin < ActiveRecord::Base
 
   validates :addon, :component, presence: true
   validates :addon_id, uniqueness: { scope: :app_design_id }
-
-  def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s.dup] do
-      self.where(name: name.to_s).first
-    end
-  end
-
-  class << self
-    alias_method :get, :find_cached_by_name
-  end
-
-  private
-
-  def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_name', name]
-  end
 
 end
 
