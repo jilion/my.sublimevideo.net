@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::AdminController
-  respond_to :html, except: [:index, :stats, :invoices, :support_requests]
+  respond_to :html, except: [:stats, :invoices, :support_requests]
   respond_to :js, only: [:index, :stats, :invoices, :support_requests]
 
   before_filter :set_default_scopes, only: [:index]
