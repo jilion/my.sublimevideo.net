@@ -21,7 +21,7 @@ module Addons
     end
 
     def cdn_file
-      @cdn_file ||= CDNFile.new(file.path, path, s3_headers)
+      @cdn_file ||= CDNFile.new(file, path, s3_headers)
     end
 
     def width
