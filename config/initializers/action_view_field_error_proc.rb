@@ -1,8 +1,12 @@
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   error_class = "errors"
   if instance.object.present? && html_tag =~ /<(input|textarea|select)/
-    position = html_tag =~ /( class=['"]|\s)/
-    html_tag.insert(position + $1.size, $1.size > 1 ? "#{error_class} " : " class='#{error_class}' ")
+    if p = html_tag =~ /( class=['"])/
+      html_tag.insert(p + $1.size, "#{error_class} ")
+    else
+      p = html_tag =~ /(\s+)/
+      html_tag.insert(p + $1.size, " class='#{error_class}' ")
+    end
 
     if errors = instance.object.errors.messages.delete(instance.method_name.to_sym)
       if errors.length > 1
