@@ -78,6 +78,10 @@ MySublimeVideo::Application.routes.draw do
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do
+          get :stats
+          get :videos_infos
+          get :invoices
+          get :active_pages
           put :update_app_design_subscription
           put :update_addon_plan_subscription
         end
@@ -92,6 +96,9 @@ MySublimeVideo::Application.routes.draw do
       resources :users, only: [:index, :show, :edit, :update] do
         member do
           get :become
+          get :stats
+          get :invoices
+          get :support_requests
           get :new_support_request
           delete :oauth_revoke
         end

@@ -1,3 +1,4 @@
+<h3>Page visits & Video plays</h3>
 <%
 vv_stats_timeline = SiteStatsTimelineBuilder.new(view_type: 'vv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
 pv_stats_timeline = SiteStatsTimelineBuilder.new(view_type: 'pv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)

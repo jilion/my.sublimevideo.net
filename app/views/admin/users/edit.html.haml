@@ -5,61 +5,67 @@
 
 = render 'admin/shared/tags', object: @user
 %br
+%hr
+%br
 
 - if @user.enthusiast
   = render 'enthusiast_info', user: @user
   %br
+  %hr
+  %br
 
 = render 'basic_info', user: @user
+%br
+%hr
 %br
 
 = render 'more_info', user: @user
 %br
+%hr
+%br
 
+%h3 Feedbacks
 = render 'feedbacks', user: @user
+%br
+%hr
 %br
 
 = render 'billing_info', user: @user
 %br
-
 %hr
+%br
 
-= render '/admin/shared/date_chooser'
-= render partial: 'timeline_usage', locals: { user: @user }
+%h3 Sites
+= render 'sites', user: @user
+%br
+%hr
+%br
+
+#stats
+  %h3= link_to 'View stats graph', stats_admin_user_path(@user), data: { remote: true }
+%br
+%hr
+%br
 
 %span.expanding_handler
   %h3 OAuth authorizations
 %ul.expandable= render 'shared/oauth_authorizations', authorizations: @oauth_authorizations, revoke_path: oauth_revoke_admin_user_path
 %br
-
-- cache ['user_support_requests', @user], expires_in: 15.minutes do
-  = render 'support_requests', user: @user
+%hr
 %br
 
-%table.left
-  %tr
-    %th
-      %h3 Sites
-    - if has_role?('invoices')
-      %th
-        %h3 Invoices
-  %tr
-    %td
-      %h4= "Active (#{@user.sites.active.size})"
-      %ul= render(partial: 'li_site', collection: @user.sites.active, as: :site)
-      %h4= "Suspended (#{@user.sites.suspended.size})"
-      %ul= render(partial: 'li_site', collection: @user.sites.suspended, as: :site)
-      %h4= "Archived (#{@user.sites.archived.size})"
-      %ul= render(partial: 'li_site', collection: @user.sites.archived, as: :site)
-    - if has_role?('invoices')
-      %td
-        = render 'invoicing', user: @user
-        %h4 All invoices
-        = render 'admin/shared/invoices', object: @user
-
+#support_requests
+  %h3= link_to 'View support requests', support_requests_admin_user_path(@user), data: { remote: true }
 %br
 %hr
 %br
+
+- if has_role?('invoices')
+  #invoices
+    %h3= link_to 'View invoices', invoices_admin_user_path(@user), data: { remote: true }
+  %br
+  %hr
+  %br
 
 - if has_role?('marcom')
   %h3 VIP User?
@@ -81,6 +87,5 @@
   %br
   %hr
   %br
-
 
 %p= link_to "Back to users", admin_users_path

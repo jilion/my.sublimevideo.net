@@ -1,3 +1,4 @@
+%h3 Invoices
 %ul
   - object.invoices.includes(:site).order{ created_at.desc }.each do |invoice|
     %li
