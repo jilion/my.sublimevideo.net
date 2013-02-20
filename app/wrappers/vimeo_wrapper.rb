@@ -1,4 +1,9 @@
-VimeoWrapper = Struct.new(:video_id) do
+class VimeoWrapper
+  attr_reader :video_id
+
+  def initialize(video_id)
+    @video_id = video_id
+  end
 
   def video_title
     video_info.try(:[], "title")
@@ -11,4 +16,4 @@ VimeoWrapper = Struct.new(:video_id) do
     Vimeo::Simple::Video.info(video_id).try(:first)
   end
 
-end unless defined? VimeoWrapper
+end

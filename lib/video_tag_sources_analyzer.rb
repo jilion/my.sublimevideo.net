@@ -1,9 +1,10 @@
-VideoTagSourcesAnalyzer = Struct.new(:video_tag) do
+class VideoTagSourcesAnalyzer
+  VIMEO_URL_PART = 'player.vimeo.com/external'
 
-  self::VIMEO_URL_PART = 'player.vimeo.com/external'
+  attr_reader :video_tag
 
-  def initialize(*args)
-    super
+  def initialize(video_tag)
+    @video_tag = video_tag
     analyze
   end
 
@@ -36,4 +37,4 @@ private
     sources_urls.present? && sources_urls.first.include?(self.class::VIMEO_URL_PART)
   end
 
-end unless defined? VideoTagSourcesAnalyzer
+end

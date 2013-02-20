@@ -1,4 +1,9 @@
-YouTubeWrapper = Struct.new(:video_id) do
+class YouTubeWrapper
+  attr_reader :video_id
+
+  def initialize(video_id)
+    @video_id = video_id
+  end
 
   def video_title
     video_info.try(:title)
@@ -16,4 +21,4 @@ YouTubeWrapper = Struct.new(:video_id) do
     @client ||= YouTubeIt::Client.new
   end
 
-end unless defined? YouTubeWrapper
+end

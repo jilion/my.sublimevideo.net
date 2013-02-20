@@ -1,11 +1,16 @@
 # coding: utf-8
 require 'active_model'
 
-SupportRequest = Struct.new(:params) do
+class SupportRequest
   include ActiveModel::Validations
+  attr_reader :params
   attr_accessor :site_token, :stage, :subject, :message, :test_page, :env, :uploads
 
   validates :user, :subject, :message, presence: true
+
+  def initialize(params)
+    @params = params
+  end
 
   def user
     @user ||= User.find_by_id(params[:user_id])
