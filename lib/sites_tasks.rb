@@ -42,33 +42,11 @@ module SitesTasks
     # 2. Delays SiteManager.update_billable_items for all non-archived sites
     scheduled = 0
     Site.not_archived.select(:id).find_each do |site|
-      delay(queue: 'one_time').exit_beta_for_site(site.id)
+      ExitBetaHandler.delay(queue: 'one_time').exit_beta(site.id)
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
     end
 
     "Schedule finished: #{scheduled} sites will be moved out of beta"
-  end
-
-  def self.exit_beta_for_site(site_id)
-    site = Site.find(site_id)
-
-    designs = site.billable_items.app_designs.beta.inject({}) do |hash, billable_item|
-      hash[billable_item.item.name] = billable_item.item.id
-      hash
-    end
-    addon_plans = site.billable_items.addon_plans.beta.inject({}) do |hash, billable_item|
-      hash[billable_item.item.addon.name] = if !site.out_of_trial?(billable_item.item) || site.user.cc?
-        billable_item.item.id
-      else
-        if free_plan = billable_item.item.addon.free_plan
-          free_plan.id
-        else
-          '0'
-        end
-      end
-      hash
-    end
-    SiteManager.delay(queue: 'one_time').update_billable_items(site_id, designs, addon_plans)
   end
 end
