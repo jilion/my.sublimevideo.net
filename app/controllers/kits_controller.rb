@@ -60,7 +60,7 @@ class KitsController < ApplicationController
     @custom_logo = Addons::CustomLogo.new(params[:file])
     uploader = Addons::CustomLogoUploader.new(@kit, @custom_logo, params[:old_custom_logo_path])
     uploader.upload!
-    @logo_path, @logo_width, @logo_height = uploader.current_path, uploader.width, uploader.height
+    @logo_path, @logo_width, @logo_height = uploader.path, uploader.width, uploader.height
   end
 
   # GET /sites/:site_id/players/:id/fields

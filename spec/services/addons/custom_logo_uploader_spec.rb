@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'configurator'
 require 'support/fixtures_helpers'
 
 require 'models/addons/custom_logo'

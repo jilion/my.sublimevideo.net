@@ -69,7 +69,7 @@ describe SettingsGenerator, :fog_mock do
 
         it "removes all settings types" do
           described_class.update_all!(site.id)
-          described_class.new(site, 'settings').should_not be_present
+          described_class.new(site).should_not be_present
         end
 
         it "increments metrics" do

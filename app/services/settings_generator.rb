@@ -1,11 +1,9 @@
 require 'tempfile'
 
 class SettingsGenerator
-  extend Forwardable
-
   attr_reader :site, :options
 
-  def_instance_delegators :cdn_file, :upload!, :delete!, :present?
+  delegate :upload!, :delete!, :present?, to: :cdn_file
 
   def self.update_all!(site_id, options = {})
     site = Site.find(site_id)
@@ -23,12 +21,7 @@ class SettingsGenerator
   end
 
   def cdn_file
-    @cdn_file ||= CDNFile.new(
-      file,
-      destination,
-      s3_options,
-      options
-    )
+    @cdn_file ||= CDNFile.new(file, path, s3_headers)
   end
 
   def file
@@ -145,11 +138,11 @@ private
     'settings.js.erb'
   end
 
-  def destination
-    { bucket: S3Wrapper.buckets['sublimevideo'], path: "s/#{site.token}.js" }
+  def path
+    "s/#{site.token}.js"
   end
 
-  def s3_options
+  def s3_headers
     {
       'Cache-Control' => 's-maxage=300, max-age=120, public', # 5 minutes / 2 minutes
       'Content-Type'  => 'text/javascript',
