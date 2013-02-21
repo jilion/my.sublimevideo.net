@@ -10,14 +10,25 @@ describe VideoTagOldDataUpdaterBridge do
   context "with uid & title from attribute" do
     let(:old_data) { {
       'uo' => 'a', 'n' => 'My Video', 'no' => 'a',
+      'i' => nil,
+      'io' => nil,
       'p' => 'http://posters.sublimevideo.net/video123.png',
+      'z' => '640x360',
+      'd' => '10000',
+      'cs' => ['source11'],
+      's' => {
+        'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' },
+      }
     } }
 
     it "delays to VideoTagUpdaterWorker with translated data" do
       VideoTagUpdaterWorker.should_receive(:perform_async).with(site_token, uid, {
         uo: 'a',
         t: 'My Video',
-        p: 'http://posters.sublimevideo.net/video123.png'
+        p: 'http://posters.sublimevideo.net/video123.png',
+        d: '10000',
+        z: '640x360',
+        s: [{ u: 'http://videos.sublimevideo.net/source11.mp4', q: 'base', f: 'mp4', r: '460x340' }]
       })
       updater.update
     end
