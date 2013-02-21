@@ -1,10 +1,10 @@
 class Admin::SitesController < Admin::AdminController
-  respond_to :html, except: [:stats, :videos_infos, :invoices, :active_pages]
-  respond_to :js, only: [:index, :update, :stats, :videos_infos, :invoices, :active_pages]
+  respond_to :html, except: [:videos_infos, :invoices, :active_pages]
+  respond_to :js, only: [:index, :update, :videos_infos, :invoices, :active_pages]
 
   before_filter { |controller| require_role?('god') if %w[update_app_design_subscription update_addon_plan_subscription].include?(action_name) }
   before_filter :set_default_scopes, only: [:index]
-  before_filter :find_site_by_token, only: [:stats, :videos_infos, :invoices, :active_pages]
+  before_filter :find_site_by_token, only: [:videos_infos, :invoices, :active_pages]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -43,10 +43,6 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@site, notice: 'Site has been successfully updated.', location: [:edit, :admin, @site]) do |format|
       format.js { render 'admin/shared/flash_update' }
     end
-  end
-
-  # GET /sites/:id/stats
-  def stats
   end
 
   # GET /sites/:id/videos_infos

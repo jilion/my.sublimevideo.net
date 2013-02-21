@@ -22,8 +22,7 @@
 %hr
 %br
 
-#stats
-  %h3= link_to 'View stats graph', stats_admin_site_path(@site), data: { remote: true }
+#stats= render 'stats', site: @site
 %br
 %hr
 %br
