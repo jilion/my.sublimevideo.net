@@ -38,7 +38,7 @@ class VideoTag < ActiveRecord::Base
   end
 
   def uid=(attribute)
-    write_attribute :uid, attribute.try(:to, 254)
+    write_attribute :uid, attribute.to_s.try(:to, 254)
   end
 
   def name=(attribute)
