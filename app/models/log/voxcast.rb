@@ -91,6 +91,7 @@ class Log::Voxcast < ::Log
     video_tags_data = VideoTagTrackersParser.extract_video_tags_data(video_tags_trackers)
     video_tags_data.each do |(site_token, uid), data|
       VideoTagUpdater.delay.update(site_token, uid, data)
+      VideoTagOldDataUpdaterBridge.new(site_token, uid, data).update
     end
   end
 
