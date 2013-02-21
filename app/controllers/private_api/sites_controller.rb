@@ -1,5 +1,4 @@
-class Api::SitesController < Api::ApisController
-  # self.responder.send(:include, Responders::HttpCacheResponder)
+class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   before_filter :find_by_token!, only: [:show, :usage]
 

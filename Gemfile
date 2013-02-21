@@ -34,7 +34,6 @@ gem 'devise-async'
 # API
 gem 'oauth'
 gem 'oauth-plugin'
-gem 'acts_as_api'
 
 # Internals
 gem 'dalli'

@@ -121,10 +121,6 @@ GEM
       multi_json (~> 1.0)
     acts-as-taggable-on (2.3.3)
       rails (~> 3.0)
-    acts_as_api (0.4.1)
-      activemodel (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      rack (>= 1.1.0)
     addressable (2.2.8)
     aggregate (0.2.2)
     airbrake (3.1.8)
@@ -620,7 +616,6 @@ DEPENDENCIES
   activemerchant
   activerecord-postgres-hstore!
   acts-as-taggable-on
-  acts_as_api
   addressable (= 2.2.8)
   airbrake
   annotate

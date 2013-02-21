@@ -1,28 +1,29 @@
 = title_and_content_header("API authorizations and applications")
 
-- unless @authorizations.empty?
-  %p The following applications have been authorized to access your datas in your behalf
-  = render 'shared/oauth_authorizations', authorizations: @authorizations, revoke_path: oauth_revoke_path
-
-%h3 Your applications
-
-- if @applications.empty?
-  %p
-    Do you have an application you would like to register for use with us using the <a href="http://oauth.net">OAuth</a> standard?
-    You must register your web application before it can make OAuth requests to this service
-- else
-  %p
-    You have the following client applications registered:
-
-  %table{ border:1 }
-    - @applications.each do |application|
-      %tr[application]
-        %td
-          = link_to application.name, action: :show, id: application.id
-        %td= link_to 'Edit', edit_client_application_path(application)
-        %td
-          = form_for application, html: { method: :delete, data: { confirm: 'Are you sure?' } } do |f|
-            .entry.delete= f.submit "Delete", class: "submit link_looks delete"
-%br
-%h3
-  = link_to "Register a new application", [:new, :client_application]
+-# FIXME: Replace with calls to api.sublimevideo.net
+-#- unless @authorizations.empty?
+-#  %p The following applications have been authorized to access your datas in your behalf
+-#  = render 'shared/oauth_authorizations', authorizations: @authorizations, revoke_path: oauth_revoke_path
+-#
+-#%h3 Your applications
+-#
+-#- if @applications.empty?
+-#  %p
+-#    Do you have an application you would like to register for use with us using the <a href="http://oauth.net">OAuth</a> standard?
+-#    You must register your web application before it can make OAuth requests to this service
+-#- else
+-#  %p
+-#    You have the following client applications registered:
+-#
+-#  %table{ border:1 }
+-#    - @applications.each do |application|
+-#      %tr[application]
+-#        %td
+-#          = link_to application.name, action: :show, id: application.id
+-#        %td= link_to 'Edit', edit_client_application_path(application)
+-#        %td
+-#          = form_for application, html: { method: :delete, data: { confirm: 'Are you sure?' } } do |f|
+-#            .entry.delete= f.submit "Delete", class: "submit link_looks delete"
+-#%br
+-#%h3
+-#  = link_to "Register a new application", [:new, :client_application]
