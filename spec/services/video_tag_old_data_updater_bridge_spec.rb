@@ -14,11 +14,7 @@ describe VideoTagOldDataUpdaterBridge do
       'io' => nil,
       'p' => 'http://posters.sublimevideo.net/video123.png',
       'z' => '640x360',
-      'd' => '10000',
-      'cs' => ['source11'],
-      's' => {
-        'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' },
-      }
+      'd' => '10000'
     } }
 
     it "delays to VideoTagUpdaterWorker with translated data" do
@@ -27,8 +23,7 @@ describe VideoTagOldDataUpdaterBridge do
         t: 'My Video',
         p: 'http://posters.sublimevideo.net/video123.png',
         d: '10000',
-        z: '640x360',
-        s: [{ u: 'http://videos.sublimevideo.net/source11.mp4', q: 'base', f: 'mp4', r: '460x340' }]
+        z: '640x360'
       })
       updater.update
     end

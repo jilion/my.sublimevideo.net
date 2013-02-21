@@ -1,4 +1,3 @@
-require 'active_support/core_ext'
 require 'video_tag_updater_worker'
 
 class VideoTagOldDataUpdaterBridge
@@ -21,9 +20,8 @@ class VideoTagOldDataUpdaterBridge
   def converted_data
     {}.tap do |hash|
       hash[:t] = old_data['n'] if title_from_attribute?
-      hash[:s] = sources if old_data['cs']
       %w[p i io d z uo].each do |attr|
-        hash[attr.to_sym] = old_data[attr] if old_data[attr].present?
+        hash[attr.to_sym] = old_data[attr] if old_data[attr]
       end
     end
   end
@@ -34,11 +32,5 @@ class VideoTagOldDataUpdaterBridge
 
   def title_from_attribute?
     old_data['no'] == 'a'
-  end
-
-  def sources
-    old_data['cs'].map do |source_crc32|
-      old_data['s'][source_crc32].symbolize_keys
-    end
   end
 end
