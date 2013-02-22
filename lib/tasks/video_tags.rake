@@ -14,4 +14,15 @@ namespace :video_tags do
       end
     end
   end
+
+  desc "Migrate video_tags attributes to visv"
+  task migrate_to_visv: :environment do
+    count = 0
+    VideoTag.all.find_each(batch_size: 100) do |video_tag|
+      VideoTagMigrator.new(video_tag).migrate
+      count += 1
+      puts "#{count} video tags migrated." if count%1000 == 0
+    end
+    puts "DOOOOONE!"
+  end
 end
