@@ -59,8 +59,8 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules TrialHandler.send_trial_will_expire_email" do
-      TrialHandler.should delay(:send_trial_will_expire_email,
+    it "schedules TrialHandler.send_trial_will_expire_emails" do
+      TrialHandler.should delay(:send_trial_will_expire_emails,
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks

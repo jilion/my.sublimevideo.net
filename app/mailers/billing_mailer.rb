@@ -83,8 +83,8 @@ class BillingMailer < Mailer
 
   def setup_kind_days_until_end_and_trial_end_date
     setup_kind
-    @days_until_end = @site.trial_days_remaining_for_billable_item(@design_or_addon_plan) || 30
-    @trial_end_date = @site.trial_end_date_for_billable_item(@design_or_addon_plan) || 30.days.from_now
+    @days_until_end = TrialHandler.new(@site).trial_days_remaining(@design_or_addon_plan) || 30
+    @trial_end_date = TrialHandler.new(@site).trial_end_date(@design_or_addon_plan) || 30.days.from_now
   end
 
 end

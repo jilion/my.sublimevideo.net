@@ -40,15 +40,15 @@ module BillableItemsHelper
   end
 
   def trial_days_remaining(site, billable_item)
-    trial_days_remaining_for_billable_item = site.trial_days_remaining_for_billable_item(billable_item)
-    case trial_days_remaining_for_billable_item
+    trial_days_remaining = TrialHandler.new(site).trial_days_remaining(billable_item)
+    case trial_days_remaining
     when 0
       'trial ended'
     when 1
       'last day of trial'
     else
       if !(billable_item.beta? || billable_item.free?)
-        "free trial – #{pluralize(trial_days_remaining_for_billable_item || 30, 'day')} remaining"
+        "free trial – #{pluralize(trial_days_remaining || BusinessModel.days_for_trial(billable_item), 'day')} remaining"
       end
     end
   end
