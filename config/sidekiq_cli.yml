@@ -12,3 +12,4 @@
   - [default, 5]
   - [high, 10]
   - [one_time, 5]
+  - [video_tags_migration, 1]

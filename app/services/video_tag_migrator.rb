@@ -3,6 +3,11 @@ require 'video_tag_updater_worker'
 class VideoTagMigrator
   attr_reader :video_tag
 
+  def self.migrate(video_tag_id)
+    video_tag = VideoTag.find(video_tag_id)
+    new(video_tag).migrate
+  end
+
   def initialize(video_tag)
     @video_tag = video_tag
   end
