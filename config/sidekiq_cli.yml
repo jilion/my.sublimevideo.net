@@ -6,10 +6,10 @@
 :require: '.'
 :timeout: 60
 :queues:
-  - [loader, 1]
-  - [low, 1]
-  - [mailer, 2]
-  - [default, 5]
-  - [high, 10]
-  - [one_time, 5]
+  - [loader, 100]
+  - [low, 100]
+  - [mailer, 200]
+  - [default, 500]
+  - [high, 1000]
+  - [one_time, 500]
   - [video_tags_migration, 1]
