@@ -23,7 +23,7 @@ namespace :video_tags do
       count += 1
       if count%1000 == 0
         puts "#{count} video tags migration delayed."
-        sleep 60 * 5
+        sleep 60
       end
     end
     puts "DOOOOONE!"
