@@ -1,6 +1,10 @@
+require 'searchable'
+
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Invoice < ActiveRecord::Base
+  include Searchable
+
   uniquify :reference, chars: Array('a'..'z') - ['o'] + Array('1'..'9')
 
   attr_accessible :site, :renew
@@ -110,13 +114,8 @@ class Invoice < ActiveRecord::Base
   scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.email #{way}") }
   scope :by_invoice_items_count, lambda { |way='desc'| order("invoices.invoice_items_count #{way}") }
 
-  def self.search(q)
-    joins(:site, :user).where{
-      (lower(user.email) =~ lower("%#{q}%")) |
-      (lower(user.name) =~ lower("%#{q}%")) |
-      (lower(site.hostname) =~ lower("%#{q}%")) |
-      (lower(reference) =~ lower("%#{q}%"))
-    }
+  def self.search(*args)
+    super(*args, ['lower(reference) =~ lower("%#{q}%")'])
   end
 
   def self.total_revenue
