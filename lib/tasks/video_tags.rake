@@ -18,7 +18,7 @@ namespace :video_tags do
   desc "Migrate video_tags attributes to visv"
   task migrate_to_visv: :environment do
     count = 0
-    VideoTag.offset(420934).select(:id).find_each do |video_tag|
+    VideoTag.where("id > 420934").select(:id).find_each do |video_tag|
       VideoTagMigrator.delay(queue: 'video_tags_migration').migrate(video_tag.id)
       count += 1
       if count%1000 == 0
