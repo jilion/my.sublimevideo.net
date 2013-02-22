@@ -62,6 +62,7 @@ FactoryGirl.define do
   factory :billable_item do
     site
     state 'subscribed'
+    item { FactoryGirl.create(:addon_plan) }
 
     factory :design_billable_item do
       item { FactoryGirl.create(:app_design) }
@@ -70,31 +71,12 @@ FactoryGirl.define do
     factory :addon_plan_billable_item do
       item { FactoryGirl.create(:addon_plan) }
     end
-
-    # factory :trial_addonship do
-    #   state 'trial'
-    #   trial_started_on { Time.now.utc.midnight }
-    # end
-
-    # factory :subscribed_addonship do
-    #   state 'subscribed'
-    # end
-
-    # factory :suspended_addonship do
-    #   state 'suspended'
-    # end
-
-    # factory :sponsored_addonship do
-    #   state 'sponsored'
-    # end
-
-    # factory :inactive_addonship do
-    #   state 'inactive'
-    # end
   end
 
   factory :billable_item_activity do
     site
+    state 'subscribed'
+    item { FactoryGirl.create(:addon_plan) }
 
     factory :design_billable_item_activity do
       item { FactoryGirl.create(:app_design) }
