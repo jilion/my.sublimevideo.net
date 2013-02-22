@@ -9,7 +9,7 @@ class AddonPlan < ActiveRecord::Base
   has_many :settings_templates, class_name: 'App::SettingsTemplate'
   has_many :sites, through: :billable_items
 
-  delegate :kind, to: :addon
+  delegate :kind, :free_plan, to: :addon
 
   after_save :clear_caches
 

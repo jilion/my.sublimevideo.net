@@ -46,6 +46,10 @@ class App::Design < ActiveRecord::Base
   def title
     I18n.t("app_designs.#{name}")
   end
+  
+  def free_plan
+    nil
+  end
 
 end
 
