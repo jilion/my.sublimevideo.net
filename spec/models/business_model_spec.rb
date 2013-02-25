@@ -29,6 +29,10 @@ describe BusinessModel do
   end
 
   describe 'self.days_before_trial_end' do
+    before do
+      described_class.stub(new_trial_date: Time.utc(2013, 2, 26, 18))
+    end
+
     context 'with no billable item activity given' do
       specify { described_class.days_before_trial_end.should eq [2] }
     end
