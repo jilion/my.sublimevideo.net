@@ -8,14 +8,14 @@ describe BillingMailer do
 
   describe "specific checks" do
     let(:user)          { create(:user, cc_expire_on: 1.day.from_now) }
-    let(:site)          { create(:site, user: user, trial_started_at: 8.days.ago) }
+    let(:site)          { create(:site, user: user) }
     let(:invoice)       { create(:invoice) }
     let(:transaction)   { create(:transaction, invoices: [invoice]) }
     let(:billable_item) { create(:addon_plan_billable_item, site: site, state: 'trial') }
 
     describe "#trial_will_expire" do
       before do
-        create(:billable_item_activity, state: 'trial', item: billable_item.item, site: site, created_at: BusinessModel.days_for_trial.days.ago)
+        create(:billable_item_activity, state: 'trial', item: billable_item.item, site: site, created_at: BusinessModel.days_for_trial_old.days.ago)
       end
 
       context 'user has a credit card' do
@@ -25,9 +25,9 @@ describe BillingMailer do
           Capybara.app_host = "http://my.sublimevideo.dev"
         end
 
-        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
-        it { last_delivery.body.encoded.should include "Dear #{user.name}," }
-        it { last_delivery.body.encoded.should include I18n.l(TrialHandler.new(site).trial_end_date(billable_item.item).tomorrow, format: :named_date) }
+        it { last_delivery.subject.should               eq I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
+        it { last_delivery.body.encoded.should     include "Dear #{user.name}," }
+        it { last_delivery.body.encoded.should     include I18n.l(TrialHandler.new(site).trial_end_date(billable_item.item).tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }
       end
 
@@ -39,7 +39,7 @@ describe BillingMailer do
           Capybara.app_host = "http://my.sublimevideo.dev"
         end
 
-        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
+        it { last_delivery.subject.should           eq I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should include I18n.l(TrialHandler.new(site).trial_end_date(billable_item.item).tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
@@ -52,7 +52,7 @@ describe BillingMailer do
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_has_expired', addon: "#{billable_item.item.title} add-on", count: 1) }
+      it { last_delivery.subject.should           eq I18n.t('mailer.billing_mailer.trial_has_expired', addon: "#{billable_item.item.title} add-on", count: 1) }
       it { last_delivery.body.encoded.should include "Dear #{user.name}," }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{site.to_param}/addons" }
     end

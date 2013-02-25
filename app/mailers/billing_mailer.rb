@@ -8,7 +8,9 @@ class BillingMailer < Mailer
   def trial_will_expire(billable_item_id)
     extract_site_and_user_from_billable_item_id(billable_item_id)
     @design_or_addon_plan = @billable_item.item
-    setup_kind_days_until_end_and_trial_end_date
+    setup_kind
+    setup_days_until_end
+    setup_trial_end_date
 
     key = case @days_until_end
     when 0
@@ -81,10 +83,12 @@ class BillingMailer < Mailer
     @kind = @design_or_addon_plan.is_a?(App::Design) ? 'player design' : 'add-on'
   end
 
-  def setup_kind_days_until_end_and_trial_end_date
-    setup_kind
-    @days_until_end = TrialHandler.new(@site).trial_days_remaining(@design_or_addon_plan) || 30
-    @trial_end_date = TrialHandler.new(@site).trial_end_date(@design_or_addon_plan) || 30.days.from_now
+  def setup_days_until_end
+    @days_until_end = TrialHandler.new(@site).trial_days_remaining(@design_or_addon_plan) || BusinessModel.days_for_trial
+  end
+
+  def setup_trial_end_date
+    @trial_end_date = TrialHandler.new(@site).trial_end_date(@design_or_addon_plan) || BusinessModel.days_for_trial.days.from_now
   end
 
 end
