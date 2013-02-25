@@ -54,7 +54,6 @@ class Site < ActiveRecord::Base
   belongs_to :default_kit, class_name: 'Kit'
   belongs_to :plan # legacy
   belongs_to :user
-  has_many :video_tags
 
   # Invoices
   has_many :invoices, class_name: '::Invoice'

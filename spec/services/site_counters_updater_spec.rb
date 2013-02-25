@@ -58,16 +58,12 @@ describe SiteCountersUpdater do
     end
   end
 
-  describe '#update_last_30_days_video_tags_counters' do
+  describe '#update_last_30_days_video_tags_counters', :focus do
     let(:site) { create(:site) }
 
     it 'updates site video tags counter from the last 30 days' do
-      create(:video_tag, site: site)
-      create(:video_tag, site: site)
-      create(:video_tag, site: site, updated_at: 31.days.ago.midnight)
-
+      VideoTag.should_receive(:count).with(_site_token: site.token, last_30_days_active: true) { 2 }
       described_class.new(site).update_last_30_days_video_tags_counters
-
       site.reload.last_30_days_video_tags.should eq 2
     end
   end

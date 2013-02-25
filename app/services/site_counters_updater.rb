@@ -26,7 +26,8 @@ class SiteCountersUpdater
   end
 
   def update_last_30_days_video_tags_counters
-    site.update_column(:last_30_days_video_tags, site.video_tags.last_30_days_active.count)
+    count = VideoTag.count(_site_token: site.token, last_30_days_active: true)
+    site.update_column(:last_30_days_video_tags, count)
   end
 
   def update_last_30_days_video_views_counters
