@@ -40,7 +40,7 @@ class VideoTagOldDataUpdaterBridge
   end
 
   def first_source_present?
-    data['cs'] && data['s'][data['cs'].first]
+    data['cs'] && data['cs'].first && data['s'][data['cs'].first]
   end
 
   def sources_id_present?
