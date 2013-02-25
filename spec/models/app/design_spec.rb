@@ -36,11 +36,6 @@ describe App::Design do
     it { described_class.paid.all.should eq [@paid] }
   end
 
-  describe '#not_custom?' do
-    it { create(:app_design, availability: 'public').should be_not_custom }
-    it { create(:app_design, availability: 'custom').should_not be_not_custom }
-  end
-
   describe '#available_for_subscription?' do
     let(:site) { create(:site) }
     let(:custom_app_design) { create(:app_design, availability: 'custom') }
@@ -53,18 +48,6 @@ describe App::Design do
 
       it { custom_app_design.available_for_subscription?(site).should be_true }
     end
-  end
-
-  describe '#beta?' do
-    it { build(:app_design, stable_at: nil).should be_beta }
-    it { build(:app_design, stable_at: Time.now).should_not be_beta }
-  end
-
-  describe '#free?' do
-    it { build(:app_design, stable_at: nil, price: 0).should be_free }
-    it { build(:app_design, stable_at: nil, price: 10).should_not be_free }
-    it { build(:app_design, stable_at: Time.now, price: 0).should be_free }
-    it { build(:app_design, stable_at: Time.now, price: 10).should_not be_free }
   end
 end
 
