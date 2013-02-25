@@ -15,10 +15,9 @@ class ExitBetaHandler
 
     site.billable_items.state('beta').each do |subscription|
       trial_handler = TrialHandler.new(site)
-      next unless trial_handler.out_of_trial?(subscription.item)
 
       key = subscription.item_type.demodulize.tableize.to_sym
-      subscriptions[key][subscription.item_parent_name] = if !trial_handler.out_of_trial?(subscription.item) || site.user.cc?
+      subscriptions[key][subscription.item_parent_name] = if subscription.free? || !trial_handler.out_of_trial?(subscription.item) || site.user.cc?
         subscription.item.id
       else
         emails << { item_class: subscription.item_type, item_id: subscription.item.id }
