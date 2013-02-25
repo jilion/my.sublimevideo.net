@@ -58,7 +58,7 @@ describe SiteCountersUpdater do
     end
   end
 
-  describe '#update_last_30_days_video_tags_counters', :focus do
+  describe '#update_last_30_days_video_tags_counters' do
     let(:site) { create(:site) }
 
     it 'updates site video tags counter from the last 30 days' do
