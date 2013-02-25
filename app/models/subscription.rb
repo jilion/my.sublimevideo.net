@@ -39,4 +39,17 @@ module Subscription
   module ClassMethods
   end
 
+  def item_parent_name
+    item.respond_to?(:addon) ? item.addon.name : item.name
+  end
+
+  def free?
+    item.price.zero?
+  end
+
+  private
+
+  def item_parent_kind
+    item.is_a?(App::Design) ? 'design' : item.addon.name
+  end
 end

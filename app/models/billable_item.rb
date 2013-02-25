@@ -27,22 +27,10 @@ class BillableItem < ActiveRecord::Base
     increment_librato(state: 'canceled')
   end
 
-  def item_parent_name
-    item.respond_to?(:addon) ? item.addon.name : item.name
-  end
-
   private
 
-  def item_parent_kind
-    item.is_a?(App::Design) ? 'design' : item.addon.name
-  end
-
-  def free_item?
-    item.price.zero?
-  end
-
   def increment_librato(options = {})
-    source = "#{free_item? ? 'free' : 'paid'}.#{item_parent_kind}-#{item.name}"
+    source = "#{free? ? 'free' : 'paid'}.#{item_parent_kind}-#{item.name}"
     Librato.increment "addons.#{options[:state] || state}", source: source
   end
 end
