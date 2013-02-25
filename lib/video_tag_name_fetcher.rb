@@ -1,7 +1,8 @@
-VideoTagNameFetcher = Struct.new(:video_tag) do
+class VideoTagNameFetcher
+  attr_reader :video_tag
 
-  def initialize(*args)
-    super
+  def initialize(video_tag)
+    @video_tag = video_tag
     fetch
   end
 
@@ -27,4 +28,4 @@ VideoTagNameFetcher = Struct.new(:video_tag) do
     end
   end
 
-end unless defined? VideoTagNameFetcher
+end

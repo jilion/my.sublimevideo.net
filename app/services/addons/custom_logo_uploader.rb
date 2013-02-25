@@ -6,29 +6,22 @@ module Addons
 
     MAX_SIZE = '"400x400>"'
     attr_reader :kit, :custom_logo, :old_custom_logo_path
-    attr_accessor :file, :cdn_file
 
     delegate :site, to: :kit
-    delegate :delete!, :present?, to: :cdn_file
+    delegate :upload!, :delete!, :present?, to: :cdn_file
 
     def initialize(kit, custom_logo, old_custom_logo_path = nil)
       @kit                  = kit
       @custom_logo          = custom_logo
       @old_custom_logo_path = old_custom_logo_path
-      @cdn_file = CDNFile.new(
-        file.path,
-        destination,
-        s3_options
-      )
-    end
-
-    def upload!
-      # CDNFile.new(nil, destinations(old_custom_logo_path), s3_options).delete!
-      @cdn_file.upload!
     end
 
     def file
       @file ||= generate_file
+    end
+
+    def cdn_file
+      @cdn_file ||= CDNFile.new(file, path, s3_headers)
     end
 
     def width
@@ -49,8 +42,8 @@ module Addons
       end
     end
 
-    def current_path
-      @current_path ||= "a/#{site.token}/#{kit.identifier}/logo-custom-#{width}x#{height}-#{Time.now.to_i}@2x.png"
+    def path
+      @path ||= "a/#{site.token}/#{kit.identifier}/logo-custom-#{width}x#{height}-#{Time.now.to_i}@2x.png"
     end
 
     private
@@ -68,11 +61,7 @@ module Addons
       processed_file
     end
 
-    def destination(path = current_path)
-      { bucket: S3Wrapper.buckets['sublimevideo'], path: path }
-    end
-
-    def s3_options
+    def s3_headers
       {
         'Cache-Control' => 's-maxage=7200, max-age=3600, public', # 2 hours / 1 hour
         'Content-Type'  => 'image/png',

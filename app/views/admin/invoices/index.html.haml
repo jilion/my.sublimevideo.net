@@ -1,13 +1,6 @@
 = title_and_content_header(admin_invoices_page_title(@invoices))
 
 %h3.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
-%h4.revenue= "Date range revenue: #{display_amount(Invoice.between(created_at: range_start_date..range_end_date).total_revenue)}"
-
-= render '/admin/shared/date_chooser'
-
-#timeline
-  - cache "invoices_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}_#{moving_average_length.to_i}", expires_in: (Time.now.utc.end_of_day - Time.now.utc) do
-    = render 'timeline'
 
 .search_form
   = form_tag [:admin, :invoices], method: :get, id: 'search_form' do

@@ -26,7 +26,6 @@ MySublimeVideo::Application.routes.draw do
 
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
-  match '/admin(/*rest)' => redirect { |params, req| "#{https_if_prod_or_staging}://admin.#{req.domain}/#{params[:rest]}" }
 
   namespace 'api' do
     # Legacy routes
@@ -45,7 +44,7 @@ MySublimeVideo::Application.routes.draw do
   scope module: 'api', as: 'api' do
     constraints SubdomainConstraint.new('api') do
 
-      match 'test_request' => 'apis#test_request'
+      get 'test_request' => 'apis#test_request'
       resources :sites, only: [:index, :show] do
         member do
           get :usage
@@ -78,6 +77,10 @@ MySublimeVideo::Application.routes.draw do
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do
+          get :stats
+          get :videos_infos
+          get :invoices
+          get :active_pages
           put :update_app_design_subscription
           put :update_addon_plan_subscription
         end
@@ -92,6 +95,9 @@ MySublimeVideo::Application.routes.draw do
       resources :users, only: [:index, :show, :edit, :update] do
         member do
           get :become
+          get :stats
+          get :invoices
+          get :support_requests
           get :new_support_request
           delete :oauth_revoke
         end
@@ -144,8 +150,6 @@ MySublimeVideo::Application.routes.draw do
         resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'
         resources :mail_logs,      only: [:show],                         path: 'logs'
       end
-
-      resources :releases, only: [:index, :create, :update]
 
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'
       namespace :app do

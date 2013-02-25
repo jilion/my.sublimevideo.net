@@ -1,0 +1,6 @@
+%h4= "Active (#{user.sites.active.size})"
+%ul= render(partial: 'li_site', collection: user.sites.active, as: :site)
+%h4= "Suspended (#{user.sites.suspended.size})"
+%ul= render(partial: 'li_site', collection: user.sites.suspended, as: :site)
+%h4= "Archived (#{user.sites.archived.size})"
+%ul= render(partial: 'li_site', collection: user.sites.archived, as: :site)

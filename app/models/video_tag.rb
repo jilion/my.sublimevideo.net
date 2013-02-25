@@ -38,7 +38,7 @@ class VideoTag < ActiveRecord::Base
   end
 
   def uid=(attribute)
-    write_attribute :uid, attribute.try(:to, 254)
+    write_attribute :uid, attribute.to_s.try(:to, 254)
   end
 
   def name=(attribute)
@@ -46,7 +46,7 @@ class VideoTag < ActiveRecord::Base
   end
 
   def duration=(attribute)
-    duration = attribute.to_i > 2147483647 ? 2147483647 : attribute.to_i
+    duration = attribute.to_i.in?(0..2147483647) ? attribute.to_i : nil
     write_attribute :duration, duration
   end
 

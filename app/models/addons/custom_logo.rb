@@ -1,11 +1,17 @@
 require 'active_model'
 
 module Addons
-  CustomLogo = Struct.new(:file) do
+  class CustomLogo
     include ActiveModel::Validations
+
+    attr_reader :file
 
     validates :file, presence: true
     validate :content_type
+
+    def initialize(file)
+      @file = file
+    end
 
     def content_type
       unless file.content_type == 'image/png'

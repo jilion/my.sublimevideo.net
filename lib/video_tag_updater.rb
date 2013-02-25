@@ -1,7 +1,8 @@
 require_dependency 'video_tag_sources_analyzer'
 require_dependency 'video_tag_name_fetcher'
 
-VideoTagUpdater = Struct.new(:video_tag) do
+class VideoTagUpdater
+  attr_reader :video_tag
 
   def self.update(site_token, uid, data)
     return unless site = Site.where(token: site_token).first
@@ -14,6 +15,10 @@ VideoTagUpdater = Struct.new(:video_tag) do
   def self.update_name(video_tag_id)
     video_tag = VideoTag.find(video_tag_id)
     new(video_tag).update_name
+  end
+
+  def initialize(video_tag)
+    @video_tag = video_tag
   end
 
   def update(data)
@@ -100,4 +105,4 @@ private
     end
   end
 
-end unless defined? VideoTagUpdater
+end

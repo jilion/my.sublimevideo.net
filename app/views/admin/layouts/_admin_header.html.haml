@@ -52,8 +52,7 @@
 
     - if has_role?('player')
       %ul.favorite_links
-        %li= link_to "Player", [:admin, :releases]
-        %li= link_to "New Player", [:admin, :app]
+        %li= link_to "Player", [:admin, :app]
 
   .right
     %ul.extra_links

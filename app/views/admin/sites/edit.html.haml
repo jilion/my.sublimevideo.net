@@ -3,21 +3,33 @@
 
 = render 'admin/shared/tags', object: @site
 %br
+%hr
+%br
 
 = render 'basic_info', site: @site
+%br
+%hr
 %br
 
 = render 'settings', site: @site
 %br
+%hr
+%br
 
-= render 'videos_infos', site: @site
+#videos_infos
+  %h3= link_to 'View videos infos', videos_infos_admin_site_path(@site), data: { remote: true }
+%br
+%hr
+%br
 
-= render 'admin/shared/date_chooser'
-%br.spacer
-= render 'timeline_usage', site: @site
+#stats= render 'stats', site: @site
+%br
+%hr
 %br
 
 = render 'kits', site: @site
+%br
+%hr
 %br
 
 - if has_role?('god')
@@ -28,14 +40,19 @@
 
 #billable_items= render 'billable_items', site: @site
 #billable_items_activities= render 'billable_items_activities', site: @site
-
-- if has_role?('invoices')
-  %h3 Invoices
-  = render 'admin/shared/invoices', object: @site
+%br
+%hr
 %br
 
-= render 'referrers_table', site: @site
+- if has_role?('invoices')
+  #invoices
+    %h3= link_to 'View invoices', invoices_admin_site_path(@site), data: { remote: true }
+%br
+%hr
+%br
 
+#active_pages
+  %h3= link_to 'View active pages', active_pages_admin_site_path(@site), data: { remote: true }
 %br
 %hr
 %br
@@ -47,9 +64,7 @@
     = f.select :accessible_stage, Stage.stages
     = f.submit "Update accessible stage", data: { confirm: "Are you sure?" }
   %br
-
-%br
-%hr
-%br
+  %hr
+  %br
 
 %p= link_to "Back to sites", [:admin, :sites]

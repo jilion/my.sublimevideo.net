@@ -213,6 +213,10 @@ describe Log::Voxcast do
         @log.should_receive(:trackers).with('VoxcastVideoTagsLogFileFormat', title: :video_tags) { video_tags_trackers }
         VideoTagTrackersParser.should_receive(:extract_video_tags_data).with(video_tags_trackers) { video_tags_data }
         VideoTagUpdater.should delay(:update).with('site_token', 'uid', { 'video' => 'data' })
+        VideoTagOldDataUpdaterBridge.should_receive(:new).with('site_token', 'uid', { 'video' => 'data' }) { |mock|
+          mock.should_receive(:update)
+          mock
+        }
         @log.parse_and_create_video_tags!
       end
 

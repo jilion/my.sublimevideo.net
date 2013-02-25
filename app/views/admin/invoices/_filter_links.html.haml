@@ -3,10 +3,8 @@
   |
   = link_to "#{content_tag(:strong, Invoice.paid.count)} Paid".html_safe, admin_invoices_path(paid: true), remote: true, class: 'remote'
   |
+  = link_to "#{content_tag(:strong, Invoice.failed.count)} Failed".html_safe, admin_invoices_path(failed: true), remote: true, class: 'remote'
+  |
   = link_to "#{content_tag(:strong, Invoice.open.count)} Open".html_safe, admin_invoices_path(open: true), remote: true, class: 'remote'
   |
   = link_to "#{content_tag(:strong, Invoice.waiting.count)} Waiting".html_safe, admin_invoices_path(waiting: true), remote: true, class: 'remote'
-  |
-  = link_to "#{content_tag(:strong, Invoice.refunded.count)} Refunded".html_safe, admin_invoices_path(refunded: true), remote: true, class: 'remote'
-  |
-  = link_to "#{content_tag(:strong, Invoice.failed.count)} Failed".html_safe, admin_invoices_path(failed: true), remote: true, class: 'remote'

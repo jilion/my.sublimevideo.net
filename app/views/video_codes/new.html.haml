@@ -3,7 +3,6 @@
 .big_break
 
 #video_code
-  = beta_loader_required(@site)
   %h3.assistant_title Publish a video
   = form_tag url_for, id: 'video_code_form' do
     = render 'video_codes/form', site: @site, get_code_button: true

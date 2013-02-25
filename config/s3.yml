@@ -3,8 +3,6 @@ development:
   secret_access_key: xJtl+EZj67FLsele0jlI0hYuth743MFciqQWq1se
   buckets:
     sublimevideo:                dev.sublimevideo
-    licenses:                    dev.sublimevideo.licenses
-    loaders:                     dev.sublimevideo.loaders
     player:                      dev.sublimevideo.player
     logs:                        dev.sublimevideo.logs
     stats_exports:               dev.sublimevideo.stats.exports
@@ -16,8 +14,6 @@ test:
   secret_access_key: xJtl+EZj67FLsele0jlI0hYuth743MFciqQWq1se
   buckets:
     sublimevideo:                dev.sublimevideo
-    licenses:                    dev.sublimevideo.licenses
-    loaders:                     dev.sublimevideo.loaders
     player:                      dev.sublimevideo.player
     logs:                        dev.sublimevideo.logs
     stats_exports:               dev.sublimevideo.stats.exports
@@ -29,8 +25,6 @@ staging:
   secret_access_key: xJtl+EZj67FLsele0jlI0hYuth743MFciqQWq1se
   buckets:
     sublimevideo:                staging.sublimevideo
-    licenses:                    staging.sublimevideo.licenses
-    loaders:                     staging.sublimevideo.loaders
     player:                      staging.sublimevideo.player
     logs:                        staging.sublimevideo.logs
     stats_exports:               staging.sublimevideo.stats.exports
@@ -42,8 +36,6 @@ production:
   secret_access_key: env_var
   buckets:
     sublimevideo:                sublimevideo
-    licenses:                    sublimevideo.licenses
-    loaders:                     sublimevideo.loaders
     player:                      sublimevideo.player
     logs:                        sublimevideo.logs
     stats_exports:               sublimevideo.stats.exports

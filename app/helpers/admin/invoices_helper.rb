@@ -5,7 +5,7 @@ module Admin::InvoicesHelper
     state = if params[:user_id]
       user = User.find(params[:user_id])
       " for user #{user.name_or_email}" if user
-    elsif state = %w[paid open waiting refunded failed].detect { |state| params.key?(state) }
+    elsif state = %w[paid open waiting failed].detect { |state| params.key?(state) }
       " #{state}"
     elsif params[:search].present?
       " matching '#{params[:search]}'"
