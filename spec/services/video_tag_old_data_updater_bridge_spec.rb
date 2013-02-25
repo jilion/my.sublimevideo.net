@@ -44,8 +44,56 @@ describe VideoTagOldDataUpdaterBridge do
     end
   end
 
-  context "with uid from source" do
-    let(:old_data) { { 'uo' => 's' } }
+  context "with uid from source and first source url" do
+    let(:old_data) { {
+      'uo' => 's', 'n' => 'My Video', 'no' => 'a',
+      'i' => nil,
+      'io' => nil,
+      'cs' => ['source1', 'source2'],
+      's' => {
+        'source1' => { 'u' => "http://source1.com", 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' }
+      }
+    } }
+
+    it "delays to VideoTagUpdaterWorker with translated data" do
+      VideoTagUpdaterWorker.should_receive(:perform_async).with(site_token, uid, {
+        uo: 's',
+        t: 'My Video',
+        s: [
+          { 'u' => "http://source1.com", 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' }
+        ]
+      })
+      updater.update
+    end
+  end
+
+  context "with uid from source and youtube video" do
+    let(:old_data) { {
+      'uo' => 's',
+      'i' => 'youtube_id',
+      'io' => 'y'
+    } }
+
+    it "delays to VideoTagUpdaterWorker with translated data" do
+      VideoTagUpdaterWorker.should_receive(:perform_async).with(site_token, uid, {
+        uo: 's',
+        i: 'youtube_id',
+        io: 'y'
+      })
+      updater.update
+    end
+  end
+
+  context "with uid from source and not first source url" do
+    let(:old_data) { {
+      'uo' => 's', 'n' => 'My Video', 'no' => 'a',
+      'i' => nil,
+      'io' => nil,
+      'cs' => ['source1', 'source2'],
+      's' => {
+        'source2' => { 'u' => "http://source1.com", 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' }
+      }
+    } }
 
     it "doesn't delays to VideoTagUpdaterWorker" do
       VideoTagUpdaterWorker.should_not_receive(:perform_async)
