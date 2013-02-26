@@ -5,7 +5,7 @@ require 'models/business_model'
 describe BusinessModel do
 
   describe 'self.new_trial_date' do
-    specify { described_class.new_trial_date.should eq Time.utc(2013, 2, 27, 18) }
+    specify { described_class.new_trial_date.should eq Time.utc(2013, 2, 27, 16) } # 5pm EST
   end
 
   describe 'self.days_for_trial' do

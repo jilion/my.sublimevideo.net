@@ -295,19 +295,19 @@ describe Site, :addons do
           site.suspend!
 
           site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'suspended').should have(1).item
+          site.billable_items.with_item(@classic_design)            .state('suspended').should have(1).item
+          site.billable_items.with_item(@flat_design)               .state('suspended').should have(1).item
+          site.billable_items.with_item(@light_design)              .state('suspended').should have(1).item
+          site.billable_items.with_item(@video_player_addon_plan_1) .state('suspended').should have(1).item
+          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('suspended').should have(1).item
+          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('suspended').should have(1).item
+          site.billable_items.with_item(@stats_addon_plan_1)        .state('suspended').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_1)         .state('suspended').should have(1).item
+          site.billable_items.with_item(@controls_addon_plan_1)     .state('suspended').should have(1).item
+          site.billable_items.with_item(@initial_addon_plan_1)      .state('suspended').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_1)        .state('suspended').should have(1).item
+          site.billable_items.with_item(@api_addon_plan_1)          .state('suspended').should have(1).item
+          site.billable_items.with_item(@support_addon_plan_1)      .state('suspended').should have(1).item
         end
 
         it "increments metrics" do
@@ -334,19 +334,19 @@ describe Site, :addons do
           site.unsuspend!
 
           site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
+          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
+          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
+          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_1)         .state('subscribed').should have(1).item
+          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
+          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end
       end
 
@@ -362,7 +362,7 @@ describe Site, :addons do
 
         it 'unsuspend all billable items' do
           site.reload.billable_items.should have(13).items
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_2).state('trial').should have(1).item
 
           site.suspend!
 
@@ -371,19 +371,19 @@ describe Site, :addons do
           site.unsuspend!
 
           site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
+          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
+          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
+          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_2)         .state('trial').should have(1).item
+          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
+          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end
       end
     end
