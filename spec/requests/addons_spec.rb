@@ -125,19 +125,19 @@ feature 'Choose add-ons' do
     page.should have_content 'Your add-ons selection has been confirmed.'
 
     @site.reload.billable_items.should have(13).items
-    @site.billable_items.app_designs.with_item(@classic_design)           .state('subscribed').should have(1).item
-    @site.billable_items.app_designs.with_item(@flat_design)              .state('subscribed').should have(1).item
-    @site.billable_items.app_designs.with_item(@light_design)             .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_items.addon_plans.with_item(@logo_addon_plan_2)        .state('trial').should have(1).item
+    @site.billable_items.with_item(@classic_design)           .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@flat_design)              .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@light_design)             .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
+    @site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
+    @site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@logo_addon_plan_2)        .state('trial').should have(1).item
 
     @site.billable_item_activities.should have(13 + 2).items
     @site.billable_item_activities.with_item(@classic_design)           .state('subscribed').should have(1).item

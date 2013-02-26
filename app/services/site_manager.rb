@@ -144,7 +144,7 @@ class SiteManager
     when '0'
       cancel_design(design)
     else
-      if billable_item = site.billable_items.app_designs.where(item_id: design.id).first
+      if billable_item = site.billable_items.with_item(design).first
         update_billable_item_state!(billable_item, options)
       elsif design.not_custom? || options[:allow_custom]
         build_subscription(design, options)
@@ -163,7 +163,7 @@ class SiteManager
 
       cancel_addon(addon, except_addon_plan: addon_plan)
 
-      if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
+      if billable_item = site.billable_items.with_item(addon_plan).first
         update_billable_item_state!(billable_item, options)
       elsif addon_plan.not_custom? || options[:allow_custom]
         build_subscription(addon_plan, options)
@@ -172,7 +172,7 @@ class SiteManager
   end
 
   def cancel_design(design)
-    site.billable_items.app_designs.where(item_id: design.id).destroy_all
+    site.billable_items.with_item(design).destroy_all
   end
 
   def cancel_addon(addon, options = {})

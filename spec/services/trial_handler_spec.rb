@@ -168,30 +168,20 @@ describe TrialHandler do
         it 'delegates to SiteManager#update_billable_items with the app designs and addon plans IDs' do
           described_class.new(site1).activate_billable_items_out_of_trial
 
-          design_billable_items = site1.billable_items.app_designs
-          addon_billable_items  = site1.billable_items.addon_plans
-
           site1.reload.billable_items.should have(4).items
-          design_billable_items.with_item(design_paid1).where(state: 'trial').should have(1).item
-          design_billable_items.with_item(design_paid2).where(state: 'subscribed').should have(1).item
-          addon_billable_items.with_item(addon_plan_paid1).where(state: 'subscribed').should have(1).item
-          addon_billable_items.with_item(addon_plan_paid2).where(state: 'subscribed').should have(1).item
-
-
-          design_billable_item_activities = site1.billable_item_activities.app_designs
-          addon_billable_item_activities  = site1.billable_item_activities.addon_plans
+          site1.billable_items.with_item(design_paid1)    .state('trial').should have(1).item
+          site1.billable_items.with_item(design_paid2)    .state('subscribed').should have(1).item
+          site1.billable_items.with_item(addon_plan_paid1).state('subscribed').should have(1).item
+          site1.billable_items.with_item(addon_plan_paid2).state('subscribed').should have(1).item
 
           site1.billable_item_activities.should have(4 + 3).items
-          site1.billable_item_activities.app_designs.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          site1.billable_item_activities.app_designs.where(item_id: design_paid2).where(state: 'trial').should have(1).item
-          site1.billable_item_activities.app_designs.where(item_id: design_paid2).where(state: 'subscribed').should have(1).item
-
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'subscribed').should have(1).item
-
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid2).where(state: 'trial').should have(1).item
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid2).where(state: 'subscribed').should have(1).item
+          site1.billable_item_activities.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('subscribed').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid1).state('subscribed').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid2).state('subscribed').should have(1).item
         end
       end
 
@@ -205,30 +195,19 @@ describe TrialHandler do
 
           described_class.new(site1).activate_billable_items_out_of_trial
 
-          design_billable_items = site1.billable_items.app_designs
-          addon_billable_items  = site1.billable_items.addon_plans
-
           site1.reload.billable_items.should have(2).items
-          design_billable_items.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          addon_billable_items.where(item_id: free_addon_plan).where(state: 'subscribed').should have(1).item
-
-
-          design_billable_item_activities = site1.billable_item_activities.app_designs
-          addon_billable_item_activities  = site1.billable_item_activities.addon_plans
+          site1.billable_items.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_items.with_item(free_addon_plan).state('subscribed').should have(1).item
 
           site1.reload.billable_item_activities.should have(4 + 4).item
-          design_billable_item_activities.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          design_billable_item_activities.where(item_id: design_paid2).where(state: 'trial').should have(1).item
-          design_billable_item_activities.where(item_id: design_paid2).where(state: 'canceled').should have(1).item
-
-          addon_billable_item_activities.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
-          addon_billable_item_activities.where(item_id: addon_plan_paid1).where(state: 'canceled').should have(1).item
-          addon_billable_item_activities.where(item_id: free_addon_plan).where(state: 'subscribed').should have(1).item
-
-          addon_billable_item_activities.where(item_id: addon_plan_paid2).where(state: 'trial').should have(1).item
-          addon_billable_item_activities.where(item_id: addon_plan_paid2).where(state: 'canceled').should have(1).item
+          site1.billable_item_activities.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('canceled').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid1).state('canceled').should have(1).item
+          site1.billable_item_activities.with_item(free_addon_plan).state('subscribed').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid2).state('canceled').should have(1).item
         end
 
         context 'an issue occurs' do
@@ -272,33 +251,20 @@ describe TrialHandler do
         it 'delegates to SiteManager#update_billable_items with the app designs and addon plans IDs' do
           described_class.new(site1).activate_billable_items_out_of_trial
 
-          design_billable_items = site1.billable_items.app_designs
-          addon_billable_items  = site1.billable_items.addon_plans
-
           site1.reload.billable_items.should have(4).items
-          design_billable_items.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          design_billable_items.where(item_id: design_paid2).where(state: 'subscribed').should have(1).item
-
-          addon_billable_items.where(item_id: addon_plan_paid1).where(state: 'subscribed').should have(1).item
-
-          addon_billable_items.where(item_id: addon_plan_paid2).where(state: 'subscribed').should have(1).item
-
-
-          design_billable_item_activities = site1.billable_item_activities.app_designs
-          addon_billable_item_activities  = site1.billable_item_activities.addon_plans
+          site1.billable_items.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_items.with_item(design_paid2).state('subscribed').should have(1).item
+          site1.billable_items.with_item(addon_plan_paid1).state('subscribed').should have(1).item
+          site1.billable_items.with_item(addon_plan_paid2).state('subscribed').should have(1).item
 
           site1.billable_item_activities.should have(4 + 3).items
-          site1.billable_item_activities.app_designs.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          site1.billable_item_activities.app_designs.where(item_id: design_paid2).where(state: 'trial').should have(1).item
-          site1.billable_item_activities.app_designs.where(item_id: design_paid2).where(state: 'subscribed').should have(1).item
-
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'subscribed').should have(1).item
-
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid2).where(state: 'trial').should have(1).item
-          site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid2).where(state: 'subscribed').should have(1).item
+          site1.billable_item_activities.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('subscribed').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid1).state('subscribed').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(addon_plan_paid2).state('subscribed').should have(1).item
         end
       end
 
@@ -312,30 +278,19 @@ describe TrialHandler do
 
           described_class.new(site1).activate_billable_items_out_of_trial
 
-          design_billable_items = site1.billable_items.app_designs
-          addon_billable_items  = site1.billable_items.addon_plans
-
           site1.reload.billable_items.should have(2).items
-          design_billable_items.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          addon_billable_items.where(item_id: free_addon_plan).where(state: 'subscribed').should have(1).item
-
-
-          design_billable_item_activities = site1.billable_item_activities.app_designs
-          addon_billable_item_activities  = site1.billable_item_activities.addon_plans
+          site1.billable_items.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_items.with_item(free_addon_plan).state('subscribed').should have(1).item
 
           site1.reload.billable_item_activities.should have(4 + 4).item
-          design_billable_item_activities.where(item_id: design_paid1).where(state: 'trial').should have(1).item
-
-          design_billable_item_activities.where(item_id: design_paid2).where(state: 'trial').should have(1).item
-          design_billable_item_activities.where(item_id: design_paid2).where(state: 'canceled').should have(1).item
-
-          addon_billable_item_activities.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
-          addon_billable_item_activities.where(item_id: addon_plan_paid1).where(state: 'canceled').should have(1).item
-          addon_billable_item_activities.where(item_id: free_addon_plan).where(state: 'subscribed').should have(1).item
-
-          addon_billable_item_activities.where(item_id: addon_plan_paid2).where(state: 'trial').should have(1).item
-          addon_billable_item_activities.where(item_id: addon_plan_paid2).where(state: 'canceled').should have(1).item
+          site1.billable_item_activities.with_item(design_paid1).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('trial').should have(1).item
+          site1.billable_item_activities.with_item(design_paid2).state('canceled').should have(1).item
+          site1.reload.billable_item_activities.with_item(addon_plan_paid1).state('trial').should have(1).item
+          site1.reload.billable_item_activities.with_item(addon_plan_paid1).state('canceled').should have(1).item
+          site1.reload.billable_item_activities.with_item(free_addon_plan).state('subscribed').should have(1).item
+          site1.reload.billable_item_activities.with_item(addon_plan_paid2).state('trial').should have(1).item
+          site1.reload.billable_item_activities.with_item(addon_plan_paid2).state('canceled').should have(1).item
         end
 
         context 'an issue occurs' do

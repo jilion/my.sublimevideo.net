@@ -1,8 +1,8 @@
 class EmailsPopulator < Populator
 
   def execute(user)
-    trial_design        = user.billable_items.app_designs.where(state: 'trial').first || user.billable_items.app_designs.first
-    trial_addon_plan    = user.billable_items.addon_plans.where(state: 'trial').first || user.billable_items.addon_plans.first
+    trial_design        = user.billable_items.app_designs.state('trial').first || user.billable_items.app_designs.first
+    trial_addon_plan    = user.billable_items.addon_plans.state('trial').first || user.billable_items.addon_plans.first
     site                = user.sites.paying.last || user.sites.last
     invoice             = site.invoices.not_paid.last || InvoiceCreator.build(site: site).tap { |s| s.save }.invoice
     transaction         = invoice.transactions.last || Transaction.create!(invoices: [invoice])

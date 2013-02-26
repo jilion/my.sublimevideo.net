@@ -366,7 +366,7 @@ describe Site, :addons do
 
           site.suspend!
 
-          site.reload.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.reload.billable_items.with_item(@logo_addon_plan_2).state('suspended').should have(1).item
 
           site.unsuspend!
 
