@@ -1,7 +1,6 @@
 require 'findable_and_cached'
 
-class App::Design < ActiveRecord::Base
-  include BillableEntity
+class App::Design < BillableEntity
   include FindableAndCached
 
   attr_accessible :component, :skin_token, :name, :price, :availability, :required_stage, :stable_at, as: :admin

@@ -1,5 +1,4 @@
-class AddonPlan < ActiveRecord::Base
-  include BillableEntity
+class AddonPlan < BillableEntity
 
   attr_accessible :addon, :name, :price, :availability, :required_stage, :stable_at, as: :admin
 

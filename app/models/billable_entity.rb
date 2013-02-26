@@ -1,28 +1,32 @@
 require 'stage'
 
-module BillableEntity
-  extend ActiveSupport::Concern
+class BillableEntity < ActiveRecord::Base
+  self.abstract_class = true
+  AVAILABILITIES = %w[hidden public custom]
 
-  included do
-    has_many :billable_items, as: :item
-    has_many :sites, through: :billable_items
+  has_many :billable_items, as: :item
+  has_many :sites, through: :billable_items
 
-    scope :beta,    -> { where(stable_at: nil) }
-    scope :paid,    -> { where{ (stable_at != nil) & (price > 0) } }
-    scope :custom,  -> { where{ availability == 'custom' } }
-    scope :visible, -> { where{ availability != 'hidden' } }
-    scope :public,  -> { where{ availability >> %w[hidden public] } }
-
-    validates :price, numericality: true
-    validates :availability, inclusion: availabilities
-    validates :required_stage, inclusion: Stage.stages
+  # scopes defined on abstract class simply don't work when called from a subclass...
+  def self.paid
+    where{ (stable_at != nil) & (price > 0) }
   end
 
-  module ClassMethods
-    def availabilities
-      %w[hidden public custom]
-    end
+  def self.custom
+    where(availability: 'custom')
   end
+
+  def self.visible
+    where{ availability != 'hidden' }
+  end
+
+  def self.public
+    where(availability: %w[hidden public])
+  end
+
+  validates :price, numericality: true
+  validates :availability, inclusion: AVAILABILITIES
+  validates :required_stage, inclusion: Stage.stages
 
   def not_custom?
     availability.in?(%w[hidden public])
