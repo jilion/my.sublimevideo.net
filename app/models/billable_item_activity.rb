@@ -1,5 +1,4 @@
-class BillableItemActivity < ActiveRecord::Base
-  include Subscription
+class BillableItemActivity < Subscription
   self.table_name = 'billable_item_activities' # Be prepared for BillableItem renamed SubscriptionHistory
 
   validates :state, inclusion: STATES + ['canceled']

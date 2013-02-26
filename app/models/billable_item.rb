@@ -1,5 +1,4 @@
-class BillableItem < ActiveRecord::Base
-  include Subscription
+class BillableItem < Subscription
   self.table_name = 'billable_items' # Be prepared for BillableItem renamed SubscriptionCurrent
 
   validates :item_id, uniqueness: { scope: [:item_type, :site_id] }
