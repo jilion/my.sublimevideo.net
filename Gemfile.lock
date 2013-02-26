@@ -14,6 +14,14 @@ GIT
       activesupport (>= 3.2.12)
 
 GIT
+  remote: git://github.com/jilion/countries.git
+  revision: c8405609185ec4ad5e46523fa33a8254f7d94a72
+  branch: fix_country_select
+  specs:
+    countries (0.9.1)
+      currencies (>= 0.4.0)
+
+GIT
   remote: git://github.com/jilion/premailer.git
   revision: 1efecb6763807f1f3a77e309456986c9b572ad9a
   specs:
@@ -97,7 +105,7 @@ GEM
     active_utils (1.0.5)
       activesupport (>= 2.3.11)
       i18n
-    activemerchant (1.31.0)
+    activemerchant (1.31.1)
       active_utils (>= 1.0.2)
       activesupport (>= 2.3.14)
       builder (>= 2.0.0)
@@ -182,12 +190,10 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.4.0)
+    coffee-script-source (1.5.0)
     columnize (0.3.6)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
-    countries (0.9.1)
-      currencies (>= 0.4.0)
     crack (0.3.2)
     createsend (2.5.1)
       hashie (~> 1.0)
@@ -243,7 +249,7 @@ GEM
       http_parser.rb (~> 0.5.3)
     erubis (2.7.0)
     eventmachine (1.0.0)
-    excon (0.16.10)
+    excon (0.18.5)
     execjs (1.4.0)
       multi_json (~> 1.0)
     facter (1.6.17)
@@ -252,7 +258,7 @@ GEM
     factory_girl_rails (4.2.1)
       factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
-    faraday (0.8.5)
+    faraday (0.8.6)
       multipart-post (~> 1.1)
     faraday_middleware (0.9.0)
       faraday (>= 0.7.4, < 0.9)
@@ -313,8 +319,7 @@ GEM
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
-    httpclient (2.3.3)
-    i18n (0.6.1)
+    i18n (0.6.2)
     inflection (1.0.0)
     jasminerice (0.0.10)
       coffee-rails
@@ -463,7 +468,7 @@ GEM
       thor (>= 0.14.6, < 2.0)
     rake (10.0.3)
     rb-fsevent (0.9.3)
-    rdoc (3.12.1)
+    rdoc (3.12.2)
       json (~> 1.4)
     redis (3.0.2)
     redis-namespace (1.2.1)
@@ -506,7 +511,7 @@ GEM
       rails (>= 3.2)
     show_me_the_cookies (1.1.4)
       capybara (~> 1.0)
-    sidekiq (2.7.4)
+    sidekiq (2.7.5)
       celluloid (~> 0.12.0)
       connection_pool (~> 1.0)
       multi_json (~> 1)
@@ -517,7 +522,7 @@ GEM
     simple_oauth (0.2.0)
     slop (3.4.3)
     snail (0.7.2)
-    solve (0.4.1)
+    solve (0.4.2)
       json
     sprockets (2.2.2)
       hike (~> 1.2)
@@ -579,12 +584,6 @@ GEM
     uniform_notifier (1.1.1)
     uniquify (0.1.0)
     vcr (1.10.3)
-    vimeo (1.5.3)
-      httparty (>= 0.4.5)
-      httpclient (>= 2.1.5.2)
-      json (>= 1.1.9)
-      multipart-post (>= 1.0.1)
-      oauth (>= 0.4.3)
     warden (1.2.1)
       rack (>= 1.0)
     webmock (1.6.4)
@@ -596,13 +595,6 @@ GEM
     xpath (0.1.4)
       nokogiri (~> 1.3)
     yajl-ruby (1.1.0)
-    youtube_it (2.1.13)
-      builder
-      faraday (~> 0.8)
-      nokogiri (~> 1.5.2)
-      oauth (~> 0.4.4)
-      oauth2 (~> 0.6)
-      simple_oauth (>= 0.1.5)
     zendesk_api (0.3.0)
       faraday (>= 0.8.0)
       faraday_middleware (>= 0.8.7)
@@ -638,7 +630,7 @@ DEPENDENCIES
   cocaine
   coffee-rails
   configurator!
-  countries
+  countries!
   crack
   createsend
   dalli
@@ -651,7 +643,7 @@ DEPENDENCIES
   eco
   edge_cast
   em-http-request
-  excon (~> 0.16.0)
+  excon
   execjs
   factory_girl
   factory_girl_rails
@@ -734,10 +726,8 @@ DEPENDENCIES
   uniquify
   useragent!
   vcr (~> 1.10.3)
-  vimeo
   voxel_hapi!
   webmock (~> 1.6.0)
   wirble
   yajl-ruby
-  youtube_it
   zendesk_api
