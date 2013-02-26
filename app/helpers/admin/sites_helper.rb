@@ -1,28 +1,24 @@
 module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
-    state = if params[:with_extra_hostnames]
-      " with extra hostnames"
-    elsif params[:with_wildcard]
-      " with wildcard"
-    elsif params[:with_path]
-      " with path"
+    state = if param = params.detect { |k, v| k.to_sym.in?([:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path]) }
+      _admin_sites_page_title(param[0])
     elsif params[:tagged_with]
-      " tagged with '#{params[:tagged_with]}'"
+      _admin_sites_page_title('tagged_with', "'#{params[:tagged_with]}'")
     elsif params[:with_min_billable_video_views]
-      " with at least #{display_integer(params[:with_min_billable_video_views])} video plays in the last 30 days"
+      "with at least #{display_integer(params[:with_min_billable_video_views])} video plays in the last 30 days"
     elsif params[:search].present?
-      " matching '#{params[:search]}'"
+      "matching '#{params[:search]}'"
     elsif params[:user_id]
       user = User.find(params[:user_id])
-      " for #{user.name_or_email}" if user
+      "for #{user.name_or_email}" if user
     elsif params[:with_state]
-      " #{params[:with_state]}"
+      "#{params[:with_state]}"
     elsif params[:with_addon_plan]
-      " with the '#{AddonPlan.get(*params[:with_addon_plan].split('-')).title}' add-on"
+      "with the '#{AddonPlan.get(*params[:with_addon_plan].split('-')).title}' add-on"
     end
 
-    "#{formatted_pluralize(sites.total_count, 'site').titleize}#{state}"
+    [formatted_pluralize(sites.total_count, 'site').titleize, state].join(' ')
   end
 
   def addon_plans_list_for(addon)
@@ -103,6 +99,12 @@ module Admin::SitesHelper
     end
 
     grouped_options_for_select(grouped_options)
+  end
+
+  private
+
+  def _admin_sites_page_title(underscored_name, value = nil)
+    ["#{underscored_name.gsub(/_/, ' ')}", value].compact.join(' ')
   end
 
 end
