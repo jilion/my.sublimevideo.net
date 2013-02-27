@@ -9,7 +9,7 @@ RSpec::Matchers.define :delay do |message, *opts|
       @delayed_job_mock.should_receive(message).with(any_args)
     else
       @args.each do |args|
-        @delayed_job_mock.should_receive(message).with(*args)
+        @delayed_job_mock.should_receive(message).with(*Array[args].flatten)
       end
     end
   end
@@ -30,7 +30,7 @@ RSpec::Matchers.define :delay do |message, *opts|
   end
 
   def with(*args)
-    @args = *args
+    @args = [*args]
     self
   end
 

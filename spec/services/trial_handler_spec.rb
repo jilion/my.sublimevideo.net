@@ -312,9 +312,9 @@ describe TrialHandler do
   end
 
   describe '#trial_ends_on?' do
-    let(:subscription_history1) { create(:billable_item_activity, site: site, state: 'trial', created_at: 29.days.ago) }
-    let(:subscription_history2) { create(:billable_item_activity, site: site, state: 'beta', created_at: 30.days.ago) }
-    let(:subscription_history3) { create(:billable_item_activity, site: site, state: 'subscribed', created_at: 31.days.ago) }
+    let(:subscription_history1) { create(:billable_item_activity, site: site, state: 'trial', created_at: (BusinessModel.days_for_trial - 1).days.ago) }
+    let(:subscription_history2) { create(:billable_item_activity, site: site, state: 'beta', created_at: BusinessModel.days_for_trial.days.ago) }
+    let(:subscription_history3) { create(:billable_item_activity, site: site, state: 'subscribed', created_at: (BusinessModel.days_for_trial + 1).days.ago) }
 
     it { described_class.new(site).trial_ends_on?(subscription_history1.item, 5.days.from_now).should be_false }
     it { described_class.new(site).trial_ends_on?(subscription_history1.item, 2.days.from_now).should be_true }
@@ -327,8 +327,8 @@ describe TrialHandler do
   end
 
   describe '#out_of_trial?' do
-    let!(:subscription_history1) { create(:billable_item_activity, site: site, state: 'trial', created_at: 29.days.ago) }
-    let!(:subscription_history2) { create(:billable_item_activity, site: site, state: 'beta', created_at: 31.days.ago) }
+    let!(:subscription_history1) { create(:billable_item_activity, site: site, state: 'trial', created_at: (BusinessModel.days_for_trial - 1).days.ago) }
+    let!(:subscription_history2) { create(:billable_item_activity, site: site, state: 'beta', created_at: (BusinessModel.days_for_trial + 1).days.ago) }
     let!(:subscription)          { create(:billable_item, site: site, state: 'subscribed') }
 
     it { described_class.new(site).out_of_trial?(subscription_history1.item).should be_false }

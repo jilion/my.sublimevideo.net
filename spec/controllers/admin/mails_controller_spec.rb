@@ -29,7 +29,7 @@ describe Admin::MailsController do
     end
 
     it "should redirect to /admin/mails if create_and_deliver succeed on POST :create" do
-      MailLetter.should delay(:deliver_and_log).with({ "template_id" => '1', "criteria" => "foo", "admin_id" => @admin.id })
+      MailLetter.should delay(:deliver_and_log).with("template_id" => '1', "criteria" => "foo", "admin_id" => @admin.id)
 
       post :create, mail: { template_id: '1', criteria: "foo" }
       response.should redirect_to(admin_mails_url)
