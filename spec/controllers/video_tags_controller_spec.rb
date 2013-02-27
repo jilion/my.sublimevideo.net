@@ -13,7 +13,7 @@ describe VideoTagsController do
 
     it "responds with success to GET :show" do
       Site.stub(:find_by_token!) { site }
-      site.stub_chain(:video_tags, :where, :first)
+      VideoTag.stub(:find).with('2', _site_token: site.token)
       get :show, site_id: 'demo', id: '2'
       response.should_not be_redirect
     end

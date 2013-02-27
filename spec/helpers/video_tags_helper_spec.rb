@@ -8,12 +8,12 @@ describe VideoTagsHelper do
     uid:  'uid-token',
     name: 'My Video',
     poster_url: 'http://media.sublimevideo.net/vpa/ms_800.jpg',
-    used_sources: {
-      'base_mp4_crc32'  => { 'url' => 'http://media.sublimevideo.net/vpa/ms_360p.mp4',  'quality' => 'base', 'family' => 'mp4' },
-      'hd_mp4_crc32'    => { 'url' => 'http://media.sublimevideo.net/vpa/ms_720p.mp4',  'quality' => 'hd',   'family' => 'mp4' },
-      'base_webm_crc32' => { 'url' => 'http://media.sublimevideo.net/vpa/ms_360p.webm', 'quality' => 'base', 'family' => 'webm' },
-      'hd_webm_crc32'   => { 'url' => 'http://media.sublimevideo.net/vpa/ms_720p.webm', 'quality' => 'hd',   'family' => 'webm' }
-    }
+    sources: [
+      { url: 'http://media.sublimevideo.net/vpa/ms_360p.mp4',  quality: 'base', family: 'mp4' },
+      { url: 'http://media.sublimevideo.net/vpa/ms_720p.mp4',  quality: 'hd',   family: 'mp4' },
+      { url: 'http://media.sublimevideo.net/vpa/ms_360p.webm', quality: 'base', family: 'webm' },
+      { url: 'http://media.sublimevideo.net/vpa/ms_720p.webm', quality: 'hd',   family: 'webm' }
+    ]
   )}
 
   module Helper

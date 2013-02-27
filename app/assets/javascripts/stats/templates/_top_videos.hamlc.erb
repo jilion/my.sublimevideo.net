@@ -28,20 +28,20 @@
                   %script{ type: "text/javascript" }
                     new SublimeVideo.Media.ImagePreloader("#{video.sslPosterUrl()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.cid}" });
               .right
-                %h4{ title: video.name() }!= video.name(22)
-                - if video.isUidGetFromSource() || video.isNameGetFromSource()
+                %h4{ title: video.title() }!= video.title(22)
+                - if video.isUidGetFromSource() || video.noTitle()
                   %span.tooltip.warning
                     %span.icon
                     %span.content
                       %span.arrow
                       %span.p
                         Your video
-                        - if video.isUidGetFromSource() && video.isNameGetFromSource()
-                          uid & name aren't
+                        - if video.isUidGetFromSource() && video.noTitle()
+                          uid & title aren't
                         - else if video.isUidGetFromSource()
                           uid isn't
                         - else
-                          name isn't
+                          title isn't
                         = "defined properly, please set data-* attribute(s) in your video tag."
                         %a{ href: "http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" }= "More info..."
                 .spacer
