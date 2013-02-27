@@ -376,7 +376,7 @@ GEM
     moped (1.4.2)
     multi_json (1.6.1)
     multi_xml (0.5.3)
-    multipart-post (1.1.5)
+    multipart-post (1.2.0)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-ssh (2.6.5)
@@ -541,7 +541,7 @@ GEM
       haml
       jquery-rails
       rails
-    sublime_video_private_api (1.1.0)
+    sublime_video_private_api (1.1.1)
       her
       kaminari
       rails (>= 3.2.12)
