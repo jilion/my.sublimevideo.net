@@ -114,8 +114,8 @@ class Invoice < ActiveRecord::Base
   scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.email #{way}") }
   scope :by_invoice_items_count, lambda { |way='desc'| order("invoices.invoice_items_count #{way}") }
 
-  def self.search(*args)
-    super(*args, ['lower(reference) =~ lower("%#{q}%")'])
+  def self.additional_or_conditions
+    ['lower(reference) =~ lower("%#{q}%")']
   end
 
   def self.total_revenue

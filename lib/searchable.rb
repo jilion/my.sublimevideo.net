@@ -5,8 +5,8 @@ module Searchable
   end
 
   module ClassMethods
-    def search(q, or_conditions = [])
-      scopes = scoped
+    def search(q)
+      scopes, or_conditions = scoped, additional_or_conditions
       associations = self.reflect_on_all_associations(:belongs_to) + self.reflect_on_all_associations(:has_one)
       associations.each do |association|
         case association.name
@@ -23,6 +23,10 @@ module Searchable
 
       puts eval("scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }").to_sql
       eval "scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }"
+    end
+
+    def additional_or_conditions
+      []
     end
   end
 
