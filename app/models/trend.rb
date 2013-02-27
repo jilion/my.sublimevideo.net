@@ -42,15 +42,15 @@ module Trend
     end
 
     def determine_last_trend_day
-      raise NotImplementedError, '.determine_last_trend_day must be implemented.'
+      raise NotImplementedError, "This #{self.class} cannot respond to:"
     end
 
     def trend_hash(day)
-      raise NotImplementedError, '.trend_hash must be implemented.'
+      raise NotImplementedError, "This #{self.class} cannot respond to:"
     end
 
     def json_fields
-      raise NotImplementedError, '.json_fields must be implemented.'
+      raise NotImplementedError, "This #{self.class} cannot respond to:"
     end
   end
 

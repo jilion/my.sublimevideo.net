@@ -49,12 +49,6 @@ describe AddonPlan do
     it { described_class.get('foo', 'bar').should eq @addon_plan }
   end
 
-  describe '#not_custom?' do
-    it { addon_plan1.should be_not_custom }
-    it { addon_plan2.should be_not_custom }
-    it { addon_plan3.should_not be_not_custom }
-  end
-
   describe '#available_for_subscription?' do
     before do
       create(:billable_item, site: site, item: addon_plan1, state: 'sponsored')
@@ -71,18 +65,6 @@ describe AddonPlan do
 
       it { addon_plan3.available_for_subscription?(site).should be_true }
     end
-  end
-
-  describe '#beta?' do
-    it { build(:addon_plan, stable_at: nil).should be_beta }
-    it { build(:addon_plan, stable_at: Time.now).should_not be_beta }
-  end
-
-  describe '#free?' do
-    it { build(:addon_plan, stable_at: nil, price: 0).should be_free }
-    it { build(:addon_plan, stable_at: nil, price: 10).should_not be_free }
-    it { build(:addon_plan, stable_at: Time.now, price: 0).should be_free }
-    it { build(:addon_plan, stable_at: Time.now, price: 10).should_not be_free }
   end
 end
 

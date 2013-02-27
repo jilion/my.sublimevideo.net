@@ -1,4 +1,5 @@
 require 'tempfile'
+require 'configurator'
 
 module EdgeCastWrapper
   include Configurator

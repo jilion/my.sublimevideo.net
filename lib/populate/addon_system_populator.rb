@@ -47,17 +47,17 @@ class AddonSystemPopulator < Populator
 
   def app_design_seeds
     [
-      { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public',                         component: App::Component.get('app')      },
-      { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', required_stage: 'beta', component: App::Component.get('app')      },
-      { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', required_stage: 'beta', component: App::Component.get('app')      },
-      { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('twit')     },
-      { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('html5')    },
-      { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('sony')     },
-      { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('svnet')    },
-      { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('anthony')  },
-      { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('next15')   },
-      { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('df')       },
-      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('blizzard') }
+      { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('twit')     },
+      { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('html5')    },
+      { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('sony')     },
+      { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('svnet')    },
+      { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('anthony')  },
+      { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('next15')   },
+      { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
+      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') }
     ]
   end
 
@@ -85,27 +85,27 @@ class AddonSystemPopulator < Populator
 
   def addon_plan_seeds
     [
-      { name: 'standard',  price: 0,    addon: Addon.get('video_player'),   availability: 'hidden', stable_at: nil },
+      { name: 'standard',  price: 0,    addon: Addon.get('video_player'),   availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('lightbox'),       availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('image_viewer'),   availability: 'hidden', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('preview_tools'),  availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('end_actions'),    availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'invisible', price: 0,    addon: Addon.get('stats'),          availability: 'hidden',                         stable_at: Time.now.utc },
-      { name: 'realtime',  price: 990,  addon: Addon.get('stats'),          availability: 'public',                         stable_at: Time.now.utc },
-      { name: 'sublime',   price: 0,    addon: Addon.get('logo'),           availability: 'public',                         stable_at: Time.now.utc },
-      { name: 'disabled',  price: 990,  addon: Addon.get('logo'),           availability: 'public',                         stable_at: Time.now.utc },
-      { name: 'custom',    price: 1990, addon: Addon.get('logo'),           availability: 'public', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('controls'),       availability: 'hidden', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('initial'),        availability: 'hidden', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('sharing'),        availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'), availability: 'public', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('embed'),          availability: 'public', required_stage: 'beta', stable_at: nil },
+      { name: 'standard',  price: 0,    addon: Addon.get('image_viewer'),   availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('preview_tools'),  availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('end_actions'),    availability: 'custom', stable_at: Time.now.utc },
+      { name: 'invisible', price: 0,    addon: Addon.get('stats'),          availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'realtime',  price: 990,  addon: Addon.get('stats'),          availability: 'public', stable_at: Time.now.utc },
+      { name: 'sublime',   price: 0,    addon: Addon.get('logo'),           availability: 'public', stable_at: Time.now.utc },
+      { name: 'disabled',  price: 990,  addon: Addon.get('logo'),           availability: 'public', stable_at: Time.now.utc },
+      { name: 'custom',    price: 1990, addon: Addon.get('logo'),           availability: 'public', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('controls'),       availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('initial'),        availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('sharing'),        availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'), availability: 'public', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('embed'),          availability: 'public', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('api'),            availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
       { name: 'vip',       price: 9990, addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('buy_action'),     availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('info'),           availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('action'),         availability: 'custom', required_stage: 'beta', stable_at: nil }
+      { name: 'standard',  price: 0,    addon: Addon.get('buy_action'),     availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('info'),           availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('action'),         availability: 'custom', stable_at: Time.now.utc }
     ]
   end
 

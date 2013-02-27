@@ -1,17 +1,10 @@
-class BillableItemActivity < ActiveRecord::Base
-  attr_accessible :item, :site, :state, as: :admin
+class BillableItemActivity < Subscription
+  self.table_name = 'billable_item_activities' # Be prepared for BillableItem renamed SubscriptionHistory
 
-  belongs_to :site
-  belongs_to :item, polymorphic: true
+  validates :state, inclusion: STATES + ['canceled']
 
-  validates :item, :site, :state, presence: true
-  validates :state, inclusion: BillableItem::STATES + ['canceled']
-
-  scope :plans,       -> { where(item_type: 'Plan') }
-  scope :app_designs, -> { where(item_type: 'App::Design') }
-  scope :addon_plans, -> { where(item_type: 'AddonPlan') }
-  scope :with_state_before, ->(state, date) { includes(:item).where { created_at < date }.where(state: state) }
-  scope :with_state_during, ->(state, period) { includes(:item).where { created_at >> period }.where(state: state) }
+  scope :before, ->(date)   { where { created_at < date } }
+  scope :during, ->(period) { where { created_at >> period } }
 end
 
 # == Schema Information
@@ -31,4 +24,3 @@ end
 #  index_billable_item_activities_on_item_type_and_item_id  (item_type,item_id)
 #  index_billable_item_activities_on_site_id                (site_id)
 #
-

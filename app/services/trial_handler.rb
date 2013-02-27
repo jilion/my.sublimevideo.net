@@ -1,60 +1,135 @@
 class TrialHandler
-  def self.send_trial_will_expire_email
-    BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-      Site.select('DISTINCT("sites".*)').not_archived.joins(:billable_items)
-      .where { billable_items.state == 'trial' }.find_each(batch_size: 100) do |site|
-        site.billable_items.select { |bi| site.trial_ends_on?(bi.item, days_before_trial_end.days.from_now) }.each do |billable_item|
-          BillingMailer.delay.trial_will_expire(billable_item.id)
-        end
+  attr_reader :site
+
+  def initialize(site)
+    @site = site
+  end
+
+  # =====================
+  # = Scheduled methods =
+  # =====================
+  def self.send_trial_will_expire_emails
+    _sites_with_subscriptions_in_trial.find_each do |site|
+      delay._send_trial_will_expire_emails(site.id)
+    end
+  end
+
+  def self.activate_billable_items_out_of_trial
+    _sites_with_subscriptions_in_trial.find_each do |site|
+      delay._activate_billable_items_out_of_trial(site.id)
+    end
+  end
+
+  # ===========================
+  # = Public instance methods =
+  # ===========================
+  def send_trial_will_expire_emails
+    _days_before_trial_end_array.each do |days_before_trial_end|
+      _subscriptions_exiting_trial_on(days_before_trial_end.days.from_now).each do |subscription|
+        BillingMailer.delay.trial_will_expire(subscription.id)
       end
     end
   end
 
-  def self.activate_billable_items_out_of_trial!
-    Site.select('DISTINCT("sites".*)').not_archived.joins(:billable_items)
-    .where { billable_items.state == 'trial' }.find_each(batch_size: 100) do |site|
-      if site.billable_items.where(state: 'trial').any? { |bi| site.out_of_trial?(bi.item) }
-        delay.activate_billable_items_out_of_trial_for_site!(site.id)
-      end
+  def activate_billable_items_out_of_trial
+    return if _no_subscriptions_out_of_trial?
+
+    new_subscriptions, emails = _new_subscriptions_and_emails
+
+    SiteManager.new(site).update_billable_items(new_subscriptions[:designs], new_subscriptions[:addon_plans])
+
+    emails.each do |email|
+      BillingMailer.delay.trial_has_expired(site.id, email[:item_class], email[:item_id])
     end
   end
 
-  def self.activate_billable_items_out_of_trial_for_site!(site_id)
-    site = Site.not_archived.find(site_id)
-    emails = []
+  def trial_ends_on?(design_or_addon_plan, date)
+    if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state('trial').first
+      date.midnight == trial_end_date(subscription.item).midnight + 1.day
+    else
+      false
+    end
+  end
 
-    activated_app_designs = site.billable_items.app_designs.where(state: 'trial').inject({}) do |hash, billable_item|
-      if site.out_of_trial?(billable_item.item)
-        hash[billable_item.item.name] = if site.user.cc?
-          billable_item.item.id
+  def out_of_trial?(design_or_addon_plan)
+    return true if site.billable_items.with_item(design_or_addon_plan).state('subscribed').exists?
+
+    if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
+      trial_end_date(subscription.item) <= Time.now.utc
+    else
+      false
+    end
+  end
+
+  def trial_end_date(design_or_addon_plan)
+    if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
+      subscription.created_at + BusinessModel.days_for_trial(design_or_addon_plan).days
+    else
+      nil
+    end
+  end
+
+  def trial_days_remaining(design_or_addon_plan)
+    return nil if design_or_addon_plan.beta? || design_or_addon_plan.free?
+    return 0 if out_of_trial?(design_or_addon_plan)
+
+    if trial_end_date = trial_end_date(design_or_addon_plan)
+      [0, ((trial_end_date - Time.now.utc + 1.day) / 1.day).to_i].max
+    end
+  end
+
+  private
+
+  # Delayed method
+  def self._send_trial_will_expire_emails(site_id)
+    new(_find_site(site_id)).send_trial_will_expire_emails
+  end
+
+  # Delayed method
+  def self._activate_billable_items_out_of_trial(site_id)
+    new(_find_site(site_id)).activate_billable_items_out_of_trial
+  end
+
+  def self._sites_with_subscriptions_in_trial
+    Site.not_archived.select('DISTINCT("sites".*)').joins(:billable_items).where { billable_items.state == 'trial' }
+  end
+
+  def self._find_site(site_id)
+    Site.not_archived.find(site_id)
+  end
+
+  def _no_subscriptions_out_of_trial?
+    site.billable_items.state('trial').none? { |subscription| out_of_trial?(subscription.item) }
+  end
+
+  def _new_subscriptions_and_emails
+    subscriptions, emails = { designs: {}, addon_plans: {} }, []
+
+    site.billable_items.state('trial').each do |subscription|
+      next unless out_of_trial?(subscription.item)
+
+      key = subscription.item_type.demodulize.tableize.to_sym
+      subscriptions[key][subscription.item_parent_name] = if site.user.cc?
+        subscription.item.id
+      else
+        emails << { item_class: subscription.item_type, item_id: subscription.item.id }
+        if free_plan = subscription.item.free_plan
+          free_plan.id
         else
-          emails << [billable_item.item.class.to_s, billable_item.item.id]
           '0'
         end
       end
-      hash
     end
 
-    activated_addon_plans = site.billable_items.addon_plans.where(state: 'trial').inject({}) do |hash, billable_item|
-      if site.out_of_trial?(billable_item.item)
-        hash[billable_item.item.addon.name] = if site.user.cc?
-          billable_item.item.id
-        else
-          emails << [billable_item.item.class.to_s, billable_item.item.id]
-          if free_plan = billable_item.item.addon.free_plan
-            free_plan.id
-          else
-            '0'
-          end
-        end
-      end
-      hash
-    end
-
-    SiteManager.new(site).update_billable_items(activated_app_designs, activated_addon_plans)
-
-    emails.each do |email|
-      BillingMailer.delay.trial_has_expired(site_id, email[0], email[1])
-    end
+    [subscriptions, emails]
   end
+
+  def _subscriptions_exiting_trial_on(date)
+    site.billable_items.select { |subscription| trial_ends_on?(subscription.item, date) }
+  end
+
+  def _days_before_trial_end_array
+    BusinessModel.days_before_trial_end_old + BusinessModel.days_before_trial_end_new
+  end
+
 end

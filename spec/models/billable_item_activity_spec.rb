@@ -15,8 +15,24 @@ describe BillableItemActivity do
       it { should validate_presence_of(attr) }
     end
 
-    it { should ensure_inclusion_of(:state).in_array(%w[beta trial subscribed sponsored suspended]) }
+    it { should ensure_inclusion_of(:state).in_array(%w[beta trial subscribed sponsored suspended canceled]) }
   end
+
+  describe 'Scopes' do
+    let!(:billable_item_activity1) { create(:billable_item_activity, created_at: Time.utc(2013, 2, 21)) }
+    let!(:billable_item_activity2) { create(:billable_item_activity, created_at: Time.utc(2013, 2, 22)) }
+    let!(:billable_item_activity3) { create(:billable_item_activity, created_at: Time.utc(2013, 2, 23)) }
+    let!(:billable_item_activity4) { create(:billable_item_activity, created_at: Time.utc(2013, 2, 24)) }
+
+    describe '.before' do
+      it { described_class.before(Time.utc(2013, 2, 23)).should =~ [billable_item_activity1, billable_item_activity2] }
+    end
+
+    describe '.during' do
+      it { described_class.during((Time.utc(2013, 2, 22)..Time.utc(2013, 2, 23))).should =~ [billable_item_activity2, billable_item_activity3] }
+    end
+  end
+
 end
 
 # == Schema Information

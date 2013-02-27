@@ -48,7 +48,8 @@ describe NewsletterSubscriptionManager do
   describe '.import' do
     it 'delays CampaignMonitorWrapper.import' do
       CampaignMonitorWrapper.should delay(:import).with(
-        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
+        segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         users: [
           { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s },
           { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta?.to_s }

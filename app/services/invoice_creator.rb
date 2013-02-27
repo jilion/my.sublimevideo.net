@@ -59,7 +59,7 @@ class InvoiceCreator
   private
 
   def handle_items_not_yet_canceled_and_created_before_period(period)
-    invoice.site.billable_item_activities.with_state_before('subscribed', period.first).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+    invoice.site.billable_item_activities.state('subscribed').before(period.first).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
       end_activity = find_end_activity_for_activity(activity, period)
 
       if !end_activity || period.cover?(end_activity.created_at)
@@ -69,7 +69,7 @@ class InvoiceCreator
   end
 
   def handle_items_subscribed_during_period(period)
-    invoice.site.billable_item_activities.with_state_during('subscribed', period).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+    invoice.site.billable_item_activities.state('subscribed').during(period).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
       next if activity.item.beta? || activity.item.free?
 
       end_activity_date = find_end_activity_for_activity(activity, period).try(:created_at) || period.last
@@ -82,15 +82,15 @@ class InvoiceCreator
   end
 
   def find_start_activity_for_activity(activity)
-    item_for_activity(activity).with_state_before('subscribed', activity.created_at).order('created_at DESC').first
+    item_for_activity(activity).state('subscribed').before(activity.created_at).order('created_at DESC').first
   end
 
   def find_end_activity_for_activity(activity, period)
-    item_for_activity(activity).with_state_during(%w[canceled suspended sponsored], (activity.created_at..period.last)).order('created_at ASC').first
+    item_for_activity(activity).state(%w[canceled suspended sponsored]).during((activity.created_at..period.last)).order('created_at ASC').first
   end
 
   def item_for_activity(activity)
-    invoice.site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id)
+    invoice.site.billable_item_activities.with_item(activity.item)
   end
 
   def build_invoice_item(item, started_at, ended_at)

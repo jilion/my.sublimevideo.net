@@ -1,4 +1,3 @@
-No such file to load -- video_tag_updater
                                                    /docs(/*rest)(.:format)                                   :controller#:action
                          api_test_request GET      /api/test_request(.:format)                               api/apis#test_request
                            usage_api_site GET      /api/sites/:id/usage(.:format)                            api/sites#usage

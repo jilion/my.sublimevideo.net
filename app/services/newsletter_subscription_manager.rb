@@ -1,4 +1,3 @@
-
 class NewsletterSubscriptionManager
   attr_reader :user
 

@@ -1,28 +1,24 @@
 module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
-    state = if params[:with_extra_hostnames]
-      " with extra hostnames"
-    elsif params[:with_wildcard]
-      " with wildcard"
-    elsif params[:with_path]
-      " with path"
+    state = if param = params.detect { |k, v| k.to_sym.in?([:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path]) }
+      _admin_sites_page_title(param[0])
     elsif params[:tagged_with]
-      " tagged with '#{params[:tagged_with]}'"
+      _admin_sites_page_title('tagged_with', "'#{params[:tagged_with]}'")
     elsif params[:with_min_billable_video_views]
-      " with at least #{display_integer(params[:with_min_billable_video_views])} video plays in the last 30 days"
+      "with at least #{display_integer(params[:with_min_billable_video_views])} video plays in the last 30 days"
     elsif params[:search].present?
-      " matching '#{params[:search]}'"
+      "matching '#{params[:search]}'"
     elsif params[:user_id]
       user = User.find(params[:user_id])
-      " for #{user.name_or_email}" if user
+      "for #{user.name_or_email}" if user
     elsif params[:with_state]
-      " #{params[:with_state]}"
+      "#{params[:with_state]}"
     elsif params[:with_addon_plan]
-      " with the '#{AddonPlan.get(*params[:with_addon_plan].split('-')).title}' add-on"
+      "with the '#{AddonPlan.get(*params[:with_addon_plan].split('-')).title}' add-on"
     end
 
-    "#{formatted_pluralize(sites.total_count, 'site').titleize}#{state}"
+    [formatted_pluralize(sites.total_count, 'site').titleize, state].join(' ')
   end
 
   def addon_plans_list_for(addon)
@@ -73,7 +69,7 @@ module Admin::SitesHelper
   def app_designs_for_admin_select(site)
     items = []
     App::Design.order(:price).each do |app_design|
-      title = if billable_item = site.billable_items.app_designs.where(item_id: app_design.id).first
+      title = if billable_item = site.billable_items.with_item(app_design).first
         "#{app_design.title} (#{billable_item.state})"
       else
         app_design.title
@@ -91,7 +87,7 @@ module Admin::SitesHelper
     addons.each do |addon|
       group_items = []
       addon.plans.includes(:addon).order(:price).each do |addon_plan|
-        title = if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
+        title = if billable_item = site.billable_items.with_item(addon_plan).first
           "#{addon_plan.title} (#{billable_item.state})"
         else
           addon_plan.title
@@ -103,6 +99,12 @@ module Admin::SitesHelper
     end
 
     grouped_options_for_select(grouped_options)
+  end
+
+  private
+
+  def _admin_sites_page_title(underscored_name, value = nil)
+    ["#{underscored_name.gsub(/_/, ' ')}", value].compact.join(' ')
   end
 
 end
