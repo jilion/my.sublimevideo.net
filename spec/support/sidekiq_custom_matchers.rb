@@ -5,12 +5,12 @@ RSpec::Matchers.define :delay do |message, *opts|
     object.stub(:delay) { @delayed_job_mock }
     object.should_receive(:delay).with(*opts) { @delayed_job_mock }
 
-    if @args.any?
+    if @args.nil?
+      @delayed_job_mock.should_receive(message).with(any_args)
+    else
       @args.each do |args|
         @delayed_job_mock.should_receive(message).with(*args)
       end
-    else
-      @delayed_job_mock.should_receive(message).with(any_args)
     end
   end
 
@@ -39,7 +39,6 @@ RSpec::Matchers.define :delay do |message, *opts|
   end
 
   def setup(object, message)
-    @delayed_job_mock ||= mock("Delay Method for #{object}.#{message}")
-    @args = []
+    @delayed_job_mock = mock("Delay Method for #{object}.#{message}")
   end
 end
