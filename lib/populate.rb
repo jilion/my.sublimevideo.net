@@ -11,7 +11,6 @@ require 'populate/invoices_populator'
 require 'populate/recurring_stats_populator'
 require 'populate/sites_populator'
 require 'populate/trends_populator'
-require 'populate/video_tags_populator'
 
 module Populate
 
@@ -93,7 +92,6 @@ module Populate
       sites = [Site.find_by_token(user_login_or_site_token)]
     ensure
       sites.compact.each do |site|
-        VideoTagsPopulator.new.execute(site.token)
         SiteCountersUpdater.new(site).update_last_30_days_video_tags_counters
       end
     end

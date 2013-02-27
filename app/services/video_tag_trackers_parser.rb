@@ -1,3 +1,8 @@
+require 'active_support/core_ext'
+require 'addressable/uri'
+
+require 'notifier'
+
 class VideoTagTrackersParser
 
   # Merge each videos tag in one big hash

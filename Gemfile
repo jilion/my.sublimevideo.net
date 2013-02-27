@@ -56,7 +56,7 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
-gem 'excon', '~> 0.16.0' # https://github.com/fog/fog/issues/1580
+gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
@@ -75,7 +75,7 @@ gem 'stat_request_parser' # hosted on gemfury
 
 gem 'rubyzip', require: 'zip/zip'
 gem 'mime-types'
-gem 'countries'
+gem 'countries', github: 'jilion/countries', branch: 'fix_country_select'
 gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
@@ -102,10 +102,6 @@ gem 'zendesk_api'
 
 # App
 gem 'solve'
-
-# Videos
-gem 'vimeo'
-gem 'youtube_it'
 
 # Update was needed, but not directly used by mysv
 gem 'json'

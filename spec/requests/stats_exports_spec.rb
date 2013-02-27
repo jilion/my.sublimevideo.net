@@ -1,22 +1,27 @@
 require 'spec_helper'
 
 feature 'StatsExport' do
+  let(:video_tag) { VideoTag.new(uid: 'video_uid', title: 'My Video' ) }
+
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user)
     SiteManager.new(@site).create
     create(:billable_item, site: @site, item: @stats_addon_plan_2)
-    @video_tag = create(:video_tag, site: @site, uid: 'video_uid', name: 'My Video')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     create(:site_day_stat, t: @site.token, d: 5.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    create(:video_day_stat, st: @site.token, u: @video_tag.uid, d: 3.days.ago.midnight.to_i,
+    create(:video_day_stat, st: @site.token, u: video_tag.uid, d: 3.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    create(:video_day_stat, st: @site.token, u: @video_tag.uid, d: 5.days.ago.midnight.to_i,
+    create(:video_day_stat, st: @site.token, u: video_tag.uid, d: 5.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     Sidekiq::Worker.clear_all
     clear_emails
+
+    stub_api_for(VideoTag) do |stub|
+      stub.get("/private_api/sites/#{@site.token}/video_tags") { |env| [200, {}, [video_tag].to_json] }
+    end
   end
 
   scenario "request and download stats exports", :js do
@@ -45,7 +50,7 @@ feature 'StatsExport' do
     File.open(tempzip, 'w', encoding: 'ASCII-8BIT') { |f| f.write(StatsExport.last.file.file.read) }
     zip = Zip::ZipFile.open(tempzip.path)
     zip.read(zip.first).should eq <<-EOF
-uid,name,loads_count,views_count,embed_loads_count,embed_views_count
+uid,title,loads_count,views_count,embed_loads_count,embed_views_count
 video_uid,My Video,24,24,202,202
     EOF
     tempzip.close

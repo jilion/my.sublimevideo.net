@@ -2,7 +2,7 @@ class RecurringStatsPopulator < StatsPopulator
 
   def execute(site)
     PopulateHelpers.empty_tables(Stat::Site::Day, Stat::Site::Hour, Stat::Site::Minute, Stat::Site::Second)
-    video_tag_uids = site.video_tags.pluck(:uid)
+    video_tag_uids = %w[uid1 uid2 uid3]
 
     last_second  = 0
     videos_count = 20

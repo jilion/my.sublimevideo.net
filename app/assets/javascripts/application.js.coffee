@@ -121,8 +121,8 @@ MySublimeVideo.prepareVideosAndLightboxes = ->
 $(document).ready ->
   MySublimeVideo.documentReady()
 
-  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax '[data-pjax-container]'
-    timeout: 1000
+  $.pjax.defaults.timeout = 1000
+  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax('[data-pjax-container]')
   $('[data-pjax-container]').on 'pjax:end', ->
     # Ensure that body class is always up-to-date
     bodyClass = $('div[data-body-class]').data('body-class')

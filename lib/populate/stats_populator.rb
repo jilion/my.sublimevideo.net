@@ -30,7 +30,7 @@ class StatsPopulator < Populator
 
       Stat::Site.const_get(scale.classify).collection.find(t: site.token, d: time).update({ :$inc => random_site_stats_inc(duration) }, upsert: true)
 
-      site.video_tags.pluck(:uid).each do |video_uid|
+      %w[uid1 uid2 uid3].pluck(:uid).each do |video_uid|
         Stat::Video.const_get(scale.classify).collection.find(st: site.token, u: video_uid, d: time).update({ :$inc => random_video_stats_inc(duration) }, upsert: true)
       end
     end

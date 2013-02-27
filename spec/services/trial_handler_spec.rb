@@ -54,7 +54,7 @@ describe TrialHandler do
       @billable_item3.update_attribute(:state, 'subscribed')
     end
 
-    it 'delays .activate_billable_items_out_of_trial_for_site! for site with at least a billable item out of trial' do
+    pending 'delays .activate_billable_items_out_of_trial_for_site! for site with at least a billable item out of trial' do
       described_class.should delay(:activate_billable_items_out_of_trial_for_site!).with(site1.id)
       described_class.should delay(:activate_billable_items_out_of_trial_for_site!).with(site2.id)
 
@@ -116,7 +116,7 @@ describe TrialHandler do
     context 'user has no cc' do
       let(:user) { create(:user_no_cc) }
 
-      it 'delegates to SiteManager#update_billable_items and cancel the app designs and addon plans IDs' do
+      pending 'delegates to SiteManager#update_billable_items and cancel the app designs and addon plans IDs' do
         BillingMailer.should delay(:trial_has_expired).with(site1.id, 'App::Design', app_design_paid2.id)
         BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
 

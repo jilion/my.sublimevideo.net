@@ -1,3 +1,4 @@
+require 'active_support/core_ext'
 require 'tempfile'
 require 'csv'
 
@@ -31,12 +32,12 @@ class StatsExporter
     tempfile = Tempfile.new(['export', '.csv'])
     begin
       CSV.open(tempfile, "wb") do |csv|
-        csv << ['uid', 'name', 'loads_count', 'views_count', 'embed_loads_count', 'embed_views_count']
-        site.video_tags.active.each do |video_tag|
+        csv << ['uid', 'title', 'loads_count', 'views_count', 'embed_loads_count', 'embed_views_count']
+        VideoTag.find_each(_site_token: site.token, select: %w[uid title]) do |video_tag|
           stats = Stat::Video::Day.where(st: site.token, u: video_tag.uid).between(d: from..to).entries
           vl = hashes_values_sum(stats, :vl)
           vv = hashes_values_sum(stats, :vv)
-          csv << [video_tag.uid, video_tag.name, vl['m'].to_i + vl['e'].to_i, vv['m'].to_i + vv['e'].to_i, vl['em'].to_i, vv['em'].to_i]
+          csv << [video_tag.uid, video_tag.title, vl['m'].to_i + vl['e'].to_i, vv['m'].to_i + vv['e'].to_i, vl['em'].to_i, vv['em'].to_i]
         end
       end
       yield(tempfile)

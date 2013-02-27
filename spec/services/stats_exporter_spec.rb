@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'active_support/core_ext'
 
 require 'services/stats_exporter'
 
@@ -55,8 +54,8 @@ describe StatsExporter do
 
   describe "#with_tempfile_csv_export" do
     let(:video_tags) { [
-      stub(uid: 'uid1', name: 'video1'),
-      stub(uid: 'uid2', name: 'video2')
+      stub(uid: 'uid1', title: 'video1'),
+      stub(uid: 'uid2', title: 'video2')
     ] }
     let(:video_stats) { [
       stub(vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 }),
@@ -64,11 +63,11 @@ describe StatsExporter do
     ] }
 
     it "yield with a csv full of loads/plays" do
-      site.stub_chain(:video_tags, :active) { video_tags }
+      VideoTag.stub(:find_each).and_yield(video_tags[0]).and_yield(video_tags[1])
       Stat::Video::Day.stub_chain(:where, :between).and_return(video_stats)
       stats_exporter.with_tempfile_csv_export do |export|
         export.read.should eq <<-EOF
-uid,name,loads_count,views_count,embed_loads_count,embed_views_count
+uid,title,loads_count,views_count,embed_loads_count,embed_views_count
 uid1,video1,24,24,202,202
 uid2,video2,24,24,202,202
         EOF
@@ -76,11 +75,11 @@ uid2,video2,24,24,202,202
     end
 
     it "yield with a empty" do
-      site.stub_chain(:video_tags, :active) { video_tags }
+      VideoTag.stub(:find_each).and_yield(video_tags[0]).and_yield(video_tags[1])
       Stat::Video::Day.stub_chain(:where, :between).and_return([])
       stats_exporter.with_tempfile_csv_export do |export|
         export.read.should eq <<-EOF
-uid,name,loads_count,views_count,embed_loads_count,embed_views_count
+uid,title,loads_count,views_count,embed_loads_count,embed_views_count
 uid1,video1,0,0,0,0
 uid2,video2,0,0,0,0
         EOF

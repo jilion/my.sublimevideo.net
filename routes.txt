@@ -1,10 +1,10 @@
+No such file to load -- video_tag_updater
                                                    /docs(/*rest)(.:format)                                   :controller#:action
-                                                   /admin(/*rest)(.:format)                                  :controller#:action
                          api_test_request GET      /api/test_request(.:format)                               api/apis#test_request
                            usage_api_site GET      /api/sites/:id/usage(.:format)                            api/sites#usage
                                 api_sites GET      /api/sites(.:format)                                      api/sites#index
                                  api_site GET      /api/sites/:id(.:format)                                  api/sites#show
-                                                   /test_request(.:format)                                   api/apis#test_request
+                                          GET      /test_request(.:format)                                   api/apis#test_request
                                           GET      /sites/:id/usage(.:format)                                api/sites#usage
                                           GET      /sites(.:format)                                          api/sites#index
                                           GET      /sites/:id(.:format)                                      api/sites#show
@@ -31,6 +31,10 @@
                                admin_exit GET      /exit(.:format)                                           :controller#exit
                                admin_root          /                                                         :controller#:action
                               admin_admin          /                                                         :controller#:action
+                         stats_admin_site GET      /sites/:id/stats(.:format)                                admin/sites#stats
+                  videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
+                      invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
+                  active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages
 update_app_design_subscription_admin_site PUT      /sites/:id/update_app_design_subscription(.:format)       admin/sites#update_app_design_subscription
 update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
                               admin_sites GET      /sites(.:format)                                          admin/sites#index
@@ -41,6 +45,9 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                     pages_admin_referrers GET      /referrers/pages(.:format)                                admin/referrers#pages
                           admin_referrers GET      /referrers(.:format)                                      admin/referrers#index
                         become_admin_user GET      /users/:id/become(.:format)                               admin/users#become
+                         stats_admin_user GET      /users/:id/stats(.:format)                                admin/users#stats
+                      invoices_admin_user GET      /users/:id/invoices(.:format)                             admin/users#invoices
+              support_requests_admin_user GET      /users/:id/support_requests(.:format)                     admin/users#support_requests
            new_support_request_admin_user GET      /users/:id/new_support_request(.:format)                  admin/users#new_support_request
                   oauth_revoke_admin_user DELETE   /users/:id/oauth_revoke(.:format)                         admin/users#oauth_revoke
                               admin_users GET      /users(.:format)                                          admin/users#index

@@ -120,7 +120,7 @@ private
   end
 
   def self.videos_with_tags_data(site, video_uids)
-    video_tags = site.video_tags.where(uid: video_uids).all
+    video_tags = VideoTag.all(_site_token: site.token, with_uids: video_uids, select: VideoTag.backbone_attributes, per: 20)
     video_uids.map do |video_uid|
       # replace uid per id for Backbone
       if video_tag = video_tags.detect { |v| v.uid == video_uid }
