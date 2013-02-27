@@ -11,10 +11,6 @@
       = f.label :site_token, "", class: "icon"
       = f.select :site_token, support_request_site_token_options
 
-    .entry.select.stage
-      = f.label :stage, "", class: "icon"
-      = f.select :stage, support_request_stage_options
-
     .entry.ticket_subject
       = f.label :subject, "Subject", class: "icon"
       = f.text_field :subject, class: "text", placeholder: "Subject", required: true
