@@ -30,7 +30,7 @@ class MSVStats.Models.Video extends Backbone.Model
   isSecond: -> !this.get("vl_sum")?
 
   isUidGetFromSource: -> this.get('uid_origin') == 'source'
-  isNoName: -> !this.get('title')
+  noTitle: -> !this.get('title')
   isYouTubeVideo: -> this.get('sources_origin') == 'youtube'
   isVimeoVideo: -> this.get('sources_origin') == 'vimeo'
 

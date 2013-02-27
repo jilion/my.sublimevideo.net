@@ -29,14 +29,14 @@
                     new SublimeVideo.Media.ImagePreloader("#{video.sslPosterUrl()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.cid}" });
               .right
                 %h4{ title: video.title() }!= video.title(22)
-                - if video.isUidGetFromSource() || video.isNoName()
+                - if video.isUidGetFromSource() || video.noTitle()
                   %span.tooltip.warning
                     %span.icon
                     %span.content
                       %span.arrow
                       %span.p
                         Your video
-                        - if video.isUidGetFromSource() && video.isNoName()
+                        - if video.isUidGetFromSource() && video.noTitle()
                           uid & title aren't
                         - else if video.isUidGetFromSource()
                           uid isn't
