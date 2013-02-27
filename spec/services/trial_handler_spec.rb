@@ -106,9 +106,7 @@ describe TrialHandler do
       end
 
       it 'delays ._activate_billable_items_out_of_trial for site with trial subscriptions' do
-        described_class.should delay(:_activate_billable_items_out_of_trial).with(site.id)
-        described_class.should delay(:_activate_billable_items_out_of_trial).with(site1.id)
-        described_class.should delay(:_activate_billable_items_out_of_trial).with(site2.id)
+        described_class.should delay(:_activate_billable_items_out_of_trial).several_times_with(site.id, site1.id, site2.id)
 
         described_class.activate_billable_items_out_of_trial
       end
@@ -133,9 +131,7 @@ describe TrialHandler do
       end
 
       it 'delays ._activate_billable_items_out_of_trial for site with trial subscriptions' do
-        described_class.should delay(:_activate_billable_items_out_of_trial).with(site.id)
-        described_class.should delay(:_activate_billable_items_out_of_trial).with(site1.id)
-        described_class.should delay(:_activate_billable_items_out_of_trial).with(site2.id)
+        described_class.should delay(:_activate_billable_items_out_of_trial).several_times_with(site.id, site1.id, site2.id)
 
         described_class.activate_billable_items_out_of_trial
       end
@@ -189,9 +185,11 @@ describe TrialHandler do
         let(:user) { create(:user_no_cc) }
 
         it 'delegates to SiteManager#update_billable_items and cancel the app designs and addon plans IDs' do
-          BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid2.id)
-          BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
-          BillingMailer.should delay(:trial_has_expired).with(site1.id, 'App::Design', design_paid2.id)
+          BillingMailer.should delay(:trial_has_expired).several_times_with(
+            [site1.id, 'AddonPlan', addon_plan_paid2.id],
+            [site1.id, 'AddonPlan', addon_plan_paid1.id],
+            [site1.id, 'App::Design', design_paid2.id]
+          )
 
           described_class.new(site1).activate_billable_items_out_of_trial
 
@@ -272,9 +270,11 @@ describe TrialHandler do
         let(:user) { create(:user_no_cc) }
 
         it 'delegates to SiteManager#update_billable_items and cancel the app designs and addon plans IDs' do
-          BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid2.id)
-          BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
-          BillingMailer.should delay(:trial_has_expired).with(site1.id, 'App::Design', design_paid2.id)
+          BillingMailer.should delay(:trial_has_expired).several_times_with(
+            [site1.id, 'AddonPlan', addon_plan_paid2.id],
+            [site1.id, 'AddonPlan', addon_plan_paid1.id],
+            [site1.id, 'App::Design', design_paid2.id]
+          )
 
           described_class.new(site1).activate_billable_items_out_of_trial
 

@@ -38,7 +38,6 @@ class BillingMailer < Mailer
     )
   end
 
-
   def credit_card_will_expire(user_id)
     @user = User.find(user_id)
 
