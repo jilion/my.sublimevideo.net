@@ -23,7 +23,7 @@ CSV.generate do |csv|
   Site.all.each do |site|
     plan = site.plan.try(:title)
     all_billed_plays = Stat::Site::Day.views_sum(token: site.token, billable_only: true)
-    all_video_tags = site.video_tags.count
+    all_video_tags = VideoTag.count(_site_token: site.token)
     last_30d_bill_plays = site.last_30_days_main_video_views.to_i + site.last_30_days_extra_video_views.to_i
     last_30d_video_tags = site.last_30_days_video_tags.to_i
     csv << [site.id, site.token, site.hostname.presence, site.state, plan, all_billed_plays, all_video_tags, last_30d_bill_plays, last_30d_video_tags]

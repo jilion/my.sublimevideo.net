@@ -2,8 +2,8 @@ class MSVStats.Models.Video extends Backbone.Model
   # id = video uid
   defaults:
     uid_origin: null
-    name: null
-    name_origin: null
+    title: null
+    title_origin: null
     poster_url: null
     sources_id: null
     sources_origin: null
@@ -30,7 +30,7 @@ class MSVStats.Models.Video extends Backbone.Model
   isSecond: -> !this.get("vl_sum")?
 
   isUidGetFromSource: -> this.get('uid_origin') == 'source'
-  isNameGetFromSource: -> this.get('name_origin') == 'source'
+  noTitle: -> !this.get('title')
   isYouTubeVideo: -> this.get('sources_origin') == 'youtube'
   isVimeoVideo: -> this.get('sources_origin') == 'vimeo'
 
@@ -48,12 +48,12 @@ class MSVStats.Models.Video extends Backbone.Model
     else
       "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('poster_url'))}"
 
-  name: (length = null) ->
-    if this.get('name')?
-      if length? && this.get('name').length > length
-        this.get('name').substring(0, length) + '...'
+  title: (length = null) ->
+    if this.get('title')?
+      if length? && this.get('title').length > length
+        this.get('title').substring(0, length) + '...'
       else
-        this.get('name')
+        this.get('title')
     else if this.isYouTubeVideo()
       "<em>YouTube: ##{this.youTubeId().toUpperCase()}</em>"
     else if this.isVimeoVideo()
