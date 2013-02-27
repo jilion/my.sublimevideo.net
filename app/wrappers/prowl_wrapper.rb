@@ -1,3 +1,5 @@
+require 'configurator'
+
 class ProwlWrapper
   include Configurator
 

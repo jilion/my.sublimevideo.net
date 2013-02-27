@@ -1,3 +1,5 @@
+require 'configurator'
+
 class CampaignMonitorWrapper
   include Configurator
 

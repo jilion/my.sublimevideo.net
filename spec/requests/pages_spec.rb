@@ -172,9 +172,11 @@ feature "Suspended page" do
         current_url.should eq "http://my.sublimevideo.dev/suspended"
 
         VCR.use_cassette('ogone/visa_payment_acceptance') do
-          # FIXME: it seems that the context is reset inside the lambda...
-          # -> { click_button I18n.t('invoice.retry_invoices') }.should delay(
-          #   %w[%Class%transaction_succeeded% %Class%account_unsuspended% %Class%update_loader_and_license%])
+          BillingMailer.should delay(:transaction_succeeded)
+          UserMailer.should delay(:account_unsuspended).with(@current_user.id)
+          LoaderGenerator.should delay(:update_all_stages!).with(@site.id, deletable: true)
+          SettingsGenerator.should delay(:update_all!).with(@site.id)
+
           click_button I18n.t('invoice.retry_invoices')
         end
         @invoice.reload.should be_paid
