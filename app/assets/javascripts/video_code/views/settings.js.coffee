@@ -70,8 +70,7 @@ class MSVVideoCode.Views.Settings extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#video_settings_fields').html this.template
-      video: MSVVideoCode.video
+    $(@el).find('#video_settings_fields').html this.template(video: MSVVideoCode.video)
 
     this
 

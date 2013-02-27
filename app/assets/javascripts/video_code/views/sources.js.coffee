@@ -62,8 +62,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#video_sources_fields').html this.template
-      video: MSVVideoCode.video
+    $(@el).find('#video_sources_fields').html this.template(video: MSVVideoCode.video)
 
     _.each MSVVideoCode.sources.models, (source) => this.renderStatus(source)
 

@@ -19,10 +19,6 @@ class MSVVideoCode.Views.Code extends Backbone.View
     @popup = SublimeVideo.UI.Utils.openPopup
       class: 'popup'
       id: 'popup_code'
-      content: this.template
-        video: MSVVideoCode.video
-        videoTagHelper: @videoTagHelper
-        videoTagNoticesHelper: @videoTagNoticesHelper
-        settings: settings
+      content: this.template(video: MSVVideoCode.video, videoTagHelper: @videoTagHelper, videoTagNoticesHelper: @videoTagNoticesHelper, settings: settings)
 
     false

@@ -49,8 +49,7 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#lightbox_settings_fields').html this.template
-      video: MSVVideoCode.video
+    $(@el).find('#lightbox_settings_fields').html this.template(video: MSVVideoCode.video)
     $(@el).show()
     this.renderStatus()
 

@@ -35,10 +35,7 @@ class MSVVideoCode.Views.Preview extends Backbone.View
     settings = this.combineKitAndVideoSettings()
     settings['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
 
-    $(@el).html this.template
-      video: MSVVideoCode.video
-      videoTagHelper: @videoTagHelper
-      settings: settings
+    $(@el).html this.template(video: MSVVideoCode.video, videoTagHelper: @videoTagHelper, settings: settings)
 
     sublime.prepare(if MSVVideoCode.video.get('displayInLightbox') then 'lightbox-trigger' else 'video-preview')
 

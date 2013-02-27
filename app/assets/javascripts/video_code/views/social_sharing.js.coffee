@@ -41,8 +41,7 @@ class MSVVideoCode.Views.SocialSharing extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#social_sharing_settings_fields').html this.template
-      video: MSVVideoCode.video
+    $(@el).find('#social_sharing_settings_fields').html this.template(video: MSVVideoCode.video)
 
     this
 

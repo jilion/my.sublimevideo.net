@@ -25,7 +25,7 @@ class MSVVideoCode.Views.Embed extends Backbone.View
     size = [$('#embed_width').val(), $('#embed_height').val()].join('x').replace(/x$/, '')
     this.updateSetting($inputField.data('addon'), $inputField.data('setting'), size)
 
-  updateSetting: (addonName, settingName, value)->
+  updateSetting: (addonName, settingName, value) ->
     MSVVideoCode.video.updateSetting(addonName, settingName, value)
     this.renderStatus()
 
@@ -33,8 +33,7 @@ class MSVVideoCode.Views.Embed extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#embed_settings_fields').html this.template
-      video: MSVVideoCode.video
+    $(@el).find('#embed_settings_fields').html this.template(video: MSVVideoCode.video)
 
     this
 
