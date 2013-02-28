@@ -113,6 +113,8 @@
 
   "SVSocialSharing" : "ua",
   "SVEmbed" : "ub",
+  "cuezones" : "uc",
+  "SVCueZones" : "ud",
 
   // since these properties aren't used too often (only in custom players),
   // we use 3-letter keys instead use 2-letter keys.
