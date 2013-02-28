@@ -13,6 +13,10 @@ class VideoTag
     end
   end
 
+  def self.site_tokens(params = {})
+    get_raw('/private_api/video_tags/site_tokens', params)[:data][:site_tokens]
+  end
+
   def self.backbone_attributes
     [:uid, :uid_origin, :title, :poster_url, :sources_id, :sources_origin]
   end

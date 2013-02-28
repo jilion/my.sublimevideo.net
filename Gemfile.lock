@@ -38,6 +38,14 @@ GIT
       signature (~> 0.1.6)
 
 GIT
+  remote: git://github.com/jilion/turbolinks.git
+  revision: c800a62e398ffa4724f8b83c49fc66090409325b
+  branch: ios_video_issue
+  specs:
+    turbolinks (1.0.0)
+      coffee-rails
+
+GIT
   remote: git://github.com/jilion/useragent.git
   revision: 9fd0f887527850994c543caa7cf5327bd635dc02
   specs:
@@ -277,6 +285,7 @@ GEM
       nokogiri (~> 1.5.0)
       ruby-hmac
     formatador (0.2.4)
+    google-analytics-turbolinks (0.0.1)
     guard (1.6.2)
       listen (>= 0.6.0)
       lumberjack (>= 1.0.2)
@@ -437,9 +446,6 @@ GEM
     rack-google-analytics (0.11.0)
     rack-livereload (0.3.11)
       rack
-    rack-pjax (0.7.0)
-      nokogiri (~> 1.5)
-      rack (~> 1.3)
     rack-ssl (1.3.3)
       rack
     rack-ssl-enforcer (0.2.5)
@@ -649,6 +655,7 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog
+  google-analytics-turbolinks
   guard-jasmine
   guard-livereload
   guard-pow
@@ -690,7 +697,6 @@ DEPENDENCIES
   rack-cache
   rack-google-analytics
   rack-livereload
-  rack-pjax
   rack-ssl-enforcer
   rails (= 3.2.12)
   rails-backbone (~> 0.6.0)
@@ -720,6 +726,7 @@ DEPENDENCIES
   thin
   timecop
   tinder
+  turbolinks!
   twitter
   typhoeus (~> 0.2.0)
   uglifier
