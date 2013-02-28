@@ -33,37 +33,38 @@ class MySublimeVideo.Models.Video extends Backbone.Model
 
     this.set(youTubeId: newYouTubeId)
 
+  setDataUID: (newDataUID) ->
+    if /^[a-z0-9_\-]{0,64}$/i.test(newDataUID)
+      this.set(dataUID: newDataUID)
+    else
+      false
+
   setKeepRatio: (newKeepRatio) ->
     this.set(keepRatio: newKeepRatio)
-    this.setHeightWithRatio() if this.get('keepRatio')
+    this._setHeightFromWidth() if this.get('keepRatio')
 
-  setWidth: (newWidth) ->
+  setWidth: (newWidth, updateHeight = true) ->
     newWidth = parseInt(newWidth, 10)
+    console.log newWidth
     newWidth = 200 if _.isNaN(newWidth) or newWidth < 200
 
     if newWidth isnt this.get('width')
       this.set(width: _.min([newWidth, 852]))
-      this.setHeightWithRatio() if this.get('keepRatio')
+      this._setHeightFromWidth() if this.get('keepRatio') and updateHeight
       this.trigger('change:width')
 
-  setHeight: (newHeight) ->
+  setHeight: (newHeight, updateHeight = true) ->
     newHeight = parseInt(newHeight, 10)
     newHeight = 100 if _.isNaN(newHeight) or newHeight < 100
 
     if newHeight isnt this.get('height')
       this.set(height: _.min([newHeight, 720]))
-      this.setWidthWithRatio() if this.get('keepRatio')
+      this._setWidthFromHeight() if this.get('keepRatio') and updateHeight
       this.trigger('change:height')
-
-  setHeightWithRatio: ->
-    this.setHeight(parseInt(this.get('width') * this.get('ratio'), 10))
-
-  setWidthWithRatio: ->
-    this.setWidth(parseInt(this.get('height') / this.get('ratio'), 10))
 
   setDefaultDataUID: ->
     mp4BaseSrc = this.get('sources').mp4Base().get('src')
-    this.set(dataUID: crc32(mp4BaseSrc)) unless !mp4BaseSrc
+    this.setDataUID(crc32(mp4BaseSrc)) unless !mp4BaseSrc
 
   clearDataUIDAndName: ->
     this.set(dataUID: '')
@@ -82,3 +83,9 @@ class MySublimeVideo.Models.Video extends Backbone.Model
         return setting
 
     kitForDefault.getSetting(addonName, settingName)
+
+  _setWidthFromHeight: ->
+    this.setWidth(parseInt(this.get('height') / this.get('ratio'), 10), false)
+
+  _setHeightFromWidth: ->
+    this.setHeight(parseInt(this.get('width') * this.get('ratio'), 10), false)

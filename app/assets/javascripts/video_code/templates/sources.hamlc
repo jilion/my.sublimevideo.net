@@ -4,7 +4,7 @@
       %label{ for: "youtube_id" }
         Your YouTube video ID
         != "("
-        %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('beta/youtube')}", onclick: "window.open(this); return false" }= "Where can I find the video ID?"
+        %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('youtube')}", onclick: "window.open(this); return false" }= "Where can I find the video ID?"
         = ")"
     %br
     %input.text{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: @video.get('youTubeId') }
@@ -21,7 +21,7 @@
     %ul
       %li.notice.mime_type_invalid{ style: 'display: none' }><
         != "Please find more information on how to fix MIME Type misconfiguration in our&nbsp;"
-        %a{ href: "#{SublimeVideo.Misc.Utils.docsUrl('beta/troubleshooting#videos-dont-start-playing')}", onclick: "window.open(this); return false" }><
+        %a{ href: "#{SublimeVideo.Misc.Utils.docsUrl('troubleshooting#videos-wont-play')}", onclick: "window.open(this); return false" }><
           documentation
         = "."
 
@@ -32,7 +32,7 @@
         - if format is 'mp4'
           %small
             != "("
-            %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('beta/encode-videos-for-the-web')}", onclick: "window.open(this); return false" }= "Need help with video formats?"
+            %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('encode-videos-for-the-web')}", onclick: "window.open(this); return false" }= "Need help with video formats?"
             = ")"
 
       %table.sources

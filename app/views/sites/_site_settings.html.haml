@@ -13,7 +13,7 @@
     %p.info
       = raw "Use this field to specify extra domains (e.g.: #{content_tag(:em, 'mydomain.fr, mydomain.ch')}) separated by commas."
       = raw "These domains are meant to be used #{content_tag(:strong, 'exclusively')} for multiple domains leading to the #{content_tag(:strong, 'same or translated content')}."
-      = raw "#{link_to 'Learn more', docs_url('beta/site-settings#alias-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#alias-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
     .entry.extra_hostnames
       = f.label :extra_hostnames, '', class: 'icon'
       = f.text_field :extra_hostnames, class: 'text', placeholder: 'mydomain.fr, mydomain.ch', autocomplete: :off
@@ -26,7 +26,7 @@
     %h5= f.label :staging_hostnames
     %p.info
       = raw "Use this field to specify staging domains (e.g.: #{content_tag(:em, 'staging.mydomain.com, mydomain-staging.com')}) separated by commas."
-      = raw "#{link_to 'Learn more', docs_url('beta/site-settings#staging-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#staging-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
     .entry.staging_hostnames
       = f.label :staging_hostnames, '', class: 'icon'
       = f.text_field :staging_hostnames, class: 'text', placeholder: 'staging.mydomain.com, mydomain-staging.com', autocomplete: :off
@@ -35,7 +35,7 @@
     %h5= f.label :dev_hostnames
     %p.info
       = raw "Use this field to specify local development domains (e.g.: #{content_tag(:em, 'mydomain.local, mydomain.dev')}) separated by commas."
-      = raw "#{link_to 'Learn more', docs_url('beta/site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
     .entry.dev_hostnames
       = f.label :dev_hostnames, '', class: 'icon'
       = f.text_field :dev_hostnames, class: 'text', placeholder: Site::DEFAULT_DEV_DOMAINS + ', mydomain.local, mydomain.dev', autocomplete: :off
@@ -54,7 +54,7 @@
     %h5= f.label :path
     %p.info
       Use this to restrict your player to a specific path.
-      = raw "#{link_to 'Learn more', docs_url('beta/site-settings#path'), onclick: 'window.open(this); return false', class: 'hl'}."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#path'), onclick: 'window.open(this); return false', class: 'hl'}."
     .entry.path
       = f.label :path, '', class: 'icon'
       = f.text_field :path, class: 'text short small_icon', placeholder: 'path', autocomplete: :off, maxlength: 256

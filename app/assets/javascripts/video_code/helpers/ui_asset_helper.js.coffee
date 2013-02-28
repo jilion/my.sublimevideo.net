@@ -8,13 +8,14 @@ class MSVVideoCode.Helpers.UIAssetHelper
     $("##{@scope}_box").show()
 
   hideErrors: ->
-    $("##{@scope}_box").removeClass 'valid'
-    $("##{@scope}_src").removeClass 'errors'
-    $("##{@scope}_box .inline_alert").each -> $(this).hide()
+    $("##{@scope}_box").removeClass('valid')
+    $("##{@scope}_src").removeClass('errors')
+    $("##{@scope}_box .inline_alert").each ->
+      $(this).hide()
 
   renderValid: ->
-    $("##{@scope}_box").addClass 'valid'
+    $("##{@scope}_box").addClass('valid')
 
   renderError: (name) ->
     $("##{@scope}_#{name}").show()
-    $("##{@scope}_src").addClass 'errors'
+    $("##{@scope}_src").addClass('errors')
