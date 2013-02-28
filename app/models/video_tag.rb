@@ -20,4 +20,10 @@ class VideoTag
   def to_param
     uid
   end
+
+  def self.find(*args)
+    super(*args)
+  rescue URI::InvalidURIError => ex
+    raise ActiveRecord::RecordNotFound, ex
+  end
 end

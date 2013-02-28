@@ -4,6 +4,10 @@ require 'support/private_api_helpers'
 
 require 'video_tag'
 
+class ActiveRecord
+  class RecordNotFound < StandardError; end
+end
+
 describe VideoTag do
   let(:site_token) { 'site_token' }
 
@@ -32,6 +36,12 @@ describe VideoTag do
 
     it "uses uid" do
       video_tag.to_param.should eq video_tag.uid
+    end
+  end
+
+  describe ".find" do
+    it "raises ActiveRecord::RecordNotFound when uid is invalid" do
+      expect { VideoTag.find(' a ', _site_token: 1) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end
