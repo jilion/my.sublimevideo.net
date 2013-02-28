@@ -13,7 +13,8 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     'click #autoplay':              'updateAutoplay'
 
   initialize: ->
-    @posterHelper = new MSVVideoCode.Helpers.UIAssetHelper 'poster'
+    @posterHelper  = new MSVVideoCode.Helpers.UIAssetHelper 'poster'
+    @UIDHelper = new MSVVideoCode.Helpers.UIAssetHelper 'data_uid'
 
     _.bindAll this, 'render', 'renderWidth', 'renderHeight', 'renderPosterStatus'
     MSVVideoCode.poster.bind  'change',          this.renderPosterStatus
@@ -37,15 +38,16 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     MSVVideoCode.video.set(dataName: event.target.value)
 
   updateDataUID: (event) ->
-    MSVVideoCode.video.set(dataUID: event.target.value)
+    if MSVVideoCode.video.setDataUID(event.target.value)
+      @UIDHelper.hideErrors()
+    else
+      @UIDHelper.renderError('src_invalid')
 
   updateWidth: (event) ->
-    newWidth = parseInt(event.target.value, 10)
-    MSVVideoCode.video.setWidth(newWidth)
+    MSVVideoCode.video.setWidth(event.target.value)
 
   updateHeight: (event) ->
-    newHeight = parseInt(event.target.value, 10)
-    MSVVideoCode.video.setHeight(newHeight)
+    MSVVideoCode.video.setHeight(event.target.value)
 
   updateKeepRatio: (event) ->
     MSVVideoCode.video.setKeepRatio(event.target.checked)

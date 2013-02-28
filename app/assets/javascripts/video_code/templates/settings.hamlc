@@ -8,7 +8,7 @@
 %p.info
   The poster frame is the image displayed to advertize the video before the user clicks the initial Play button.
   != "If you need help creating poster frames for your videos, please read our&nbsp;"
-  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/create-poster-frame'), onclick: "window.open(this); return false" }><
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('create-poster-frame'), onclick: "window.open(this); return false" }><
     documentation
   = "."
 
@@ -16,19 +16,23 @@
 
 %p.info
   != "Fill in these attributes to identify and name your videos. These fields will also be used by SublimeVideo's&nbsp;"
-  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/addons/real-time-stats/overview'), onclick: "window.open(this); return false" }><
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('addons/stats'), onclick: "window.open(this); return false" }><
     Universal Real-Time Statistics platform
   = "."
 
 %h5
   %label{ for: "data_uid" } UID
-#video_data_uid.entry
-  %input#data_uid.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @video.get('dataUID'), size: 8 }
-
+#data_uid.entry
+  %input#data_uid_src.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @video.get('dataUID'), size: 8 }
+  %span#data_uid_src_invalid.inline_alert{ style: "display:none" }
+    != "Please provides&nbsp;"
+    %a{ href: SublimeVideo.Misc.Utils.docsUrl('settings/player-settings#uid'), onclick: "window.open(this); return false" }><
+      a valid UID
+    = "."
 %h5
   %label{ for: "data_name" } Name
-#video_data_name.entry
-  %input#data_name.text.no_icon{ type: "text", placeholder: "Video name", value: @video.get('dataName'), size: 50 }
+#data_name.entry
+  %input#data_name_src.text.no_icon{ type: "text", placeholder: "Video name", value: @video.get('dataName'), size: 50 }
 
 %h4 Player size
 
