@@ -25,7 +25,7 @@ gem 'display_case'
 gem 'rails_autolink'
 gem 'premailer', github: 'jilion/premailer'
 gem 'premailer-rails3'
-gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
+gem 'turbolinks', github: 'jilion/turbolinks', branch: 'fix_undefined_script_tags'
 gem 'google-analytics-turbolinks'
 
 # Auth / invitations
