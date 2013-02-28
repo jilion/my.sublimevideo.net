@@ -9,5 +9,5 @@
 
           .actions= f.submit "Done", class: "blue_button"
           .spacer
-      = link_to cancel_url, class: 'close', onclick: "return SublimeVideo.UI.Utils.closePopup()", data: { skip_pjax: true } do
+      = link_to cancel_url, class: 'close', onclick: "return SublimeVideo.UI.Utils.closePopup()", data: { "no-turbolink" => true } do
         %span Close

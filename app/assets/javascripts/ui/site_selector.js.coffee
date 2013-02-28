@@ -6,6 +6,4 @@ class MySublimeVideo.UI.SiteSelector
   setupObservers: ->
     @select.on 'change', =>
       href = location.href.replace("/#{@select.attr('data-token')}", "/#{@select.val()}")
-      $.pjax
-        url: href
-        container: '[data-pjax-container]'
+      Turbolinks.visit(href)

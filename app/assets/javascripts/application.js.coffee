@@ -1,5 +1,4 @@
 #= require sublimevideo
-#= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
 #= require mousetrap.min
@@ -13,6 +12,10 @@
 #
 #= require stats
 #= require video_code
+#
+#= require google-analytics-turbolinks
+#= require turbolinks
+
 
 window.MySublimeVideo =
   UI: {}
@@ -118,17 +121,11 @@ MySublimeVideo.prepareVideosAndLightboxes = ->
       sublime.prepare el
   sublime.load()
 
+$(window).bind 'page:change', ->
+  SublimeVideo.documentReady()
+  MySublimeVideo.documentReady()
+  MySublimeVideo.prepareVideosAndLightboxes()
+  SublimeVideo.UI.updateActiveItemMenus()
+
 $(document).ready ->
   MySublimeVideo.documentReady()
-
-  $.pjax.defaults.timeout = 1000
-  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax('[data-pjax-container]')
-  $('[data-pjax-container]').on 'pjax:end', ->
-    # Ensure that body class is always up-to-date
-    bodyClass = $('div[data-body-class]').data('body-class')
-    $('body').attr("class", bodyClass)
-
-    SublimeVideo.documentReady()
-    MySublimeVideo.documentReady()
-    MySublimeVideo.prepareVideosAndLightboxes()
-    SublimeVideo.UI.updateActiveItemMenus()

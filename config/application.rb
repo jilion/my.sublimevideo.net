@@ -21,7 +21,6 @@ module MySublimeVideo
 
     require 'oauth/rack/oauth_filter'
     config.middleware.use OAuth::Rack::OAuthFilter
-    config.middleware.use Rack::Pjax
 
     # http://ileitch.github.com/2012/03/24/rails-32-code-reloading-from-lib.html
     config.watchable_dirs['lib'] = [:rb]

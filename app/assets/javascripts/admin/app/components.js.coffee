@@ -6,6 +6,4 @@ AdminSublimeVideo.UI.prepareComponentSelector = ->
   if (componentsSelectName = $('#component_select_name')).exists()
     componentsSelectName.on 'change', ->
       href = location.href.replace("/#{componentsSelectName.attr('data-token')}", "/#{componentsSelectName.val()}")
-      $.pjax
-        url: href
-        container: '[data-pjax-container]'
+      Turbolinks.visit(href)

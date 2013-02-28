@@ -25,6 +25,8 @@ gem 'display_case'
 gem 'rails_autolink'
 gem 'premailer', github: 'jilion/premailer'
 gem 'premailer-rails3'
+gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
+gem 'google-analytics-turbolinks'
 
 # Auth / invitations
 gem 'devise', '~> 2.1.2'
@@ -61,8 +63,6 @@ gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
 gem 'cocaine'
-
-gem 'rack-pjax'
 
 # CDN
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
