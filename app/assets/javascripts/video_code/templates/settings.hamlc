@@ -26,7 +26,7 @@
   %input#data_uid_src.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @video.get('dataUID'), size: 8 }
   %span#data_uid_src_invalid.inline_alert{ style: "display:none" }
     != "Please provides&nbsp;"
-    %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('settings/player-settings#uid'), onclick: "window.open(this); return false" }><
+    %a{ href: SublimeVideo.Misc.Utils.docsUrl('settings/player-settings#uid'), onclick: "window.open(this); return false" }><
       a valid UID
     = "."
 %h5
