@@ -17,7 +17,7 @@ module Scheduler
 
     InvoiceCreator.delay(options).create_invoices_for_month
     TrialHandler.delay(options).send_trial_will_expire_emails
-    TrialHandler.delay(options).activate_billable_items_out_of_trial!
+    TrialHandler.delay(options).activate_billable_items_out_of_trial
     SiteCountersUpdater.delay(options).set_first_billable_plays_at_for_not_archived_sites
     SiteCountersUpdater.delay(options).update_last_30_days_counters_for_not_archived_sites
     Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i).charge_invoices

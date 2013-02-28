@@ -66,8 +66,8 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules TrialHandler.activate_billable_items_out_of_trial!" do
-      TrialHandler.should delay(:activate_billable_items_out_of_trial!,
+    it "schedules TrialHandler.activate_billable_items_out_of_trial" do
+      TrialHandler.should delay(:activate_billable_items_out_of_trial,
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
