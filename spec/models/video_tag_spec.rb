@@ -4,10 +4,6 @@ require 'support/private_api_helpers'
 
 require 'video_tag'
 
-module ActiveRecord
-  class RecordNotFound < StandardError; end
-end
-
 describe VideoTag do
   let(:site_token) { 'site_token' }
 
