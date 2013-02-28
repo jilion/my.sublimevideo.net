@@ -1,4 +1,5 @@
 require 'sublime_video_private_api/model'
+require 'rescue_me'
 
 class VideoTag
   include SublimeVideoPrivateApi::Model
@@ -6,7 +7,9 @@ class VideoTag
   collection_path "/private_api/sites/:site_token/video_tags"
 
   def self.count(params = {})
-    get_raw(:count, params)[:data][:count].to_i
+    rescue_and_retry(3) do
+      get_raw(:count, params)[:data][:count].to_i
+    end
   end
 
   def self.backbone_attributes
