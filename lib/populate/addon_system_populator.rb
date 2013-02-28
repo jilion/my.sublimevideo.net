@@ -79,7 +79,8 @@ class AddonSystemPopulator < Populator
         lambda { { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: Addon.get('video_player') } },
         lambda { { name: 'action',         kind: 'action',        design_dependent: false, parent_addon: Addon.get('video_player') } },
         lambda { { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player')  }}
+        lambda { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        lambda { { name: 'cuezones',       kind: 'cuezones',      design_dependent: false, parent_addon: Addon.get('video_player') } }
     ]
   end
 
@@ -105,7 +106,8 @@ class AddonSystemPopulator < Populator
       { name: 'vip',       price: 9990, addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('buy_action'),     availability: 'custom', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('info'),           availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('action'),         availability: 'custom', stable_at: Time.now.utc }
+      { name: 'standard',  price: 0,    addon: Addon.get('action'),         availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 690,  addon: Addon.get('cuezones'),       availability: 'public', stable_at: Time.now.utc }
     ]
   end
 
@@ -174,7 +176,9 @@ class AddonSystemPopulator < Populator
 
       { name: 'end_actions_twit',       token: 'sf.sf.agb',   addon: Addon.get('end_actions'),    design: App::Design.get('twit'),     component: App::Component.get('twit') },
 
-      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: nil,                         component: App::Component.get('svnet') }
+      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: nil,                         component: App::Component.get('svnet') },
+
+      { name: 'cuezones',               token: 'sa.sh.ud',    addon: Addon.get('cuezones'),       design: nil,                         component: App::Component.get('app') }
     ]
   end
 
@@ -246,7 +250,9 @@ class AddonSystemPopulator < Populator
 
       { addon_plan: AddonPlan.get('end_actions', 'standard'),    plugin: App::Plugin.get('end_actions_twit')    },
 
-      { addon_plan: AddonPlan.get('buy_action', 'standard'),     plugin: App::Plugin.get('buy_action_blizzard') }
+      { addon_plan: AddonPlan.get('buy_action', 'standard'),     plugin: App::Plugin.get('buy_action_blizzard') },
+
+      { addon_plan: AddonPlan.get('cuezones', 'standard'),       plugin: App::Plugin.get('cuezones') }
     ]
   end
 
