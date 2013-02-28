@@ -11,7 +11,7 @@
   .com_text
     %p
       = "SublimeVideo's statistics add-on offers a truly comprehensive, real-time picture of your site’s video traffic from any device, whether generated from mobile or desktop, HTML5 or Flash."
-      = raw "#{link_to "Read more", docs_url('beta/real-time-stats')} or #{link_to "Get the Real-Time Statistics add-on", addons_path(h: 'stats-realtime')} for your site."
+      = raw "#{link_to "Read more", docs_url('addons/stats')} or #{link_to "Get the Real-Time Statistics add-on", addons_path(h: 'stats-realtime')} for your site."
     %p= raw "This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on #{link_to "sublimevideo.net", "http://sublimevideo.net"} from any device and see your activity logged in real-time on this page. Enjoy!"
 - else
   - title("Stats for #{hostname_or_token(@site)}")
