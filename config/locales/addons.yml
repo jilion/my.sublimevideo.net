@@ -5,6 +5,7 @@ en:
     image_viewer:   'Image Viewer'
     stats:          'Analytics'
     logo:           'On-Video Logo'
+    cuezones:       'Cue Zones'
     controls:       'Controls'
     initial:        'Start View'
     sharing:        'Sharing Buttons'
@@ -37,6 +38,9 @@ en:
       sublime:  'SublimeVideo logo'
       disabled: 'No SublimeVideo logo'
       custom:   'Your logo'
+
+    cuezones:
+      standard: 'Cue Zones API'
 
     controls:
       standard: 'Standard controls'
