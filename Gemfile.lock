@@ -190,7 +190,7 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.4.0)
+    coffee-script-source (1.5.0)
     columnize (0.3.6)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
@@ -629,7 +629,6 @@ DEPENDENCIES
   chosen-rails!
   cocaine
   coffee-rails
-  coffee-script-source (= 1.4.0)
   configurator!
   countries!
   crack

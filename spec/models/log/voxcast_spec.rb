@@ -61,9 +61,9 @@ describe Log::Voxcast do
     subject { create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', file: log_file) }
 
     its(:created_at) { should be_present }
-    its(:hostname)   { should == '4076.voxcdn.com' }
-    its("file.url")  { should == "/uploads/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz" }
-    its("file.size") { should == 848 }
+    its(:hostname)   { should eq '4076.voxcdn.com' }
+    its("file.url")  { should eq "/uploads/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz" }
+    its("file.size") { should eq 848 }
 
     it "should have good log content" do
       log = described_class.find(subject.id) # to be sure that log is well saved with CarrierWave

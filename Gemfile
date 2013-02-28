@@ -113,7 +113,6 @@ group :assets do
   gem 'asset_sync'
   gem 'eco'
   gem 'uglifier'
-  gem 'coffee-script-source', '1.4.0'
   gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
