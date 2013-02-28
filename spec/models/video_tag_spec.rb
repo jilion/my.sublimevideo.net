@@ -19,6 +19,18 @@ describe VideoTag do
     end
   end
 
+  describe ".site_tokens" do
+    before {
+      stub_api_for(VideoTag) do |stub|
+        stub.get("/private_api/video_tags/site_tokens") { |env| [200, {}, {site_tokens: ['site_token']}.to_json] }
+      end
+    }
+
+    it "returns integer" do
+      VideoTag.site_tokens.should eq ['site_token']
+    end
+  end
+
   describe "#backbone_data" do
     let(:video_tag) { VideoTag.new(title: 'Video Title', created_at: 1.day.ago) }
 
