@@ -1,12 +1,8 @@
 class HostnameValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, hostname)
-    if hostname.present?
-      if HostnameHandler.wildcard?(hostname)
-        record.errors.add(attribute, :wildcard, default: options[:message])
-      elsif !HostnameHandler.valid?(hostname)
-        record.errors.add(attribute, :invalid, default: options[:message])
-      end
+    if hostname.present? and error = HostnameHandler.detect_error(record, hostname, :wildcard, :main_invalid)
+      record.errors.add(attribute, error, default: options[:message])
     end
   end
 

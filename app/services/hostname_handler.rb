@@ -17,40 +17,29 @@ class HostnameHandler
     end
   end
 
-  # one site or list of sites separated by comma
-  def self.valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
-    end
+  def self.main_invalid?(*args)
+    !_main_valid?(args.shift)
+  end
+
+  def self.extra_invalid?(*args)
+    !_extra_valid?(args.shift)
+  end
+
+  def self.dev_invalid?(*args)
+    !_dev_valid?(args.shift)
   end
 
   # one site or list of sites separated by comma
-  def self.extra_valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
-    else
-      true
-    end
-  end
-
-  # one site or list of sites separated by comma
-  def self.dev_valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| dev_valid_one?(h) }
-    else
-      true
-    end
-  end
-
-  # one site or list of sites separated by comma
-  def self.wildcard?(hostnames)
+  def self.wildcard?(*args)
+    hostnames = args.shift
     if hostnames.present?
       clean(hostnames).split(/,\s*/).any? { |h| h =~ /\*/ }
     end
   end
 
   # one site or list of sites separated by comma
-  def self.duplicate?(hostnames)
+  def self.duplicate?(*args)
+    hostnames = args.shift
     if hostnames.present?
       hostnames = clean(hostnames).split(/,\s*/)
       hostnames.count > hostnames.uniq.count
@@ -58,13 +47,47 @@ class HostnameHandler
   end
 
   # one site or list of sites separated by comma
-  def self.include?(hostnames, hostname)
+  def self.include_hostname?(*args)
+    hostnames = args.shift
+    record_hostname = args.shift
     if hostnames.present?
-      clean(hostnames).split(/,\s*/).any? { |h| h == hostname }
+      clean(hostnames).split(/,\s*/).any? { |h| h == record_hostname }
+    end
+  end
+
+  def self.detect_error(*args)
+    record = args.shift
+    hostnames = args.shift
+    args.detect do |validation|
+      send("#{validation}?", hostnames, record.hostname)
     end
   end
 
   private
+
+  def self._main_valid?(hostnames)
+    if hostnames.present?
+      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
+    end
+  end
+
+  # one site or list of sites separated by comma
+  def self._extra_valid?(hostnames)
+    if hostnames.present?
+      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
+    else
+      true
+    end
+  end
+
+  # one site or list of sites separated by comma
+  def self._dev_valid?(hostnames)
+    if hostnames.present?
+      clean(hostnames).split(/,\s*/).all? { |h| dev_valid_one?(h) }
+    else
+      true
+    end
+  end
 
   def self.clean_one(hostname)
     hostname.downcase!
