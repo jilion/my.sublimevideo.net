@@ -1,18 +1,12 @@
 require 'spec_helper'
 
-Site = Class.new unless defined?(Site)
-
 describe SiteCountersUpdater do
-  let(:site)          { stub }
-  let(:usage_manager) { stub }
+  let(:site) { create(:site, last_30_days_main_video_views: 1) }
 
   describe '.update_last_30_days_counters_for_not_archived_sites' do
     it 'calls #update_last_30_days_video_tags_counters and #update_last_30_days_video_views_counters on each non-archived sites' do
-      Site.stub_chain(:not_archived, :find_each).and_yield(site)
-
-      SiteCountersUpdater.should_receive(:new).with(site) { usage_manager }
-      usage_manager.should_receive(:update_last_30_days_video_tags_counters) { usage_manager }
-      usage_manager.should_receive(:update_last_30_days_video_views_counters) { usage_manager }
+      Site.stub_chain(:not_archived, :select, :find_each).and_yield(site)
+      described_class.should delay(:_update_last_30_days_counters, queue: 'low').with(site.id)
 
       described_class.update_last_30_days_counters_for_not_archived_sites
     end
@@ -20,10 +14,8 @@ describe SiteCountersUpdater do
 
   describe '.set_first_billable_plays_at_for_not_archived_sites' do
     it 'calls #set_first_billable_plays_at on each non-archived sites' do
-      Site.stub_chain(:not_archived, :where, :find_each).and_yield(site)
-
-      SiteCountersUpdater.should_receive(:new).with(site) { usage_manager }
-      usage_manager.should_receive(:set_first_billable_plays_at)
+      Site.stub_chain(:not_archived, :where, :select, :find_each).and_yield(site)
+      described_class.should delay(:_set_first_billable_plays_at, queue: 'low').with(site.id)
 
       described_class.set_first_billable_plays_at_for_not_archived_sites
     end
@@ -58,27 +50,25 @@ describe SiteCountersUpdater do
     end
   end
 
-  describe '#update_last_30_days_video_tags_counters' do
-    let(:site) { create(:site) }
-
-    it 'updates site video tags counter from the last 30 days' do
-      VideoTag.should_receive(:count).with(_site_token: site.token, last_30_days_active: true) { 2 }
-      described_class.new(site).update_last_30_days_video_tags_counters
-      site.reload.last_30_days_video_tags.should eq 2
-    end
-  end
-
-  describe '#update_last_30_days_video_views_counters' do
-    let(:site) { create(:site, last_30_days_main_video_views: 1) }
+  describe '#update_last_30_days_counters' do
     before do
       create(:site_day_stat, t: site.token, d: 31.days.ago.midnight, vv: { m: 1, e: 5, d: 9, i: 13, em: 17 })
       create(:site_day_stat, t: site.token, d: 30.days.ago.midnight, vv: { m: 2, e: 6, d: 10, i: 14, em: 18 })
       create(:site_day_stat, t: site.token, d: 1.days.ago.midnight, vv: { m: 3, e: 7, d: 11, i: 15, em: 19 })
       create(:site_day_stat, t: site.token, d: Time.now.utc.midnight, vv: { m: 4, e: 8, d: 12, i: 16, em: 20 })
+      VideoTag.stub(:count)
+    end
+
+    it 'updates site video tags counter from the last 30 days' do
+      VideoTag.should_receive(:count).with(site_token: site.token, last_30_days_active: true) { 2 }
+
+      described_class.new(site).update_last_30_days_counters
+
+      site.reload.last_30_days_video_tags.should eq 2
     end
 
     it 'updates site counters from last 30 days site stats' do
-      described_class.new(site).update_last_30_days_video_views_counters
+      described_class.new(site).update_last_30_days_counters
 
       site.last_30_days_main_video_views.should    eq 5
       site.last_30_days_extra_video_views.should   eq 13
