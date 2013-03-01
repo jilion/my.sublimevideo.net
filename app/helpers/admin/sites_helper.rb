@@ -67,16 +67,7 @@ module Admin::SitesHelper
   end
 
   def app_designs_for_admin_select(site)
-    items = []
-    App::Design.order(:price).each do |app_design|
-      title = if billable_item = site.billable_items.with_item(app_design).first
-        "#{app_design.title} (#{billable_item.state})"
-      else
-        app_design.title
-      end
-      items << [title, app_design.id]
-    end
-
+    items = _items_for_select(site, App::Design.order(:price))
     options_for_select(items)
   end
 
@@ -85,23 +76,25 @@ module Admin::SitesHelper
     addons = Addon.all
 
     addons.each do |addon|
-      group_items = []
-      addon.plans.includes(:addon).order(:price).each do |addon_plan|
-        title = if billable_item = site.billable_items.with_item(addon_plan).first
-          "#{addon_plan.title} (#{billable_item.state})"
-        else
-          addon_plan.title
-        end
-        group_items << [title, addon_plan.id]
-      end
-
-      grouped_options[addon.title] = group_items if group_items.present?
+      items = _items_for_select(site, addon.plans.includes(:addon).order(:price))
+      grouped_options[addon.title] = items if items.present?
     end
 
     grouped_options_for_select(grouped_options)
   end
 
   private
+
+  def _items_for_select(site, scope)
+    scope.map do |item|
+      title = if billable_item = site.billable_items.with_item(item).first
+        "#{item.title} (#{billable_item.state})"
+      else
+        item.title
+      end
+      [title, item.id]
+    end
+  end
 
   def _admin_sites_page_title(underscored_name, value = nil)
     ["#{underscored_name.gsub(/_/, ' ')}", value].compact.join(' ')
