@@ -66,12 +66,16 @@ class InvoiceCreator
     _subscribed_activities_during(period).each do |activity|
       next if activity.item.beta? || activity.item.free?
 
-      end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
+      _build_invoice_item_unless_overlaping_items(activity, period)
+    end
+  end
 
-      # Ensure we don't create 2 invoice items with the same item and overlapping periods
-      unless invoice.invoice_items.detect { |ii| ii.item == activity.item && ii.started_at < activity.created_at && ii.ended_at >= end_activity_date }
-        _build_invoice_item(activity.item, activity.created_at, end_activity_date)
-      end
+  def _build_invoice_item_unless_overlaping_items(activity, period)
+    end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
+
+    # Ensure we don't create 2 invoice items with the same item and overlapping periods
+    unless invoice.invoice_items.detect { |ii| ii.item == activity.item && ii.started_at < activity.created_at && ii.ended_at >= end_activity_date }
+      _build_invoice_item(activity.item, activity.created_at, end_activity_date)
     end
   end
 
