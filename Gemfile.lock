@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/hexorx/countries.git
+  revision: 71c62d7706091ae5011c9e76cda3886f3c5be918
+  specs:
+    countries (0.9.1)
+      currencies (>= 0.4.0)
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -12,14 +19,6 @@ GIT
   specs:
     configurator (1.0.0)
       activesupport (>= 3.2.12)
-
-GIT
-  remote: git://github.com/jilion/countries.git
-  revision: c8405609185ec4ad5e46523fa33a8254f7d94a72
-  branch: fix_country_select
-  specs:
-    countries (0.9.1)
-      currencies (>= 0.4.0)
 
 GIT
   remote: git://github.com/jilion/premailer.git
