@@ -453,13 +453,6 @@ describe InvoiceCreator do
     end
   end
 
-  describe '#full_days' do
-    it { described_class.send(:full_days, Time.now.utc.midnight, Time.now.utc.end_of_day - 1).should eq 0 }
-    it { described_class.send(:full_days, Time.now.utc.midnight, Time.now.utc.end_of_day).should eq 1 }
-    it { described_class.send(:full_days, Time.now.utc.midnight, Time.now.utc.end_of_day + 1).should eq 1 }
-    it { described_class.send(:full_days, Time.now.utc.midnight, Time.now.utc.tomorrow).should eq 1 }
-  end
-
 end
 
 def days_in_month(date)
