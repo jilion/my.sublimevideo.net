@@ -1,4 +1,6 @@
 - if invoice.customer_billing_address?
   = simple_format(invoice.customer_billing_address)
-- else
+- elsif invoice.customer_full_name?
   %p= invoice.customer_full_name
+- else
+  %p= 'No billing address provided.'
