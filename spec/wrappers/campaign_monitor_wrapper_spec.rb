@@ -14,7 +14,7 @@ describe CampaignMonitorWrapper do
   specify { CampaignMonitorWrapper.lists['sublimevideo_newsletter']['list_id'].should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
 
   before {
-    described_class.stub(log_bad_request: true)
+    described_class.stub(_log_bad_request: true)
     Librato.stub(:increment)
   }
 

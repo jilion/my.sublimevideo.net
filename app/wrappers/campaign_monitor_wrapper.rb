@@ -4,80 +4,87 @@ class CampaignMonitorWrapper
   include Configurator
 
   config_file 'campaign_monitor.yml'
+  config_accessor :api_key, :lists
 
-  class << self
+  def initialize
+    CreateSend.api_key(CampaignMonitorWrapper.api_key)
+  end
 
-    def subscribe(params = {})
-      custom_params = []
-      custom_params << { Key: 'segment', Value: params[:segment] }
-      custom_params << { Key: 'user_id', Value: params[:user][:id] }
-      custom_params << { Key: 'beta',    Value: params[:user][:beta] } if params[:user] && params[:user][:beta]
+  def subscribe(params = {})
+    custom_params = self.class._build_custom_params(segment: params[:segment], user_id: params[:user][:id], beta: params[:user][:beta], billable: params[:user][:billable])
 
-      Librato.increment 'newsletter.subscribe', source: 'campaign_monitor'
-      request do
-        CreateSend::Subscriber.add(params[:list_id], params[:user][:email], params[:user][:name], custom_params, true)
-      end
+    _request('subscribe') do
+      CreateSend::Subscriber.add(params[:list_id], params[:user][:email], params[:user][:name], custom_params, true)
+    end
+  end
+
+  def import(params = {})
+    subscribers = params[:users].inject([]) do |memo, user|
+      custom_params = self.class._build_custom_params(segment: params[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
+
+      memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
     end
 
-    def import(params = {})
-      subscribers = params[:users].inject([]) do |memo, user|
-        custom_params = []
-        custom_params << { Key: 'user_id',  Value: user[:id] }
-        custom_params << { Key: 'segment',  Value: params[:segment] }
-        custom_params << { Key: 'beta',     Value: user[:beta] } if user.key?(:beta)
-        custom_params << { Key: 'billable', Value: user[:billable] } if user.key?(:billable)
+    _request('import') do
+      CreateSend::Subscriber.import(params[:list_id], subscribers, false)
+    end
+  end
 
-        memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
-      end
+  def unsubscribe(params = {})
+    _request('unsubscribe') do
+      CreateSend::Subscriber.new(params[:list_id], params[:email]).unsubscribe
+      true
+    end
+  end
 
-      Librato.increment 'newsletter.import', source: 'campaign_monitor'
-      request do
-        CreateSend::Subscriber.import(params[:list_id], subscribers, false)
+  def update(params = {})
+    _request('update') do
+      if subscriber = CreateSend::Subscriber.new(params[:list_id], params[:email])
+        subscriber.update(params[:user][:email], params[:user][:name], [], params[:user][:newsletter])
       end
     end
+  end
 
-    def unsubscribe(params = {})
-      Librato.increment 'newsletter.unsubscribe', source: 'campaign_monitor'
-      request do
-        CreateSend::Subscriber.new(params[:list_id], params[:email]).unsubscribe
-        true
-      end
+  def subscriber(email, list_id = CampaignMonitorWrapper.lists['sublimevideo']['list_id'])
+    _request('subscriber_lookup') do
+      CreateSend::Subscriber.get(list_id, email)
     end
-
-    def update(params = {})
-      Librato.increment 'newsletter.update', source: 'campaign_monitor'
-      request do
-        if subscriber = CreateSend::Subscriber.new(params[:list_id], params[:email])
-          subscriber.update(params[:user][:email], params[:user][:name], [], params[:user][:newsletter])
-        end
-      end
-    end
-
-    def subscriber(email, list_id = CampaignMonitorWrapper.lists['sublimevideo']['list_id'])
-      Librato.increment 'newsletter.subscriber_lookup', source: 'campaign_monitor'
-      request do
-        CreateSend::Subscriber.get(list_id, email)
-      end
-    end
+  end
 
   private
 
-    def set_api_key
-      CreateSend.api_key(CampaignMonitorWrapper.api_key)
+  def _request(method)
+    result = yield
+    self.class._increment_librato(method)
+    result
+  rescue CreateSend::BadRequest => ex
+    self.class._log_bad_request(ex)
+    false
+  end
+
+  class << self
+
+    %w[subscribe import unsubscribe update subscriber].each do |method_name|
+      define_method method_name do |*args|
+        new.send(method_name, *args)
+      end
     end
 
-    def request
-      set_api_key
-      yield
-    rescue CreateSend::BadRequest => ex
-      log_bad_request(ex)
-      false
+    def _build_custom_params(hash)
+      custom_params = []
+      hash.map do |k, v|
+        { Key: k.to_s, Value: v }
+      end
     end
 
-    def log_bad_request(ex)
+    def _log_bad_request(ex)
       Rails.logger.error "Campaign Monitor Bad request: #{ex}"
       Rails.logger.error "Error Code:    #{ex.data.Code}"
       Rails.logger.error "Error Message: #{ex.data.Message}"
+    end
+
+    def _increment_librato(method)
+      Librato.increment "newsletter.#{method}", source: 'campaign_monitor'
     end
 
   end
