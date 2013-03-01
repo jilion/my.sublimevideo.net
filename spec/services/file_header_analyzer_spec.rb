@@ -23,19 +23,4 @@ describe FileHeaderAnalyzer do
     end
   end
 
-  describe ".content_encoding" do
-    it "set content-encoding to text/javascript for .gz files" do
-      FileHeaderAnalyzer.new('foo.gz').content_encoding.should eq 'gzip'
-    end
-
-    it "set content-encoding to text/javascript for .jgz files" do
-      FileHeaderAnalyzer.new('foo.jgz').content_encoding.should eq 'gzip'
-    end
-
-    it "set content-encoding to nil for other files" do
-      FileHeaderAnalyzer.new('foo.jpg').content_encoding.should be_nil
-      FileHeaderAnalyzer.new('foo.txt').content_encoding.should be_nil
-    end
-  end
-
 end

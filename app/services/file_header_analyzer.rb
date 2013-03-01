@@ -16,13 +16,4 @@ class FileHeaderAnalyzer
     end
   end
 
-  def content_encoding
-    @content_encoding ||= case File.extname(filename)
-    when '.jgz', '.gz'
-      'gzip'
-    else
-      nil
-    end
-  end
-
 end
