@@ -73,14 +73,14 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataSettings: (opts = {}) ->
     options = {}
     _.extend(options, opts)
-    _.defaults(options, { addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+    _.defaults(options, { kitReplacement: true, addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
 
     if options['settings']?
       this.generateDataSettingsFromJSON(options)
     else
       this.generateDataSettingsFromDOM(options['addons'])
 
-    this.replacePlayerKitSettingWithRealPreviewKitIdentifier()
+    this.replacePlayerKitSettingWithRealPreviewKitIdentifier() if options['kitReplacement']
 
     @dataSettings
 
