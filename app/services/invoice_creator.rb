@@ -15,8 +15,8 @@ class InvoiceCreator
     build_for_period(date.all_month, site)
   end
 
-  def self.build_for_period(period, site)
-    _build(site: site).for_period(period)
+  def self.build_for_period(period, site, options = {})
+    _build(site: site).for_period(period, options)
   end
 
   def save
@@ -33,9 +33,9 @@ class InvoiceCreator
     end
   end
 
-  def for_period(period)
-    _handle_items_not_yet_canceled_and_created_before_period(period)
-    _handle_items_subscribed_during_period(period)
+  def for_period(period, options = {})
+    _handle_items_not_yet_canceled_and_created_before_period(period, options)
+    _handle_items_subscribed_during_period(period, options)
 
     self
   end
@@ -52,30 +52,30 @@ class InvoiceCreator
     new(attributes.delete(:site).invoices.new(attributes))
   end
 
-  def _handle_items_not_yet_canceled_and_created_before_period(period)
+  def _handle_items_not_yet_canceled_and_created_before_period(period, options)
     _subscribed_activities_before(period.first).each do |activity|
       end_activity = _end_activity_for_activity(activity, period)
 
       if !end_activity || period.cover?(end_activity.created_at)
-        _build_invoice_item(activity.item, period.first, _end_activity_for_activity(activity, period).try(:created_at) || period.last)
+        _build_invoice_item(activity.item, period.first, _end_activity_for_activity(activity, period).try(:created_at) || period.last, options)
       end
     end
   end
 
-  def _handle_items_subscribed_during_period(period)
+  def _handle_items_subscribed_during_period(period, options)
     _subscribed_activities_during(period).each do |activity|
       next if activity.item.beta? || activity.item.free?
 
-      _build_invoice_item_unless_overlaping_items(activity, period)
+      _build_invoice_item_unless_overlaping_items(activity, period, options)
     end
   end
 
-  def _build_invoice_item_unless_overlaping_items(activity, period)
+  def _build_invoice_item_unless_overlaping_items(activity, period, options)
     end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
 
     # Ensure we don't create 2 invoice items with the same item and overlapping periods
     unless invoice.invoice_items.detect { |ii| ii.item == activity.item && ii.started_at < activity.created_at && ii.ended_at >= end_activity_date }
-      _build_invoice_item(activity.item, activity.created_at, end_activity_date)
+      _build_invoice_item(activity.item, activity.created_at, end_activity_date, options)
     end
   end
 
@@ -99,8 +99,8 @@ class InvoiceCreator
     invoice.site.billable_item_activities.with_item(activity.item)
   end
 
-  def _build_invoice_item(item, started_at, ended_at)
-    InvoiceItemBuilder.new(invoice, item).build_invoice_item(started_at: started_at, ended_at: ended_at)
+  def _build_invoice_item(item, started_at, ended_at, options)
+    InvoiceItemBuilder.new(invoice, item).build_invoice_item(options.merge(started_at: started_at, ended_at: ended_at))
   end
 
   def _set_invoice_items_amount

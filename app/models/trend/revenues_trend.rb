@@ -25,7 +25,7 @@ class RevenuesTrend
     }
 
     ::Site.not_archived.find_each do |site|
-      invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site)
+      invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site, price_per_day_of_year: true)
 
       invoice_service.invoice.invoice_items.each do |invoice_item|
         hash[:r][_second_key_for_hash(invoice_item)][invoice_item.item.name] += invoice_item.amount
