@@ -235,6 +235,10 @@ class User < ActiveRecord::Base
     sites.not_archived.paying.count > 0
   end
 
+  def trial_or_billable?
+    billable? || sites.not_archived.any? { |site| site.total_billable_items_price > 0 }
+  end
+
   def name_or_email
     name.presence || email
   end
