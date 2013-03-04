@@ -10,8 +10,8 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
 
     @uploader.bind 'FilesAdded', (up, files) ->
       $.each files, (i, file) ->
-        $('#notices').text ''
-        $('#dragdrop').text file.name
+        $('#notices').text('')
+        $('#dragdrop').text(file.name)
       up.refresh() # Reposition Flash/Silverlight
       up.start()
 
@@ -22,26 +22,18 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
         else
           "An error has occured, please retry."
           # "Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}"
-      $('#notices').html "<div class='notice error'>#{message}</div>"
+      $('#notices').html("<div class='notice error'>#{message}</div>")
       $('#spinner').data().spinner.stop()
       $('#uploadfiles').hide()
       up.refresh() # Reposition Flash/Silverlight
 
     @uploader.bind 'UploadProgress', (up, file) ->
       $('#preview_custom_logo').css(opacity: 0.5)
-      $('#spinner').spin
-        color:  '#596c8a'
-        lines:  10
-        length: 4
-        width:  2
-        radius: 4
-        speed:  1
-        trail:  50
-        shadow: false
-      $("##{file.id} b").html "#{file.percent}%"
+      $('#spinner').spin(color: '#596c8a', lines: 10, length: 4, width: 2, radius: 4, speed: 1, trail: 50, shadow: false)
+      $("##{file.id} b").html("#{file.percent}%")
 
     @uploader.bind 'FileUploaded', (up, file, response) =>
-      $('#filelist').text ''
-      $('#notices').text ''
-      $('#dragdrop').html @originalDragDroptext
+      $('#filelist').text('')
+      $('#notices').text('')
+      $('#dragdrop').html(@originalDragDroptext)
       eval(response.response)
