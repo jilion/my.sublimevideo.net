@@ -6,13 +6,15 @@ class InvoiceItemBuilder
   end
 
   def build_invoice_item(args = {})
-    invoice.invoice_items.build({
+    invoice_item = InvoiceItem.new({
       item: item,
       started_at: args[:started_at],
       ended_at: args[:ended_at],
       price: item.price,
       amount: _amount(args[:started_at], args[:ended_at])
     }, without_protection: true)
+
+    invoice.invoice_items << invoice_item unless invoice_item.amount.zero?
   end
 
   private
