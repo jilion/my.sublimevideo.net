@@ -28,18 +28,20 @@ class RevenuesTrend
       invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site)
 
       invoice_service.invoice.invoice_items.each do |invoice_item|
-        second_key = case invoice_item.type
-                     when 'InvoiceItem::AppDesign'
-                       'design'
-                     when 'InvoiceItem::AddonPlan'
-                       invoice_item.item.addon.name
-                     end
-        third_key = invoice_item.item.name
-        hash[:r][second_key][third_key] += invoice_item.amount
+        hash[:r][_second_key_for_hash(invoice_item)][invoice_item.item.name] += invoice_item.amount
       end
     end
 
     hash
+  end
+
+  def self._second_key_for_hash(invoice_item)
+    case invoice_item.type
+    when 'InvoiceItem::AppDesign'
+      'design'
+    when 'InvoiceItem::AddonPlan'
+      invoice_item.item.addon.name
+    end
   end
 
 end
