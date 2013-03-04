@@ -59,7 +59,8 @@ class HostnameHandler
     record = args.shift
     hostnames = args.shift
     args.detect do |validation|
-      send("#{validation}?", hostnames, record.hostname)
+      hostname = record.respond_to?(:hostname) ? record.hostname : nil
+      send("#{validation}?", hostnames, hostname)
     end
   end
 
