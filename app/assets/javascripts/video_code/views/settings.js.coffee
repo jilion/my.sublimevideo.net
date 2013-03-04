@@ -55,7 +55,7 @@ class MSVVideoCode.Views.Settings extends Backbone.View
 
   resetDimensions: (event) ->
     MSVVideoCode.video.setKeepRatio(true)
-    MSVVideoCode.video.setWidth(_.min([MSVVideoCode.video.get('sourceWidth'), 852]))
+    MSVVideoCode.video.setWidth(_.min([MSVVideoCode.video.get('sourceWidth'), 1920]))
     this.render()
 
     false

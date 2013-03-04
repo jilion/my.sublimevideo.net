@@ -121,10 +121,10 @@ describe 'MySublimeVideo.Models.Video', ->
 
       expect(@video.get('width')).toEqual(200)
 
-    it 'maximum is 852', ->
+    it 'maximum is 1920', ->
       @video.setWidth(5000)
 
-      expect(@video.get('width')).toEqual(852)
+      expect(@video.get('width')).toEqual(1920)
 
     it 'sets the height if keepRatio is true', ->
       @video.set(height: 800, ratio: 0.5)
@@ -159,10 +159,10 @@ describe 'MySublimeVideo.Models.Video', ->
 
       expect(@video.get('height')).toEqual(100)
 
-    it 'maximum is 720', ->
+    it 'maximum is 1080', ->
       @video.setHeight(9999)
 
-      expect(@video.get('height')).toEqual(720)
+      expect(@video.get('height')).toEqual(1080)
 
     it 'sets the width if keepRatio is true', ->
       @video.set(width: 800, ratio: 0.5)

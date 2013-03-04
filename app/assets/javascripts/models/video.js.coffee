@@ -49,7 +49,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     newWidth = 200 if _.isNaN(newWidth) or newWidth < 200
 
     if newWidth isnt this.get('width')
-      this.set(width: _.min([newWidth, 852]))
+      this.set(width: _.min([newWidth, 1920]))
       this._setHeightFromWidth() if this.get('keepRatio') and updateHeight
       this.trigger('change:width')
 
@@ -58,7 +58,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     newHeight = 100 if _.isNaN(newHeight) or newHeight < 100
 
     if newHeight isnt this.get('height')
-      this.set(height: _.min([newHeight, 720]))
+      this.set(height: _.min([newHeight, 1080]))
       this._setWidthFromHeight() if this.get('keepRatio') and updateHeight
       this.trigger('change:height')
 
