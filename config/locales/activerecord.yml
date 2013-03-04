@@ -50,7 +50,7 @@ en:
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"
             staging_hostnames:
-              extra_hostnames: "are invalid"
+              extra_invalid: "are invalid"
               wildcard: "are invalid, please check wildcard option instead"
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"
