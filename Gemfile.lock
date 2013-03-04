@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/hexorx/countries.git
-  revision: 71c62d7706091ae5011c9e76cda3886f3c5be918
-  specs:
-    countries (0.9.1)
-      currencies (>= 0.4.0)
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -201,6 +194,8 @@ GEM
     columnize (0.3.6)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
+    countries (0.9.2)
+      currencies (>= 0.4.0)
     crack (0.3.2)
     createsend (2.5.1)
       hashie (~> 1.0)
@@ -635,7 +630,7 @@ DEPENDENCIES
   cocaine
   coffee-rails
   configurator!
-  countries!
+  countries
   crack
   createsend
   dalli

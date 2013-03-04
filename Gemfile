@@ -75,7 +75,7 @@ gem 'stat_request_parser' # hosted on gemfury
 
 gem 'rubyzip', require: 'zip/zip'
 gem 'mime-types'
-gem 'countries', github: 'hexorx/countries' # until 0.9.2 is out!
+gem 'countries'
 gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
