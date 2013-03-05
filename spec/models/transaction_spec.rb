@@ -688,7 +688,7 @@ describe Transaction do
       subject { create(:transaction, invoices: [open_invoice, failed_invoice]) }
 
       it "should create a description with invoices references" do
-        subject.description.should eq "SublimeVideo Invoices: ##{open_invoice.reference}, ##{failed_invoice.reference}"
+        subject.description.should eq "##{open_invoice.reference},##{failed_invoice.reference}"
       end
     end
 

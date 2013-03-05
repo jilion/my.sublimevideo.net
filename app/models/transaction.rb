@@ -170,7 +170,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def description
-    @description ||= "SublimeVideo Invoices: " + self.invoices.order(:created_at).all.map { |invoice| "##{invoice.reference}" }.join(", ")
+    @description ||= invoices.map { |invoice| "##{invoice.reference}" }.join(',')
   end
 
 private
@@ -178,7 +178,7 @@ private
   def payment_options(options = {})
     options.merge!({
       order_id: order_id,
-      description: description,
+      description: description.to(99),
       email: user.email,
       billing_address: {
         address1: user.billing_address_1,
