@@ -49,9 +49,9 @@ class HostnameHandler
   # one site or list of sites separated by comma
   def self.include_hostname?(*args)
     hostnames = args.shift
-    record_hostname = args.shift
+    record = args.shift
     if hostnames.present?
-      clean(hostnames).split(/,\s*/).any? { |h| h == record_hostname }
+      clean(hostnames).split(/,\s*/).any? { |h| h == record.try(:hostname) }
     end
   end
 
@@ -59,8 +59,7 @@ class HostnameHandler
     record = args.shift
     hostnames = args.shift
     args.detect do |validation|
-      hostname = record.respond_to?(:hostname) ? record.hostname : nil
-      send("#{validation}?", hostnames, hostname)
+      send("#{validation}?", hostnames, record)
     end
   end
 
