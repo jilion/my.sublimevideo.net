@@ -50,12 +50,6 @@ en:
           left: 'Top left'
           right: 'Top right'
 
-    stats:
-      title: 'Statistics settings'
-      settings:
-        enabled: 'Enable statistics'
-        realtime: 'Enable real-time statistics'
-
     logo:
       settings:
         enable: 'SublimeVideo logo'
@@ -101,6 +95,7 @@ en:
     embed:
       title: 'Embed settings'
       settings:
+        enable: 'Enable'
         url: 'Default embed URL:'
         size: 'Default embed size:'
 
