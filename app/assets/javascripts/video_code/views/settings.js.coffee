@@ -3,26 +3,26 @@ class MSVVideoCode.Views.Settings extends Backbone.View
 
   events:
     'change #poster_src':           'updatePosterSrc'
+    'change #uid':                  'updateUid'
+    'change #title':                'updateTitle'
     'change #width':                'updateWidth'
     'change #height':               'updateHeight'
     'click #keep_ratio':            'updateKeepRatio'
     'click a.reset':                'resetDimensions'
-    'change #data_name':            'updateDataName'
-    'change #data_uid':             'updateDataUID'
     'click input[name=autoresize]': 'updateAutoresize'
     'click #autoplay':              'updateAutoplay'
 
   initialize: ->
-    @posterHelper  = new MSVVideoCode.Helpers.UIAssetHelper 'poster'
-    @UIDHelper = new MSVVideoCode.Helpers.UIAssetHelper 'data_uid'
+    this._initUIHelpers()
+    @placeholder = $(@el).find('#video_settings_fields')
 
     _.bindAll this, 'render', 'renderWidth', 'renderHeight', 'renderPosterStatus'
-    MSVVideoCode.poster.bind  'change',          this.renderPosterStatus
-    MSVVideoCode.video.bind   'change:width',    this.renderWidth
-    MSVVideoCode.video.bind   'change:height',   this.renderHeight
-    MSVVideoCode.video.bind   'change:dataUID',  this.render
-    MSVVideoCode.video.bind   'change:dataName', this.render
-    MSVVideoCode.sources.bind 'change:src',      this.render
+    MSVVideoCode.poster.bind  'change',        this.renderPosterStatus
+    MSVVideoCode.video.bind   'change:width',  this.renderWidth
+    MSVVideoCode.video.bind   'change:height', this.renderHeight
+    MSVVideoCode.video.bind   'change:uid',    this.render
+    MSVVideoCode.video.bind   'change:title',  this.render
+    MSVVideoCode.sources.bind 'change:src',    this.render
 
     this.render()
 
@@ -34,20 +34,20 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     MSVVideoCode.poster.setAndPreloadSrc(event.target.value)
     MSVVideoCode.video.set(testAssetsUsed: false)
 
-  updateDataName: (event) ->
-    MSVVideoCode.video.set(dataName: event.target.value)
-
-  updateDataUID: (event) ->
-    if MSVVideoCode.video.setDataUID(event.target.value)
-      @UIDHelper.hideErrors()
-    else
-      @UIDHelper.renderError('src_invalid')
-
   updateWidth: (event) ->
     MSVVideoCode.video.setWidth(event.target.value)
 
   updateHeight: (event) ->
     MSVVideoCode.video.setHeight(event.target.value)
+
+  updateTitle: (event) ->
+    MSVVideoCode.video.set(title: event.target.value)
+
+  updateUid: (event) ->
+    if MSVVideoCode.video.setUid(event.target.value)
+      @UIDHelper.hideErrors()
+    else
+      @UIDHelper.renderError('src_invalid')
 
   updateKeepRatio: (event) ->
     MSVVideoCode.video.setKeepRatio(event.target.checked)
@@ -72,7 +72,7 @@ class MSVVideoCode.Views.Settings extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#video_settings_fields').html this.template(video: MSVVideoCode.video)
+    @placeholder.html this.template()
 
     this
 
@@ -93,3 +93,10 @@ class MSVVideoCode.Views.Settings extends Backbone.View
       @posterHelper.renderError('not_found')
     else
       @posterHelper.renderValid()
+
+  #
+  # PRIVATE
+  #
+  _initUIHelpers: ->
+    @posterHelper = new MSVVideoCode.Helpers.UIAssetHelper('poster')
+    @UIDHelper    = new MSVVideoCode.Helpers.UIAssetHelper('uid')

@@ -10,7 +10,8 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     'click .reset':                   'resetThumbDimensions'
 
   initialize: ->
-    @uiHelper = new MSVVideoCode.Helpers.UIAssetHelper 'thumb'
+    this._initUIHelpers()
+    @placeholder = $(@el).find('#lightbox_settings_fields')
 
     _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderStatus'
     MSVVideoCode.thumbnail.bind 'change:initialLink', this.renderExtraSettings
@@ -35,10 +36,10 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     MSVVideoCode.thumbnail.setAndPreloadSrc(event.target.value)
 
   updateThumbWidth: (event) ->
-    MSVVideoCode.thumbnail.setThumbWidth(parseInt(event.target.value, 10))
+    MSVVideoCode.thumbnail.setThumbWidth(event.target.value)
 
   updateThumbHeight: (event) ->
-    MSVVideoCode.thumbnail.setThumbHeight(parseInt(event.target.value, 10))
+    MSVVideoCode.thumbnail.setThumbHeight(event.target.value)
 
   resetThumbDimensions: (event) ->
     MSVVideoCode.thumbnail.setThumbWidth(MSVVideoCode.thumbnail.get('width'))
@@ -49,7 +50,7 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).find('#lightbox_settings_fields').html this.template(video: MSVVideoCode.video)
+    @placeholder.html this.template()
     $(@el).show()
     this.renderStatus()
 
@@ -63,10 +64,10 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     this.renderStatus()
 
   renderThumbWidth: ->
-    $("#thumb_width").attr(value: MSVVideoCode.thumbnail.get('thumbWidth'))
+    $("#thumb_width").val(MSVVideoCode.thumbnail.get('thumbWidth'))
 
   renderThumbHeight: ->
-    $("#thumb_height").attr(value: MSVVideoCode.thumbnail.get('thumbHeight'))
+    $("#thumb_height").val(MSVVideoCode.thumbnail.get('thumbHeight'))
 
   renderStatus: ->
     @uiHelper.hideErrors()
@@ -79,3 +80,9 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
       @uiHelper.renderError('not_found')
     else
       @uiHelper.renderValid()
+
+  #
+  # PRIVATE
+  #
+  _initUIHelpers: ->
+    @uiHelper = new MSVVideoCode.Helpers.UIAssetHelper('thumb')
