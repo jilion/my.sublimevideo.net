@@ -8,7 +8,7 @@ class MySublimeVideo.Models.Asset extends Backbone.Model
     !this.get('src')
 
   srcIsUrl: ->
-    /^(https?:)?\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
+    /^(https?:)?\/\//.test this.get('src')
 
   srcIsEmptyOrUrl: ->
     this.srcIsEmpty() or this.srcIsUrl()
