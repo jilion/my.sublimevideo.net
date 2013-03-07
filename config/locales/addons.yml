@@ -55,7 +55,6 @@ en:
       standard: 'Social sharing'
 
     embed:
-      standard: 'Manual embedding' # smooth transition! :)
       manual: 'Manual embedding'
       auto: 'Auto embedding'
 
