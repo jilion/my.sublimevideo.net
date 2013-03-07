@@ -19,7 +19,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youTubeId')}\"" if @video.get('origin') is 'youtube'
-    attributes.push "data-autoresize=\"#{@video.get('autoresize')}\""
+    attributes.push "data-autoresize=\"#{@video.get('autoresize')}\"" unless @video.get('autoresize') is 'none'
     attributes.push this.generateDataSettingsAttribute(options)
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
