@@ -5,6 +5,13 @@ enable:
     - false
   default: true
 
+type:
+  type: string
+  values:
+    - manual
+    - auto
+  default: manual
+
 size:
   type: size
   default: '640'

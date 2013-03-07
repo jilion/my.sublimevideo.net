@@ -100,7 +100,8 @@ class AddonSystemPopulator < Populator
       { name: 'standard',  price: 0,    addon: Addon.get('initial'),        availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('sharing'),        availability: 'custom', stable_at: Time.now.utc },
       { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'), availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('embed'),          availability: 'public', stable_at: Time.now.utc },
+      { name: 'manual',    price: 0,    addon: Addon.get('embed'),          availability: 'public', stable_at: Time.now.utc },
+      { name: 'auto',      price: 990,  addon: Addon.get('embed'),          availability: 'custom', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('api'),            availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
       { name: 'vip',       price: 9990, addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
@@ -168,7 +169,6 @@ class AddonSystemPopulator < Populator
       { name: 'embed_light',            token: 'sa.sh.ub',    addon: Addon.get('embed'),          design: App::Design.get('light'),    component: App::Component.get('app') },
 
       { name: 'info_sony',              token: 'tj.tj.aeb',   addon: Addon.get('info'),           design: App::Design.get('sony'),     component: App::Component.get('sony') },
-
 
       { name: 'buy_action_blizzard',    token: 'aca.aca.acb', addon: Addon.get('buy_action'),     design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
 
@@ -242,9 +242,13 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_flat')   },
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_light')  },
 
-      { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_classic')         },
-      { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_flat')            },
-      { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_light')           },
+      { addon_plan: AddonPlan.get('embed', 'manual'),            plugin: App::Plugin.get('embed_classic')         },
+      { addon_plan: AddonPlan.get('embed', 'manual'),            plugin: App::Plugin.get('embed_flat')            },
+      { addon_plan: AddonPlan.get('embed', 'manual'),            plugin: App::Plugin.get('embed_light')           },
+
+      { addon_plan: AddonPlan.get('embed', 'auto'),              plugin: App::Plugin.get('embed_classic')         },
+      { addon_plan: AddonPlan.get('embed', 'auto'),              plugin: App::Plugin.get('embed_flat')            },
+      { addon_plan: AddonPlan.get('embed', 'auto'),              plugin: App::Plugin.get('embed_light')           },
 
       { addon_plan: AddonPlan.get('preview_tools', 'standard'),  plugin: App::Plugin.get('preview_tools_svnet') },
 
