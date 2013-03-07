@@ -87,7 +87,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   replacePlayerKitSettingWithRealPreviewKitIdentifier: ->
     if @dataSettings['player-kit']?
       selectedOption = $("select[data-addon='player']").find("option[value='#{@dataSettings['player-kit']}']")
-      @dataSettings['player-kit'] = selectedOption.data('kit-id')
+      @dataSettings['player-kit'] = selectedOption.data('preview-kit-id')
 
   generateClass: (options = {}) ->
     if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
@@ -103,13 +103,13 @@ class MySublimeVideo.Helpers.VideoTagHelper
     if @video.get('displayInLightbox') then "style=\"display:none\"" else ''
 
   generateDataUIDAndName: ->
-    dataUIDAndName = []
-    if dataUID = @video.get('dataUID')
-      dataUIDAndName.push "data-uid=\"#{dataUID}\""
-    if dataName = @video.get('dataName')
-      dataUIDAndName.push "data-name=\"#{dataName}\""
+    uidAndTitle = []
+    if uid = @video.get('uid')
+      uidAndTitle.push "data-uid=\"#{uid}\""
+    if title = @video.get('title')
+      uidAndTitle.push "title=\"#{title}\""
 
-    dataUIDAndName.join(' ')
+    uidAndTitle.join(' ')
 
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''

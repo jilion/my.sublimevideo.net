@@ -58,7 +58,7 @@ module KitsHelper
 
   def kits_for_select(site)
     items = site.kits.includes(:design).order(:identifier).inject([]) do |memo, kit|
-      memo << [kit.name, kit.identifier, { 'data-kit-id' => PreviewKit.kit_identifer(kit.design.name) }]
+      memo << [kit.name, kit.identifier, { 'data-preview-kit-id' => PreviewKit.kit_identifer(kit.design.name) }]
     end
 
     options_for_select(items, site.default_kit.identifier)
