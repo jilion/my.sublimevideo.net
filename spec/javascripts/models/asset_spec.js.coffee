@@ -14,7 +14,7 @@ describe 'Asset', ->
         expect(@asset.srcIsEmpty()).toBeFalsy()
 
       it 'returns false when an URL', ->
-        @asset.set(src: 'http://test.com')
+        @asset.set(src: 'http://test.com/foo/bar?a=b')
         expect(@asset.srcIsEmpty()).toBeFalsy()
 
     describe 'srcIsUrl()', ->
@@ -27,7 +27,7 @@ describe 'Asset', ->
         expect(@asset.srcIsUrl()).toBeFalsy()
 
       it 'returns true when an URL', ->
-        @asset.set(src: 'http://test.com')
+        @asset.set(src: 'http://test.com/foo/bar?a=b')
         expect(@asset.srcIsUrl()).toBeTruthy()
 
     describe 'srcIsEmptyOrUrl()', ->
@@ -40,7 +40,7 @@ describe 'Asset', ->
         expect(@asset.srcIsEmptyOrUrl()).toBeFalsy()
 
       it 'returns true when an URL', ->
-        @asset.set(src: 'http://test.com')
+        @asset.set(src: 'http://test.com/foo/bar?a=b')
         expect(@asset.srcIsEmptyOrUrl()).toBeTruthy()
 
     describe 'reset()', ->
