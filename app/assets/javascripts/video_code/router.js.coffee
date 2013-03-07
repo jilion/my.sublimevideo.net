@@ -46,7 +46,7 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
       poster: MSVVideoCode.poster
       sources: MSVVideoCode.sources
       thumbnail: MSVVideoCode.thumbnail
-      dataName: 'Midnight Sun'
+      title: 'Midnight Sun'
 
     MSVVideoCode.video.setDefaultDataUID()
 
@@ -55,15 +55,11 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.thumbnail.reset()
     _.each MSVVideoCode.sources.models, (source) ->
       source.reset()
-    MSVVideoCode.video.clearDataUIDAndName()
+    MSVVideoCode.video.clearUidAndTitle()
 
   initViews: ->
-    MSVVideoCode.previewView = if $('#video_code_form').prop('data-assistant') is 'true'
-      new MSVVideoCode.Views.Preview
-        el: '#preview'
-    else
-      new MSVVideoCode.Views.PreviewAssistant
-        el: '#preview'
+    MSVVideoCode.previewView = new MSVVideoCode.Views.Preview
+      el: '#preview'
 
     MSVVideoCode.kitView = new MSVVideoCode.Views.Kit
       el: '#kit_selection'
@@ -77,12 +73,14 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.lightboxView = new MSVVideoCode.Views.Lightbox
       el: '#lightbox_settings'
 
-    MSVVideoCode.socialSharingView = new MSVVideoCode.Views.SocialSharing
-      el: '#social_sharing_settings'
+    MSVVideoCode.sharingView = new MSVVideoCode.Views.Sharing
+      el: '#sharing_settings'
 
     MSVVideoCode.EmbedView = new MSVVideoCode.Views.Embed
       el: '#embed_settings'
 
-    if $('.get_the_code').exists()
-      MSVVideoCode.codeView = new MSVVideoCode.Views.Code
+    MSVVideoCode.codeView = if $('#video_code_form').prop('data-assistant') is 'true'
+      new MSVVideoCode.Views.AssistantCode
+    else if $('.get_the_code').exists()
+      new MSVVideoCode.Views.Code
         el: '#video_code_form'
