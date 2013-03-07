@@ -3,7 +3,7 @@
   %tr
     %th{ colspan: 3 }= t("addons.#{addon.name}")
   - addon_plans_available_for_subscription.each do |addon_plan|
-    - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
+    - addon_plan_is_sponsored = site.sponsored_to?(addon_plan)
     - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
 
     %tr{ class: highlighted_class(addon_plan) }
