@@ -1,0 +1,22 @@
+- setting = MSVVideoCode.video.getSetting('sharing', 'image', MSVVideoCode.kits.selected)
+- custom_url = !_.contains(['auto', 'poster'], setting) and setting isnt ''
+- setting = 'auto' if setting isnt 'poster' and not custom_url
+- display = if custom_url then 'block' else 'none'
+
+%h4 Sharing message image
+
+.radio_wrap
+  %input#sharing_image_og{ type: 'radio', name: 'sharing_image', value: 'auto', checked: setting is 'auto', data: { addon: 'sharing', setting: 'image' } }
+  %label{ for: "sharing_image_og" } Automatic
+
+.radio_wrap
+  %input#sharing_image_poster{ type: 'radio', name: 'sharing_image', value: 'poster', checked: setting is 'poster', data: { addon: 'sharing', setting: 'image' } }
+  %label{ for: "sharing_image_poster" } Video poster frame
+
+.radio_wrap
+  %input#sharing_image_url{ type: 'radio', name: 'sharing_image', value: 'url', checked: custom_url, data: { addon: 'sharing', setting: 'image' } }
+  %label{ for: "sharing_image_url" } Image URL
+
+.entry
+  %input.text.kit_setting#sharing_image_url_field{ type: 'text', size: 50, placeholder: "Image URL", value: if custom_url then setting else '', data: { addon: 'sharing', setting: 'image' }, style: "display:#{display}" }/
+.spacer

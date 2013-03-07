@@ -7,4 +7,4 @@
 %form
   .embed_code.entry
     %textarea{ readonly: true, onclick: "this.focus();this.select();" }
-      = @videoTagHelper.generatePlayerCode({ id: 'video1', settings: @settings, kitReplacement: false })
+      = @videoTagHelper.generatePlayerCode({ id: MSVVideoCode.video.get('uid') or 'video1', settings: @settings, kitReplacement: false })
