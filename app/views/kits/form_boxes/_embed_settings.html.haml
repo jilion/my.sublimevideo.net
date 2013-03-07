@@ -4,8 +4,23 @@
       = link_to 'Embed settings', ''
     - kit_settings_expendable_block('embed') do
       = presenter.render_master_input_field(setting_key: 'enable') do
-        %p.info
-          = raw "Even if this feature is enabled, the embed button will not show up in the player until you provide a valid #{content_tag :em, "embed URL"} for a specific video. You can do this, as well as previewing how the embed button and pane will look and work, in the #{link_to "Publish video", new_site_video_code_path(site), class: "hl"} page. Read our #{link_to "documentation", docs_url('addons/embed'), onclick: "window.open(this); return false", class: "hl" } for more info."
+        %p.note
+          If you choose manual embedding, the embed button will not show up in the player until you provide a valid
+          = content_tag :em, 'embed URL'
+          for a specific video. You can do this, as well as previewing how the embed button and pane will look and work, in the
+          = link_to 'Publish video', new_site_video_code_path(site), class: 'hl'
+          page. Read our
+          = link_to 'documentation', docs_url('addons/embed'), onclick: 'window.open(this); return false', class: 'hl'
+          for more info.
+
+        - if presenter.addon_plan.name == 'auto'
+          = presenter.render_input_field(setting_key: 'type', show_title: true)
+        - else
+          = hidden_field_tag "kit[settings][embed][type]", presenter.settings_template[:type][:default], class: 'previewable', data: { addon: 'embed', setting: 'type' }
+
         = presenter.render_input_field(setting_key: 'size')
-        %p.info{style: "padding-bottom:20px"}= raw "You can omit the #{content_tag :em, "Height"} value if you want the height of the embed to be dynamically computed (when the user clicks on the embed button to show the embed pane) to automatically match the video aspect-ratio."
+        %p.info{ style: "padding-bottom:20px" }
+          You can omit the
+          = content_tag :em, 'Height'
+          value if you want the height of the embed to be dynamically computed (when the user clicks on the embed button to show the embed pane) to automatically match the video aspect-ratio.
       .spacer
