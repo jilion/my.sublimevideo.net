@@ -1,20 +1,7 @@
-%h4 Embed URL
-%p.info
-  = "This field is mandatory in order for the embed button to appear in the player."
-.entry#embed_url_box
-  %label.icon{ for: "embed_url" } Embed URL
-  %input#embed_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: MSVVideoCode.video.getSetting('embed', 'url', MSVVideoCode.kits.selected), data: { addon: 'embed', setting: 'url' } }/
-  %span#embed_url_src_invalid.inline_alert{ style: "display:none" } Please provide a valid URL
+- if @autoEmbed
+  != JST['video_code/templates/embed/type']()
 
-%h4 Default embed size
+- else
+  != JST['video_code/templates/embed/url']()
 
-%p.info
-  This field is optional. User will be able to adjust this size directly from the embed pane. If you have already provided an embed size in your
-  %a.hl{ href: document.location.href.replace(/assistant/, 'sites').replace(/publish-video/, "players/#{MSVVideoCode.kits.selected.get('identifier')}"), onclick: "window.open(this); return false" }= 'Player editor'
-  = "page, the values here will override it. If no default embed size is specified, the player size will be used instead (and, if necessary, the height will be adjusted to respect the original aspect-ratio of the video)."
-
-- width_and_height = MSVVideoCode.video.getSetting('embed', 'size', MSVVideoCode.kits.selected).split('x')
-.entry.size
-  %input#embed_width.text.no_icon.kit_setting.size{ type: "text", placeholder: "Width", value: width_and_height[0], size: 4, maxlength: 4, data: { addon: 'embed', setting: 'size' } }
-  x
-  %input#embed_height.text.no_icon.kit_setting.size{ type: "text", placeholder: "Height", value: width_and_height[1], size: 4, maxlength: 4, data: { addon: 'embed', setting: 'size' } }
+!= JST['video_code/templates/embed/size']()
