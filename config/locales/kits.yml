@@ -98,13 +98,3 @@ en:
         enable: 'Enable'
         url: 'Default embed URL:'
         size: 'Default embed size:'
-
-    api:
-      standard: 'SublimeVideo player basic JavaScript API'
-
-    support:
-      standard: 'Forum & email support'
-      vip:      'VIP email support'
-
-    buy_action:
-      standard: 'Standard buy button'
