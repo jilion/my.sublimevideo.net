@@ -84,11 +84,9 @@ describe 'Source, Sources', ->
         expect(@source.validMimeType()).toBeFalsy()
 
     describe 'reset()', ->
-      it 'resets the dataName, dataUID, keepRatio, embedWidth, embedHeight and currentMimeType attributes', ->
+      it 'resets the keepRatio, embedWidth, embedHeight and currentMimeType attributes', ->
         @source.set(format: 'webm')
         @source.set(quality: 'hd')
-        @source.set(dataName: 'foo')
-        @source.set(dataUID: 'bar')
         @source.set(keepRatio: false)
         @source.set(embedWidth: 12)
         @source.set(embedHeight: 42)
@@ -96,8 +94,6 @@ describe 'Source, Sources', ->
 
         expect(@source.get('format')).toEqual('webm')
         expect(@source.get('quality')).toEqual('hd')
-        expect(@source.get('dataName')).toEqual('foo')
-        expect(@source.get('dataUID')).toEqual('bar')
         expect(@source.get('keepRatio')).toBeFalsy()
         expect(@source.get('embedWidth')).toEqual(12)
         expect(@source.get('embedHeight')).toEqual(42)
@@ -107,8 +103,6 @@ describe 'Source, Sources', ->
 
         expect(@source.get('format')).toEqual('webm')
         expect(@source.get('quality')).toEqual('hd')
-        expect(@source.get('dataName')).toEqual('')
-        expect(@source.get('dataUID')).toEqual('')
         expect(@source.get('keepRatio')).toBeTruthy()
         expect(@source.get('embedWidth')).toEqual(null)
         expect(@source.get('embedHeight')).toEqual(null)
