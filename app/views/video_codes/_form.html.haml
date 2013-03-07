@@ -35,28 +35,27 @@
           = label_tag "video_origin_youtube", "My video is on YouTube"
       .spacer
       #video_sources_fields
-  .spacer
 
   #video_settings.expandable_settings_box
     %h4.expanding_handler
       = link_to "Video settings", ''
     #video_settings_fields.expandable
-  .spacer
 
   #lightbox_settings.expandable_settings_box
     %h4.expanding_handler
       = link_to "#{t('addons.lightbox')} settings", ''
     #lightbox_settings_fields.expandable
 
-  #social_sharing_settings.expandable_settings_box
-    %h4.expanding_handler
-      = link_to "#{t('addons.social_sharing')} settings", ''
-    #social_sharing_settings_fields.expandable
+  - if site.subscribed_to?(AddonPlan.get('social_sharing', 'standard'))
+    #sharing_settings.expandable_settings_box
+      %h4.expanding_handler
+        = link_to "#{t('addons.social_sharing')} settings", ''
+      #sharing_settings_fields.expandable
 
   #embed_settings.expandable_settings_box
     %h4.expanding_handler
       = link_to "#{t('addons.embed')} settings", ''
-    #embed_settings_fields.expandable
+    #embed_settings_fields.expandable{ data: { plan: site.addon_plan_for_addon_name('embed').name } }
 .spacer
 
 .big_break

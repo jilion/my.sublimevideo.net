@@ -1,0 +1,5 @@
+!= JST['video_code/templates/sharing/url']()
+!= JST['video_code/templates/sharing/title']()
+!= JST['video_code/templates/sharing/text']()
+!= JST['video_code/templates/sharing/twitter_text']()
+!= JST['video_code/templates/sharing/image']()

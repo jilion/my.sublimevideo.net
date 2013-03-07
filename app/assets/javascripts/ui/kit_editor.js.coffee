@@ -8,7 +8,7 @@ class MySublimeVideo.UI.KitEditor
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
-    this.setupSocialSharingButtonsSelector()
+    this.setupSharingButtonsSelector()
     this.refreshVideoTagFromSettings()
 
   setupModels: ->
@@ -74,25 +74,25 @@ class MySublimeVideo.UI.KitEditor
     $('#kit_setting-logo-image_url').on 'change', (e) =>
       this.refreshVideoTagFromSettings()
 
-  setupSocialSharingButtonsSelector: ->
-    socialSharingButtonsInputFieldId = 'kit_setting-social_sharing-buttons'
-    $('#social_sharing_active_buttons, #social_sharing_inactive_buttons').disableSelection().sortable
+  setupSharingButtonsSelector: ->
+    sharingButtonsInputFieldId = 'kit_setting-sharing-buttons'
+    $('#sharing_active_buttons, #sharing_inactive_buttons').disableSelection().sortable
       connectWith: '.drop_zone'
       over: (event, ui) =>
         this.toggleReceiveDropZoneHighlight(ui.item)
       receive: (event, ui) =>
         ui.item.toggleClass('enabled').toggleClass('disabled')
       stop: (event, ui) =>
-        $('#social_sharing_active_buttons, #social_sharing_inactive_buttons').removeClass('highlight')
-        buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' })
-        $("##{socialSharingButtonsInputFieldId}").val(buttons)
+        $('#sharing_active_buttons, #sharing_inactive_buttons').removeClass('highlight')
+        buttons = $('#sharing_active_buttons').sortable('toArray', { attribute: 'data-value' })
+        $("##{sharingButtonsInputFieldId}").val(buttons)
         this.refreshVideoTagFromSettings()
 
   toggleReceiveDropZoneHighlight: ($item) ->
-    if $item.parent().attr('id') is 'social_sharing_active_buttons'
-      $('#social_sharing_inactive_buttons').toggleClass('highlight')
+    if $item.parent().attr('id') is 'sharing_active_buttons'
+      $('#sharing_inactive_buttons').toggleClass('highlight')
     else
-      $('#social_sharing_active_buttons').toggleClass('highlight')
+      $('#sharing_active_buttons').toggleClass('highlight')
 
   refreshVideoTagFromSettings: ->
     sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
