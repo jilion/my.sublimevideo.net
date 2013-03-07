@@ -16,7 +16,7 @@ class StatsPopulator < Populator
     generate_stats(site, 60, 'minute')
     generate_stats(site, 60, 'second')
 
-    SiteCountersUpdater.new(site).update_last_30_days_video_views_counters
+    SiteCountersUpdater.new(site).update_last_30_days_counters
     puts "Fake stats created for #{site.hostname}"
   end
 
@@ -30,7 +30,7 @@ class StatsPopulator < Populator
 
       Stat::Site.const_get(scale.classify).collection.find(t: site.token, d: time).update({ :$inc => random_site_stats_inc(duration) }, upsert: true)
 
-      %w[uid1 uid2 uid3].pluck(:uid).each do |video_uid|
+      %w[uid1 uid2 uid3].each do |video_uid|
         Stat::Video.const_get(scale.classify).collection.find(st: site.token, u: video_uid, d: time).update({ :$inc => random_video_stats_inc(duration) }, upsert: true)
       end
     end
