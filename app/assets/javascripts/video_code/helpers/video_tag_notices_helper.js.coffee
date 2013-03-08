@@ -12,7 +12,7 @@ class MSVVideoCode.Helpers.VideoTagNoticesHelper
     uid_missing: "We recommend that you provide a UID for this video in the Video settings => Video metadata settings => UID field to make it uniquely identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/addons/stats#setup-for-stats' onclick='window.open(this); return false'>Read more</a>."
     title_missing: "We recommend that you provide a title for this video in the Video settings => Video metadata settings => Title field to make it easily identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/addons/stats#setup-for-stats' onclick='window.open(this); return false'>Read more</a>."
 
-  constructor: (@video) ->
+  constructor: (@video, @selectedKit) ->
 
   buildMessages: ->
     this._reset()
@@ -40,7 +40,9 @@ class MSVVideoCode.Helpers.VideoTagNoticesHelper
 
   _diagnoseMetadata: ->
     if @video.get('origin') isnt 'youtube'
-      @counts['warnings']['uid_missing'] = true unless @video.get('uid')
+      unless @video.get('uid')
+        key = if @video.getSetting('embed', 'type', @selectedKit) is 'auto' then 'errors' else 'warnings'
+        @counts[key]['uid_missing'] = true
       @counts['warnings']['title_missing'] = true unless @video.get('title')
 
   _buildMessages: (key) ->

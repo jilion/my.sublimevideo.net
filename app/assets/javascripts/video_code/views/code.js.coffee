@@ -26,7 +26,7 @@ class MSVVideoCode.Views.Code extends Backbone.View
   #
   _initUIHelpers: ->
     @videoTagHelper        = new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video)
-    @videoTagNoticesHelper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(MSVVideoCode.video)
+    @videoTagNoticesHelper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(MSVVideoCode.video, MSVVideoCode.kits.selected)
 
   _settings: ->
     s = {}

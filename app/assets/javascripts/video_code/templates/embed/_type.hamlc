@@ -1,6 +1,9 @@
 %h4 Embedding type
 
 #embed_type
+  %p.info
+    If you choose the auto-embedding, please make sure to set a UID for your video (in the "Video settings" section above).
+
   .radio_wrap
     %input#embed_type_manual{ type: 'radio', name: 'embed_type', value: 'manual', checked: MSVVideoCode.video.getSetting('embed', 'type', MSVVideoCode.kits.selected) isnt 'auto', data: { addon: 'embed', setting: 'type' } }
     %label{ for: 'embed_type_manual' } Manual
