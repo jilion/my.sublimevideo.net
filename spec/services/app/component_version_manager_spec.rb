@@ -10,15 +10,17 @@ require 'wrappers/campfire_wrapper'
 require 'services/app/component_version_manager'
 
 describe App::ComponentVersionManager do
+  let(:app_component) { mock('App::Component', clear_caches: true) }
   let(:app_component_version)   { Struct.new(:component_id, :stage, :name, :version).new(1234, 'beta', 'app', '1.0.0') }
   let(:other_component_version) { Struct.new(:component_id, :stage, :name, :version).new(4321, 'beta', 'foo', '1.0.0') }
   let(:service) { described_class.new(app_component_version) }
 
   describe '#create' do
-    before do
+    before {
       app_component_version.stub(:save!)
+      app_component_version.stub(:component) { app_component }
       other_component_version.stub(:save!)
-    end
+    }
 
     it 'saves component_version' do
       app_component_version.should_receive(:save!)
@@ -26,6 +28,11 @@ describe App::ComponentVersionManager do
     end
 
     context 'app component version' do
+      it "clears cache of component" do
+        app_component.should_receive(:clear_caches)
+        service.create
+      end
+
       it 'delays the update of all dependant sites loaders' do
         LoaderGenerator.should delay(:update_all_dependant_sites, queue: 'high').with(app_component_version.component_id, app_component_version.stage)
         service.create
