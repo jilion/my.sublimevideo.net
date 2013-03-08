@@ -1,6 +1,6 @@
 class MySublimeVideo.Models.Video extends Backbone.Model
   defaults:
-    origin: 'files'
+    origin: null
     youTubeId: null
     displayInLightbox: false
     startWithHd: false

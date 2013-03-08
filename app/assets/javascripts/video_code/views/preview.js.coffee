@@ -2,14 +2,15 @@ class MSVVideoCode.Views.Preview extends Backbone.View
   template: JST['video_code/templates/preview']
 
   initialize: ->
+    this._listenToModelsEvents()
     this._initUIHelpers()
 
-    _.bindAll this, 'delayedRender'
-    MSVVideoCode.kits.bind      'change',     this.delayedRender
-    MSVVideoCode.video.bind     'change',     this.delayedRender
-    MSVVideoCode.poster.bind    'change:src', this.delayedRender
-    MSVVideoCode.sources.bind   'change',     this.delayedRender
-    MSVVideoCode.thumbnail.bind 'change',     this.delayedRender
+  #
+  # BINDINGS
+  #
+  _listenToModelsEvents: ->
+    _.each MSVVideoCode.playerModels, (model) =>
+      this.listenTo(model, 'change', this.delayedRender)
 
   # Ensure multiple sequential render are not possible
   #
@@ -20,9 +21,9 @@ class MSVVideoCode.Views.Preview extends Backbone.View
   render: ->
     if MSVVideoCode.video.viewable() and (!MSVVideoCode.video.get('displayInLightbox') or MSVVideoCode.thumbnail.viewable())
       this._refreshPreview()
-      $(@el).show()
+      @$el.show()
     else
-      $(@el).hide()
+      @$el.hide()
 
     this
 
@@ -34,13 +35,12 @@ class MSVVideoCode.Views.Preview extends Backbone.View
 
   _refreshPreview: ->
     @currentScroll = $(window).scrollTop()
+    @currentPreviewHeight = @$el.height()
+
     sublime.unprepare('video-preview') if $('#video-preview').exists()
-
-    $(@el).html this.template(videoTagHelper: @videoTagHelper, settings: this._settings())
-
+    @$el.html this.template(videoTagHelper: @videoTagHelper, settings: this._settings())
     sublime.prepare(if MSVVideoCode.video.get('displayInLightbox') then 'lightbox-trigger' else 'video-preview')
-
-    $(window).scrollTop(@currentScroll)
+    $(window).scrollTop(@currentScroll - (@currentPreviewHeight - @$el.height()))
 
   _settings: ->
     s = {}

@@ -1,13 +1,15 @@
-class MSVVideoCode.Views.AssistantCode
+class MSVVideoCode.Views.AssistantCode extends Backbone.View
   initialize: ->
+    this._listenToModelsEvents()
     this._initUIHelpers()
+    this.render()
 
-    _.bindAll this, 'render'
-    MSVVideoCode.kits.bind      'change',     this.render
-    MSVVideoCode.video.bind     'change',     this.render
-    MSVVideoCode.poster.bind    'change:src', this.render
-    MSVVideoCode.sources.bind   'change',     this.render
-    MSVVideoCode.thumbnail.bind 'change',     this.render
+  #
+  # BINDINGS
+  #
+  _listenToModelsEvents: ->
+    _.each MSVVideoCode.playerModels, (model) =>
+      this.listenTo(model, 'change', this.render)
 
   render: ->
     settings = {}

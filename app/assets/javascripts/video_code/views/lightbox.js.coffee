@@ -1,7 +1,15 @@
 class MSVVideoCode.Views.Lightbox extends Backbone.View
   template: JST['video_code/templates/lightbox']
 
-  events:
+  initialize: ->
+    this._listenToModelsEvents()
+    this._initUIHelpers()
+    this.render()
+
+  #
+  # EVENTS
+  #
+  events: ->
     'click #use_lightbox':            'updateDisplayInLightbox'
     'click input[name=initial_link]': 'updateInitialLink'
     'change #thumb_src':              'updateSrc'
@@ -9,22 +17,6 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     'change #thumb_height':           'updateThumbHeight'
     'click .reset':                   'resetThumbDimensions'
 
-  initialize: ->
-    this._initUIHelpers()
-    @placeholder = $(@el).find('#lightbox_settings_fields')
-
-    _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderStatus'
-    MSVVideoCode.thumbnail.bind 'change:initialLink', this.renderExtraSettings
-    MSVVideoCode.thumbnail.bind 'change:src',         this.renderStatus
-    MSVVideoCode.thumbnail.bind 'change:found',       this.renderStatus
-    MSVVideoCode.thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
-    MSVVideoCode.thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
-
-    this.render()
-
-  #
-  # EVENTS
-  #
   updateDisplayInLightbox: (event) ->
     MSVVideoCode.video.set(displayInLightbox: event.target.checked)
 
@@ -37,9 +29,11 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
 
   updateThumbWidth: (event) ->
     MSVVideoCode.thumbnail.setThumbWidth(event.target.value)
+    this.renderThumbHeight()
 
   updateThumbHeight: (event) ->
     MSVVideoCode.thumbnail.setThumbHeight(event.target.value)
+    this.renderThumbWidth()
 
   resetThumbDimensions: (event) ->
     MSVVideoCode.thumbnail.setThumbWidth(MSVVideoCode.thumbnail.get('width'))
@@ -49,9 +43,16 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
   #
   # BINDINGS
   #
+  _listenToModelsEvents: ->
+    this.listenTo(MSVVideoCode.thumbnail, {
+      'change:initialLink': this.renderExtraSettings
+      'change:thumbWidth':  this.renderThumbWidth
+      'change:thumbHeight': this.renderThumbHeight
+    })
+    this.listenTo(MSVVideoCode.thumbnail, 'change:src change:found', this.renderStatus)
+
   render: ->
-    @placeholder.html this.template()
-    $(@el).show()
+    @$el.html this.template()
     this.renderStatus()
 
     this

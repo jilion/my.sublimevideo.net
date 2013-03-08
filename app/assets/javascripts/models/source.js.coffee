@@ -84,10 +84,12 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
 
   reset: ->
     super()
-    this.set(keepRatio: true)
-    this.set(embedWidth: null)
-    this.set(embedHeight: null)
-    this.set(currentMimeType: '')
+    this.set({
+      keepRatio: true
+      embedWidth: null
+      embedHeight: null
+      currentMimeType: ''
+    }, silent: true)
 
 class MySublimeVideo.Collections.Sources extends Backbone.Collection
   model: MySublimeVideo.Models.Source

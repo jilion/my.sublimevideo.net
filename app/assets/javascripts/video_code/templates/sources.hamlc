@@ -1,3 +1,5 @@
+!= JST['video_code/templates/sources/origin']()
+
 - if MSVVideoCode.video.get('origin') is 'youtube'
   != JST['video_code/templates/sources/youtube']()
 

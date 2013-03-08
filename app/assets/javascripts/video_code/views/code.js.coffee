@@ -1,11 +1,14 @@
 class MSVVideoCode.Views.Code extends Backbone.View
   template: JST['video_code/templates/code']
 
-  events:
-    'click .get_the_code': 'render'
-
   initialize: ->
     this._initUIHelpers()
+
+  #
+  # EVENTS
+  #
+  events: ->
+    'click .get_the_code': 'render'
 
   #
   # BINDINGS
@@ -28,6 +31,5 @@ class MSVVideoCode.Views.Code extends Backbone.View
   _settings: ->
     s = {}
     s['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
-    
+
     _.extend(s, MSVVideoCode.video.get('settings'))
-    

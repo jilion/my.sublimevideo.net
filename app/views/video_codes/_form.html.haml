@@ -22,19 +22,7 @@
   #video_sources.expandable_settings_box
     %h4.expanding_handler.expanded
       = link_to "Video sources", ''
-    .expandable.expanded
-      #video_source_type
-        .radio_wrap
-          = radio_button_tag "video_origin", "test", checked: true
-          = label_tag "video_origin_test", "Use test video files", title: "Will use sample SublimeVideo movies and images so you can easily test the player."
-        .radio_wrap
-          = radio_button_tag "video_origin", "own"
-          = label_tag "video_origin_own", "I host my own video files"
-        .radio_wrap
-          = radio_button_tag "video_origin", "youtube"
-          = label_tag "video_origin_youtube", "My video is on YouTube"
-      .spacer
-      #video_sources_fields
+    #video_sources_fields.expandable.expanded
 
   #video_settings.expandable_settings_box
     %h4.expanding_handler

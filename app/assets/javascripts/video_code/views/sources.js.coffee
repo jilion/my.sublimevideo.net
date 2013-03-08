@@ -1,27 +1,20 @@
 class MSVVideoCode.Views.Sources extends Backbone.View
   template: JST['video_code/templates/sources']
 
-  events:
-    'click input[name=video_origin]': 'updateVideoOrigin'
-    'change .source':                 'updateSrc'
-    'change #youtube_id':             'updateYouTubeID'
-    'click #start_with_hd':           'updateStartWithHd'
-
   initialize: ->
+    this._listenToModelsEvents()
     this._initUIHelpers()
-    @placeholder = $(@el).find('#video_sources_fields')
-
-    _.bindAll this, 'render'
-    MSVVideoCode.video.bind   'change:origin',          this.render
-    MSVVideoCode.sources.bind 'change:src',             this.render
-    MSVVideoCode.sources.bind 'change:currentMimeType', this.render
-    MSVVideoCode.sources.bind 'change:found',           this.render
-
     this.render()
 
   #
   # EVENTS
   #
+  events: ->
+    'click input[name=video_origin]': 'updateVideoOrigin'
+    'change .source':                 'updateSrc'
+    'change #youtube_id':             'updateYouTubeID'
+    'click #start_with_hd':           'updateStartWithHd'
+
   updateVideoOrigin: (event) ->
     oldOrigin = MSVVideoCode.video.get('origin')
     newOrigin = event.target.value
@@ -30,15 +23,14 @@ class MSVVideoCode.Views.Sources extends Backbone.View
       false
     else
       changed = switch newOrigin
-          when 'test'
-            this._setTestAssets(oldOrigin)
-          when 'own'
-            this._clearAssets(oldOrigin)
-          when 'youtube'
-            this._setYouTube(oldOrigin)
-      MSVVideoCode.video.set(origin: newOrigin) if changed
+                  when 'test'
+                    this._setTestAssets(oldOrigin)
+                  when 'own', 'youtube'
+                    this._clearAssets(oldOrigin)
 
-      changed
+      if changed
+        MSVVideoCode.video.set(origin: newOrigin)
+        this._renderViews()
 
   updateSrc: (event) ->
     $('#video_origin_own').prop('checked', true)
@@ -49,7 +41,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
     MSVVideoCode.video.set(uid: MSVVideoCode.video.get('youTubeId'))
     MSVVideoCode.video.set(title: '')
 
-    this.render()
+    this._renderViews()
 
   updateStartWithHd: (event) ->
     MSVVideoCode.video.set(startWithHd: event.target.checked)
@@ -57,9 +49,11 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   #
   # BINDINGS
   #
-  render: ->
-    @placeholder.html this.template()
+  _listenToModelsEvents: ->
+    this.listenTo(MSVVideoCode.sources, 'change:src change:currentMimeType change:found', this.render)
 
+  render: ->
+    @$el.html this.template()
     _.each MSVVideoCode.sources.models, (source) => this._renderStatus(source)
 
     this
@@ -105,8 +99,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   _setTestAssets: (oldOrigin) ->
     if oldOrigin is 'youtube' or this._allAssetsEmpty() or confirm('All fields will be overwritten, continue?')
       MSVVideoCode.builderRouter.setTestAssets()
-      this.initUIHelpers()
-      this._renderViews()
+      this._initUIHelpers()
       true
     else
       false
@@ -114,15 +107,6 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   _clearAssets: (oldOrigin) ->
     if oldOrigin is 'youtube' or this._allAssetsEmpty() or this._noTestAssetModified() or confirm('All fields will be cleared, continue?')
       MSVVideoCode.builderRouter.clearAssets()
-      this.initUIHelpers()
-      this._renderViews()
-      true
-    else
-      false
-
-  _setYouTube: (oldOrigin) ->
-    if this._clearAssets(oldOrigin)
-      this._renderViews()
       true
     else
       false
@@ -133,13 +117,10 @@ class MSVVideoCode.Views.Sources extends Backbone.View
       source.get('src') is attributes['src']
 
   _allAssetsEmpty: ->
-    allSourcesEmpty = _.all(MSVVideoCode.sources.models, (src) ->
-      src.srcIsEmpty()
-    )
+    allSourcesEmpty = _.all MSVVideoCode.sources.models, (src) -> src.srcIsEmpty()
 
     MSVVideoCode.poster.srcIsEmpty() and MSVVideoCode.thumbnail.srcIsEmpty() and allSourcesEmpty
 
   _renderViews: ->
-    MSVVideoCode.settingsView.render()
-    MSVVideoCode.lightboxView.render()
     this.render()
+    MSVVideoCode.settingsView.render()

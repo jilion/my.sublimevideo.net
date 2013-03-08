@@ -1,7 +1,15 @@
 class MSVVideoCode.Views.Settings extends Backbone.View
   template: JST['video_code/templates/settings']
 
-  events:
+  initialize: ->
+    this._listenToModelsEvents()
+    this._initUIHelpers()
+    this.render()
+
+  #
+  # EVENTS
+  #
+  events: ->
     'change #poster_src':           'updatePosterSrc'
     'change #uid':                  'updateUid'
     'change #title':                'updateTitle'
@@ -12,23 +20,6 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     'click input[name=autoresize]': 'updateAutoresize'
     'click #autoplay':              'updateAutoplay'
 
-  initialize: ->
-    this._initUIHelpers()
-    @placeholder = $(@el).find('#video_settings_fields')
-
-    _.bindAll this, 'render', 'renderWidth', 'renderHeight', 'renderPosterStatus'
-    MSVVideoCode.poster.bind  'change',        this.renderPosterStatus
-    MSVVideoCode.video.bind   'change:width',  this.renderWidth
-    MSVVideoCode.video.bind   'change:height', this.renderHeight
-    MSVVideoCode.video.bind   'change:uid',    this.render
-    MSVVideoCode.video.bind   'change:title',  this.render
-    MSVVideoCode.sources.bind 'change:src',    this.render
-
-    this.render()
-
-  #
-  # EVENTS
-  #
   updatePosterSrc: (event) ->
     $('#video_origin_own').prop('checked', true)
     MSVVideoCode.poster.setAndPreloadSrc(event.target.value)
@@ -71,18 +62,41 @@ class MSVVideoCode.Views.Settings extends Backbone.View
   #
   # BINDINGS
   #
+  _listenToModelsEvents: ->
+    this.listenTo(MSVVideoCode.video, {
+      'change:width':  this._renderWidth
+      'change:height': this._renderHeight
+      'change:uid':    this._renderUid
+      'change:title':  this._renderTitle
+    })
+    this.listenTo(MSVVideoCode.poster,  'change',     this._renderPosterStatus)
+    this.listenTo(MSVVideoCode.sources, 'change:src', this.render)
+
   render: ->
-    @placeholder.html this.template()
+    @$el.html this.template()
 
     this
 
-  renderWidth: ->
-    $(@el).find("#width").val(MSVVideoCode.video.get('width'))
+  #
+  # PRIVATE
+  #
+  _initUIHelpers: ->
+    @posterHelper = new MSVVideoCode.Helpers.UIAssetHelper('poster')
+    @UIDHelper    = new MSVVideoCode.Helpers.UIAssetHelper('uid')
 
-  renderHeight: ->
-    $(@el).find("#height").val(MSVVideoCode.video.get('height'))
+  _renderWidth: ->
+    this._renderField('width')
 
-  renderPosterStatus: ->
+  _renderHeight: ->
+    this._renderField('height')
+
+  _renderUid: ->
+    this._renderField('uid')
+
+  _renderTitle: ->
+    this._renderField('title')
+
+  _renderPosterStatus: ->
     @posterHelper.hideErrors()
 
     return if MSVVideoCode.poster.srcIsEmpty()
@@ -94,9 +108,5 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     else
       @posterHelper.renderValid()
 
-  #
-  # PRIVATE
-  #
-  _initUIHelpers: ->
-    @posterHelper = new MSVVideoCode.Helpers.UIAssetHelper('poster')
-    @UIDHelper    = new MSVVideoCode.Helpers.UIAssetHelper('uid')
+  _renderField: (name)->
+    this.$("##{name}").val(MSVVideoCode.video.get(name))
