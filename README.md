@@ -12,11 +12,12 @@
 4. [Optional but recommended] Install rbenv: `$ brew install rbenv` and add `eval "$(rbenv init -)"` to your `~/.zshenv`/`~/.bash_profile`;
 5. [Optional but recommended] Install ruby-build: `$ brew install ruby-build`
 6. Install latest Ruby 1.9.3.
-	- If you're using rbenv: `$ rbenv install 1.9.3-p286` (verify it's the latest 1.9.3 version by running `$ ruby-build --definitions` before).
+	- If you're using rbenv: `$ rbenv install 1.9.3-p392` (verify it's the latest 1.9.3 version by running `$ ruby-build --definitions` before). Set the system's default ruby version with `rbenv global 1.9.3-p392`
 	- If you're using RVM: `$ rvm install 1.9.3`;
 7. Install PostgreSQL: `$ brew install postgresql` (and follow the installation instructions);
 8. Install MongoDB: `$ brew install mongodb` (and follow the installation instructions);
 9. Install Redis: `$ brew install redis` (and follow the installation instructions);
+10. Install bundler: `$ gem install bundler`
 10. Install the app's gems: `$ bundle install`. If there's any issue at this step, the solution is usually to re-install Ruby, but you should ask a developer before;
 11. [If you're using rbenv] Installs shims for all Ruby binaries known to `rbenv`: `$ rbenv rehash`;
 12. Run the populate task: `$ rake 'db:populate:all[<yourfirstname>]'` (e.g. 'remy');
