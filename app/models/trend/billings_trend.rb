@@ -15,7 +15,7 @@ class BillingsTrend
     if self.present?
       self.order_by(d: 1).last.try(:d)
     else
-      (Invoice.paid.order{ paid_at.asc }.first.paid_at).midnight - 1.day
+      (Invoice.paid.order{ paid_at.asc }.first.try(:paid_at) || 1.day.from_now).midnight - 1.day
     end
   end
 
