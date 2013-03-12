@@ -14,13 +14,28 @@ class SitesTrend
   field :pa, type: Hash     # paying: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
   field :su, type: Integer  # suspended
   field :ar, type: Integer  # archived
+  field :al, type: Hash     # alive (with page visits / video plays in the last 30 days): { "pv" => 12, "vv" => 6 }
 
   def self.json_fields
-    [:fr, :sp, :tr, :pa, :su, :ar]
+    [:fr, :sp, :tr, :pa, :su, :ar, :al]
   end
 
   def self.create_trends
     self.create(trend_hash(Time.now.utc.midnight))
+  end
+
+  def self.create_alive_sites_trends
+    day_without_alive_infos = self.order_by(d: 1).where(al: nil).first.try(:d)
+
+    while day_without_alive_infos <= Time.now.utc.midnight do
+      if trend = self.where(d: day_without_alive_infos, al: nil).first
+        trend.update_attribute(:al, {
+          pv: _number_of_sites_with_page_visits_in_the_last_30_days(day_without_alive_infos),
+          vv: _number_of_sites_with_video_views_in_the_last_30_days(day_without_alive_infos)
+        })
+      end
+      day_without_alive_infos += 1.day
+    end
   end
 
   def self.trend_hash(day)
@@ -29,8 +44,22 @@ class SitesTrend
       fr: { free: Site.free.count },
       pa: { addons: Site.paying.count },
       su: Site.suspended.count,
-      ar: Site.archived.count
+      ar: Site.archived.count,
+      al: {
+        pv: _number_of_sites_with_page_visits_in_the_last_30_days(day),
+        vv: _number_of_sites_with_video_views_in_the_last_30_days(day)
+      }
     }
+  end
+
+  def self._number_of_sites_with_page_visits_in_the_last_30_days(day)
+    Site.active.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
+    .nor({ 'pv.m' => 0 }, { 'pv.e' => 0 }, { 'pv.em' => 0 }).distinct(:t)).count
+  end
+
+  def self._number_of_sites_with_video_views_in_the_last_30_days(day)
+    Site.active.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
+    .nor({ 'vv.m' => 0 }, { 'vv.e' => 0 }, { 'vv.em' => 0 }).distinct(:t)).count
   end
 
 end

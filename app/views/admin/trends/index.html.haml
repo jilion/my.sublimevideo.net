@@ -242,6 +242,13 @@
                   %a.selector{ href: "?sites.su", data: { value: 'sites.su' }, title: "Sites for which the user is suspended" } Suspended
                 %li
                   %a.selector{ href: "?sites.ar", data: { value: 'sites.ar' }, title: "Sites deleted by their owner" } Archived
+            %li
+              %a.title.selector{ href: "?sites.li", data: { value: 'sites.passive' } } Alive
+              %ul
+                %li
+                  %a.selector{ href: "?sites.al.pv", data: { value: 'sites.al.pv' }, title: "Active sites with at least 1 page visit in the least 30 days" } Alive sites (page visits) in the least 30 days
+                %li
+                  %a.selector{ href: "?sites.al.vv", data: { value: 'sites.al.vv' }, title: "Active sites with at least 1 video view in the least 30 days" } Alive sites (video views) in the least 30 days
 
         %td.site_stats
           %h2 Site Stats

@@ -6,7 +6,7 @@ class SitesPopulator < Populator
     PopulateHelpers.empty_tables(Site)
 
     User.all.each do |user|
-      BASE_SITES.each do |hostname|
+      BASE_SITES.sample(3).each do |hostname|
         created_at = rand(24).months.ago
         Timecop.travel(created_at)
         site = user.sites.build(hostname: hostname)
