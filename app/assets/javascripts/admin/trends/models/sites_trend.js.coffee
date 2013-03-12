@@ -59,13 +59,14 @@ class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collec
           this.recursiveHashSum(trend.get(selected[0]))
         else
           switch selected[0]
-            when 'all' then this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa')) + trend.get('su') + trend.get('ar')
-
-            when 'active' then this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa'))
-
-            when 'passive' then trend.get('su') + trend.get('ar')
-
-            else trend.get(selected[0])
+            when 'all'
+              this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa')) + trend.get('su') + trend.get('ar')
+            when 'active'
+              this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa'))
+            when 'passive'
+              trend.get('su') + trend.get('ar')
+            else
+                trend.get(selected[0])
       else
         0
 
