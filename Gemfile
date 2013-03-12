@@ -138,7 +138,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'launchy', '2.1.0' # after dependency on addressable ~> 2.3
+  gem 'launchy',        '2.1.0' # after dependency on addressable ~> 2.3
   gem 'letter_opener'
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
@@ -146,6 +146,7 @@ group :development do
 
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
 end
 
 group :development, :test do
@@ -162,15 +163,15 @@ end
 
 group :test do
   gem 'rspec'
-  gem 'shoulda-matchers',   github: 'thoughtbot/shoulda-matchers'
+  gem 'shoulda-matchers',    github: 'thoughtbot/shoulda-matchers'
   gem 'ffaker'
-  gem 'capybara', '~> 1.1'
-  gem 'capybara-email', '~> 1.0.2'
-  gem 'poltergeist', '~> 1.0.2'
+  gem 'capybara',            '~> 1.1'
+  gem 'capybara-email',      '~> 1.0.2'
+  gem 'poltergeist',         '~> 1.0.2'
   gem 'show_me_the_cookies', '~> 1.1.4'
-  gem 'webmock', '~> 1.6.0'
-  gem 'typhoeus', '~> 0.2.0'
-  gem 'vcr', '~> 1.10.3'
+  gem 'webmock',             '~> 1.6.0'
+  gem 'typhoeus',            '~> 0.2.0'
+  gem 'vcr',                 '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl'

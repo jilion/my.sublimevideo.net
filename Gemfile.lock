@@ -53,6 +53,13 @@ GIT
       rails (>= 3.0)
 
 GIT
+  remote: git://github.com/nicoolas25/i18n-extra_translations.git
+  revision: 860ea191f361524eea761a762c90e77eb92754f2
+  specs:
+    i18n-extra_translations (0.0.3)
+      i18n (~> 0.6.4)
+
+GIT
   remote: git://github.com/softa/activerecord-postgres-hstore.git
   revision: 396f5af9af5eb70b7d9721a5bb14e14afee5cc38
   specs:
@@ -659,6 +666,7 @@ DEPENDENCIES
   haml_coffee_assets
   has_scope
   hpricot
+  i18n-extra_translations!
   jasminerice
   json
   kaminari
