@@ -13,8 +13,7 @@ end
 
 class PageExistsConstraint
   def matches?(request)
-    pages = Dir.glob('app/views/pages/*.html.haml').map { |p| p.match(%r(app/views/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
+    Dir.glob("app/views/pages/#{request.params['page']}.html.haml").any?
   end
 end
 
