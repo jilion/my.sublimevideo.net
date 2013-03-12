@@ -1,3 +1,4 @@
+                                                   /i18n                                                     #<I18n::ExtraTranslations::Server:0x007fb6c9146bd0>
                                                    /docs(/*rest)(.:format)                                   :controller#:action
                          api_test_request GET      /api/test_request(.:format)                               api/apis#test_request
                            usage_api_site GET      /api/sites/:id/usage(.:format)                            api/sites#usage

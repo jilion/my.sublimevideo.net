@@ -30,8 +30,8 @@ class SitesTrend
     while day_without_alive_infos <= Time.now.utc.midnight do
       if trend = self.where(d: day_without_alive_infos, al: nil).first
         trend.update_attribute(:al, {
-          pv: _number_of_sites_with_page_visits_in_the_last_30_days(day_without_alive_infos),
-          vv: _number_of_sites_with_video_views_in_the_last_30_days(day_without_alive_infos)
+          pv: _number_of_sites_with_usage_in_the_last_30_days(day_without_alive_infos, 'pv'),
+          vv: _number_of_sites_with_usage_in_the_last_30_days(day_without_alive_infos, 'vv')
         })
       end
       day_without_alive_infos += 1.day
@@ -46,20 +46,15 @@ class SitesTrend
       su: Site.suspended.count,
       ar: Site.archived.count,
       al: {
-        pv: _number_of_sites_with_page_visits_in_the_last_30_days(day),
-        vv: _number_of_sites_with_video_views_in_the_last_30_days(day)
+        pv: _number_of_sites_with_usage_in_the_last_30_days(day, 'pv'),
+        vv: _number_of_sites_with_usage_in_the_last_30_days(day, 'vv')
       }
     }
   end
 
-  def self._number_of_sites_with_page_visits_in_the_last_30_days(day)
+  def self._number_of_sites_with_usage_in_the_last_30_days(day, metric)
     Site.active.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
-    .nor({ 'pv.m' => 0 }, { 'pv.e' => 0 }, { 'pv.em' => 0 }).distinct(:t)).count
-  end
-
-  def self._number_of_sites_with_video_views_in_the_last_30_days(day)
-    Site.active.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
-    .nor({ 'vv.m' => 0 }, { 'vv.e' => 0 }, { 'vv.em' => 0 }).distinct(:t)).count
+    .nor({ "#{metric}.m" => 0 }, { "#{metric}.e" => 0 }, { "#{metric}.em" => 0 }).distinct(:t)).count
   end
 
 end
