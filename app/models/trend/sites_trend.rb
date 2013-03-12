@@ -24,17 +24,17 @@ class SitesTrend
     self.create(trend_hash(Time.now.utc.midnight))
   end
 
-  def self.create_alive_sites_trends
-    day_without_alive_infos = self.order_by(d: 1).where(al: nil).first.try(:d)
+  def self.update_alive_sites_trends
+    trend_day = self.order_by(d: 1).first.try(:d)
 
-    while day_without_alive_infos <= Time.now.utc.midnight do
-      if trend = self.where(d: day_without_alive_infos, al: nil).first
+    while trend_day <= Time.now.utc.midnight do
+      if trend = self.where(d: trend_day).first
         trend.update_attribute(:al, {
-          pv: _number_of_sites_with_usage_in_the_last_30_days(day_without_alive_infos, 'pv'),
-          vv: _number_of_sites_with_usage_in_the_last_30_days(day_without_alive_infos, 'vv')
+          pv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, 'pv'),
+          vv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, 'vv')
         })
       end
-      day_without_alive_infos += 1.day
+      trend_day += 1.day
     end
   end
 

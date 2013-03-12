@@ -47,7 +47,7 @@ describe SitesTrend do
       end
     end
 
-    describe '.create_alive_sites_trends' do
+    describe '.update_alive_sites_trends' do
       before do
         described_class.create(d: 2.day.ago.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
         described_class.create(d: Time.now.utc.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
@@ -57,7 +57,7 @@ describe SitesTrend do
         described_class.where(d: 2.day.ago.midnight).first['al'].should be_nil
         described_class.where(d: Time.now.utc.midnight).first['al'].should be_nil
 
-        described_class.create_alive_sites_trends
+        described_class.update_alive_sites_trends
 
         described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'pv' => 2, 'vv' => 2 })
         described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 3, 'vv' => 3 })
