@@ -1,5 +1,5 @@
 module Scheduler
-  def self.supervise_queues(jobs_threshold = 10000)
+  def self.supervise_queues(jobs_threshold = 100_000)
     queues = Sidekiq::Client.registered_queues
     jobs_count = queues.sum do |queue|
       Sidekiq::Queue.new(queue).size
