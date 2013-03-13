@@ -55,8 +55,8 @@ en:
       standard: 'Social sharing'
 
     embed:
-      manual: 'Manual embedding'
-      auto: 'Auto embedding'
+      manual: 'Manual embed'
+      auto: 'Auto embed'
 
     api:
       standard: 'SublimeVideo player basic JavaScript API'
