@@ -1,29 +1,12 @@
 module SiteModules::BillableItem
   extend ActiveSupport::Concern
 
-  def app_design_is_active?(app_design)
-    app_design.present? &&
-    app_designs.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id == app_design.id) }.exists?
+  def subscribed_to?(item)
+    billable_items.with_item(item).state(BillableItem::ACTIVE_STATES).exists?
   end
 
-  def app_design_is_sponsored?(app_design)
-    app_design.present? &&
-    app_designs.where{ (billable_items.state == 'sponsored') & (id == app_design.id) }.exists?
-  end
-
-  def addon_plan_is_active?(addon_plan)
-    addon_plan.present? &&
-    addon_plans.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id == addon_plan.id) }.exists?
-  end
-
-  def addon_plan_is_sponsored?(addon_plan)
-    addon_plan.present? &&
-    addon_plans.where{ (billable_items.state == 'sponsored') & (id == addon_plan.id) }.exists?
-  end
-
-  def addon_is_active?(addon)
-    addon.present? &&
-    addon_plans.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id >> addon.plans.pluck(:id)) }.exists?
+  def sponsored_to?(item)
+    billable_items.with_item(item).state('sponsored').exists?
   end
 
   def addon_plan_for_addon_name(addon_name)

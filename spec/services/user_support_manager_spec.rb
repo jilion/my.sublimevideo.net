@@ -18,13 +18,13 @@ describe UserSupportManager do
     end
 
     it 'returns email if site dont have the VIP email support add-on active' do
-      site.should_receive(:addon_plan_is_active?).with(addon) { false }
+      site.should_receive(:subscribed_to?).with(addon) { false }
 
       manager.level.should eq 'email'
     end
 
     it 'returns vip_email if site has the VIP email support add-on active' do
-      site.should_receive(:addon_plan_is_active?).with(addon) { true }
+      site.should_receive(:subscribed_to?).with(addon) { true }
 
       manager.level.should eq 'vip_email'
     end

@@ -1,4 +1,4 @@
-- design_is_sponsored = site.app_design_is_sponsored?(design)
+- design_is_sponsored = site.sponsored_to?(design)
 %tr{ class: highlighted_class(design) }
   %td
     - if design.free? || design_is_sponsored

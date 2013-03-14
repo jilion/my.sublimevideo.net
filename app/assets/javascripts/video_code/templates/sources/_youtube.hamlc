@@ -1,0 +1,11 @@
+.entry
+  %h5
+    %label{ for: "youtube_id" }
+      Your YouTube video ID
+      != surround '(', ')', ->
+        %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('youtube')}", onclick: "window.open(this); return false" } Where can I find the video ID?
+  %br
+  %input.text{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: MSVVideoCode.video.get('youTubeId') }
+
+  - if MSVVideoCode.video.get('youTubeId')?
+    %a.hl{ href: "http://youtu.be/#{MSVVideoCode.video.get('youTubeId')}", onclick: "window.open(this); return false" } Test

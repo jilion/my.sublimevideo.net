@@ -1,0 +1,12 @@
+%h4 Poster frame
+.entry#poster_box
+  %label.icon{ for: "poster_src" } Poster frame URL
+  %input#poster_src.text.source{ type: "text", size: "50", placeholder: "Poster frame URL", value: MSVVideoCode.video.get('poster').get('src') }/
+  %span#poster_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
+  %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
+
+%p.info
+  The poster frame is the image displayed to advertize the video before the user clicks the initial Play button.
+  ~ 'If you need help creating poster frames for your videos, please read more in our '
+  != succeed '.', ->
+    %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('create-poster-frame'), onclick: "window.open(this); return false" } documentation

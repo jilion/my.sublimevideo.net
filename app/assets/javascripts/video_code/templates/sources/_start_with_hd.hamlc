@@ -1,0 +1,3 @@
+#start_with_hd_box.checkbox_wrap{ style: "display:#{if MSVVideoCode.video.get('sources').hdPresent() then 'block' else 'none'}" }
+  %input#start_with_hd{ type: "checkbox", checked: MSVVideoCode.video.get('startWithHd') }
+  %label{ for: "start_with_hd" } Start with HD version

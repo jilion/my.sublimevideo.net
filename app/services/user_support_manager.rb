@@ -6,7 +6,7 @@ class UserSupportManager
   end
 
   def level
-    if user.sites.not_archived.any? { |site| site.addon_plan_is_active?(AddonPlan.get('support', 'vip')) }
+    if user.sites.not_archived.any? { |site| site.subscribed_to?(AddonPlan.get('support', 'vip')) }
       'vip_email'
     else
       'email'

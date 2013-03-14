@@ -1,0 +1,13 @@
+#video_source_type
+  .radio_wrap
+    %input#video_origin_test{ type: 'radio', name: 'video_origin', value: 'test', checked: MSVVideoCode.video.get('origin') is 'test' }
+    %label{ for: 'video_origin_test', title: 'Will use sample SublimeVideo movies and images so you can easily test the player.' } Use test video files
+
+  .radio_wrap
+    %input#video_origin_own{ type: 'radio', name: 'video_origin', value: 'own', checked: MSVVideoCode.video.get('origin') is 'own' }
+    %label{ for: 'video_origin_own' } I host my own video files
+
+  .radio_wrap
+    %input#video_origin_youtube{ type: 'radio', name: 'video_origin', value: 'youtube', checked: MSVVideoCode.video.get('origin') is 'youtube' }
+    %label{ for: 'video_origin_youtube' } My video is on YouTube
+.spacer

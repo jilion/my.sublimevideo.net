@@ -1,0 +1,12 @@
+- display = if MSVVideoCode.video.getSetting('embed', 'type', MSVVideoCode.kits.selected) is 'auto' then 'none' else 'block'
+#embed_url_section{ style: "display:#{display}" }
+  %h4 Embed URL
+
+  %p.info
+    This field is mandatory in order for the embed button to appear in the player.
+
+  .entry
+    %label.icon{ for: "embed_url_src" } Embed URL
+    - value = MSVVideoCode.video.getSetting('embed', 'url', MSVVideoCode.kits.selected)
+    %input#embed_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: value, data: { addon: 'embed', setting: 'url' } }/
+    %span#embed_url_src_invalid.inline_alert{ style: "display:none" } Please provide a valid URL

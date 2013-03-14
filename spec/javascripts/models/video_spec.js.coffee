@@ -23,45 +23,45 @@ describe 'MySublimeVideo.Models.Video', ->
 
       expect(@video.get('youTubeId')).toEqual('abcd1234')
 
-  describe 'setDataUID()', ->
+  describe 'setUid()', ->
     it 'accepts proper data-uid', ->
-      @video.setDataUID('abcd-12_34')
+      @video.setUid('abcd-12_34')
 
-      expect(@video.get('dataUID')).toEqual('abcd-12_34')
+      expect(@video.get('uid')).toEqual('abcd-12_34')
     it 'accepts proper data-uid with uppercase letters', ->
-      @video.setDataUID('aBcD-12_34')
+      @video.setUid('aBcD-12_34')
 
-      expect(@video.get('dataUID')).toEqual('aBcD-12_34')
+      expect(@video.get('uid')).toEqual('aBcD-12_34')
 
     it 'accepts 1 character UID', ->
-      @video.setDataUID('a')
+      @video.setUid('a')
 
-      expect(@video.get('dataUID')).toEqual('a')
+      expect(@video.get('uid')).toEqual('a')
 
     it 'accepts 64 character UID', ->
-      @video.setDataUID('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+      @video.setUid('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 
-      expect(@video.get('dataUID')).toEqual('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+      expect(@video.get('uid')).toEqual('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 
     it 'rejects empty UID', ->
-      @video.setDataUID('')
+      @video.setUid('')
 
-      expect(@video.get('dataUID')).toEqual('')
+      expect(@video.get('uid')).toEqual('')
 
     it 'rejects 64+ characters UID', ->
-      expect(@video.setDataUID('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')).toBeFalsy()
+      expect(@video.setUid('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')).toBeFalsy()
 
-      expect(@video.get('dataUID')).toEqual(undefined)
+      expect(@video.get('uid')).toEqual(undefined)
 
     it 'rejects UID with "|"', ->
-      expect(@video.setDataUID('abcd|1234')).toBeFalsy()
+      expect(@video.setUid('abcd|1234')).toBeFalsy()
 
-      expect(@video.get('dataUID')).toEqual(undefined)
+      expect(@video.get('uid')).toEqual(undefined)
 
     it 'rejects UID with "."', ->
-      expect(@video.setDataUID('abcd.1234')).toBeFalsy()
+      expect(@video.setUid('abcd.1234')).toBeFalsy()
 
-      expect(@video.get('dataUID')).toEqual(undefined)
+      expect(@video.get('uid')).toEqual(undefined)
 
   describe 'setKeepRatio()', ->
     it 'recalculate only height from width and ratio when keepRatio is set to true', ->
@@ -177,19 +177,22 @@ describe 'MySublimeVideo.Models.Video', ->
       expect(@video.get('width')).toEqual(800)
 
   describe 'updateSetting()', ->
-    it 'create the missing keys and set the value (1)', ->
-      @video.updateSetting('social_sharing', 'title', 'Foo Bar')
+    beforeEach ->
+      @kit = new MySublimeVideo.Models.Kit(settings: { sharing: { title: 'Bar Foo' } })
 
-      expect(@video.get('settings')).toEqual({ 'social_sharing': { 'title': 'Foo Bar' } })
+    it 'create the missing keys and set the value (1)', ->
+      @video.updateSetting('sharing', 'title', 'Foo Bar', @kit)
+
+      expect(@video.get('settings')).toEqual({ 'sharing': { 'title': 'Foo Bar' } })
 
     it 'create the missing keys and set the value (2)', ->
-      @video.set(settings: { 'social_sharing': {} })
-      @video.updateSetting('social_sharing', 'title', 'Foo Bar')
+      @video.set(settings: { 'sharing': {} })
+      @video.updateSetting('sharing', 'title', 'Foo Bar', @kit)
 
-      expect(@video.get('settings')).toEqual({ 'social_sharing': { 'title': 'Foo Bar' } })
+      expect(@video.get('settings')).toEqual({ 'sharing': { 'title': 'Foo Bar' } })
 
-    it 'update the value', ->
-      @video.set(settings: { 'social_sharing': { 'title': 'Foo Bar' } })
-      @video.updateSetting('social_sharing', 'title', 'Bar Foo')
+    it 'remove the value if it is the default', ->
+      @video.set(settings: { 'sharing': { 'title': 'Foo Bar' } })
+      @video.updateSetting('sharing', 'title', 'Bar Foo', @kit)
 
-      expect(@video.get('settings')).toEqual({ 'social_sharing': { 'title': 'Bar Foo' } })
+      expect(@video.get('settings')).toEqual({ 'sharing': {} })

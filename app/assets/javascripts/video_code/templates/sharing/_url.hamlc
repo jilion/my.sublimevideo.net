@@ -1,0 +1,15 @@
+- href = document.location.href.replace(/assistant/, 'sites').replace(/publish-video/, "players/#{MSVVideoCode.kits.selected.get('identifier')}")
+
+%h4 Sharing URL
+
+%p.info
+  If you have already provided a sharing URL in your
+  %a.hl{ href: href, onclick: "window.open(this); return false" } Player editor
+  page, this value will override it.
+  If you want to test the sharing button in the player preview above, you need to have a valid sharing URL either in the field below or the default sharing URL in the Player editor.
+
+.entry#sharing_url_box
+  %label.icon{ for: "sharing_url_src" } Sharing URL
+  - value = MSVVideoCode.video.getSetting('sharing', 'url', MSVVideoCode.kits.selected)
+  %input#sharing_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: value, data: { addon: 'sharing', setting: 'url' } }/
+  %span#sharing_url_src_invalid.inline_alert{ style: "display:none" } Please provide a valid URL

@@ -17,6 +17,8 @@ class MySublimeVideo.Models.Asset extends Backbone.Model
     this.srcIsUrl() and this.get('found')
 
   reset: ->
-    this.set(src: '')
-    this.set(found: true)
-    this.set(ratio: 1)
+    this.set({
+      src: ''
+      found: true
+      ratio: 1
+    }, silent: true)

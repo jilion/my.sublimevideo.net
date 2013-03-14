@@ -1,0 +1,9 @@
+%h4 Sharing message text
+
+%p.info
+  If your message is longer than 140 characters, please provide a shorter version in the Twitter-specific field below.
+
+.entry#sharing_text_box
+  %label.icon{ for: "sharing_text" } Text
+  - value = MSVVideoCode.video.getSetting('sharing', 'text', MSVVideoCode.kits.selected)
+  %input#sharing_text.text.kit_setting{ type: 'text', size: 50, placeholder: "Text", value: value, data: { addon: 'sharing', setting: 'text' } }/

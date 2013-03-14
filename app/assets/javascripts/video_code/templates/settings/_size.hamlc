@@ -1,0 +1,16 @@
+%h4 Player size
+
+%p.info
+  Make sure that 'Keep original ratio' is checked unless you specifically want black bars (letterboxes/pillarboxes) to display around your video.
+
+.entry.size
+  %input#width.text.no_icon{ type: "text", placeholder: "Width", value: MSVVideoCode.video.get('width'), size: 4, maxlength: 4 }
+  x
+  %input#height.text.no_icon{ type: "text", placeholder: "Height", value: MSVVideoCode.video.get('height'), size: 4, maxlength: 4 }
+
+.checkbox_wrap
+  %input#keep_ratio{ type: "checkbox", checked: MSVVideoCode.video.get('keepRatio') }
+  %label{ for: "keep_ratio" } Keep original ratio
+
+.spacer
+%a.reset.hl{ href: "" } Fit to video size

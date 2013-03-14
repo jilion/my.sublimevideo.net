@@ -1,0 +1,10 @@
+#global_errors.notices
+  %ul
+    %li.notice.no_usable_source{ style: 'display: none' } Please provide a valid video source.
+
+#global_warnings.notices
+  %ul
+    %li.notice.mime_type_invalid{ style: 'display: none' }
+      ~ 'Please find more information on how to fix MIME Type misconfiguration in our '
+      != succeed '.', ->
+        %a{ href: SublimeVideo.Misc.Utils.docsUrl('troubleshooting#videos-wont-play'), onclick: "window.open(this); return false" } documentation

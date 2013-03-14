@@ -95,6 +95,7 @@ en:
     embed:
       title: 'Embed settings'
       settings:
-        enable: 'Enable'
+        enable: 'Enable embed button'
+        type: 'Embedding type:'
         url: 'Default embed URL:'
         size: 'Default embed size:'

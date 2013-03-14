@@ -1,0 +1,15 @@
+%h4 Autoresizing (for fluid, liquid & responsive designs)
+
+%p.info
+  Make sure that 'Keep original ratio' is checked unless you would like black bars (letterboxes/pillarboxes) to display around your video.
+
+.radio_wrap
+  %input#autoresize_none{ type: 'radio', name: 'autoresize', value: 'none', checked: MSVVideoCode.video.get('autoresize') is 'none' }
+  %label{ for: "autoresize_none" } None
+.radio_wrap
+  %input#autoresize_fit{ type: 'radio', name: 'autoresize', value: 'fit', checked: MSVVideoCode.video.get('autoresize') is 'fit' }
+  %label{ for: "autoresize_fit" } Fit (player will change size if parent element is resized, and will always keep its proportions)
+.radio_wrap
+  %input#autoresize_fill{ type: 'radio', name: 'autoresize', value: 'fill', checked: MSVVideoCode.video.get('autoresize') is 'fill' }
+  %label{ for: "autoresize_fill" } Fill (player will change size to keep filling the parent element if it is resized)
+.spacer

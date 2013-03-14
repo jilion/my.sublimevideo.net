@@ -113,12 +113,12 @@ group :assets do
   gem 'asset_sync'
   gem 'eco'
   gem 'uglifier'
-  # gem 'coffee-script-source', '1.4.0'
   gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
 
-  gem 'rails-backbone', '~> 0.6.0'
+  # Support for new jquery-rails until https://github.com/codebrew/backbone-rails/pull/144 is merged
+  gem 'rails-backbone', github: 'mrwade/backbone-rails'
 end
 gem 'sass-rails'
 

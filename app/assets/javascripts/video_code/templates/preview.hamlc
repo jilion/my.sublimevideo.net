@@ -1,8 +1,8 @@
-- width  = if @video.get('displayInLightbox') then @video.get('thumbnail').get('thumbWidth') else @video.get('width')
-- height = if @video.get('displayInLightbox') then @video.get('thumbnail').get('thumbHeight') else @video.get('height')
+- width  = if MSVVideoCode.video.get('displayInLightbox') then MSVVideoCode.video.get('thumbnail').get('thumbWidth') else MSVVideoCode.video.get('width')
+- height = if MSVVideoCode.video.get('displayInLightbox') then MSVVideoCode.video.get('thumbnail').get('thumbHeight') else MSVVideoCode.video.get('height')
 - code = @videoTagHelper.generatePlayerCode(id: 'video-preview', lightboxId: 'lightbox-trigger', class: '', settings: @settings)
 
-- if !@video.get('displayInLightbox') or @video.get('thumbnail').get('initialLink') is 'image'
+- if !MSVVideoCode.video.get('displayInLightbox') or MSVVideoCode.video.get('thumbnail').get('initialLink') is 'image'
   .video_wrap{ style: "width:#{width}px;height:#{height}px;" }!= code
 - else
   != code

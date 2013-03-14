@@ -1,0 +1,9 @@
+%h4 Sharing message title
+%p.info
+  ~ 'Currently only used for Facebook. Read more in our '
+  != succeed '.', ->
+    %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('addons/sharing'), onclick: "window.open(this); return false" } documentation
+.entry#sharing_title_box
+  %label.icon{ for: "sharing_title" } Title
+  - value = MSVVideoCode.video.getSetting('sharing', 'title', MSVVideoCode.kits.selected)
+  %input#sharing_title.text.kit_setting{ type: 'text', size: 50, placeholder: "Title", value: value, data: { addon: 'sharing', setting: 'title' } }/

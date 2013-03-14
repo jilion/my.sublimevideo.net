@@ -6,7 +6,6 @@
 #video_code.assistant
   %h3.assistant_title= "Publish a video on #{hostname_or_token(@site)}"
   = form_tag assistant_summary_url(@site), id: 'video_code_form', class: 'disableable', data: { assistant: true } do
-    = hidden_field_tag 'lightbox_code_for_textarea', ''
-    = hidden_field_tag 'video_code_for_textarea', ''
+    = hidden_field_tag 'video_code_for_assistant_summary', ''
     = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
     = render 'assistant/next_box', display_exit: true

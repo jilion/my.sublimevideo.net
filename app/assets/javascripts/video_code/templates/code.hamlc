@@ -1,12 +1,12 @@
-- if @video.viewable() and (!@video.get('displayInLightbox') or MSVVideoCode.thumbnail.viewable())
-  != JST['video_code/templates/code/notices'](video: @video, videoTagNoticesHelper: @videoTagNoticesHelper)
-  != JST['video_code/templates/code/video_tag'](video: @video, videoTagHelper: @videoTagHelper, settings: @settings)
+- if MSVVideoCode.video.viewable() and (!MSVVideoCode.video.get('displayInLightbox') or MSVVideoCode.thumbnail.viewable())
+  != JST['video_code/templates/code/notices'](videoTagNoticesHelper: @videoTagNoticesHelper)
+  != JST['video_code/templates/code/video_tag'](videoTagHelper: @videoTagHelper, settings: @settings)
   .spacer
 
 - else
   .notices
     %ul
-      - if !@video.viewable()
+      - if !MSVVideoCode.video.viewable()
         %li.notice.error Please provide a valid video source.
-      - if @video.get('displayInLightbox') and !MSVVideoCode.thumbnail.viewable()
+      - if MSVVideoCode.video.get('displayInLightbox') and !MSVVideoCode.thumbnail.viewable()
         %li.notice.error Please provide a valid lightbox image or text.

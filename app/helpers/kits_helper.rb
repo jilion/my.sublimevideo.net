@@ -14,7 +14,7 @@ module KitsHelper
 
   def app_designs_for_select(site, kit)
     items = site.app_designs.order(:id).inject([]) do |memo, app_design|
-      memo << [app_design.title, app_design.id, { 'data-kit-id' => PreviewKit.kit_identifer(app_design.name) }]
+      memo << [app_design.title, app_design.id, { 'data-preview-kit-id' => PreviewKit.kit_identifer(app_design.name) }]
     end
 
     options_for_select(items, kit.app_design_id)
@@ -58,7 +58,7 @@ module KitsHelper
 
   def kits_for_select(site)
     items = site.kits.includes(:design).order(:identifier).inject([]) do |memo, kit|
-      memo << [kit.name, kit.identifier, { 'data-kit-id' => PreviewKit.kit_identifer(kit.design.name) }]
+      memo << [kit.name, kit.identifier, { 'data-preview-kit-id' => PreviewKit.kit_identifer(kit.design.name) }]
     end
 
     options_for_select(items, site.default_kit.identifier)
