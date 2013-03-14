@@ -53,279 +53,276 @@
           %h2 Revenues
           %ul
             %li
-              %a.title.selector{ href: "?revenues.r", data: { value: 'revenues.r' }, title: "All revenues" } Total
+              %a.title.selector{ href: "?revenues.r", title: "All revenues" } Total
               %ul
                 - Addon.with_paid_plans.each do |addon|
                   %li
-                    %a.selector{ href: "?revenues.r.#{addon.name}", data: { value: "revenues.r.#{addon.name}" }, title: "Revenue from #{addon.title} add-on subscriptions" }= addon.title
+                    %a.selector{ href: "?revenues.r.#{addon.name}", title: "Revenue from #{addon.title} add-on subscriptions" }= addon.title
                     %ul
                       - addon.plans.paid.each do |addon_plan|
                         %li
-                          %a.selector{ href: "?revenues.r.#{addon.name}.#{addon_plan.name}", data: { value: "revenues.r.#{addon.name}.#{addon_plan.name}" }, title: "Revenue from #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
+                          %a.selector{ href: "?revenues.r.#{addon.name}.#{addon_plan.name}", title: "Revenue from #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
                 - App::Design.paid.each do |design|
                   %li
-                    %a.selector{ href: "?revenues.r.design.#{design.name}", data: { value: "revenues.r.design.#{design.name}" }, title: "Revenue from #{design.title} design subscriptions" }= addon.title
+                    %a.selector{ href: "?revenues.r.design.#{design.name}", title: "Revenue from #{design.title} design subscriptions" }= addon.title
 
         %td.billings
           %h2 Billings
           %ul
             %li
-              %a.title.selector{ href: "?billings.total", data: { value: 'billings.total' }, title: "All billings (new & renew subscriptions)" } Total
+              %a.title.selector{ href: "?billings.total", title: "All billings (new & renew subscriptions)" } Total
               %ul
                 %li
-                  %a.selector{ href: "?billings.ne", data: { value: 'billings.ne' }, title: "New subscriptions billed" } New
+                  %a.selector{ href: "?billings.ne", title: "New subscriptions billed" } New
                   %ul
                     %li
-                      %a.selector{ href: "?billings.ne.plus", data: { value: 'billings.ne.plus' }, title: "New Plus plan billed" } Plus
+                      %a.selector{ href: "?billings.ne.plus", title: "New Plus plan billed" } Plus
                     %li
-                      %a.selector{ href: "?billings.ne.premium", data: { value: 'billings.ne.premium' }, title: "New Premium plan billed" } Premium
+                      %a.selector{ href: "?billings.ne.premium", title: "New Premium plan billed" } Premium
                     %li
-                      %a.selector{ href: "?billings.ne.comet", data: { value: 'billings.ne.comet' }, title: "New Comet plan billed" } Comet
+                      %a.selector{ href: "?billings.ne.comet", title: "New Comet plan billed" } Comet
                     %li
-                      %a.selector{ href: "?billings.ne.planet", data: { value: 'billings.ne.planet' }, title: "New Planet plan subscriptions" } Planet
+                      %a.selector{ href: "?billings.ne.planet", title: "New Planet plan subscriptions" } Planet
                     - Addon.with_paid_plans.each do |addon|
                       %li
-                        %a.selector{ href: "?billings.ne.#{addon.name}", data: { value: "billings.ne.#{addon.name}" }, title: "New #{addon.title} add-on billed" }= addon.title
+                        %a.selector{ href: "?billings.ne.#{addon.name}", title: "New #{addon.title} add-on billed" }= addon.title
                         %ul
                           - addon.plans.paid.each do |addon_plan|
                             %li
-                              %a.selector{ href: "?billings.ne.#{addon.name}.#{addon_plan.name}", data: { value: "billings.ne.#{addon.name}.#{addon_plan.name}" }, title: "New #{addon_plan.title} add-on plan billed" }= addon_plan.title
+                              %a.selector{ href: "?billings.ne.#{addon.name}.#{addon_plan.name}", title: "New #{addon_plan.title} add-on plan billed" }= addon_plan.title
                 %li
-                  %a.selector{ href: "?billings.re", data: { value: 'billings.re' }, title: "Renewed subscriptions billed" } Renew
+                  %a.selector{ href: "?billings.re", title: "Renewed subscriptions billed" } Renew
                   %ul
                     %li
-                      %a.selector{ href: "?billings.re.plus", data: { value: 'billings.re.plus' }, title: "Renewed Plus plan billed" } Plus
+                      %a.selector{ href: "?billings.re.plus", title: "Renewed Plus plan billed" } Plus
                     %li
-                      %a.selector{ href: "?billings.re.premium", data: { value: 'billings.re.premium' }, title: "Renewed Premium plan billed" } Premium
+                      %a.selector{ href: "?billings.re.premium", title: "Renewed Premium plan billed" } Premium
                     %li
-                      %a.selector{ href: "?billings.re.comet", data: { value: 'billings.re.comet' }, title: "Renewed Comet plan billed" } Comet
+                      %a.selector{ href: "?billings.re.comet", title: "Renewed Comet plan billed" } Comet
                     %li
-                      %a.selector{ href: "?billings.re.planet", data: { value: 'billings.re.planet' }, title: "Renewed Planet plan billed" } Planet
+                      %a.selector{ href: "?billings.re.planet", title: "Renewed Planet plan billed" } Planet
                     - Addon.with_paid_plans.each do |addon|
                       %li
-                        %a.selector{ href: "?billings.re.#{addon.name}", data: { value: "billings.re.#{addon.name}" }, title: "Renewed #{addon.title} add-on billed" }= addon.title
+                        %a.selector{ href: "?billings.re.#{addon.name}", title: "Renewed #{addon.title} add-on billed" }= addon.title
                         %ul
                           - addon.plans.paid.each do |addon_plan|
                             %li
-                              %a.selector{ href: "?billings.re.#{addon.name}.#{addon_plan.name}", data: { value: "billings.re.#{addon.name}.#{addon_plan.name}" }, title: "Renewed #{addon_plan.title} add-on plan billed" }= addon_plan.title
+                              %a.selector{ href: "?billings.re.#{addon.name}.#{addon_plan.name}", title: "Renewed #{addon_plan.title} add-on plan billed" }= addon_plan.title
 
         %td.billable_items
           %h2 Billable items
           %ul
             %li
-              %a.selector{ href: "?billable_items.be", data: { value: 'billable_items.be' }, title: "Beta billable items" } Beta
+              %a.selector{ href: "?billable_items.be", title: "Beta billable items" } Beta
               %ul
                 - App::Design.paid.each do |design|
                   %li
-                    %a.selector{ href: "?billable_items.be.design.#{design.name}", title: "#{design.title} design in beta", data: { value: "billable_items.be.design.#{design.name}" } }= "[Design] #{design.title}"
+                    %a.selector{ href: "?billable_items.be.design.#{design.name}", title: "#{design.title} design in beta" }= "[Design] #{design.title}"
                 - Addon.public.visible.each do |addon|
                   %li
-                    %a.selector{ href: "?billable_items.be.#{addon.name}", title: "#{addon.title} add-on in beta", data: { value: "billable_items.be.#{addon.name}" } }= addon.title
+                    %a.selector{ href: "?billable_items.be.#{addon.name}", title: "#{addon.title} add-on in beta" }= addon.title
                     %ul
                       - addon.plans.includes(:addon).order(:price).each do |addon_plan|
                         %li
-                          %a.selector{ href: "?billable_items.be.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on in beta", data: { value: "billable_items.be.#{addon.name}.#{addon_plan.name}" } }= addon_plan.title
+                          %a.selector{ href: "?billable_items.be.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on in beta" }= addon_plan.title
             %li
-              %a.selector{ href: "?billable_items.tr", data: { value: 'billable_items.tr' }, title: "Trial billable items" } Trial
+              %a.selector{ href: "?billable_items.tr", title: "Trial billable items" } Trial
               %ul
                 - App::Design.paid.each do |design|
                   %li
-                    %a.selector{ href: "?billable_items.tr.design.#{design.name}", title: "#{design.title} design in trial", data: { value: "billable_items.tr.design.#{design.name}" } }= "[Design] #{design.title}"
+                    %a.selector{ href: "?billable_items.tr.design.#{design.name}", title: "#{design.title} design in trial" }= "[Design] #{design.title}"
                 - Addon.public.visible.each do |addon|
                   %li
-                    %a.selector{ href: "?billable_items.tr.#{addon.name}", title: "#{addon.title} add-on in trial", data: { value: "billable_items.tr.#{addon.name}" } }= addon.title
+                    %a.selector{ href: "?billable_items.tr.#{addon.name}", title: "#{addon.title} add-on in trial" }= addon.title
                     %ul
                       - addon.plans.order(:price).each do |addon_plan|
                         %li
-                          %a.selector{ href: "?billable_items.tr.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on in trial", data: { value: "billable_items.tr.#{addon.name}.#{addon_plan.name}" } }= addon_plan.title
+                          %a.selector{ href: "?billable_items.tr.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on in trial" }= addon_plan.title
             %li
-              %a.selector{ href: "?billable_items.sb", data: { value: 'billable_items.sb' }, title: "Subscribed billable items" } Subscribed
+              %a.selector{ href: "?billable_items.sb", title: "Subscribed billable items" } Subscribed
               %ul
                 - App::Design.paid.each do |design|
                   %li
-                    %a.selector{ href: "?billable_items.sb.design.#{design.name}", title: "#{design.title} design subscribed", data: { value: "billable_items.sb.design.#{design.name}" } }= "[Design] #{design.title}"
+                    %a.selector{ href: "?billable_items.sb.design.#{design.name}", title: "#{design.title} design subscribed" }= "[Design] #{design.title}"
                 - Addon.public.visible.each do |addon|
                   %li
-                    %a.selector{ href: "?billable_items.sb.#{addon.name}", title: "#{addon.title} add-on subscribed", data: { value: "billable_items.sb.#{addon.name}" } }= addon.title
+                    %a.selector{ href: "?billable_items.sb.#{addon.name}", title: "#{addon.title} add-on subscribed" }= addon.title
                     %ul
                       - addon.plans.order(:price).each do |addon_plan|
                         %li
-                          %a.selector{ href: "?billable_items.sb.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on subscribed", data: { value: "billable_items.sb.#{addon.name}.#{addon_plan.name}" } }= addon_plan.title
+                          %a.selector{ href: "?billable_items.sb.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on subscribed" }= addon_plan.title
             %li
-              %a.selector{ href: "?billable_items.sp", data: { value: 'billable_items.sp' }, title: "Sponsored billable items" } Sponsored
+              %a.selector{ href: "?billable_items.sp", title: "Sponsored billable items" } Sponsored
               %ul
                 - App::Design.paid.each do |design|
                   %li
-                    %a.selector{ href: "?billable_items.sp.design.#{design.name}", title: "#{design.title} design sponsored", data: { value: "billable_items.sp.design.#{design.name}" } }= "[Design] #{design.title}"
+                    %a.selector{ href: "?billable_items.sp.design.#{design.name}", title: "#{design.title} design sponsored" }= "[Design] #{design.title}"
                 - Addon.public.visible.each do |addon|
                   %li
-                    %a.selector{ href: "?billable_items.sp.#{addon.name}", title: "#{addon.title} add-on sponsored", data: { value: "billable_items.sp.#{addon.name}" } }= addon.title
+                    %a.selector{ href: "?billable_items.sp.#{addon.name}", title: "#{addon.title} add-on sponsored" }= addon.title
                     %ul
                       - addon.plans.order(:price).each do |addon_plan|
                         %li
-                          %a.selector{ href: "?billable_items.sp.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on sponsored", data: { value: "billable_items.sp.#{addon.name}.#{addon_plan.name}" } }= addon_plan.title
+                          %a.selector{ href: "?billable_items.sp.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on sponsored" }= addon_plan.title
             %li
-              %a.selector{ href: "?billable_items.su", data: { value: 'billable_items.su' }, title: "Suspended billable items" } Suspended
+              %a.selector{ href: "?billable_items.su", title: "Suspended billable items" } Suspended
               %ul
                 - App::Design.paid.each do |design|
                   %li
-                    %a.selector{ href: "?billable_items.su.design.#{design.name}", title: "#{design.title} design suspended", data: { value: "billable_items.su.design.#{design.name}" } }= "[Design] #{design.title}"
+                    %a.selector{ href: "?billable_items.su.design.#{design.name}", title: "#{design.title} design suspended" }= "[Design] #{design.title}"
                 - Addon.public.visible.each do |addon|
                   %li
-                    %a.selector{ href: "?billable_items.su.#{addon.name}", title: "#{addon.title} add-on suspended", data: { value: "billable_items.su.#{addon.name}" } }= addon.title
+                    %a.selector{ href: "?billable_items.su.#{addon.name}", title: "#{addon.title} add-on suspended" }= addon.title
                     %ul
                       - addon.plans.order(:price).each do |addon_plan|
                         %li
-                          %a.selector{ href: "?billable_items.su.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on suspended", data: { value: "billable_items.su.#{addon.name}.#{addon_plan.name}" } }= addon_plan.title
+                          %a.selector{ href: "?billable_items.su.#{addon.name}.#{addon_plan.name}", title: "#{addon_plan.addon.title}/#{addon_plan.title} add-on suspended" }= addon_plan.title
 
         %td.users
           %h2 Users
           %ul
             %li
-              %a.title.selector{ href: "?users.active", data: { value: 'users.active' }, title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
+              %a.title.selector{ href: "?users.active", title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
               %ul
                 %li
-                  %a.selector{ href: "?users.be", data: { value: 'users.be' }, title: "Beta users" } Beta
+                  %a.selector{ href: "?users.be", title: "Beta users" } Beta
                 %li
-                  %a.selector{ href: "?users.fr", data: { value: 'users.fr' }, title: "Users with no paying sites" } Free
+                  %a.selector{ href: "?users.fr", title: "Users with no paying sites" } Free
                 %li
-                  %a.selector{ href: "?users.pa", data: { value: 'users.pa' }, title: "Users with at least 1 paying sites" } Paying
+                  %a.selector{ href: "?users.pa", title: "Users with at least 1 paying sites" } Paying
             %li
-              %a.title.selector{ href: "?users.passive", data: { value: 'users.passive' } } Passive
+              %a.title.selector{ href: "?users.passive" } Passive
               %ul
                 %li
-                  %a.selector{ href: "?users.su", data: { value: 'users.su' }, title: "Users with too many payment issues" } Suspended
+                  %a.selector{ href: "?users.su", title: "Users with too many payment issues" } Suspended
                 %li
-                  %a.selector{ href: "?users.ar", data: { value: 'users.ar' }, title: "Users who chose to delete their account OR who never accept their beta invitation" } Archived
+                  %a.selector{ href: "?users.ar", title: "Users who chose to delete their account OR who never accept their beta invitation" } Archived
 
         %td.sites
           %h2 Sites
           %ul
             %li
-              %a.title.selector{ href: "?sites.active", data: { value: 'sites.active' }, title: "Sites in beta, dev, free, trial or any paying plan" } Active
+              %a.title.selector{ href: "?sites.active", title: "Sites in beta, dev, free, trial or any paying plan" } Active
               %ul
                 %li
-                  %a.selector{ href: "?sites.fr.beta", data: { value: 'sites.fr.beta' }, title: "Sites in the beta plan" } Beta
+                  %a.selector{ href: "?sites.fr.beta", title: "Sites in the beta plan" } Beta
                 %li
-                  %a.selector{ href: "?sites.fr.dev", data: { value: 'sites.fr.dev' }, title: "Sites in the dev plan" } Dev
+                  %a.selector{ href: "?sites.fr.dev", title: "Sites in the dev plan" } Dev
                 %li
-                  %a.selector{ href: "?sites.fr.free", data: { value: 'sites.fr.free' }, title: "Sites in the free plan" } Free
+                  %a.selector{ href: "?sites.fr.free", title: "Sites in the free plan" } Free
                 %li
-                  %a.selector{ href: "?sites.sp", data: { value: 'sites.sp' }, title: "Sites we sponsor" } Sponsored
+                  %a.selector{ href: "?sites.sp", title: "Sites we sponsor" } Sponsored
 
                 %li
-                  %a.selector{ href: "?sites.tr", data: { value: 'sites.tr' }, title: "Sites in trial" } Trial
+                  %a.selector{ href: "?sites.tr", title: "Sites in trial" } Trial
                 %li
-                  %a.selector{ href: "?sites.pa", data: { value: 'sites.pa' } } Paying
+                  %a.selector{ href: "?sites.pa", title: "Paying sites" } Paying
                   %ul
                     %li
-                      %a.selector{ href: "?sites.pa.addons", data: { value: 'sites.pa.addons' }, title: "Sites with add-ons" } Add-ons
+                      %a.selector{ href: "?sites.pa.addons", title: "Sites with add-ons" } Add-ons
                   %ul
                     %li
-                      %a.selector{ href: "?sites.pa.plus", data: { value: 'sites.pa.plus' }, title: "Sites in the Plus plan" } Plus
-                      -#%ul
-                      -#  %li
-                      -#    %a.selector{ href: "?sites.pa.plus.m", data: { value: 'sites.pa.plus.m' } } Monthly
-                      -#  %li
-                      -#    %a.selector{ href: "?sites.pa.plus.y", data: { value: 'sites.pa.plus.y' } } Yearly
+                      %a.selector{ href: "?sites.pa.plus", title: "Sites in the Plus plan" } Plus
                     %li
-                      %a.selector{ href: "?sites.pa.premium", data: { value: 'sites.pa.premium' }, title: "Sites in the Premium plan" } Premium
-                      -#%ul
-                      -#  %li
-                      -#    %a.selector{ href: "?sites.pa.premium.m", data: { value: 'sites.pa.premium.m' } } Monthly
-                      -#  %li
-                      -#    %a.selector{ href: "?sites.pa.premium.y", data: { value: 'sites.pa.premium.y' } } Yearly
+                      %a.selector{ href: "?sites.pa.premium", title: "Sites in the Premium plan" } Premium
             %li
-              %a.title.selector{ href: "?sites.passive", data: { value: 'sites.passive' } } Passive
+              %a.title.selector{ href: "?sites.passive" } Passive
               %ul
                 %li
-                  %a.selector{ href: "?sites.su", data: { value: 'sites.su' }, title: "Sites for which the user is suspended" } Suspended
+                  %a.selector{ href: "?sites.su", title: "Sites for which the user is suspended" } Suspended
                 %li
-                  %a.selector{ href: "?sites.ar", data: { value: 'sites.ar' }, title: "Sites deleted by their owner" } Archived
+                  %a.selector{ href: "?sites.ar", title: "Sites deleted by their owner" } Archived
+            %li
+              %a.title.selector{ href: '#' } Alive
+              %ul
+                %li
+                  %a.selector{ href: "?sites.al.pv", title: "Active sites with at least 1 page visit in the least 30 days" } Alive sites (page visits) in the least 30 days
+                %li
+                  %a.selector{ href: "?sites.al.vv", title: "Active sites with at least 1 video view in the least 30 days" } Alive sites (video views) in the least 30 days
 
         %td.site_stats
           %h2 Site Stats
           %ul
             %li
-              %a.title.selector{ href: "?site_stats.pv.all", data: { value: 'site_stats.pv.all' } } Page visits
+              %a.title.selector{ href: "?site_stats.pv.all" } Page visits
               %ul
                 %li
-                  %a.selector{ href: "?site_stats.pv.billable", data: { value: 'site_stats.pv.billable' } } Billable
+                  %a.selector{ href: "?site_stats.pv.billable" } Billable
                   %ul
                     %li
-                      %a.selector{ href: "?site_stats.pv.m", data: { value: 'site_stats.pv.m' } } Main
+                      %a.selector{ href: "?site_stats.pv.m" } Main
                     %li
-                      %a.selector{ href: "?site_stats.pv.e", data: { value: 'site_stats.pv.e' } } Extra
+                      %a.selector{ href: "?site_stats.pv.e" } Extra
                     %li
-                      %a.selector{ href: "?site_stats.pv.em", data: { value: 'site_stats.pv.em' }, title: "Extra & Main embed only" } Embed
+                      %a.selector{ href: "?site_stats.pv.em", title: "Extra & Main embed only" } Embed
                 %li
-                  %a.selector{ href: "?site_stats.pv.d", data: { value: 'site_stats.pv.d' } } Dev
+                  %a.selector{ href: "?site_stats.pv.d" } Dev
                 %li
-                  %a.selector{ href: "?site_stats.pv.i", data: { value: 'site_stats.pv.i' } } Invalid
+                  %a.selector{ href: "?site_stats.pv.i" } Invalid
             %li
-              %a.title.selector{ href: "?site_stats.vv.all", data: { value: 'site_stats.vv.all' } } Video plays
+              %a.title.selector{ href: "?site_stats.vv.all" } Video plays
               %ul
                 %li
-                  %a.selector{ href: "?site_stats.vv.billable", data: { value: 'site_stats.vv.billable' } } Billable
+                  %a.selector{ href: "?site_stats.vv.billable" } Billable
                   %ul
                     %li
-                      %a.selector{ href: "?site_stats.vv.m", data: { value: 'site_stats.vv.m' } } Main
+                      %a.selector{ href: "?site_stats.vv.m" } Main
                     %li
-                      %a.selector{ href: "?site_stats.vv.e", data: { value: 'site_stats.vv.e' } } Extra
+                      %a.selector{ href: "?site_stats.vv.e" } Extra
                     %li
-                      %a.selector{ href: "?site_stats.vv.em", data: { value: 'site_stats.vv.em' }, title: "Extra & Main embed only" } Embed
+                      %a.selector{ href: "?site_stats.vv.em", title: "Extra & Main embed only" } Embed
                 %li
-                  %a.selector{ href: "?site_stats.vv.d", data: { value: 'site_stats.vv.d' } } Dev
+                  %a.selector{ href: "?site_stats.vv.d" } Dev
                 %li
-                  %a.selector{ href: "?site_stats.vv.i", data: { value: 'site_stats.vv.i' } } Invalid
+                  %a.selector{ href: "?site_stats.vv.i" } Invalid
             %li
-              %a.title.selector{ href: "?site_stats.md.html5_proportion", data: { value: 'site_stats.md.html5_proportion' } } HTML5 Mode %
+              %a.title.selector{ href: "?site_stats.md.html5_proportion" } HTML5 Mode %
             %li
-              %a.title.selector{ href: "?site_stats.md.mobile_proportion", data: { value: 'site_stats.md.mobile_proportion' }, title: "Mobile (tablet included) %" } Mobile %
+              %a.title.selector{ href: "?site_stats.md.mobile_proportion", title: "Mobile (tablet included) %" } Mobile %
 
           %h2 Site Usages (old)
           %ul
             %li
-              %a.title.selector{ href: "?site_usages.lh.all", data: { value: 'site_usages.lh.all' } } Loader hits
+              %a.title.selector{ href: "?site_usages.lh.all" } Loader hits
               %ul
                 %li
-                  %a.selector{ href: "?site_usages.lh.ns", data: { value: 'site_usages.lh.ns' } } Non-SSL
+                  %a.selector{ href: "?site_usages.lh.ns" } Non-SSL
                 %li
-                  %a.selector{ href: "?site_usages.lh.s", data: { value: 'site_usages.lh.s' } } SSL
+                  %a.selector{ href: "?site_usages.lh.s" } SSL
             %li
-              %a.title.selector{ href: "?site_usages.ph.all", data: { value: 'site_usages.ph.all' } } Player hits
+              %a.title.selector{ href: "?site_usages.ph.all" } Player hits
               %ul
                 %li
-                  %a.selector{ href: "?site_usages.ph.billable", data: { value: 'site_usages.ph.billable' } } Billable
+                  %a.selector{ href: "?site_usages.ph.billable" } Billable
                   %ul
                     %li
-                      %a.selector{ href: "?site_usages.ph.m", data: { value: 'site_usages.ph.m' } } Main
+                      %a.selector{ href: "?site_usages.ph.m" } Main
                     %li
-                      %a.selector{ href: "?site_usages.ph.e", data: { value: 'site_usages.ph.e' } } Extra
+                      %a.selector{ href: "?site_usages.ph.e" } Extra
                 %li
-                  %a.selector{ href: "?site_usages.ph.d", data: { value: 'site_usages.ph.d' } } Dev
+                  %a.selector{ href: "?site_usages.ph.d" } Dev
                 %li
-                  %a.selector{ href: "?site_usages.ph.i", data: { value: 'site_usages.ph.i' } } Invalid
+                  %a.selector{ href: "?site_usages.ph.i" } Invalid
             %li
-              %a.title.selector{ href: "?site_usages.fh", data: { value: 'site_usages.fh' } } Flash hits
+              %a.title.selector{ href: "?site_usages.fh" } Flash hits
             %li
-              %a.title.selector{ href: "?site_usages.sr", data: { value: 'site_usages.sr' } } S3 requests
+              %a.title.selector{ href: "?site_usages.sr" } S3 requests
             %li
-              %a.title.selector{ href: "?site_usages.tr.s", data: { value: 'site_usages.tr.s' } } Traffic S3 (GB)
+              %a.title.selector{ href: "?site_usages.tr.s" } Traffic S3 (GB)
             %li
-              %a.title.selector{ href: "?site_usages.tr.v", data: { value: 'site_usages.tr.v' } } Traffic Voxcast (GB)
+              %a.title.selector{ href: "?site_usages.tr.v" } Traffic Voxcast (GB)
 
         %td
           %h2 Tweets
           %ul
             - Tweet::KEYWORDS.each do |keyword|
               %li
-                %a.selector{ href: "?tweets.#{keyword}", data: { value: "tweets.#{keyword}" } }= keyword.titleize
+                %a.selector{ href: "?tweets.#{keyword}" }= keyword.titleize
           %h2 Tailor-made player requests
           %ul
             %li
-              %a.title.selector{ href: "?tailor_made_player_requests.all", data: { value: 'tailor_made_player_requests.all' } } All
+              %a.title.selector{ href: "?tailor_made_player_requests.all" } All
               %ul
                 - TailorMadePlayerRequest.topics.each do |topic|
                   %li
-                    %a.selector{ href: "?tailor_made_player_requests.n.#{topic}", data: { value: "tailor_made_player_requests.n.#{topic}" } }= topic.titleize
+                    %a.selector{ href: "?tailor_made_player_requests.n.#{topic}" }= topic.titleize

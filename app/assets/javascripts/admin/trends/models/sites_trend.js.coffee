@@ -7,6 +7,7 @@ class AdminSublimeVideo.Models.SitesTrend extends AdminSublimeVideo.Models.Trend
     pa: {} # paying
     su: 0 # suspended
     ar: 0 # archived
+    al: {} # alive
 
 class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collections.Trends
   model: AdminSublimeVideo.Models.SitesTrend
@@ -16,14 +17,18 @@ class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collec
 
   title: (selected) ->
     if selected.length > 1 # attribute is something like: ["pa", "premium"] or ["pa", "premium", "y"]
-      text = "Sites "
-      if selected[1] is 'addons'
-        text += "with add-ons"
+      if selected[0] is 'al'
+        text = 'Alive sites (with '
+        text += if selected[1] is 'pv' then 'page visits) ' else 'video views) '
       else
-        text += "with the"
-        if selected.length > 2 # attribute is something like: ["pa", "premium", "y"]
-          text += if selected[2] == "y" then " yearly " else " monthly "
-        text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
+        text = 'Sites '
+        if selected[1] is 'addons'
+          text += 'with add-ons'
+        else
+          text += 'with the '
+          if selected.length > 2 # attribute is something like: ["pa", "premium", "y"]
+            text += if selected[2] is 'y' then 'yearly ' else 'monthly '
+          text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
       text
     else
       switch selected[0]
@@ -32,6 +37,7 @@ class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collec
         when 'pa' then 'Paying sites'
         when 'su' then 'Suspended sites'
         when 'ar' then 'Archived sites'
+        when 'al' then 'Alive sites'
         when 'active' then 'Active sites'
         when 'passive' then 'Passive sites'
         when 'all' then 'Sites'
@@ -53,13 +59,14 @@ class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collec
           this.recursiveHashSum(trend.get(selected[0]))
         else
           switch selected[0]
-            when 'all' then this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa')) + trend.get('su') + trend.get('ar')
-
-            when 'active' then this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa'))
-
-            when 'passive' then trend.get('su') + trend.get('ar')
-
-            else trend.get(selected[0])
+            when 'all'
+              this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa')) + trend.get('su') + trend.get('ar')
+            when 'active'
+              this.recursiveHashSum(trend.get('fr')) + this.recursiveHashSum(trend.get('sp')) + trend.get('tr') + this.recursiveHashSum(trend.get('pa'))
+            when 'passive'
+              trend.get('su') + trend.get('ar')
+            else
+                trend.get(selected[0])
       else
         0
 

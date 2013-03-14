@@ -56,7 +56,7 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
     Mousetrap.bind 'r', =>
       event.preventDefault()
       _.each AdminSublimeVideo.trends, (collection) -> collection.selected = []
-      $('a.selector').removeClass 'active'
+      $('a.selector').removeClass('active')
       this.clearUrl()
       AdminSublimeVideo.period.change() # redraw the chart
 

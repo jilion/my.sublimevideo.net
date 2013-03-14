@@ -60,14 +60,8 @@ module Stat::Site
     def last_30_days_page_visits(token, type = :billable)
       last_30_days_stats(token).sum { |stat|
         case type
-        when :main
-          stat.pv['m'].to_i
-        when :extra
-          stat.pv['e'].to_i
-        when :dev
-          stat.pv['d'].to_i
-        when :invalid
-          stat.pv['i'].to_i
+        when :main, :extra, :dev, :invalid
+          stat.pv[type.to_s[0]].to_i
         when :embed
           stat.pv['em'].to_i
         when :billable
@@ -85,11 +79,8 @@ module Stat::Site
     end
 
     def last_30_days_stats(token)
-      from = 30.days.ago.midnight
-      to   = 1.day.ago.end_of_day
-
       Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
-        self.where(t: { :$in => Array.wrap(token) }).between(d: from..to).entries
+        self.where(t: { :$in => Array.wrap(token) }).between(d: 30.days.ago.midnight..1.day.ago.end_of_day).entries
       end
     end
 
@@ -216,19 +207,15 @@ module Stat::Site
   end
 
   def self.json(site_token, options = {})
-    options[:from], options[:to] = period_intervals(site_token, options[:period])
+    options[:from], options[:to] = _period_bounds(site_token, options[:period])
     options[:token] = site_token
 
     json_stats = if options[:from].present? && options[:to].present?
       case options[:period]
       when 'seconds'
         Stat::Site::Second.last_stats(options.merge(fill_missing_days: false))
-      when 'minutes'
-        Stat::Site::Minute.last_stats(options.merge(fill_missing_days: true))
-      when 'hours'
-        Stat::Site::Hour.last_stats(options.merge(fill_missing_days: true))
-      when 'days'
-        Stat::Site::Day.last_stats(options.merge(fill_missing_days: true))
+      when 'minutes', 'hours', 'days'
+        Stat::Site.const_get(options[:period].classify).last_stats(options.merge(fill_missing_days: true))
       end
     else
       []
@@ -239,30 +226,35 @@ module Stat::Site
 
 private
 
-  def self.period_intervals(site_token, period)
-    case period
-    when 'seconds'
-      to    = 2.seconds.ago.change(usec: 0).utc
-      from  = to - 59.seconds
-    when 'minutes'
-      site  = ::Site.find_by_token(site_token)
-      last_minute_stat = Stat::Site::Minute.order_by(d: 1).last
-      to   = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
-      from = to - 59.minutes
-    when 'hours'
-      to   = 1.hour.ago.change(min: 0, sec: 0).utc
-      from = to - 23.hours
-    when 'days'
-      site  = ::Site.find_by_token(site_token)
-      stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
-      to    = 1.day.ago.midnight
-      from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-    end
-
-    [from, to]
+  def self._period_bounds(site_token, period)
+    send("_#{period}_bounds", site_token)
   end
 
+  def self._seconds_bounds(site_token)
+    to = 2.seconds.ago.change(usec: 0).utc
 
+    [to - 59.seconds, to]
+  end
+
+  def self._minutes_bounds(site_token)
+    last_minute_stat = Stat::Site::Minute.where(t: site_token).order_by(d: 1).last
+    to               = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
+
+    [to - 59.minutes, to]
+  end
+
+  def self._hours_bounds(site_token)
+    to = 1.hour.ago.change(min: 0, sec: 0).utc
+
+    [to - 23.hours, to]
+  end
+
+  def self._days_bounds(site_token)
+    stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
+    to    = 1.day.ago.midnight
+
+    [[(stats.first.try(:d) || Time.now.utc), to - 364.days].min, to]
+  end
 end
 
 # == Schema Information

@@ -1,16 +1,16 @@
 class TrendsPopulator < Populator
 
   def execute
-    generate_users_trends
-    generate_sites_trends
-    generate_billable_items_trends
-    generate_billings_trends
-    generate_revenues_trends
+    _generate_users_trends
+    _generate_sites_trends
+    _generate_billable_items_trends
+    _generate_billings_trends
+    _generate_revenues_trends
   end
 
   private
 
-  def generate_users_trends(start_at = 2.years.ago)
+  def _generate_users_trends(start_at = 1.year.ago)
     PopulateHelpers.empty_tables(UsersTrend)
 
     day = start_at.midnight
@@ -31,11 +31,11 @@ class TrendsPopulator < Populator
     puts "#{UsersTrend.count} days of users trends generated!"
   end
 
-  def generate_sites_trends(start_at = 2.years.ago)
+  def _generate_sites_trends(start_at = 1.year.ago)
     PopulateHelpers.empty_tables(SitesTrend)
 
     day = start_at.midnight
-    hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0 }
+    hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0, al: { pv: 0, vv: 0 } }
 
     while day <= Time.now.utc.midnight
       hash[:d]   = day
@@ -51,6 +51,8 @@ class TrendsPopulator < Populator
       end
       hash[:su] += rand(3)
       hash[:ar] += rand(6)
+      hash[:al][:pv] += rand(12)
+      hash[:al][:vv] += rand(5)
 
       SitesTrend.create(hash)
 
@@ -60,7 +62,7 @@ class TrendsPopulator < Populator
     puts "#{SitesTrend.count} days of sites trends generated!"
   end
 
-  def generate_billable_items_trends(start_at = 2.years.ago)
+  def _generate_billable_items_trends(start_at = Time.utc(2012, 12, 14))
     PopulateHelpers.empty_tables(BillableItemsTrend)
 
     day = start_at.midnight
@@ -98,7 +100,7 @@ class TrendsPopulator < Populator
     puts "#{BillableItemsTrend.count} days of billable items trends generated!"
   end
 
-  def generate_billings_trends
+  def _generate_billings_trends
     PopulateHelpers.empty_tables(BillingsTrend)
 
     BillingsTrend.create_trends
@@ -106,7 +108,7 @@ class TrendsPopulator < Populator
     puts "#{BillingsTrend.count} days of billings trends generated!"
   end
 
-  def generate_revenues_trends
+  def _generate_revenues_trends
     PopulateHelpers.empty_tables(RevenuesTrend)
 
     RevenuesTrend.create_trends

@@ -13,8 +13,7 @@ end
 
 class PageExistsConstraint
   def matches?(request)
-    pages = Dir.glob('app/views/pages/*.html.haml').map { |p| p.match(%r(app/views/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
+    Dir.glob("app/views/pages/#{request.params['page']}.html.haml").any?
   end
 end
 
@@ -23,6 +22,11 @@ def https_if_prod_or_staging
 end
 
 MySublimeVideo::Application.routes.draw do
+
+  if Rails.env.development?
+    require 'i18n/extra_translations'
+    mount I18n::ExtraTranslations::Server.new => '/i18n'
+  end
 
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
