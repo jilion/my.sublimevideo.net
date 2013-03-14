@@ -116,9 +116,7 @@ group :assets do
   gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
-
-  # Support for new jquery-rails until https://github.com/codebrew/backbone-rails/pull/144 is merged
-  gem 'rails-backbone', github: 'mrwade/backbone-rails'
+  gem 'backbone-rails'
 end
 gem 'sass-rails'
 

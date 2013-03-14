@@ -53,16 +53,6 @@ GIT
       rails (>= 3.0)
 
 GIT
-  remote: git://github.com/mrwade/backbone-rails.git
-  revision: 93d27cf476310a1d51c4821aafed6d13f86fd6f0
-  specs:
-    rails-backbone (0.9.0)
-      coffee-script (~> 2.2.0)
-      ejs (~> 1.1.1)
-      jquery-rails (>= 2.1.3)
-      railties (>= 3.1.0)
-
-GIT
   remote: git://github.com/nicoolas25/i18n-extra_translations.git
   revision: 860ea191f361524eea761a762c90e77eb92754f2
   specs:
@@ -163,6 +153,8 @@ GEM
     asset_sync (0.5.4)
       activemodel
       fog
+    backbone-rails (0.9.10)
+      rails (>= 3.0.0)
     bcrypt-ruby (3.0.1)
     better_errors (0.7.0)
       coderay (>= 1.0.0)
@@ -631,6 +623,7 @@ DEPENDENCIES
   annotate
   array_stats
   asset_sync
+  backbone-rails
   better_errors
   binding_of_caller
   bullet
@@ -707,7 +700,6 @@ DEPENDENCIES
   rack-livereload
   rack-ssl-enforcer
   rails (= 3.2.12)
-  rails-backbone!
   rails_autolink
   rb-fsevent
   redis
