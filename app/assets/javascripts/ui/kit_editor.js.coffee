@@ -100,10 +100,10 @@ class MySublimeVideo.UI.KitEditor
     if lightbox = sublime.lightbox('lightbox-trigger')
       sublime.unprepare('lightbox-trigger')
 
-      lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(addons: ['lightbox'], allTogether: true)
+      lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttributeContent(addons: ['lightbox'])
       $('#lightbox-trigger').attr('data-settings', lightboxDataSettings)
 
-      $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttribute(allTogether: true))
+      $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttributeContent())
 
       sublime.prepare('lightbox-trigger')
 

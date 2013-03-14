@@ -18,11 +18,9 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generateClass(options)
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
-    attributes.push "data-youtube-id=\"#{@video.get('youTubeId')}\"" if @video.get('origin') is 'youtube'
-    attributes.push "data-autoresize=\"#{@video.get('autoresize')}\"" unless @video.get('autoresize') is 'none'
-    attributes.push this.generateDataSettingsAttribute(options)
-    attributes.push this.generateDataUIDAndName()
+    attributes.push this.generateTitle() if @video.get('title')
     attributes.push this.generateStyle()
+    attributes.push this.generateDataSettingsAttribute(options)
     attributes.push "preload=\"none\""
     attributes.push "autoplay" if @video.get('autoplay')
 
@@ -60,13 +58,17 @@ class MySublimeVideo.Helpers.VideoTagHelper
     else
       "#{@video.get('thumbnail').get('src')}"
 
+  generateDataSettingsAttributeContent: (options = {}) ->
+    this.generateDataSettings(options) if _.isEmpty @dataSettings
+    _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
+
   generateDataSettingsAttribute: (options = {}) ->
     this.generateDataSettings(options)
     if _.isEmpty @dataSettings
       ''
     else
-      if options['allTogether']
-        _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
+      if options['allDataSettingsTogether']
+        "data-settings=\"#{this.generateDataSettingsAttributeContent()}\""
       else
         _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}=\"#{v}\""; a), []).join(' ')
 
@@ -81,6 +83,9 @@ class MySublimeVideo.Helpers.VideoTagHelper
       this.generateDataSettingsFromDOM(options['addons'])
 
     this.replacePlayerKitSettingWithRealPreviewKitIdentifier() if options['kitReplacement']
+    this.setDataUID()
+    this.setYouTubeID()
+    this.setAutoresize()
 
     @dataSettings
 
@@ -88,6 +93,18 @@ class MySublimeVideo.Helpers.VideoTagHelper
     if @dataSettings['player-kit']?
       selectedOption = $("select[data-addon='player']").find("option[value='#{@dataSettings['player-kit']}']")
       @dataSettings['player-kit'] = selectedOption.data('preview-kit-id')
+
+  setDataUID: ->
+    if not @dataSettings['uid']? and @video.get('uid')?
+      @dataSettings['uid'] = @video.get('uid')
+
+  setYouTubeID: ->
+    if not @dataSettings['youtube-id']? and @video.get('origin') is 'youtube'
+      @dataSettings['youtube-id'] = @video.get('youTubeId')
+
+  setAutoresize: ->
+    if not @dataSettings['autoresize']? and @video.get('autoresize') isnt 'none'
+      @dataSettings['autoresize'] = @video.get('autoresize')
 
   generateClass: (options = {}) ->
     if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
@@ -102,14 +119,8 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateStyle: ->
     if @video.get('displayInLightbox') then "style=\"display:none\"" else ''
 
-  generateDataUIDAndName: ->
-    uidAndTitle = []
-    if uid = @video.get('uid')
-      uidAndTitle.push "data-uid=\"#{uid}\""
-    if title = @video.get('title')
-      uidAndTitle.push "title=\"#{title}\""
-
-    uidAndTitle.join(' ')
+  generateTitle: ->
+    "title=\"#{@video.get('title')}\""
 
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''
