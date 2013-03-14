@@ -24,7 +24,7 @@ gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
 gem 'premailer', github: 'jilion/premailer'
-gem 'premailer-rails3'
+gem 'premailer-rails'
 gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
 gem 'google-analytics-turbolinks'
 
