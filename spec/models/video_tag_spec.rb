@@ -10,7 +10,7 @@ describe VideoTag do
   describe ".count" do
     before {
       stub_api_for(VideoTag) do |stub|
-        stub.get("/private_api/sites/#{site_token}/video_tags/count") { |env| [200, {}, {count: 42}.to_json] }
+        stub.get("/private_api/sites/#{site_token}/video_tags/count") { |env| [200, {}, { count: 42}.to_json] }
       end
     }
 
@@ -22,7 +22,7 @@ describe VideoTag do
   describe ".site_tokens" do
     before {
       stub_api_for(VideoTag) do |stub|
-        stub.get("/private_api/video_tags/site_tokens") { |env| [200, {}, {site_tokens: ['site_token']}.to_json] }
+        stub.get("/private_api/video_tags/site_tokens") { |env| [200, {}, { site_tokens: ['site_token'] }.to_json] }
       end
     }
 
