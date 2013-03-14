@@ -5,9 +5,14 @@
     - kit_settings_expendable_block('embed') do
       = presenter.render_master_input_field(setting_key: 'enable') do
         %p.note
-          If you choose manual embedding, the embed button will not show up in the player until you provide a valid
+          - if presenter.addon_plan.name == 'auto'
+            If you choose manual embedding,
+          - else
+            Even if this feature is enabled,
+          the embed button will not show up in the player until you provide a valid
           = content_tag :em, 'embed URL'
-          for a specific video. You can do this, as well as previewing how the embed button and pane will look and work, in the
+          for a specific video. You can do this, as well as previewing how the embed
+          button and pane will look and work, in the
           = link_to 'Publish video', new_site_video_code_path(site), class: 'hl'
           page. Read our
           = link_to 'documentation', docs_url('addons/embed'), onclick: 'window.open(this); return false', class: 'hl'
