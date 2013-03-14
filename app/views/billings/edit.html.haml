@@ -3,14 +3,14 @@
 .content_left
   - if !@user.billing_address_complete? && !@user.cc?
     = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-      = render 'billing_address_fields', f: f, user: @user
+      = render 'billing_details_fields', f: f, user: @user
       = render 'credit_card_fields', f: f, user: @user
       .entry.update
         = f.submit 'Update', id: 'billing_info_submit', class: "submit blue_button"
 
   - else
     = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-      = render 'billing_address_fields', f: f, user: @user
+      = render 'billing_details_fields', f: f, user: @user
       .entry.update
         = f.submit 'Update', id: 'billing_address_submit', class: "submit blue_button"
       .break
