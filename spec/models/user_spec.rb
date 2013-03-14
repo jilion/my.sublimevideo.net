@@ -781,7 +781,7 @@ describe User do
       specify { User.with_page_loads_in_the_last_30_days.all.should =~ [user1, user2] }
     end
 
-    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons, :focus do
+    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons do
       let!(:site1) { create(:site) }
       let!(:site2) { create(:site) }
       let!(:site3) { create(:site) }
