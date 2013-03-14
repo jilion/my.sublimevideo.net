@@ -2,15 +2,11 @@ class BillingMailer < Mailer
   default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing.email')
 
   helper :invoices, :sites
-  include SitesHelper # the only way to include view helpers in here
-                      # I don't feel dirty doing this since the email's subject IS a view so...
+  include DisplayCase::ExhibitsHelper
 
   def trial_will_expire(billable_item_id)
-    extract_site_and_user_from_billable_item_id(billable_item_id)
-    @design_or_addon_plan = @billable_item.item
-    setup_kind
-    setup_days_until_end
-    setup_trial_end_date
+    _setup_from_billable_item_id(billable_item_id)
+    @no_reply = true
 
     key = case @days_until_end
     when 0
@@ -21,82 +17,75 @@ class BillingMailer < Mailer
       'in_days'
     end
 
-    mail(
-      to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", addon: "#{@design_or_addon_plan.title} #{@kind}", days: @days_until_end)
-    )
+    mail(to: @user.email,
+         subject: _subject(__method__, keys: [key], addon: "#{@item.title} #{@item.kind_for_email}", days: @days_until_end))
   end
 
-  def trial_has_expired(site_id, design_or_addon_plan_class, design_or_addon_plan_id)
-    extract_site_and_user_from_site_id(site_id)
-    @design_or_addon_plan = design_or_addon_plan_class.constantize.find(design_or_addon_plan_id)
-    setup_kind
+  def trial_has_expired(site_id, item_class, item_id)
+    _setup_from_site_id(site_id)
+    @item = exhibit(item_class.constantize.find(item_id))
 
-    mail(
-      to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_has_expired", addon: "#{@design_or_addon_plan.title} #{@kind}")
-    )
+    mail(to: @user.email,
+         subject: _subject(__method__, addon: "#{@item.title} #{@item.kind_for_email}"))
   end
 
   def credit_card_will_expire(user_id)
     @user = User.find(user_id)
 
-    mail(
-      to: to_billing(@user),
-      subject: I18n.t('mailer.billing_mailer.credit_card_will_expire')
-    )
+    mail(to: _to_billing_email_fallback_to_email(@user),
+         subject: _subject(__method__))
   end
 
   def transaction_succeeded(transaction_id)
-    extract_transaction_and_user_from_transaction_id(transaction_id)
+    _setup_from_transaction_id(transaction_id)
 
-    mail(
-      to: to_billing(@user),
-      subject: I18n.t('mailer.billing_mailer.transaction_succeeded')
-    )
+    mail(to: _to_billing_email_fallback_to_email(@user),
+         subject: _subject(__method__))
   end
 
   def transaction_failed(transaction_id)
-    extract_transaction_and_user_from_transaction_id(transaction_id)
+    _setup_from_transaction_id(transaction_id)
 
-    mail(
-      to: to_billing(@user),
-      subject: I18n.t('mailer.billing_mailer.transaction_failed')
-    )
+    mail(to: _to_billing_email_fallback_to_email(@user),
+         subject: _subject(__method__))
   end
 
   private
 
-  def to_billing(user)
+  def _to_billing_email_fallback_to_email(user)
     if user.billing_email?
       @billing_contact = true
-      user.billing_name? ? "\"#{user.billing_name}\" <#{user.billing_email}>" : user.billing_email
+      user.billing_email
     else
-      to(user)
+      user.email
     end
   end
 
-  def extract_transaction_and_user_from_transaction_id(transaction_id)
+  def _setup_from_site_id(site_id)
+    @site = Site.find(site_id)
+    @user = @site.user
+  end
+
+  def _setup_from_billable_item_id(billable_item_id)
+    billable_item = BillableItem.find(billable_item_id)
+    @item         = exhibit(billable_item.item)
+    @site         = billable_item.site
+    @user         = @site.user
+    _setup_days_until_end
+    _setup_trial_end_date
+  end
+
+  def _setup_from_transaction_id(transaction_id)
     @transaction = Transaction.find(transaction_id)
     @user        = @transaction.user
   end
 
-  def extract_site_and_user_from_billable_item_id(billable_item_id)
-    @billable_item = BillableItem.find(billable_item_id)
-    @site          = @billable_item.site
-    @user          = @site.user
+  def _setup_days_until_end
+    @days_until_end = TrialHandler.new(@site).trial_days_remaining(@item) || BusinessModel.days_for_trial
   end
 
-  def setup_kind
-    @kind = @design_or_addon_plan.is_a?(App::Design) ? 'player design' : 'add-on'
-  end
-
-  def setup_days_until_end
-    @days_until_end = TrialHandler.new(@site).trial_days_remaining(@design_or_addon_plan) || BusinessModel.days_for_trial
-  end
-
-  def setup_trial_end_date
-    @trial_end_date = TrialHandler.new(@site).trial_end_date(@design_or_addon_plan) || BusinessModel.days_for_trial.days.from_now
+  def _setup_trial_end_date
+    @trial_end_date = TrialHandler.new(@site).trial_end_date(@item) || BusinessModel.days_for_trial.days.from_now
   end
 
 end

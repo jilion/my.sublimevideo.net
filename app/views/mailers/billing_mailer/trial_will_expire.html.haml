@@ -1,9 +1,7 @@
-- @no_reply = true
-
 %p Thank you for taking the time to try SublimeVideo!
 
 %p
-  = raw "We'd like to remind you that your free #{BusinessModel.days_for_trial}-day #{@design_or_addon_plan.title} #{@kind} trial"
+  = raw "We'd like to remind you that your free #{BusinessModel.days_for_trial}-day #{@item.title} #{@item.kind_for_email} trial"
   - if @site.hostname?
     = raw "(for #{link_to @site.hostname, url_with_protocol(@site.hostname)})"
   = raw "<strong>will expire on #{l(@trial_end_date.tomorrow, format: :named_date)}</strong>."
@@ -12,9 +10,9 @@
   %p= raw "Charging will begin automatically on #{l(@trial_end_date.next_month.beginning_of_month, format: :named_date)}."
 
 - else
-  %p= raw "Please #{link_to('provide valid credit card details', edit_billing_url)} to continue enjoying your #{@design_or_addon_plan.title} #{@kind}."
+  %p= raw "Please #{link_to('provide valid credit card details', edit_billing_url)} to continue enjoying your #{@item.title} #{@item.kind_for_email}."
 
-  %p= raw "If you do not enter valid credit card details before #{l(@trial_end_date.tomorrow, format: :named_date)} your #{@kind} will be <strong>disabled</strong>."
+  %p= raw "If you do not enter valid credit card details before #{l(@trial_end_date.tomorrow, format: :named_date)} your #{@item.kind_for_email} will be <strong>disabled</strong>."
 
 %p= raw "If you run into any issues or need additional help please visit our #{link_to('Help', page_url('help', subdomain: false))} page or reply to this email."
 

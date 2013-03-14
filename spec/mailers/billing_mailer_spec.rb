@@ -25,8 +25,11 @@ describe BillingMailer do
           Capybara.app_host = "http://my.sublimevideo.dev"
         end
 
+        it 'uses the normal user name/email even if billing email is present' do
+          last_delivery.to.should eq [user.email]
+          last_delivery.body.encoded.should include "Dear #{user.name},"
+        end
         it { last_delivery.subject.should               eq I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
-        it { last_delivery.body.encoded.should     include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should     include I18n.l(TrialHandler.new(site).trial_end_date(billable_item.item).tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }
       end
@@ -39,8 +42,11 @@ describe BillingMailer do
           Capybara.app_host = "http://my.sublimevideo.dev"
         end
 
+        it 'uses the normal user name/email even if billing email is present' do
+          last_delivery.to.should eq [user.email]
+          last_delivery.body.encoded.should include "Dear #{user.name},"
+        end
         it { last_delivery.subject.should           eq I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
-        it { last_delivery.body.encoded.should include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should include I18n.l(TrialHandler.new(site).trial_end_date(billable_item.item).tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
       end
@@ -52,6 +58,10 @@ describe BillingMailer do
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
+      it 'uses the normal user name/email even if billing email is present' do
+        last_delivery.to.should eq [user.email]
+        last_delivery.body.encoded.should include "Dear #{user.name},"
+      end
       it { last_delivery.subject.should           eq I18n.t('mailer.billing_mailer.trial_has_expired', addon: "#{billable_item.item.title} add-on", count: 1) }
       it { last_delivery.body.encoded.should include "Dear #{user.name}," }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{site.to_param}/addons" }
@@ -64,8 +74,11 @@ describe BillingMailer do
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
+      it 'uses to the billing name & email if billing email is present' do
+        last_delivery.to.should eq [user.billing_email]
+        last_delivery.body.encoded.should include "Dear #{user.billing_name},"
+      end
       it { last_delivery.subject.should eq  I18n.t('mailer.billing_mailer.credit_card_will_expire') }
-      it { last_delivery.body.encoded.should include "Dear #{user.billing_name}," }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
       it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
     end
@@ -77,8 +90,11 @@ describe BillingMailer do
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
+      it 'fallbacks to the normal user name/email if no billing email is present' do
+        last_delivery.to.should eq [transaction.user.email]
+        last_delivery.body.encoded.should include "Dear #{transaction.user.name},"
+      end
       it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.transaction_succeeded') }
-      it { last_delivery.body.encoded.should include transaction.user.name }
       it { last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved." }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/invoices/#{invoice.to_param}" }
       it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
@@ -91,8 +107,11 @@ describe BillingMailer do
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
+      it 'uses to the billing name & email if billing email is present' do
+        last_delivery.to.should eq [transaction.user.billing_email]
+        last_delivery.body.encoded.should include "Dear #{transaction.user.billing_email},"
+      end
       it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.transaction_failed') }
-      it { last_delivery.body.encoded.should include transaction.user.billing_email }
       it { last_delivery.body.encoded.should include "There has been a problem processing your payment and your credit card could not be charged." }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites" }
       it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
