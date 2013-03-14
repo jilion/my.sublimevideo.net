@@ -35,7 +35,7 @@ describe SettingsGenerator, :fog_mock do
     staging_hostnames: 'test-staging.net', staging_hostnames?: true,
     wildcard: true, wildcard?: true,
     path: 'path', path?: true,
-    addon_plan_is_active?: true,
+    subscribed_to?: true,
     accessible_stage: 'stable',
     default_kit: stub(identifier: '1')
   )}

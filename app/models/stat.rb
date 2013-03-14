@@ -22,7 +22,7 @@ module Stat
     tracker_incs = incs_from_trackers(trackers)
     tracker_incs.each do |site_token, values|
       if site = ::Site.find_by_token(site_token)
-        realtime_stats_active = site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
+        realtime_stats_active = site.subscribed_to?(AddonPlan.get('stats', 'realtime'))
 
         if [values[:inc], values[:set], values[:add_to_set]].any? { |v| v.present? }
           if realtime_stats_active

@@ -12,15 +12,8 @@
       %p You just need to put the following loader code in the header of your site:
       .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(@site), readonly: true, onclick: "this.focus();this.select();"
 
-      - unless params[:lightbox_code_for_textarea].blank?
-        %p Then insert the following Lightbox-opening trigger code in the page you want to publish it:
-        .embed_code.entry= text_area_tag '', params[:lightbox_code_for_textarea], readonly: true, onclick: "this.focus();this.select();"
-
-      - if params[:lightbox_code_for_textarea].blank?
-        %p as well as the following video code in the page you want to publish it:
-      - else
-        %p as well as the following video code (anywhere in your page since it will be initially hidden):
-      .video_code.entry= text_area_tag '', params[:video_code_for_textarea], readonly: true, onclick: "this.focus();this.select();"
+      %p as well as the following video code in the page you want to publish it:
+      .video_code.entry= text_area_tag '', params[:video_code_for_assistant_summary], readonly: true, onclick: "this.focus();this.select();"
 
       %p
         You can always access and change any setting from the

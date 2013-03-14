@@ -1,0 +1,37 @@
+- for format, formatTitle of { mp4: 'MP4', webm: 'WebM' }
+  %div
+    %h4
+      = "#{formatTitle} sources"
+      - if format is 'mp4'
+        %small
+          != surround '(', ')', ->
+            %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('encode-videos-for-the-web'), onclick: "window.open(this); return false" } Need help with video formats?
+
+    %table.sources
+      - qualities = if format is 'mp4' then ['base', 'hd', 'mobile'] else ['base', 'hd']
+      - for quality in qualities
+        %tr
+          %td.label
+            - source = MSVVideoCode.video.get('sources').byFormatAndQuality([format, quality])
+
+            - switch source.get('quality')
+              - when 'base'
+                = "SD"
+              - when 'hd'
+                = "HD"
+              - else
+                = source.get('quality').titleize()
+          %td.field
+            .entry{ id: "#{source.formatQuality()}_box" }
+              %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} URL"
+              %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} URL", value: source.get('src') }
+
+              %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
+
+              %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" } Please check your MIME Type
+
+              %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist
+          %td.notes
+            - if source.get('quality') is 'mobile'
+              %small (lower resolution/bitrate)
+.spacer
