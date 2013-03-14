@@ -1,4 +1,4 @@
-PremailerRails.config = {
+Premailer::Rails.config.merge!({
   adapter:            :hpricot,
   generate_text_part: true,
   warn_level:         Premailer::Warnings::SAFE,
@@ -7,4 +7,4 @@ PremailerRails.config = {
   remove_classes:     true,
   remove_comments:    true,
   verbose:            Rails.env.development?
-}
+})

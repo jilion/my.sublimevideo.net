@@ -58,7 +58,6 @@ MySublimeVideo::Application.configure do
     #                 :show_online_status => true }
     Bullet.rails_logger = true
     # Bullet.airbrake = true
-    Bullet.disable_browser_cache = true
   end
 
 end

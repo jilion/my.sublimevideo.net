@@ -24,7 +24,7 @@ gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
 gem 'premailer', github: 'jilion/premailer'
-gem 'premailer-rails3'
+gem 'premailer-rails'
 gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
 gem 'google-analytics-turbolinks'
 
@@ -116,9 +116,7 @@ group :assets do
   gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
-
-  # Support for new jquery-rails until https://github.com/codebrew/backbone-rails/pull/144 is merged
-  gem 'rails-backbone', github: 'mrwade/backbone-rails'
+  gem 'backbone-rails'
 end
 gem 'sass-rails'
 
