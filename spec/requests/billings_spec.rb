@@ -12,13 +12,14 @@ feature "Billing address update" do
       end
 
       scenario "Updates his billing address and credit card successfully" do
-        fill_in "Name",               with: "Bob Doe"
-        fill_in "Street 1",           with: "60 rue du hurepoix"
-        fill_in "Street 2",           with: ""
-        fill_in "Zip or Postal Code", with: "91470"
-        fill_in "City",               with: "Limours"
-        fill_in "Region",             with: ""
-        select  "France",             from: "Country"
+        fill_in "Billing email address", with: "bob@doe.com"
+        fill_in "Name",                  with: "Bob Doe"
+        fill_in "Street 1",              with: "60 rue du hurepoix"
+        fill_in "Street 2",              with: ""
+        fill_in "Zip or Postal Code",    with: "91470"
+        fill_in "City",                  with: "Limours"
+        fill_in "Region",                with: ""
+        select  "France",                from: "Country"
         set_credit_card type: 'master'
         VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_info_submit" }
         go 'my', 'account'
@@ -31,13 +32,14 @@ feature "Billing address update" do
       end
 
       scenario "Update billing address and credit card unsuccessfully" do
-        fill_in "Name",               with: ""
-        fill_in "Street 1",           with: "60 rue du hurepoix"
-        fill_in "Street 2",           with: ""
-        fill_in "Zip or Postal Code", with: "1"*21
-        fill_in "City",               with: "Limours"
-        fill_in "Region",             with: ""
-        select  "France",             from: "Country"
+        fill_in "Billing email address", with: ""
+        fill_in "Name",                  with: ""
+        fill_in "Street 1",              with: "60 rue du hurepoix"
+        fill_in "Street 2",              with: ""
+        fill_in "Zip or Postal Code",    with: "1"*21
+        fill_in "City",                  with: "Limours"
+        fill_in "Region",                with: ""
+        select  "France",                from: "Country"
         set_credit_card type: 'master'
         VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_info_submit" }
 
@@ -100,10 +102,11 @@ feature "Billing address update" do
 
   context "When the user is billable" do
     background do
-      sign_in_as :user
+      sign_in_as :user, billing_email: ''
       create(:site, user: @current_user)
       go 'my', 'account'
 
+      page.should have_content 'No billing email address.'
       page.should have_content 'John Doe'
       page.should have_content 'Avenue de France 71'
       page.should have_content 'Batiment B'
@@ -116,16 +119,18 @@ feature "Billing address update" do
     end
 
     scenario "Update billing address successfully" do
-      fill_in "Name",               with: "Bob Doe"
-      fill_in "Street 1",           with: "60 rue du hurepoix"
-      fill_in "Street 2",           with: ""
-      fill_in "Zip or Postal Code", with: "91470"
-      fill_in "City",               with: "Limours"
-      fill_in "Region",             with: ""
-      select  "France",             from: "Country"
+      fill_in "Billing email address", with: "bob@doe.com"
+      fill_in "Name",                  with: "Bob Doe"
+      fill_in "Street 1",              with: "60 rue du hurepoix"
+      fill_in "Street 2",              with: ""
+      fill_in "Zip or Postal Code",    with: "91470"
+      fill_in "City",                  with: "Limours"
+      fill_in "Region",                with: ""
+      select  "France",                from: "Country"
       click_button "billing_address_submit"
       go 'my', 'account'
 
+      page.should have_content 'bob@doe.com'
       page.should have_content 'Bob Doe'
       page.should have_content '60 rue du hurepoix'
       page.should have_content '91470 Limours'
@@ -138,13 +143,14 @@ feature "Billing address update" do
     end
 
     scenario "Update billing address unsuccessfully" do
-      fill_in "Name",               with: ""
-      fill_in "Street 1",           with: "60 rue du hurepoix"
-      fill_in "Street 2",           with: ""
-      fill_in "Zip or Postal Code", with: "1"*21
-      fill_in "City",               with: "Limours"
-      fill_in "Region",             with: ""
-      select  "France",             from: "Country"
+      fill_in "Billing email address", with: ""
+      fill_in "Name",                  with: ""
+      fill_in "Street 1",              with: "60 rue du hurepoix"
+      fill_in "Street 2",              with: ""
+      fill_in "Zip or Postal Code",    with: "1"*21
+      fill_in "City",                  with: "Limours"
+      fill_in "Region",                with: ""
+      select  "France",                from: "Country"
       click_button "billing_address_submit"
 
       page.should have_css '.inline_errors'
@@ -162,6 +168,7 @@ feature "Credit cards update" do
       sign_in_as :user, without_cc: true
       @current_user.should_not be_credit_card
       go 'my', 'account'
+      page.should have_content 'No credit card on file.'
     end
 
     UserModules::CreditCard::BRANDS.each do |brand|
@@ -289,7 +296,7 @@ def should_display_credit_card(type = 'visa')
 end
 
 def should_save_billing_info_successfully(type = 'visa')
-  current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
+  current_url.should eq "http://my.sublimevideo.dev/account"
   should_display_credit_card(type)
   page.should have_content I18n.t('flash.billings.update.notice')
 end

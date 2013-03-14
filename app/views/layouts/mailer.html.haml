@@ -19,7 +19,7 @@
               %tr
                 %td.main{ align: 'left', valign: 'top' }
                   - unless @no_intro
-                    %p= t("mailer.intro_name", name: @user.name_or_email)
+                    %p= t("mailer.intro_name", name: @billing_contact ? @user.billing_name_or_billing_email : @user.name_or_email)
 
                   = yield
 

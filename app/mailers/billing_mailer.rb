@@ -42,7 +42,7 @@ class BillingMailer < Mailer
     @user = User.find(user_id)
 
     mail(
-      to: to(@user),
+      to: to_billing(@user),
       subject: I18n.t('mailer.billing_mailer.credit_card_will_expire')
     )
   end
@@ -51,7 +51,7 @@ class BillingMailer < Mailer
     extract_transaction_and_user_from_transaction_id(transaction_id)
 
     mail(
-      to: to(@user),
+      to: to_billing(@user),
       subject: I18n.t('mailer.billing_mailer.transaction_succeeded')
     )
   end
@@ -60,12 +60,21 @@ class BillingMailer < Mailer
     extract_transaction_and_user_from_transaction_id(transaction_id)
 
     mail(
-      to: to(@user),
+      to: to_billing(@user),
       subject: I18n.t('mailer.billing_mailer.transaction_failed')
     )
   end
 
   private
+
+  def to_billing(user)
+    if user.billing_email?
+      @billing_contact = true
+      user.billing_name? ? "\"#{user.billing_name}\" <#{user.billing_email}>" : user.billing_email
+    else
+      to(user)
+    end
+  end
 
   def extract_transaction_and_user_from_transaction_id(transaction_id)
     @transaction = Transaction.find(transaction_id)

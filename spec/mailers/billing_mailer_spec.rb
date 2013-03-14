@@ -9,7 +9,7 @@ describe BillingMailer do
   describe "specific checks" do
     let(:user)          { create(:user, cc_expire_on: 1.day.from_now) }
     let(:site)          { create(:site, user: user) }
-    let(:invoice)       { create(:invoice) }
+    let(:invoice)       { create(:invoice, site: site) }
     let(:transaction)   { create(:transaction, invoices: [invoice]) }
     let(:billable_item) { create(:addon_plan_billable_item, site: site, state: 'trial') }
 
@@ -32,7 +32,7 @@ describe BillingMailer do
       end
 
       context 'user has no credit card' do
-        let(:user) { create(:user_no_cc) }
+        let(:user) { create(:user_no_cc, billing_email: nil) }
         before do
           described_class.trial_will_expire(billable_item.id).deliver
           last_delivery = ActionMailer::Base.deliveries.last
@@ -58,18 +58,20 @@ describe BillingMailer do
     end
 
     describe "#credit_card_will_expire" do
+      let(:user) { create(:user, cc_expire_on: 1.day.from_now) }
       before do
         described_class.credit_card_will_expire(user.id).deliver
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
       it { last_delivery.subject.should eq  I18n.t('mailer.billing_mailer.credit_card_will_expire') }
-      it { last_delivery.body.encoded.should include "Dear #{user.name}," }
+      it { last_delivery.body.encoded.should include "Dear #{user.billing_name}," }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
       it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
     end
 
     describe "#transaction_succeeded" do
+      let(:user) { create(:user, billing_email: nil) }
       before do
         described_class.transaction_succeeded(transaction.id).deliver
         last_delivery = ActionMailer::Base.deliveries.last
@@ -83,13 +85,14 @@ describe BillingMailer do
     end
 
     describe "#transaction_failed" do
+      let(:user) { create(:user, billing_name: nil) }
       before do
         described_class.transaction_failed(transaction.id).deliver
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
       it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.transaction_failed') }
-      it { last_delivery.body.encoded.should include transaction.user.name }
+      it { last_delivery.body.encoded.should include transaction.user.billing_email }
       it { last_delivery.body.encoded.should include "There has been a problem processing your payment and your credit card could not be charged." }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites" }
       it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }

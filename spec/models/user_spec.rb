@@ -15,6 +15,7 @@ describe User do
 
     its(:terms_and_conditions) { should be_true }
     its(:name)                 { should eq "John Doe" }
+    its(:billing_email)        { should match /email\d+@user.com/ }
     its(:billing_name)         { should eq "Remy Coutable" }
     its(:billing_address_1)    { should eq "Avenue de France 71" }
     its(:billing_address_2)    { should eq "Batiment B" }
@@ -42,12 +43,13 @@ describe User do
   end
 
   describe "Validations" do
-    [:name, :email, :postal_code, :country, :confirmation_comment, :remember_me, :password, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :hidden_notice_ids, :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
+    [:name, :email, :postal_code, :country, :confirmation_comment, :remember_me, :password, :billing_email, :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :hidden_notice_ids, :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:email) }
+    it { should validate_format_of(:billing_email) } #.with(Devise.email_regexp) }
     it { should ensure_length_of(:billing_postal_code).is_at_most(20) }
     it { should validate_acceptance_of(:terms_and_conditions) }
 
@@ -438,13 +440,25 @@ describe User do
 
     describe "#name_or_email" do
       context "user has no name" do
-        subject { create(:user, name: nil, email: "john@doe.com") }
-        its(:name_or_email) { should eq "john@doe.com" }
+        subject { create(:user, name: nil, email: 'john@doe.com') }
+        its(:name_or_email) { should eq 'john@doe.com' }
       end
 
       context "user has a name" do
-        subject { create(:user, name: "John Doe", email: "john@doe.com") }
-        its(:name_or_email) { should eq "John Doe" }
+        subject { create(:user, name: 'John Doe', email: 'john@doe.com') }
+        its(:name_or_email) { should eq 'John Doe' }
+      end
+    end
+
+    describe '#billing_name_or_billing_email' do
+      context "user has no billing_name" do
+        subject { create(:user, billing_name: nil, billing_email: 'dan@jack.com') }
+        its(:billing_name_or_billing_email) { should eq 'dan@jack.com' }
+      end
+
+      context "user has a billing_name" do
+        subject { create(:user, billing_name: 'John Doe', billing_email: 'dan@jack.com') }
+        its(:billing_name_or_billing_email) { should eq 'John Doe' }
       end
     end
 
@@ -781,7 +795,7 @@ describe User do
       specify { User.with_page_loads_in_the_last_30_days.all.should =~ [user1, user2] }
     end
 
-    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons, :focus do
+    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons do
       let!(:site1) { create(:site) }
       let!(:site2) { create(:site) }
       let!(:site3) { create(:site) }
@@ -807,6 +821,7 @@ end
 #  billing_address_2                          :string(255)
 #  billing_city                               :string(255)
 #  billing_country                            :string(255)
+#  billing_email                              :string(255)
 #  billing_name                               :string(255)
 #  billing_postal_code                        :string(255)
 #  billing_region                             :string(255)
