@@ -12,8 +12,8 @@ class MySublimeVideo.UI.KitEditor
     this.refreshVideoTagFromSettings()
 
   setupModels: ->
-    @video    = new MySublimeVideo.Models.Video
-    @lightbox = new MySublimeVideo.Models.Video(displayInLightbox: true)
+    @video    = new MySublimeVideo.Models.Video(uid: 'kit_editor_preview')
+    @lightbox = new MySublimeVideo.Models.Video(uid: 'kit_editor_lightbox_preview', displayInLightbox: true)
 
   setupHelpers: ->
     @videoTagHelpers =
