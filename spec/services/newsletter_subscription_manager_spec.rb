@@ -51,8 +51,8 @@ describe NewsletterSubscriptionManager do
         list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
         segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         users: [
-          { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s },
-          { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta?.to_s }
+          { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s, billable: '' },
+          { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta?.to_s, billable: '' }
         ]
       )
 
@@ -64,7 +64,7 @@ describe NewsletterSubscriptionManager do
     it 'calls CampaignMonitorWrapper.subscribe' do
       CampaignMonitorWrapper.should_receive(:subscribe).with(
         list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
-        user: { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s }
+        user: { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s, billable: '' }
       )
 
       service.subscribe

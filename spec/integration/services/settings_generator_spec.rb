@@ -100,11 +100,15 @@ describe SettingsGenerator do
           settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed'].should == {
             settings: {
               enable: true,
+              type: 'manual',
               size: '640'
             },
             allowed_settings: {
               enable: {
                 values: [true, false]
+              },
+              type: {
+                values: ['manual']
               },
               size: {}
             },
@@ -283,10 +287,12 @@ describe SettingsGenerator do
             "kn":"sa.sh.sv"},
             "tw": {
             "ko": {
-            "iv":true,"tx":"640"},
+            "iv":true,"type":"manual","tx":"640"},
             "kp": {
             "iv": {
             "ih":[true,false]},
+            "type": {
+            "ih":["manual"]},
             "tx": {
             }},
             "kn":"sa.sh.ub"}},
