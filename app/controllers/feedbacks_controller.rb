@@ -1,17 +1,17 @@
 class FeedbacksController < ApplicationController
 
-  before_filter :find_user
+  before_filter :_find_user
 
   # GET /feedback
   def new
-    @feedback = Feedback.new_trial_feedback
+    @feedback = Feedback.new_trial_feedback(@user)
 
     respond_with(@feedback)
   end
 
   # POST /feedback
   def create
-    @feedback = Feedback.new_trial_feedback(params[:feedback])
+    @feedback = Feedback.new_trial_feedback(@user, params[:feedback])
     @feedback.user_id = current_user.id
 
     respond_to do |format|
@@ -25,7 +25,7 @@ class FeedbacksController < ApplicationController
 
   private
 
-  def find_user
+  def _find_user
     @user = User.find(current_user.id)
   end
 
