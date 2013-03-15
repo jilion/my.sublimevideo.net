@@ -22,7 +22,6 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generateStyle()
     attributes.push this.generateDataSettingsAttribute(options)
     attributes.push "preload=\"none\""
-    attributes.push "autoplay" if @video.get('autoplay')
 
     code = "#{@extraSpaces}<video #{_.compact(attributes).join(' ')}>\n"
     code += this.generateSources() unless @video.get('origin') is 'youtube'
@@ -86,6 +85,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     this.setDataUID()
     this.setYouTubeID()
     this.setAutoresize()
+    this.setAutoplay()
 
     @dataSettings
 
@@ -105,6 +105,10 @@ class MySublimeVideo.Helpers.VideoTagHelper
   setAutoresize: ->
     if not @dataSettings['autoresize']? and @video.get('autoresize') isnt 'none'
       @dataSettings['autoresize'] = @video.get('autoresize')
+
+  setAutoplay: ->
+    if not @dataSettings['autoplay']? and @video.get('autoplay')
+      @dataSettings['autoplay'] = @video.get('autoplay')
 
   generateClass: (options = {}) ->
     if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
