@@ -32,7 +32,7 @@ feature "Billing address update" do
       end
 
       scenario "Update billing address and credit card unsuccessfully" do
-        fill_in "Billing email address", with: ""
+        fill_in "Billing email address", with: "foo"
         fill_in "Name",                  with: ""
         fill_in "Street 1",              with: "60 rue du hurepoix"
         fill_in "Street 2",              with: ""
@@ -44,6 +44,7 @@ feature "Billing address update" do
         VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_info_submit" }
 
         page.should have_css '.inline_errors'
+        page.should have_content "Billing email address is invalid"
         page.should have_content "Postal code is too long (maximum is 20 characters)"
         @current_user.reload.billing_postal_code.should eq "1004"
       end
