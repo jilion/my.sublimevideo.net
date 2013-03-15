@@ -1,5 +1,7 @@
 en:
   user:
+    billing_email:
+      missing: "No billing email address.<br />%{email} will be used instead."
     billing_address:
       incomplete: "Your billing address is incomplete."
       incomplete_with_missing_fields:

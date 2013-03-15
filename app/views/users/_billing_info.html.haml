@@ -21,7 +21,7 @@
     %strong Billing Email Address
     %p
       - unless current_user.billing_email?
-        No billing email address.
+        = raw t('user.billing_email.missing', email: current_user.email)
       = current_user.billing_email
 
   %p.link= link_to "Update billing email address", [:edit, :billing]
