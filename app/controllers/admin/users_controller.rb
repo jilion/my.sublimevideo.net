@@ -3,7 +3,7 @@ class Admin::UsersController < Admin::AdminController
   respond_to :js, only: [:index, :stats, :invoices, :support_requests]
 
   before_filter :set_default_scopes, only: [:index]
-  before_filter :find_user, only: [:update, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
+  before_filter :_find_user, only: [:update, :destroy, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
@@ -49,6 +49,18 @@ class Admin::UsersController < Admin::AdminController
     end
   end
 
+  # DELETE /users/:id
+  def destroy
+    respond_to do |format|
+      if UserManager.new(@user).archive(skip_password: true)
+        flash[:notice] = 'User has been successfully archived.'
+      else
+        flash[:error] = 'User has not been successfully archived!'
+      end
+      format.html { redirect_to [:edit, :admin, @user] }
+    end
+  end
+
   # GET /users/:id/become
   def become
     sign_in(@user, bypass: true)
@@ -90,7 +102,7 @@ class Admin::UsersController < Admin::AdminController
     params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
-  def find_user
+  def _find_user
     @user = User.find(params[:id])
   end
 

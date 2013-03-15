@@ -18,17 +18,18 @@ class Feedback < ActiveRecord::Base
 
   validates :reason, inclusion: REASONS
 
-  def self.new_trial_feedback(*args)
-    new_feedback(:trial, *args)
+  def self.new_trial_feedback(user, *args)
+    new_feedback(:trial, user, *args)
   end
 
-  def self.new_account_cancellation_feedback(*args)
-    new_feedback(:account_cancellation, *args)
+  def self.new_account_cancellation_feedback(user, *args)
+    new_feedback(:account_cancellation, user, *args)
   end
 
-  def self.new_feedback(kind, *args)
+  def self.new_feedback(kind, user, *args)
     feedback = new(*args)
     feedback.kind = kind
+    feedback.user_id = user.id
 
     feedback
   end

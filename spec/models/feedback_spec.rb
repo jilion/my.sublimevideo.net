@@ -23,11 +23,11 @@ describe Feedback do
   end # Validations
 
   describe '.new_trial_feedback' do
-    it { described_class.new_trial_feedback.kind.should eq :trial }
+    it { described_class.new_trial_feedback(build(:user)).kind.should eq :trial }
   end
 
   describe '.new_account_cancellation_feedback' do
-    it { described_class.new_account_cancellation_feedback.kind.should eq :account_cancellation }
+    it { described_class.new_account_cancellation_feedback(build(:user)).kind.should eq :account_cancellation }
   end
 
 end

@@ -4,18 +4,18 @@ class Users::CancellationsController < ApplicationController
 
   # GET /account/cancel
   def new
-    @feedback = Feedback.new_account_cancellation_feedback
+    @feedback = Feedback.new_account_cancellation_feedback(@user)
 
     respond_with(@feedback)
   end
 
   # POST /account/cancel
   def create
-    @feedback = Feedback.new_account_cancellation_feedback(params[:feedback])
+    @feedback = Feedback.new_account_cancellation_feedback(@user, params[:feedback])
     @user.attributes = params[:user]
 
     respond_to do |format|
-      if UserManager.new(@user).archive(@feedback)
+      if UserManager.new(@user).archive(feedback: @feedback)
         format.html do
           sign_out_and_delete_cookie
           redirect_to layout_url('')
