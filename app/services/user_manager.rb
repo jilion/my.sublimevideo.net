@@ -16,30 +16,21 @@ class UserManager
     false
   end
 
-  def suspend
-    User.transaction do
-      user.suspend!
-      _suspend_all_sites
+  %w[suspend unsuspend].each do |method_name|
+    define_method(method_name) do
+      begin
+        User.transaction do
+          user.send("#{method_name}!")
+          send("_#{method_name}_all_sites")
+        end
+        UserMailer.delay.send("account_#{method_name}ed", user.id)
+        _increment_librato(method_name)
+
+        true
+      rescue
+        false
+      end
     end
-    UserMailer.delay.account_suspended(user.id)
-    _increment_librato('suspend')
-
-    true
-  rescue
-    false
-  end
-
-  def unsuspend
-    User.transaction do
-      user.unsuspend!
-      _unsuspend_all_sites
-    end
-    UserMailer.delay.account_unsuspended(user.id)
-    _increment_librato('unsuspend')
-
-    true
-  rescue
-    false
   end
 
   def archive(options = {})
