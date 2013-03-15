@@ -112,8 +112,6 @@ describe UserManager do
       user.stub_chain(:tokens) { tokens }
       tokens.stub(:update_all)
       user.stub(:archive!)
-      # user.stub(:archived_at=)
-      # feedback.stub(:user_id=)
       feedback.stub(:save!)
       site1.stub(:archive!)
       site2.stub(:archive!)
