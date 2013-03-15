@@ -49,8 +49,7 @@ class UserManager
     _increment_librato('archive')
 
     true
-  rescue => ex
-    puts ex
+  rescue
     false
   end
 
