@@ -16,7 +16,8 @@ class SiteCountersUpdater
 
   def self.update_last_30_days_counters_for_not_archived_sites
     Site.not_archived.select(:id).find_each do |site|
-      delay(queue: 'low')._update_last_30_days_counters(site.id)
+      at = rand(1000).seconds.from_now.to_i
+      delay(queue: 'low', at: at)._update_last_30_days_counters(site.id)
     end
   end
 

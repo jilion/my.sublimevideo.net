@@ -6,7 +6,7 @@ describe SiteCountersUpdater do
   describe '.update_last_30_days_counters_for_not_archived_sites' do
     it 'calls #update_last_30_days_video_tags_counters and #update_last_30_days_video_views_counters on each non-archived sites' do
       Site.stub_chain(:not_archived, :select, :find_each).and_yield(site)
-      described_class.should delay(:_update_last_30_days_counters, queue: 'low').with(site.id)
+      described_class.should delay(:_update_last_30_days_counters, queue: 'low', at: kind_of(Integer)).with(site.id)
 
       described_class.update_last_30_days_counters_for_not_archived_sites
     end
