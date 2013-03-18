@@ -161,7 +161,7 @@ end
 
 group :test do
   gem 'rspec'
-  gem 'shoulda-matchers',    github: 'thoughtbot/shoulda-matchers'
+  gem 'shoulda-matchers'
   gem 'ffaker'
   gem 'capybara',            '~> 1.1'
   gem 'capybara-email',      '~> 1.0.2'
