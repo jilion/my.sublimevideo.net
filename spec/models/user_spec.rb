@@ -187,6 +187,15 @@ describe User do
 
             user.should be_archived
           end
+
+          it 'touches archived_at' do
+            user.archived_at.should be_nil
+            user.current_password = "123456"
+
+            user.archive!
+
+            user.archived_at.should be_present
+          end
         end
       end
     end

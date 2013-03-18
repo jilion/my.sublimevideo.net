@@ -17,18 +17,18 @@ class BillableItem < Subscription
   after_save ->(billable_item) do
     if billable_item.state_changed?
       billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin)
-      increment_librato
+      _increment_librato
     end
   end
 
   after_destroy ->(billable_item) do
     billable_item.site.billable_item_activities.create({ item: billable_item.item, state: 'canceled' }, as: :admin)
-    increment_librato(state: 'canceled')
+    _increment_librato(state: 'canceled')
   end
 
   private
 
-  def increment_librato(options = {})
+  def _increment_librato(options = {})
     source = "#{free? ? 'free' : 'paid'}.#{item_parent_kind}-#{item.name}"
     Librato.increment "addons.#{options[:state] || state}", source: source
   end

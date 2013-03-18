@@ -10,13 +10,13 @@ class VideoTag
   def self.count(params = {})
     rescue_and_retry(3) do
       # get_raw mutates the params hash, so dup it before (so it won't break in case of a retry)
-      get_raw(:count, params.dup)[:data][:count].to_i
+      get_raw(:count, params.dup)[:parsed_data][:data][:count].to_i
     end
   end
 
   def self.site_tokens(params = {})
     # get_raw mutates the params hash, so dup it before (so it won't break in case of a retry)
-    get_raw('/private_api/video_tags/site_tokens', params.dup)[:data][:site_tokens]
+    get_raw('/private_api/video_tags/site_tokens', params.dup)[:parsed_data][:data][:site_tokens]
   end
 
   def self.backbone_attributes
