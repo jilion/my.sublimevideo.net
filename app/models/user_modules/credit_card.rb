@@ -129,7 +129,7 @@ module UserModules::CreditCard
         send("_handle_auth_#{OgoneWrapper.status[auth['STATUS']]}", auth)
         _increment_librato(OgoneWrapper.status[auth['STATUS']], auth['BRAND'])
       else
-        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
+        _set_notice('unknown', :alert)
         Notifier.send("Credit card authorization unknown status: #{auth["STATUS"]}")
       end
 
