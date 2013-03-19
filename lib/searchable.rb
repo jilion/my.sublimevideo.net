@@ -21,7 +21,6 @@ module Searchable
         end
       end
 
-      puts eval("scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }").to_sql
       eval "scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }"
     end
 
