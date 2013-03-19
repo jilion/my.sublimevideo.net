@@ -19,18 +19,7 @@ module UserModules::CreditCard
 
       # I18n Warning: credit_card errors are not localized
       credit_card.errors.reject { |k,v| v.empty? }.each do |attribute, errors|
-        attribute = case attribute
-        when 'month', 'first_name', 'last_name'
-          # do nothing
-        when 'year'
-          self.errors.add(:cc_expiration_year, credit_card.errors.on(:year))
-        when 'brand', 'number'
-          self.errors.add(:"cc_#{attribute}", :invalid)
-        else
-          errors.each do |error|
-            self.errors.add(:"cc_#{attribute}", error)
-          end
-        end
+        _custom_errors_handling(attribute, errors)
       end
     end
 
@@ -139,6 +128,21 @@ module UserModules::CreditCard
     end
 
     private
+
+    def _custom_errors_handling(attribute, errors)
+      attribute = case attribute
+      when 'month', 'first_name', 'last_name'
+        # do nothing
+      when 'year'
+        self.errors.add(:cc_expiration_year, credit_card.errors.on(:year))
+      when 'brand', 'number'
+        self.errors.add(:"cc_#{attribute}", :invalid)
+      else
+        errors.each do |error|
+          self.errors.add(:"cc_#{attribute}", error)
+        end
+      end
+    end
 
     # Waiting for identification (3-D Secure)
     # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
