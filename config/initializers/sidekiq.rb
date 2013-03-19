@@ -6,6 +6,5 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.poll_interval = 1
   config.redis = { size: 2 } # for web dyno
 end
