@@ -245,7 +245,7 @@ describe User do
       end
     end
 
-    describe "after_save :newsletter_update" do
+    describe "after_save :_update_newsletter_subscription" do
       context "user sign-up" do
         context "user subscribes to the newsletter" do
           let(:user) { create(:user, id: 1, newsletter: true, email: "newsletter_sign_up@jilion.com") }
@@ -265,7 +265,9 @@ describe User do
           end
         end
       end
+    end
 
+    describe "after_update :_update_newsletter_user_infos" do
       context "user update" do
         let(:user) { create(:user, newsletter: true, email: "newsletter_update@jilion.com") }
 

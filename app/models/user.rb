@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include UserModules::CreditCard
+  include Searchable
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :async
@@ -79,7 +80,8 @@ class User < ActiveRecord::Base
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
 
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
-  after_save :newsletter_update
+  after_save :_update_newsletter_subscription
+  after_update :_update_newsletter_user_infos
 
   after_update :zendesk_update
 
@@ -153,11 +155,11 @@ class User < ActiveRecord::Base
   scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way.upcase}") }
   scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way.upcase}") }
 
-  def self.search(q)
-    includes(:sites).where{
-      (lower(:email) =~ lower("%#{q}%")) | (lower(:name) =~ lower("%#{q}%")) |
-      (lower(sites.hostname) =~ lower("%#{q}%")) | (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
-    }
+  def self.additional_or_conditions
+    %w[email name].inject([]) do |memo, field|
+      memo << ("lower(#{field}) =~ " + 'lower("%#{q}%")')
+      memo
+    end
   end
 
   # =================
@@ -299,19 +301,25 @@ class User < ActiveRecord::Base
   end
 
   # after_save
-  def newsletter_update
-    if newsletter_changed?
-      if newsletter?
-        NewsletterSubscriptionManager.delay.subscribe(self.id)
-      else
-        NewsletterSubscriptionManager.delay.unsubscribe(self.id)
-      end
-    end
+  def _update_newsletter_subscription
+    return unless newsletter_changed?
 
     if newsletter?
-      if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
-        NewsletterSubscriptionManager.delay.update(self.id, { email: email_was || email, user: { email: email, name: name, newsletter: newsletter? } })
-      end
+      NewsletterSubscriptionManager.delay.subscribe(self.id)
+    else
+      NewsletterSubscriptionManager.delay.unsubscribe(self.id)
+    end
+  end
+
+  # after_update
+  def _update_newsletter_user_infos
+    return unless newsletter?
+
+    if email_changed? || name_changed?
+      NewsletterSubscriptionManager.delay.update(self.id, {
+        email: email_was || email,
+        user: { email: email, name: name, newsletter: newsletter? }
+      })
     end
   end
 
