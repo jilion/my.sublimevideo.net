@@ -2,7 +2,7 @@ module OgoneWrapper
   include Configurator
 
   config_file 'ogone.yml'
-  config_accessor :login, :user, :password, :signature, :signature_out, :signature_encryptor, :created_after_10_may_2010, :currency
+  config_accessor :login, :user, :password, :signature, :signature_out, :signature_encryptor, :created_after_10_may_2010, :currency, :status
 
   class << self
 

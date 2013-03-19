@@ -225,7 +225,7 @@ class User < ActiveRecord::Base
   end
 
   def more_info_incomplete?
-    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
+    [company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
     [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
   end
 
@@ -277,21 +277,24 @@ class User < ActiveRecord::Base
 
   # validate
   def validates_current_password
-    return if @skip_password_validation
-    return if @bypass_postpone # For devise reconfirmation
+    # @bypass_postpone if for devise reconfirmation
+    return if @skip_password_validation || @bypass_postpone || !_current_password_needed?
 
-    if persisted? &&
-      ((state_changed? && archived?) || @password.present? || email_changed?) &&
-      errors.empty? &&
-      # handle Devise password reset!!
-      # at first, Devise call valid? and then reset_password_token is not nil so no problem, but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
-      (reset_password_token.nil? && !reset_password_token_changed?)
-      if current_password.blank?
-        self.errors.add(:current_password, :blank)
-      elsif !valid_password?(current_password)
-        self.errors.add(:current_password, :invalid)
-      end
+    if current_password.blank?
+      self.errors.add(:current_password, :blank)
+    elsif !valid_password?(current_password)
+      self.errors.add(:current_password, :invalid)
     end
+  end
+
+  def _current_password_needed?
+    persisted? &&
+    ((state_changed? && archived?) || @password.present? || email_changed?) &&
+    errors.empty? &&
+    # handle Devise password reset!!
+    # at first, Devise call valid? and then reset_password_token is not nil so no problem,
+    # but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
+    (reset_password_token.nil? && !reset_password_token_changed?)
   end
 
   # before_save
