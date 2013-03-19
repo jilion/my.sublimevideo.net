@@ -1,3 +1,5 @@
+require 'searchable'
+
 class User < ActiveRecord::Base
   include UserModules::CreditCard
   include Searchable

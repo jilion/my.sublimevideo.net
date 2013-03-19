@@ -1,3 +1,5 @@
+require 'searchable'
+
 class Site < ActiveRecord::Base
   include SiteModules::BillableItem
   include SiteModules::Billing
