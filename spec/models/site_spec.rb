@@ -553,6 +553,19 @@ describe Site, :addons do
 
       specify { Site.with_page_loads_in_the_last_30_days.all.should =~ [site1, site2] }
     end
+
+    describe '.search' do
+      let(:site) { create(:site) }
+
+      specify { described_class.search(site.token).should eq [site] }
+      specify { described_class.search(site.hostname).should eq [site] }
+      specify { described_class.search(site.extra_hostnames).should eq [site] }
+      specify { described_class.search(site.staging_hostnames).should eq [site] }
+      specify { described_class.search(site.dev_hostnames).should eq [site] }
+      specify { described_class.search(site.user.email).should eq [site] }
+      specify { described_class.search(site.user.name).should eq [site] }
+    end
+
   end # Scopes
 
 end

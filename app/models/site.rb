@@ -3,6 +3,7 @@ class Site < ActiveRecord::Base
   include SiteModules::Billing
   include SiteModules::Referrer
   include SiteModules::Usage
+  include Searchable
 
   DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost' unless defined?(DEFAULT_DEV_DOMAINS)
@@ -122,11 +123,7 @@ class Site < ActiveRecord::Base
 
   # Only when accessible_stage change in admin
   after_save ->(site) do
-    if site.accessible_stage_changed?
-      # Delay for 5 seconds to be sure that commit transaction is done.
-      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
-    end
+    site.delay_update_loaders_and_settings if site.accessible_stage_changed?
   end
 
   # =================
@@ -139,9 +136,7 @@ class Site < ActiveRecord::Base
     event(:unsuspend) { transition :suspended => :active }
 
     after_transition ->(site) do
-      # Delay for 5 seconds to be sure that commit transaction is done.
-      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
+      site.delay_update_loaders_and_settings
     end
 
     before_transition :on => :suspend do |site, transition|
@@ -182,22 +177,22 @@ class Site < ActiveRecord::Base
 
   # addons
   scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :paying_ids, -> { active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
+  scope :paying_ids, -> do
+    active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id")
+    .merge(BillableItem.subscribed).merge(BillableItem.paid)
+  end
   scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
   def self.with_addon_plan(full_addon_name)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
 
-    active.includes(:billable_items)
-    .where { billable_items.item_type == addon_plan.class.to_s }
-    .where { billable_items.item_id == addon_plan.id }
+    active.includes(:billable_items).merge(BillableItem.with_item(addon_plan))
   end
 
   def self.in_beta_trial_ended_after(full_addon_name, timestamp)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
 
     active.includes(:billable_item_activities).where{ billable_item_activities.state == 'beta' }
-    .where{ billable_item_activities.item_type == addon_plan.class.to_s }
-    .where{ billable_item_activities.item_id == addon_plan.id }
+    .merge(BillableItemActivity.with_item(addon_plan))
     .where{ date_trunc('day', created_at) <= (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }
   end
 
@@ -208,8 +203,6 @@ class Site < ActiveRecord::Base
   scope :by_hostname,                ->(way = 'asc')  { order("#{quoted_table_name()}.hostname #{way}, #{quoted_table_name()}.token #{way}") }
   scope :by_user,                    ->(way = 'desc') { includes(:user).order("name #{way}, email #{way}") }
   scope :by_state,                   ->(way = 'desc') { order("#{quoted_table_name()}.state #{way}") }
-  scope :by_google_rank,             ->(way = 'desc') { where{ google_rank >= 0 }.order("#{quoted_table_name()}.google_rank #{way}") }
-  scope :by_alexa_rank,              ->(way = 'desc') { where{ alexa_rank >= 1 }.order("#{quoted_table_name()}.alexa_rank #{way}") }
   scope :by_date,                    ->(way = 'desc') { order("#{quoted_table_name()}.created_at #{way}") }
   scope :by_trial_started_at,        ->(way = 'desc') { order("#{quoted_table_name()}.trial_started_at #{way}") }
   scope :by_last_30_days_video_tags, ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_video_tags #{way}") }
@@ -225,16 +218,11 @@ class Site < ActiveRecord::Base
     ELSE -1 END #{way}")
   }
 
-  def self.search(q)
-    joins(:user).where{
-      (lower(user.email) =~ lower("%#{q}%")) |
-      (lower(user.name) =~ lower("%#{q}%")) |
-      (lower(:token) =~ lower("%#{q}%")) |
-      (lower(:hostname) =~ lower("%#{q}%")) |
-      (lower(:extra_hostnames) =~ lower("%#{q}%")) |
-      (lower(:staging_hostnames) =~ lower("%#{q}%")) |
-      (lower(:dev_hostnames) =~ lower("%#{q}%"))
-    }
+  def self.additional_or_conditions
+    %w[token hostname extra_hostnames staging_hostnames dev_hostnames].inject([]) do |memo, field|
+      memo << ("lower(#{field}) =~ " + 'lower("%#{q}%")')
+      memo
+    end
   end
 
   def self.with_page_loads_in_the_last_30_days
@@ -280,6 +268,12 @@ class Site < ActiveRecord::Base
 
   def unmemoize_all
     unmemoize_all_usages
+  end
+
+  def delay_update_loaders_and_settings
+    # Delay for 5 seconds to be sure that commit transaction is done.
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
   end
 
 end
