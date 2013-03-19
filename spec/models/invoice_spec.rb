@@ -302,7 +302,7 @@ describe Invoice, :addons do
 
       it 'sets customer & site info' do
         invoice.customer_full_name.should eq invoice.user.billing_name
-        invoice.customer_email.should eq invoice.user.email
+        invoice.customer_email.should eq invoice.user.billing_email
         invoice.customer_country.should eq invoice.user.billing_country
         invoice.customer_company_name.should eq invoice.user.company_name
         invoice.customer_billing_address.should eq invoice.user.billing_address
