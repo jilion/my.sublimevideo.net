@@ -63,7 +63,7 @@ class TrialHandler
 
   def trial_end_date(design_or_addon_plan)
     if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
-      subscription.created_at + BusinessModel.days_for_trial(design_or_addon_plan).days
+      subscription.created_at + BusinessModel.days_for_trial(subscription).days
     else
       nil
     end
