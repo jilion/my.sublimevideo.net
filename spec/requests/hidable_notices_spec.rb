@@ -95,7 +95,7 @@ feature "Hidable notices" do
 
       context "and has 'More info' incomplete" do
         background do
-          @current_user.billing_postal_code = ""
+          @current_user.company_name = ""
           @current_user.should be_more_info_incomplete
           go 'my', '/sites'
         end
