@@ -13,7 +13,7 @@ module TwitterWrapper
 
       if Twitter.respond_to?(method_name)
         begin
-          with_rescue_and_retry(5) do
+          with_rescue_and_retry(7) do
             Twitter.send(method_name, *args)
           end
         rescue Twitter::Error::TooManyRequests => error
