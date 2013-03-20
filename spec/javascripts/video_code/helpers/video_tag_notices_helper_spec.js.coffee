@@ -1,7 +1,4 @@
 describe 'MSVVideoCode.Helpers.VideoTagNoticesHelper', ->
-  beforeEach ->
-    @kit = new MySublimeVideo.Models.Kit(settings: { sharing: { title: 'Bar Foo' } })
-
   describe 'buildMessages()', ->
     describe '1 invalid source', ->
       beforeEach ->
@@ -102,10 +99,11 @@ describe 'MSVVideoCode.Helpers.VideoTagNoticesHelper', ->
       it 'has the right content', ->
         expect(@helper.messages['warnings'][0]).toEqual("There are 2 sources that seem to have invalid MIME Types.")
 
-    describe 'missing uid', ->
+    describe 'missing uid with manual embed', ->
       beforeEach ->
+        @kit = new MySublimeVideo.Models.Kit(settings: { embed: { type: 'manual' } })
         @video = new MySublimeVideo.Models.Video(uid: '', title: 'Foo', sources: new MySublimeVideo.Collections.Sources)
-        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video, @kit)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->
@@ -114,11 +112,24 @@ describe 'MSVVideoCode.Helpers.VideoTagNoticesHelper', ->
 
       it 'has the right content', ->
         expect(@helper.messages['warnings'][0]).toEqual("We recommend that you provide a UID for this video in the Video settings => Video metadata settings => UID field to make it uniquely identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/addons/stats#setup-for-stats' onclick='window.open(this); return false'>Read more</a>.")
+    describe 'missing uid with auto embed', ->
+      beforeEach ->
+        @kit = new MySublimeVideo.Models.Kit(settings: { embed: { type: 'auto' } })
+        @video = new MySublimeVideo.Models.Video(uid: '', title: 'Foo', sources: new MySublimeVideo.Collections.Sources)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video, @kit)
+        @helper.buildMessages()
+
+      it 'construct a hash of messages', ->
+        expect(@helper.messages['errors'].length).toEqual(1)
+        expect(@helper.messages['warnings'].length).toEqual(0)
+
+      it 'has the right content', ->
+        expect(@helper.messages['errors'][0]).toEqual("We recommend that you provide a UID for this video in the Video settings => Video metadata settings => UID field to make it uniquely identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/addons/stats#setup-for-stats' onclick='window.open(this); return false'>Read more</a>.")
 
     describe 'missing title', ->
       beforeEach ->
         @video = new MySublimeVideo.Models.Video(uid: 'foo', title: '', sources: new MySublimeVideo.Collections.Sources)
-        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video, @kit)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->

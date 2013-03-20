@@ -28,7 +28,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
       result
 
   setYouTubeId: (newYouTubeId) ->
-    if matches = newYouTubeId.match(/(youtube\.com\/.+v=|youtu\.be\/)(\w+)(&|$)/)
+    if matches = newYouTubeId.match(/(youtube\.com\/.+v=|youtu\.be\/)([\w\-]+)(&|$)/)
       newYouTubeId = matches[2]
 
     this.set(youTubeId: newYouTubeId)
