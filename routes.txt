@@ -53,6 +53,7 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                           edit_admin_user GET      /users/:id/edit(.:format)                                 admin/users#edit
                                admin_user GET      /users/:id(.:format)                                      admin/users#show
                                           PUT      /users/:id(.:format)                                      admin/users#update
+                                          DELETE   /users/:id(.:format)                                      admin/users#destroy
                         admin_enthusiasts GET      /enthusiasts(.:format)                                    admin/enthusiasts#index
                          admin_enthusiast GET      /enthusiasts/:id(.:format)                                admin/enthusiasts#show
              reset_auth_token_admin_admin PUT      /admins/:id/reset_auth_token(.:format)                    admin/admins#reset_auth_token
@@ -85,6 +86,7 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                              admin_tweets GET      /tweets(.:format)                                         admin/tweets#index
                               admin_deals GET      /deals(.:format)                                          admin/deals#index
                    admin_deal_activations GET      /deals/activations(.:format)                              admin/deal_activations#index
+                      confirm_admin_mails POST     /mails/confirm(.:format)                                  admin/mails#confirm
                               admin_mails GET      /mails(.:format)                                          admin/mails#index
                                           POST     /mails(.:format)                                          admin/mails#create
                            new_admin_mail GET      /mails/new(.:format)                                      admin/mails#new
