@@ -2,6 +2,7 @@ class Admin::MailTemplatesController < Admin::AdminController
   respond_to :html
 
   before_filter { |controller| require_role?('god') }
+  before_filter :_find_mail_template, only: [:edit, :update, :preview]
 
   # GET /mails/templates/new
   def new
@@ -17,15 +18,25 @@ class Admin::MailTemplatesController < Admin::AdminController
 
   # GET /mails/templates/:id/edit
   def edit
-    @mail_template = MailTemplate.find(params[:id])
     respond_with(@mail_template)
   end
 
   # PUT /mails/templates/:id
   def update
-    @mail_template = MailTemplate.find(params[:id])
     @mail_template.update_attributes(params[:mail_template])
     respond_with(@mail_template, location: [:edit,  :admin, @mail_template])
+  end
+
+  # GET /mails/templates/:id/preview
+  def preview
+    @user = User.first
+    render layout: 'mailer', text: Liquid::Template.parse(@mail_template.body).render("user" => @user)
+  end
+
+  private
+
+  def _find_mail_template
+    @mail_template = MailTemplate.find_by_id(params[:id])
   end
 
 end
