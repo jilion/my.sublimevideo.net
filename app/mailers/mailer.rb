@@ -1,19 +1,14 @@
 class Mailer < ActionMailer::Base
-
-  default from: I18n.t("mailer.info.email")
+  default from: I18n.t('mailer.info.email')
 
   helper :application
   add_template_helper(UrlsHelper)
 
-  def to(user)
-    user.name? ? "\"#{user.name}\" <#{user.email}>" : user.email
-  end
-
   private
 
-  def extract_site_and_user_from_site_id(site_id)
-    @site = Site.find(site_id)
-    @user = @site.user
+  def _subject(method_name, args = {})
+    keys = [method_name] + args.fetch(:keys) { [] }
+    I18n.t("mailer.#{self.mailer_name}.#{keys.join('.')}", args)
   end
 
 end

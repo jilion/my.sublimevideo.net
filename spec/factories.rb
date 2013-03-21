@@ -14,18 +14,19 @@ FactoryGirl.define do
   end
 
   factory :user_no_cc, class: User do
-    name                 "John Doe"
-    billing_name         "Remy Coutable"
-    billing_address_1    "Avenue de France 71"
-    billing_address_2    "Batiment B"
-    billing_postal_code  "1004"
-    billing_city         "Lausanne"
-    billing_region       "VD"
-    billing_country      "CH"
-    use_personal         true
-    sequence(:email)     { |n| "email#{n}@user.com" }
-    password             "123456"
-    terms_and_conditions "1"
+    name                     "John Doe"
+    sequence(:billing_email) { |n| "email#{n}@user.com" }
+    billing_name             "Remy Coutable"
+    billing_address_1        "Avenue de France 71"
+    billing_address_2        "Batiment B"
+    billing_postal_code      "1004"
+    billing_city             "Lausanne"
+    billing_region           "VD"
+    billing_country          "CH"
+    use_personal             true
+    sequence(:email)         { |n| "email#{n}@user.com" }
+    password                 "123456"
+    terms_and_conditions     "1"
 
     factory :user do
       cc_type        'visa'
