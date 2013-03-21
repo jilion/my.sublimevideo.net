@@ -1,6 +1,9 @@
-= title_and_content_header("Mail template '#{html_escape(@mail_template.title)}'")
+= title_and_content_header("Mail template ##{@mail_template.id}: '#{html_escape(@mail_template.title)}'")
 
-%h3 Final look
+- if @mail_template.archived_at?
+  %strong{ style: 'color:red' } This email template is archived.
+
+%h3 Preview
 %br
 = render 'final_look', template: @mail_template
 
@@ -8,21 +11,34 @@
 %hr
 %br
 
-%h3 Edition
+- unless @mail_template.archived_at?
+  %h3 Edition
 
-= render 'form', mail_template: @mail_template
+  = render 'form', mail_template: @mail_template
 
-%br
-%hr
-%br
+  %br
+  %hr
+  %br
 
-%h3 Send email
-%br
+  %h3 Archiving
 
-%p= link_to "Send a new mail with this template", new_admin_mail_path(template_id: @mail_template.id)
+  - if @mail_template.persisted?
+    = form_for [:admin, @mail_template] do |f|
+      = f.hidden_field :archived_at, value: Time.now.utc
+      .actions
+        = f.submit 'Archive mail template', data: { confirm: 'Are you sure?' }
 
-%br
-%hr
-%br
+  %br
+  %hr
+  %br
+
+  %h3 Send email
+  %br
+
+  %p= link_to "Send a new mail with this template", new_admin_mail_path(template_id: @mail_template.id)
+
+  %br
+  %hr
+  %br
 
 %p= link_to "Back to mails", admin_mails_path

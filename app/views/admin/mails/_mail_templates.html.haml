@@ -1,3 +1,6 @@
+%h3 Templates
+= link_to "Create a new mail template", new_admin_mail_template_path
+
 - if @mail_templates.empty?
   = "No mail templates yet!"
 - else
@@ -13,4 +16,28 @@
   .pagination_wrap
     = paginate @mail_templates, theme: 'admin'
     = page_entries_info @mail_templates
+  - params[:mail_templates] = nil
+
+%br
+%hr
+%br
+
+%h3 Archived templates
+
+- if @archived_mail_templates.empty?
+  = "No archived mail templates yet!"
+- else
+  - params[:mail_templates] = true
+  %table.main#archived_mail_templates
+    %tr
+      %th= link_to_sort :title, reverse: true
+      %th= "Subject"
+      %th= "Body"
+      %th= link_to_sort :date, default_way: 'desc', default: true, label: "Created at"
+      %th= "Archived at"
+    = render partial: 'admin/mail_templates/mail_template', collection: @archived_mail_templates
+
+  .pagination_wrap
+    = paginate @archived_mail_templates, theme: 'admin'
+    = page_entries_info @archived_mail_templates
   - params[:mail_templates] = nil
