@@ -4,8 +4,8 @@ class EmailsPopulator < Populator
     trial_design        = user.billable_items.app_designs.state('trial').first || user.billable_items.app_designs.first
     trial_addon_plan    = user.billable_items.addon_plans.state('trial').first || user.billable_items.addon_plans.first
     site                = user.sites.paying.last || user.sites.last
-    invoice             = site.invoices.not_paid.last || InvoiceCreator.build_for_month(site: site).tap { |s| s.save }.invoice
-    transaction         = invoice.transactions.last || Transaction.create!(invoices: [invoice])
+    invoice             = site.invoices.not_paid.last || InvoiceCreator.build_for_month(1.month.ago, site).tap { |s| s.save }.invoice
+    transaction         = invoice.transactions.last || Transaction.new(invoices: [invoice])
     stats_export        = StatsExport.create(site_token: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
     DeviseMailer.confirmation_instructions(user).deliver!
