@@ -19,20 +19,7 @@ module UserModules::CreditCard
 
       # I18n Warning: credit_card errors are not localized
       credit_card.errors.reject { |k,v| v.empty? }.each do |attribute, errors|
-        attribute = case attribute
-        when 'month', 'first_name', 'last_name'
-          # do nothing
-        when 'year'
-          self.errors.add(:cc_expiration_year, credit_card.errors.on(:year))
-        when 'brand'
-          self.errors.add(:cc_brand, :invalid)
-        when 'number'
-          self.errors.add(:cc_number, :invalid)
-        else
-          errors.each do |error|
-            self.errors.add(:"cc_#{attribute}", error)
-          end
-        end
+        _custom_errors_handling(attribute, errors)
       end
     end
 
@@ -90,19 +77,7 @@ module UserModules::CreditCard
       self.pending_cc_expire_on   = Time.utc(credit_card.year, credit_card.month).end_of_month.to_date
       self.pending_cc_updated_at  = Time.now.utc
 
-      reset_credit_card_attributes
-    end
-
-    def reset_credit_card_attributes
-      %w[brand number expiration_month expiration_year full_name verification_value].each do |att|
-        self.send("cc_#{att}=", nil)
-      end
-    end
-
-    def reset_last_failed_cc_authorize_fields
-      %w[at status error].each do |att|
-        self.send("last_failed_cc_authorize_#{att}=", nil)
-      end
+      _reset_credit_card_attributes
     end
 
     # Be careful with this! Should be only used in dev and for special support-requested-credit-card-deletion purposes
@@ -112,19 +87,6 @@ module UserModules::CreditCard
         self.send("pending_cc_#{att}=", nil)
       end
       reset_credit_card
-
-      skip_password(:save!)
-    end
-
-    # We need the '_will_change!' calls since this methods is called in an after_save callback...
-    def apply_pending_credit_card_info
-      %w[type last_digits expire_on updated_at].each do |att|
-        self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
-        self.send("pending_cc_#{att}=", nil)
-        self.send("cc_#{att}_will_change!")
-        self.send("pending_cc_#{att}_will_change!")
-      end
-      reset_last_failed_cc_authorize_fields
 
       skip_password(:save!)
     end
@@ -148,80 +110,132 @@ module UserModules::CreditCard
     end
 
     # Called from UserModules::CreditCard#register_credit_card_on_file and from TransactionsController#callback
-    def process_credit_card_authorization_response(authorization_params)
+    def process_credit_card_authorization_response(auth)
       @d3d_html = nil
       reset_credit_card
 
-      case authorization_params['STATUS']
-      # Waiting for identification (3-D Secure)
-      # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
-      when '46'
-        Librato.increment 'credit_cards.3d_secure', source: authorization_params['BRAND']
-        @d3d_html = Base64.decode64(authorization_params['HTML_ANSWER'])
-
-      # STATUS == 5, Authorized:
-      #   The authorization has been accepted.
-      #   An authorization code is available in the field "ACCEPTANCE".
-      when '5'
-        Librato.increment 'credit_cards.stored', source: authorization_params['BRAND']
-        OgoneWrapper.void([authorization_params['PAYID'], 'RES'].join(';'))
-        apply_pending_credit_card_info
-
-      # STATUS == 51, Authorization waiting:
-      #   The authorization will be processed offline.
-      #   This is the standard response if the merchant has chosen offline processing in his account configuration
-      when '51'
-        Librato.increment 'credit_cards.waiting', source: authorization_params['BRAND']
-        @i18n_notice_and_alert = { notice: I18n.t('credit_card.errors.waiting') }
-
-      # STATUS == 0, Invalid or incomplete:
-      #   At least one of the payment data fields is invalid or missing.
-      #   The NC ERROR  and NC ERRORPLUS  fields contains an explanation of the error
-      #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
-      #   After correcting the error, the customer can retry the authorization process.
-      when '0'
-        Librato.increment 'credit_cards.invalid', source: authorization_params['BRAND']
-        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.invalid') }
-
-      # STATUS == 2, Authorization refused:
-      #   The authorization has been declined by the financial institution.
-      #   The customer can retry the authorization process after selecting a different payment method (or card brand).
-      when '2'
-        Librato.increment 'credit_cards.refused', source: authorization_params['BRAND']
-        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.refused') }
-
-      # STATUS == 1, Authorization canceled by client:
-      #   The authorization has been canceled by the client (probably because the client failed to authenticate).
-      #   The customer can retry the authorization process.
-      when '1'
-        Librato.increment 'credit_cards.canceled', source: authorization_params['BRAND']
-        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.canceled') }
-
-      # STATUS == 52, Authorization not known:
-      #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
-      #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
-      #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
-      when '52'
-        Librato.increment 'credit_cards.uncertain', source: authorization_params['BRAND']
-        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
-        Notifier.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
-
+      if OgoneWrapper.status.keys.include?(auth['STATUS'])
+        send("_handle_auth_#{OgoneWrapper.status[auth['STATUS']]}", auth)
+        _increment_librato(OgoneWrapper.status[auth['STATUS']], auth['BRAND'])
       else
-        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
-        Notifier.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
+        _set_notice('unknown', :alert)
+        Notifier.send("Credit card authorization unknown status: #{auth["STATUS"]}")
       end
 
-      unless authorization_params['STATUS'] == '5'
-        set_last_failed_cc_authorize_fields_from_params(authorization_params)
+      unless auth['STATUS'] == '5'
+        _set_last_failed_cc_authorize_fields!(auth)
       end
     end
 
-    def set_last_failed_cc_authorize_fields_from_params(authorization_params)
+    private
+
+    def _custom_errors_handling(attribute, errors)
+      attribute = case attribute
+      when 'month', 'first_name', 'last_name'
+        # do nothing
+      when 'year'
+        self.errors.add(:cc_expiration_year, credit_card.errors.on(:year))
+      when 'brand', 'number'
+        self.errors.add(:"cc_#{attribute}", :invalid)
+      else
+        errors.each do |error|
+          self.errors.add(:"cc_#{attribute}", error)
+        end
+      end
+    end
+
+    # Waiting for identification (3-D Secure)
+    # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+    def _handle_auth_waiting_3d_secure(auth)
+      @d3d_html = Base64.decode64(auth['HTML_ANSWER'])
+    end
+
+    # STATUS == 5, Authorized:
+    #   The authorization has been accepted.
+    #   An authorization code is available in the field "ACCEPTANCE".
+    def _handle_auth_authorized(auth)
+      OgoneWrapper.void([auth['PAYID'], 'RES'].join(';'))
+      _apply_pending_credit_card_info!
+    end
+
+    # STATUS == 51, Authorization waiting:
+    #   The authorization will be processed offline.
+    #   This is the standard response if the merchant has chosen offline processing in his account configuration
+    def _handle_auth_waiting(auth)
+      _set_notice('waiting')
+    end
+
+    # STATUS == 0, Invalid or incomplete:
+    #   At least one of the payment data fields is invalid or missing.
+    #   The NC ERROR  and NC ERRORPLUS  fields contains an explanation of the error
+    #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
+    #   After correcting the error, the customer can retry the authorization process.
+    def _handle_auth_invalid(auth)
+      _set_notice('invalid', :alert)
+    end
+
+    # STATUS == 2, Authorization refused:
+    #   The authorization has been declined by the financial institution.
+    #   The customer can retry the authorization process after selecting a different payment method (or card brand).
+    def _handle_auth_refused(auth)
+      _set_notice('refused', :alert)
+    end
+
+    # STATUS == 1, Authorization canceled by client:
+    #   The authorization has been canceled by the client (probably because the client failed to authenticate).
+    #   The customer can retry the authorization process.
+    def _handle_auth_canceled(auth)
+      _set_notice('canceled', :alert)
+    end
+
+    # STATUS == 52, Authorization not known:
+    #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
+    #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
+    #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
+    def _handle_auth_uncertain(auth)
+      _set_notice('unknown', :alert)
+      Notifier.send("Credit card authorization for user ##{self.id} (PAYID: #{auth["PAYID"]}) has an uncertain state, please investigate quickly!")
+    end
+
+    def _set_last_failed_cc_authorize_fields!(auth)
       self.last_failed_cc_authorize_at     = Time.now.utc
-      self.last_failed_cc_authorize_status = authorization_params['STATUS'].to_i
-      self.last_failed_cc_authorize_error  = authorization_params['NCERRORPLUS']
+      self.last_failed_cc_authorize_status = auth['STATUS'].to_i
+      self.last_failed_cc_authorize_error  = auth['NCERRORPLUS']
 
       skip_password(:save!)
+    end
+
+    # We need the '_will_change!' calls since this methods is called in an after_save callback...
+    def _apply_pending_credit_card_info!
+      %w[type last_digits expire_on updated_at].each do |att|
+        self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
+        self.send("pending_cc_#{att}=", nil)
+        self.send("cc_#{att}_will_change!")
+        self.send("pending_cc_#{att}_will_change!")
+      end
+      _reset_last_failed_cc_authorize_fields
+
+      skip_password(:save!)
+    end
+
+    def _reset_credit_card_attributes
+      %w[brand number expiration_month expiration_year full_name verification_value].each do |att|
+        self.send("cc_#{att}=", nil)
+      end
+    end
+
+    def _reset_last_failed_cc_authorize_fields
+      %w[at status error].each do |att|
+        self.send("last_failed_cc_authorize_#{att}=", nil)
+      end
+    end
+
+    def _set_notice(translation_key, key = :notice)
+      @i18n_notice_and_alert = { key => I18n.t("credit_card.errors.#{translation_key}") }
+    end
+
+    def _increment_librato(event, source)
+      Librato.increment "credit_cards.#{event}", source: source
     end
 
   end

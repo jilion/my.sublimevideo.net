@@ -1,7 +1,8 @@
+- @subscription = @site.billable_item_activities.with_item(@design_or_addon_plan).state(%w[beta trial]).first
 %p Thank you for taking the time to try SublimeVideo!
 
 %p
-  = raw "We'd like to remind you that your free #{BusinessModel.days_for_trial}-day #{@item.title} #{@item.kind_for_email} trial"
+  = raw "We'd like to remind you that your free #{BusinessModel.days_for_trial(@subscription)}-day #{@item.title} #{@item.kind_for_email} trial"
   - if @site.hostname?
     = raw "(for #{link_to @site.hostname, url_with_protocol(@site.hostname)})"
   = raw "<strong>will expire on #{l(@trial_end_date.tomorrow, format: :named_date)}</strong>."

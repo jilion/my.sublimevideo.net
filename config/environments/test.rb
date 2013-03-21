@@ -1,3 +1,6 @@
+# http://mines.mouldwarp.com/2012/11/subdomains-in-rails-apps-current-brief.html
+ROOT_DOMAIN = 'lvh.me'  # yes, it's a magic domain for 127.0.0.1 //smackaho.st RIP
+
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 

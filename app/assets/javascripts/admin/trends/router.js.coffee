@@ -58,7 +58,7 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
       _.each AdminSublimeVideo.trends, (collection) -> collection.selected = []
       $('a.selector').removeClass('active')
       this.clearUrl()
-      AdminSublimeVideo.period.change() # redraw the chart
+      AdminSublimeVideo.period.trigger('change') # redraw the chart
 
   fetchTrends: ->
     @fetchedTrendsCount = 0

@@ -1,5 +1,6 @@
+- @subscription = @site.billable_item_activities.with_item(@design_or_addon_plan).state(%w[beta trial]).first
 %p
-  = raw "Your #{BusinessModel.days_for_trial}-day free trial for the #{@item.title} #{@item.kind_for_email}"
+  = raw "Your #{BusinessModel.days_for_trial(@subscription)}-day free trial for the #{@item.title} #{@item.kind_for_email}"
   - if @site.hostname?
     = raw "(for #{link_to @site.hostname, url_with_protocol(@site.hostname)})"
   %strong has now expired.

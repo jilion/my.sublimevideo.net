@@ -5,7 +5,7 @@ ruby '1.9.3'
 
 gem 'bundler'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.2.13'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
 
@@ -144,7 +144,7 @@ group :development do
 
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+  # gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
 end
 
 group :development, :test do

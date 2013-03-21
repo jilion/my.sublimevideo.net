@@ -13,7 +13,7 @@ module TwitterWrapper
 
       if Twitter.respond_to?(method_name)
         begin
-          with_rescue_and_retry(3) do
+          with_rescue_and_retry(7) do
             Twitter.send(method_name, *args)
           end
         rescue Twitter::Error::TooManyRequests => error
@@ -31,7 +31,7 @@ module TwitterWrapper
     end
 
     def with_rescue_and_retry(times)
-      rescue_and_retry(times, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::Error::BadGateway, Twitter::Error::ServiceUnavailable, Twitter::Error::InternalServerError) do
+      rescue_and_retry(times, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::Error::BadGateway, Twitter::Error::ServiceUnavailable, Twitter::Error::InternalServerError, Twitter::Error::ClientError) do
         yield
       end
     end

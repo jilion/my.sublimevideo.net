@@ -7,21 +7,20 @@ module Searchable
   module ClassMethods
     def search(q)
       scopes, or_conditions = scoped, additional_or_conditions
-      associations = self.reflect_on_all_associations(:belongs_to) + self.reflect_on_all_associations(:has_one)
+      associations = self.reflect_on_all_associations(:belongs_to) + self.reflect_on_all_associations(:has_one) + self.reflect_on_all_associations(:has_many)
       associations.each do |association|
         case association.name
         when :user
-          or_conditions << 'lower(users.email) =~ lower("%#{q}%")'
-          or_conditions << 'lower(users.name) =~ lower("%#{q}%")'
+          %w[email name].each { |field| or_conditions << ("lower(users.#{field}) =~ " 'lower("%#{q}%")') }
           scopes = scopes.joins(:user)
-        when :site
-          or_conditions << 'lower(sites.hostname) =~ lower("%#{q}%")'
-          or_conditions << 'lower(sites.dev_hostnames) =~ lower("%#{q}%")'
-          scopes = scopes.joins(:site)
+        when :site, :sites
+          %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |field|
+            or_conditions << ("lower(sites.#{field}) =~ " 'lower("%#{q}%")')
+          end
+          scopes = scopes.includes(association.name)
         end
       end
 
-      puts eval("scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }").to_sql
       eval "scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }"
     end
 

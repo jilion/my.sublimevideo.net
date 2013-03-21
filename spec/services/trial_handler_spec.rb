@@ -391,7 +391,7 @@ describe TrialHandler do
   end
 
   describe '#trial_end_date' do
-    let(:addon_plan1) { create(:addon_plan) }
+    let(:addon_plan1) { create(:addon_plan, created_at: (BusinessModel.days_for_trial_old + 1).days.from_now) }
     let(:addon_plan2) { create(:addon_plan) }
 
     context 'subscribed before BusinessModel.new_trial_date' do

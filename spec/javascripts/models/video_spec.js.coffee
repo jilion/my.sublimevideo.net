@@ -9,19 +9,19 @@ describe 'MySublimeVideo.Models.Video', ->
       expect(@video.get('youTubeId')).toEqual('abcd1234')
 
     it 'handles YouTube long URL (1)', ->
-      @video.setYouTubeId('http://youtube.com/watch?v=abcd1234')
+      @video.setYouTubeId('https://www.youtube.com/watch?v=b_-jrnypPEA')
 
-      expect(@video.get('youTubeId')).toEqual('abcd1234')
+      expect(@video.get('youTubeId')).toEqual('b_-jrnypPEA')
 
     it 'handles YouTube long URL (2)', ->
-      @video.setYouTubeId('http://www.youtube.com/watch?feature=em-subs_digest&v=abcd1234')
+      @video.setYouTubeId('http://www.youtube.com/watch?feature=em-subs_digest&v=b_-jrnypPEA')
 
-      expect(@video.get('youTubeId')).toEqual('abcd1234')
+      expect(@video.get('youTubeId')).toEqual('b_-jrnypPEA')
 
     it 'handles YouTube short URL', ->
-      @video.setYouTubeId('http://youtu.be/abcd1234')
+      @video.setYouTubeId('http://youtu.be/b_-jrnypPEA')
 
-      expect(@video.get('youTubeId')).toEqual('abcd1234')
+      expect(@video.get('youTubeId')).toEqual('b_-jrnypPEA')
 
   describe 'setUid()', ->
     it 'accepts proper data-uid', ->

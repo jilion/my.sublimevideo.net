@@ -1,5 +1,8 @@
+require 'searchable'
+
 class User < ActiveRecord::Base
   include UserModules::CreditCard
+  include Searchable
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :async
@@ -81,7 +84,8 @@ class User < ActiveRecord::Base
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
 
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
-  after_save :newsletter_update
+  after_save :_update_newsletter_subscription
+  after_update :_update_newsletter_user_infos
 
   after_update :zendesk_update
 
@@ -155,11 +159,11 @@ class User < ActiveRecord::Base
   scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way.upcase}") }
   scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way.upcase}") }
 
-  def self.search(q)
-    includes(:sites).where{
-      (lower(:email) =~ lower("%#{q}%")) | (lower(:name) =~ lower("%#{q}%")) |
-      (lower(sites.hostname) =~ lower("%#{q}%")) | (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
-    }
+  def self.additional_or_conditions
+    %w[email name].inject([]) do |memo, field|
+      memo << ("lower(#{field}) =~ " + 'lower("%#{q}%")')
+      memo
+    end
   end
 
   # =================
@@ -223,7 +227,7 @@ class User < ActiveRecord::Base
   end
 
   def more_info_incomplete?
-    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
+    [company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
     [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
   end
 
@@ -279,21 +283,24 @@ class User < ActiveRecord::Base
 
   # validate
   def validates_current_password
-    return if @skip_password_validation
-    return if @bypass_postpone # For devise reconfirmation
+    # @bypass_postpone if for devise reconfirmation
+    return if @skip_password_validation || @bypass_postpone || !_current_password_needed?
 
-    if persisted? &&
-      ((state_changed? && archived?) || @password.present? || email_changed?) &&
-      errors.empty? &&
-      # handle Devise password reset!!
-      # at first, Devise call valid? and then reset_password_token is not nil so no problem, but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
-      (reset_password_token.nil? && !reset_password_token_changed?)
-      if current_password.blank?
-        self.errors.add(:current_password, :blank)
-      elsif !valid_password?(current_password)
-        self.errors.add(:current_password, :invalid)
-      end
+    if current_password.blank?
+      self.errors.add(:current_password, :blank)
+    elsif !valid_password?(current_password)
+      self.errors.add(:current_password, :invalid)
     end
+  end
+
+  def _current_password_needed?
+    persisted? &&
+    ((state_changed? && archived?) || @password.present? || email_changed?) &&
+    errors.empty? &&
+    # handle Devise password reset!!
+    # at first, Devise call valid? and then reset_password_token is not nil so no problem,
+    # but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
+    (reset_password_token.nil? && !reset_password_token_changed?)
   end
 
   # before_save
@@ -305,19 +312,25 @@ class User < ActiveRecord::Base
   end
 
   # after_save
-  def newsletter_update
-    if newsletter_changed?
-      if newsletter?
-        NewsletterSubscriptionManager.delay.subscribe(self.id)
-      else
-        NewsletterSubscriptionManager.delay.unsubscribe(self.id)
-      end
-    end
+  def _update_newsletter_subscription
+    return unless newsletter_changed?
 
     if newsletter?
-      if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
-        NewsletterSubscriptionManager.delay.update(self.id, { email: email_was || email, user: { email: email, name: name, newsletter: newsletter? } })
-      end
+      NewsletterSubscriptionManager.delay.subscribe(self.id)
+    else
+      NewsletterSubscriptionManager.delay.unsubscribe(self.id)
+    end
+  end
+
+  # after_update
+  def _update_newsletter_user_infos
+    return unless newsletter?
+
+    if email_changed? || name_changed?
+      NewsletterSubscriptionManager.delay.update(self.id, {
+        email: email_was || email,
+        user: { email: email, name: name, newsletter: newsletter? }
+      })
     end
   end
 
