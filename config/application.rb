@@ -36,7 +36,7 @@ module MySublimeVideo
     config.assets.precompile += %w[admin.js admin.css]
     config.assets.precompile += %w[invoices.css invoices_print.css]
     # Duplicated from svl engine because not loader when initialize_on_precompile is false
-    config.assets.precompile += %w[errors.css ie.css]
+    config.assets.precompile += %w[email.css errors.css ie.css]
 
      # Enable the asset pipeline
      config.assets.enabled = true
