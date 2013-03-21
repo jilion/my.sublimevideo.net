@@ -107,7 +107,7 @@ feature "Billing address update" do
       create(:site, user: @current_user)
       go 'my', 'account'
 
-      page.should have_content 'No billing email address.'
+      page.should have_content 'No billing email address specified.'
       page.should have_content 'John Doe'
       page.should have_content 'Avenue de France 71'
       page.should have_content 'Batiment B'
