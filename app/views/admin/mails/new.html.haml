@@ -2,8 +2,8 @@
 
 = form_tag [:confirm, :admin, :mails] do
   .entry.template
-    = label_tag 'mail_template_id', "Template"
-    = select_tag 'mail[template_id]', options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.id)
+    %h3= label_tag 'mail_template_id', 'Choose a template (very carefully)'
+    = select_tag 'mail[template_id]', mail_templates_for_select(@mail_template), include_blank: true
 
   .entry.criteria
     %h3= label_tag 'mail_criteria', 'Who should receive the email?'
