@@ -36,7 +36,9 @@ class Admin::MailTemplatesController < Admin::AdminController
   private
 
   def _find_mail_template
-    @mail_template = MailTemplate.find_by_id(params[:id])
+    @mail_template = MailTemplate.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to [:new, :admin, :mail], alert: 'Please select an email template!'
   end
 
 end
