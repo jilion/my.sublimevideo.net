@@ -1,54 +1,16 @@
 class UserMailer < Mailer
   default template_path: "mailers/#{self.mailer_name}"
 
-  def welcome(user_id)
-    extract_user_from_user_id(user_id)
-
-    mail(
-      to: to(@user),
-      subject: I18n.t('mailer.user_mailer.welcome')
-    )
-  end
-
-  def inactive_account(user_id)
-    extract_user_from_user_id(user_id)
-
-    mail(
-      to: to(@user),
-      subject: I18n.t('mailer.user_mailer.inactive_account')
-    )
-  end
-
-  def account_suspended(user_id)
-    extract_user_from_user_id(user_id)
-
-    mail(
-      to: to(@user),
-      subject: I18n.t('mailer.user_mailer.account_suspended')
-    )
-  end
-
-  def account_unsuspended(user_id)
-    extract_user_from_user_id(user_id)
-
-    mail(
-      to: to(@user),
-      subject: I18n.t('mailer.user_mailer.account_unsuspended')
-    )
-  end
-
-  def account_archived(user_id)
-    extract_user_from_user_id(user_id)
-
-    mail(
-      to: to(@user),
-      subject: I18n.t('mailer.user_mailer.account_archived')
-    )
+  %w[welcome inactive_account account_suspended account_unsuspended account_archived].each do |method_name|
+    define_method(method_name) do |user_id|
+      _setup_from_user_id(user_id)
+      mail to: @user.email, subject: _subject(method_name)
+    end
   end
 
   private
 
-  def extract_user_from_user_id(user_id)
+  def _setup_from_user_id(user_id)
     @user = User.find(user_id)
   end
 

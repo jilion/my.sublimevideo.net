@@ -3,14 +3,14 @@
 .content_left
   - if !@user.billing_address_complete? && !@user.cc?
     = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-      = render 'billing_address_fields', f: f, user: @user
+      = render 'billing_details_fields', f: f, user: @user
       = render 'credit_card_fields', f: f, user: @user
       .entry.update
         = f.submit 'Update', id: 'billing_info_submit', class: "submit blue_button"
 
   - else
     = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-      = render 'billing_address_fields', f: f, user: @user
+      = render 'billing_details_fields', f: f, user: @user
       .entry.update
         = f.submit 'Update', id: 'billing_address_submit', class: "submit blue_button"
       .break
@@ -35,4 +35,4 @@
 
 .small_note
   .break
-  %p= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", onclick: "window.open(this); return false", class: "hl"} or #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", onclick: "window.open(this); return false", class: "hl"} we will charge your credit card with a minimal amount of $0.01 that will be immediately refunded in order to authorize your new credit card."
+  %p= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", onclick: "window.open(this); return false", class: "hl"} or a #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", onclick: "window.open(this); return false", class: "hl"} credit card we will charge your credit card with a minimal amount of $0.01 that will be immediately refunded in order to authorize your new credit card."

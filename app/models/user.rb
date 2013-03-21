@@ -19,7 +19,8 @@ class User < ActiveRecord::Base
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
   attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
                   :name, :postal_code, :country, :confirmation_comment,
-                  :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country,
+                  :billing_email, :billing_name, :billing_address_1, :billing_address_2,
+                  :billing_postal_code, :billing_city, :billing_region, :billing_country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :newsletter, :terms_and_conditions
@@ -60,6 +61,7 @@ class User < ActiveRecord::Base
   # ===============
 
   validates :email, presence: true, email_uniqueness: true, format: { with: Devise.email_regexp }
+  validates :billing_email, format: { with: Devise.email_regexp }, allow_blank: true
 
   with_options if: :password_required? do |v|
     v.validates_presence_of :password, on: :create
@@ -237,6 +239,10 @@ class User < ActiveRecord::Base
     name.presence || email
   end
 
+  def billing_name_or_billing_email
+    billing_name.presence || billing_email
+  end
+
   def billing_address(fallback_to_name = true)
     Snail.new(
       name:        billing_name.presence || (fallback_to_name ? name : nil),
@@ -359,6 +365,7 @@ end
 #  billing_address_2                          :string(255)
 #  billing_city                               :string(255)
 #  billing_country                            :string(255)
+#  billing_email                              :string(255)
 #  billing_name                               :string(255)
 #  billing_postal_code                        :string(255)
 #  billing_region                             :string(255)

@@ -5,10 +5,7 @@ class MailMailer < Mailer
     template  = MailTemplate.find(template_id)
     @no_reply = true
 
-    mail(
-      to: to(@user),
-      subject: Liquid::Template.parse(template.subject).render("user" => @user)
-    ) do |format|
+    mail(to: @user.email, subject: Liquid::Template.parse(template.subject).render("user" => @user)) do |format|
       format.html { render text: Liquid::Template.parse(template.body).render("user" => @user), layout: 'mailer' }
     end
   end

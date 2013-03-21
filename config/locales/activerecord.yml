@@ -9,6 +9,7 @@ en:
         path: "Custom path"
       user:
         terms_and_conditions: "Terms & Conditions"
+        billing_email: "Billing email address"
         billing_address_1: "Street"
         billing_postal_code: "Postal code"
         billing_city: "City"

@@ -30,7 +30,7 @@ class Invoice < ActiveRecord::Base
 
   before_create ->(invoice) do
     invoice.customer_full_name       = invoice.user.billing_name
-    invoice.customer_email           = invoice.user.email
+    invoice.customer_email           = invoice.user.billing_email.presence || invoice.user.email
     invoice.customer_country         = invoice.user.billing_country
     invoice.customer_company_name    = invoice.user.company_name
     invoice.customer_billing_address = invoice.user.billing_address
@@ -111,7 +111,7 @@ class Invoice < ActiveRecord::Base
   scope :by_id,                  lambda { |way='desc'| order("invoices.id #{way}") }
   scope :by_date,                lambda { |way='desc'| order("invoices.paid_at #{way}, invoices.last_failed_at #{way}, invoices.created_at #{way}") }
   scope :by_amount,              lambda { |way='desc'| order("invoices.amount #{way}") }
-  scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.email #{way}") }
+  scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.billing_email #{way}, users.email #{way}") }
   scope :by_invoice_items_count, lambda { |way='desc'| order("invoices.invoice_items_count #{way}") }
 
   def self.additional_or_conditions

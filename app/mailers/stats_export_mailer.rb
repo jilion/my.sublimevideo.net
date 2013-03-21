@@ -9,11 +9,10 @@ class StatsExportMailer < Mailer
     @user         = @site.user
     @from_date    = I18n.l(stats_export.from, format: :d_b_Y)
     @to_date      = I18n.l(stats_export.to, format: :d_b_Y)
+    @no_reply     = true
 
-    mail(
-      to: to(@user),
-      subject: "Stats export for #{@site.hostname} (#{@from_date} - #{@to_date})"
-    )
+    mail(to: @user.email,
+         subject: _subject(__method__, hostname: @site.hostname, from: @from_date, to: @to_date))
   end
 
 end

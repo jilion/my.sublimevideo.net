@@ -43,6 +43,42 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: active_admin_comments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE active_admin_comments (
+    id integer NOT NULL,
+    resource_id character varying(255) NOT NULL,
+    resource_type character varying(255) NOT NULL,
+    author_id integer,
+    author_type character varying(255),
+    body text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    namespace character varying(255)
+);
+
+
+--
+-- Name: active_admin_comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE active_admin_comments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: active_admin_comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE active_admin_comments_id_seq OWNED BY active_admin_comments.id;
+
+
+--
 -- Name: addon_plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -903,40 +939,6 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: releases; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE releases (
-    id integer NOT NULL,
-    token character varying(255),
-    date character varying(255),
-    zip character varying(255),
-    state character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: releases_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE releases_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: releases_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE releases_id_seq OWNED BY releases.id;
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1196,7 +1198,8 @@ CREATE TABLE users (
     invited_by_type character varying(255),
     vip boolean DEFAULT false,
     early_access text,
-    last_credit_card_expiration_notice_sent_at timestamp without time zone
+    last_credit_card_expiration_notice_sent_at timestamp without time zone,
+    billing_email character varying(255)
 );
 
 
@@ -1257,264 +1260,213 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 
 --
--- Name: video_tags; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-CREATE TABLE video_tags (
-    id integer NOT NULL,
-    site_id integer NOT NULL,
-    uid character varying(255) NOT NULL,
-    uid_origin character varying(255) NOT NULL,
-    name character varying(255),
-    name_origin character varying(255),
-    sources_id character varying(255),
-    sources_origin character varying(255),
-    poster_url text,
-    size character varying(255),
-    duration integer,
-    sources text,
-    current_sources text,
-    settings hstore,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    site_token character varying(255) NOT NULL
-);
-
-
---
--- Name: video_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE video_tags_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: video_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE video_tags_id_seq OWNED BY video_tags.id;
+ALTER TABLE ONLY active_admin_comments ALTER COLUMN id SET DEFAULT nextval('active_admin_comments_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE addon_plans ALTER COLUMN id SET DEFAULT nextval('addon_plans_id_seq'::regclass);
+ALTER TABLE ONLY addon_plans ALTER COLUMN id SET DEFAULT nextval('addon_plans_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE addons ALTER COLUMN id SET DEFAULT nextval('addons_id_seq'::regclass);
+ALTER TABLE ONLY addons ALTER COLUMN id SET DEFAULT nextval('addons_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
+ALTER TABLE ONLY admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE app_component_versions ALTER COLUMN id SET DEFAULT nextval('app_component_versions_id_seq'::regclass);
+ALTER TABLE ONLY app_component_versions ALTER COLUMN id SET DEFAULT nextval('app_component_versions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE app_components ALTER COLUMN id SET DEFAULT nextval('app_components_id_seq'::regclass);
+ALTER TABLE ONLY app_components ALTER COLUMN id SET DEFAULT nextval('app_components_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE app_designs ALTER COLUMN id SET DEFAULT nextval('app_designs_id_seq'::regclass);
+ALTER TABLE ONLY app_designs ALTER COLUMN id SET DEFAULT nextval('app_designs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE app_plugins ALTER COLUMN id SET DEFAULT nextval('app_plugins_id_seq'::regclass);
+ALTER TABLE ONLY app_plugins ALTER COLUMN id SET DEFAULT nextval('app_plugins_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE app_settings_templates ALTER COLUMN id SET DEFAULT nextval('app_settings_templates_id_seq'::regclass);
+ALTER TABLE ONLY app_settings_templates ALTER COLUMN id SET DEFAULT nextval('app_settings_templates_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE billable_item_activities ALTER COLUMN id SET DEFAULT nextval('billable_item_activities_id_seq'::regclass);
+ALTER TABLE ONLY billable_item_activities ALTER COLUMN id SET DEFAULT nextval('billable_item_activities_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE billable_items ALTER COLUMN id SET DEFAULT nextval('billable_items_id_seq'::regclass);
+ALTER TABLE ONLY billable_items ALTER COLUMN id SET DEFAULT nextval('billable_items_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE client_applications ALTER COLUMN id SET DEFAULT nextval('client_applications_id_seq'::regclass);
+ALTER TABLE ONLY client_applications ALTER COLUMN id SET DEFAULT nextval('client_applications_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE deal_activations ALTER COLUMN id SET DEFAULT nextval('deal_activations_id_seq'::regclass);
+ALTER TABLE ONLY deal_activations ALTER COLUMN id SET DEFAULT nextval('deal_activations_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE deals ALTER COLUMN id SET DEFAULT nextval('deals_id_seq'::regclass);
+ALTER TABLE ONLY deals ALTER COLUMN id SET DEFAULT nextval('deals_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE enthusiast_sites ALTER COLUMN id SET DEFAULT nextval('enthusiast_sites_id_seq'::regclass);
+ALTER TABLE ONLY enthusiast_sites ALTER COLUMN id SET DEFAULT nextval('enthusiast_sites_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE enthusiasts ALTER COLUMN id SET DEFAULT nextval('enthusiasts_id_seq'::regclass);
+ALTER TABLE ONLY enthusiasts ALTER COLUMN id SET DEFAULT nextval('enthusiasts_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE feedbacks ALTER COLUMN id SET DEFAULT nextval('feedbacks_id_seq'::regclass);
+ALTER TABLE ONLY feedbacks ALTER COLUMN id SET DEFAULT nextval('feedbacks_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE invoice_items ALTER COLUMN id SET DEFAULT nextval('invoice_items_id_seq'::regclass);
+ALTER TABLE ONLY invoice_items ALTER COLUMN id SET DEFAULT nextval('invoice_items_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
+ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE kits ALTER COLUMN id SET DEFAULT nextval('kits_id_seq'::regclass);
+ALTER TABLE ONLY kits ALTER COLUMN id SET DEFAULT nextval('kits_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE mail_logs ALTER COLUMN id SET DEFAULT nextval('mail_logs_id_seq'::regclass);
+ALTER TABLE ONLY mail_logs ALTER COLUMN id SET DEFAULT nextval('mail_logs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE mail_templates ALTER COLUMN id SET DEFAULT nextval('mail_templates_id_seq'::regclass);
+ALTER TABLE ONLY mail_templates ALTER COLUMN id SET DEFAULT nextval('mail_templates_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE oauth_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_tokens_id_seq'::regclass);
+ALTER TABLE ONLY oauth_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_tokens_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
+ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
+ALTER TABLE ONLY sites ALTER COLUMN id SET DEFAULT nextval('sites_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE sites ALTER COLUMN id SET DEFAULT nextval('sites_id_seq'::regclass);
+ALTER TABLE ONLY taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
+ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
+ALTER TABLE ONLY transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE video_tags ALTER COLUMN id SET DEFAULT nextval('video_tags_id_seq'::regclass);
+ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
 
 
 --
@@ -1531,6 +1483,14 @@ ALTER TABLE ONLY addon_plans
 
 ALTER TABLE ONLY addons
     ADD CONSTRAINT addons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: admin_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY active_admin_comments
+    ADD CONSTRAINT admin_notes_pkey PRIMARY KEY (id);
 
 
 --
@@ -1702,14 +1662,6 @@ ALTER TABLE ONLY app_components
 
 
 --
--- Name: releases_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY releases
-    ADD CONSTRAINT releases_pkey PRIMARY KEY (id);
-
-
---
 -- Name: sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1758,11 +1710,17 @@ ALTER TABLE ONLY versions
 
 
 --
--- Name: video_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: index_active_admin_comments_on_author_type_and_author_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY video_tags
-    ADD CONSTRAINT video_tags_pkey PRIMARY KEY (id);
+CREATE INDEX index_active_admin_comments_on_author_type_and_author_id ON active_admin_comments USING btree (author_type, author_id);
+
+
+--
+-- Name: index_active_admin_comments_on_namespace; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_active_admin_comments_on_namespace ON active_admin_comments USING btree (namespace);
 
 
 --
@@ -1784,6 +1742,13 @@ CREATE UNIQUE INDEX index_addon_plans_on_addon_id_and_name ON addon_plans USING 
 --
 
 CREATE UNIQUE INDEX index_addons_on_name ON addons USING btree (name);
+
+
+--
+-- Name: index_admin_notes_on_resource_type_and_resource_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_admin_notes_on_resource_type_and_resource_id ON active_admin_comments USING btree (resource_type, resource_id);
 
 
 --
@@ -2025,13 +1990,6 @@ CREATE UNIQUE INDEX index_player_components_on_token ON app_components USING btr
 
 
 --
--- Name: index_releases_on_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_releases_on_state ON releases USING btree (state);
-
-
---
 -- Name: index_sites_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2190,20 +2148,6 @@ CREATE INDEX index_users_on_total_invoiced_amount ON users USING btree (total_in
 --
 
 CREATE INDEX index_versions_on_item_type_and_item_id ON versions USING btree (item_type, item_id);
-
-
---
--- Name: index_video_tags_on_site_id_and_uid; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_video_tags_on_site_id_and_uid ON video_tags USING btree (site_id, uid);
-
-
---
--- Name: index_video_tags_on_site_id_and_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_video_tags_on_site_id_and_updated_at ON video_tags USING btree (site_id, updated_at);
 
 
 --
@@ -2408,3 +2352,13 @@ INSERT INTO schema_migrations (version) VALUES ('20121217090434');
 INSERT INTO schema_migrations (version) VALUES ('20130206133628');
 
 INSERT INTO schema_migrations (version) VALUES ('20130206143947');
+
+INSERT INTO schema_migrations (version) VALUES ('20130206205343');
+
+INSERT INTO schema_migrations (version) VALUES ('20130206205344');
+
+INSERT INTO schema_migrations (version) VALUES ('20130219102331');
+
+INSERT INTO schema_migrations (version) VALUES ('20130225091913');
+
+INSERT INTO schema_migrations (version) VALUES ('20130314135911');
