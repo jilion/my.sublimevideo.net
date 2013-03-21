@@ -1,6 +1,8 @@
 machine:
   ruby:
     version: 1.9.3-p392
+  hosts:
+    lvh.me: 127.0.0.1
 deployment:
   production:
     branch: master
