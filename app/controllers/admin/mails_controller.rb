@@ -21,7 +21,7 @@ class Admin::MailsController < Admin::AdminController
   # GET /mails/new
   def new
     @mail_log      = MailLog.new
-    @mail_template = MailTemplate.find_by_id(params[:template_id]) || MailTemplate.first
+    @mail_template = MailTemplate.find_by_id(params[:template_id])
   end
 
   # POST /mails

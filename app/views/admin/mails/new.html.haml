@@ -3,7 +3,7 @@
 = form_tag admin_mails_path do
   .entry.template
     = label_tag 'mail_template_id', "Template"
-    = select_tag 'mail[template_id]', options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.id)
+    = select_tag 'mail[template_id]', options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.try(:id)), include_blank: true
 
   .entry.criteria
     = label_tag 'mail_criteria', "Send this email to: "
