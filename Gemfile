@@ -160,7 +160,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec'
   gem 'shoulda-matchers'
   gem 'ffaker'
   gem 'capybara',            '~> 1.1'
