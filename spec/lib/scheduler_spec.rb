@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'timecop'
 require 'active_support/core_ext'
 require 'sidekiq'
 require 'config/sidekiq'
@@ -195,14 +196,16 @@ describe Scheduler do
 
   describe ".schedule_frequent_tasks" do
     it "schedules 10 times Log::Voxcast.delay_download_and_create_new_logs" do
-      10.times do |i|
-        Log::Voxcast.should delay(:download_and_create_new_logs,
-          queue: "high",
-          at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
-        )
-      end
+      Timecop.freeze do
+        10.times do |i|
+          Log::Voxcast.should delay(:download_and_create_new_logs,
+            queue: "high",
+            at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
+          )
+        end
 
-      described_class.schedule_frequent_tasks
+        described_class.schedule_frequent_tasks
+      end
     end
   end
 end

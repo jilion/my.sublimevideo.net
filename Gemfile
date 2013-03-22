@@ -5,7 +5,7 @@ ruby '1.9.3'
 
 gem 'bundler'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.12' # until 3.2.14 is out!
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
 
@@ -130,7 +130,7 @@ group :staging, :production do
   gem 'thin'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
-  gem 'newrelic_moped'
+  gem 'newrelic_moped', '0.0.4.1'
 end
 
 group :development do
@@ -160,7 +160,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec'
   gem 'shoulda-matchers'
   gem 'ffaker'
   gem 'capybara',            '~> 1.1'
