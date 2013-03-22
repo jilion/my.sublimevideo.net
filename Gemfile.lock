@@ -378,7 +378,7 @@ GEM
     newrelic-redis (1.4.0)
       newrelic_rpm (~> 3.0)
       redis (< 4.0)
-    newrelic_moped (0.0.5)
+    newrelic_moped (0.0.4.1)
       moped
       newrelic_rpm (~> 3.5.1)
     newrelic_rpm (3.5.8.72)
@@ -665,7 +665,7 @@ DEPENDENCIES
   mongoid
   net-scp (= 1.0.4)
   newrelic-redis
-  newrelic_moped
+  newrelic_moped (= 0.0.4.1)
   newrelic_rpm
   oauth
   oauth-plugin
