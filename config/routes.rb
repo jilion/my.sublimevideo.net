@@ -31,7 +31,11 @@ MySublimeVideo::Application.routes.draw do
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
-  namespace 'api' do
+  namespace :private_api do
+    resources :sites, only: [:index, :show]
+  end
+
+  namespace :api do
     # Legacy routes
     constraints SubdomainConstraint.new('my') do
 

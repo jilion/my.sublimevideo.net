@@ -1,4 +1,6 @@
                                                    /docs(/*rest)(.:format)                                   :controller#:action
+                        private_api_sites GET      /private_api/sites(.:format)                              private_api/sites#index
+                         private_api_site GET      /private_api/sites/:id(.:format)                          private_api/sites#show
                          api_test_request GET      /api/test_request(.:format)                               api/apis#test_request
                            usage_api_site GET      /api/sites/:id/usage(.:format)                            api/sites#usage
                                 api_sites GET      /api/sites(.:format)                                      api/sites#index

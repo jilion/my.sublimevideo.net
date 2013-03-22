@@ -176,6 +176,16 @@ class Site < ActiveRecord::Base
   scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
   scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+  scope :without_hostnames, ->(hostnames = []) do
+    where { (hostname != nil) & (hostname != '') }.
+    where { hostname << hostnames }
+  end
+  scope :created_on, ->(timestamp) do
+    where(created_at: Time.parse(timestamp).all_day)
+  end
+  scope :first_billable_plays_on_week, ->(timestamp) do
+    where(first_billable_plays_at: Time.parse(timestamp).all_week)
+  end
 
   # addons
   scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
