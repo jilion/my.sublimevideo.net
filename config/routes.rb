@@ -149,9 +149,17 @@ MySublimeVideo::Application.routes.draw do
 
       resources :deals, only: [:index]
       resources :deal_activations, only: [:index], path: 'deals/activations'
-      resources :mails, only: [:index, :new, :create]
+      resources :mails, only: [:index, :new, :create] do
+        collection do
+          post :confirm
+        end
+      end
       scope 'mails' do
-        resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'
+        resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates' do
+          member do
+            get :preview
+          end
+        end
         resources :mail_logs,      only: [:show],                         path: 'logs'
       end
 

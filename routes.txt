@@ -86,9 +86,11 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                              admin_tweets GET      /tweets(.:format)                                         admin/tweets#index
                               admin_deals GET      /deals(.:format)                                          admin/deals#index
                    admin_deal_activations GET      /deals/activations(.:format)                              admin/deal_activations#index
+                      confirm_admin_mails POST     /mails/confirm(.:format)                                  admin/mails#confirm
                               admin_mails GET      /mails(.:format)                                          admin/mails#index
                                           POST     /mails(.:format)                                          admin/mails#create
                            new_admin_mail GET      /mails/new(.:format)                                      admin/mails#new
+              preview_admin_mail_template GET      /mails/templates/:id/preview(.:format)                    admin/mail_templates#preview
                      admin_mail_templates POST     /mails/templates(.:format)                                admin/mail_templates#create
                   new_admin_mail_template GET      /mails/templates/new(.:format)                            admin/mail_templates#new
                  edit_admin_mail_template GET      /mails/templates/:id/edit(.:format)                       admin/mail_templates#edit

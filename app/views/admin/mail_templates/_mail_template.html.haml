@@ -8,3 +8,6 @@
     %small= link_to truncate(mail_template.body), [:edit, :admin, mail_template], title: mail_template.body
   %td
     %small= display_time(mail_template.created_at)
+  - if mail_template.archived_at?
+    %td
+      %small= display_time(mail_template.archived_at)

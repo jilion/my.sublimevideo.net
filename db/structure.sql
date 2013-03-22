@@ -837,7 +837,8 @@ CREATE TABLE mail_templates (
     subject character varying(255),
     body text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    archived_at timestamp without time zone
 );
 
 
@@ -2362,3 +2363,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130219102331');
 INSERT INTO schema_migrations (version) VALUES ('20130225091913');
 
 INSERT INTO schema_migrations (version) VALUES ('20130314135911');
+
+INSERT INTO schema_migrations (version) VALUES ('20130321125702');

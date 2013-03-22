@@ -76,12 +76,14 @@ feature "Mails sending" do
       ActionMailer::Base.deliveries.should be_empty
       Sidekiq::Worker.clear_all
 
-      select @mail_template.title, from: "Template"
+      select @mail_template.title, from: "Choose a template (very carefully)"
       select "Not Archived (1)", from: "mail[criteria]"
 
-      click_button 'Send email'
+      click_button 'Preview email'
 
-      current_url.should eq "http://admin.sublimevideo.dev/mails"
+      current_url.should eq "http://admin.sublimevideo.dev/mails/confirm"
+
+      click_button 'I have triple checked, and want to send this email'
 
       page.should have_content "Sending in progress..."
 

@@ -3,4 +3,5 @@
   = Liquid::Template.parse(template.subject).render("user" => User.first)
 %br
 
-= raw Liquid::Template.parse(template.body).render("user" => User.first)
+%iframe{ src: preview_admin_mail_template_path(template), width: 830, height: 600 }
+%br
