@@ -5,7 +5,7 @@ ruby '1.9.3'
 
 gem 'bundler'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.12' # until 3.2.14 is out!
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
 
