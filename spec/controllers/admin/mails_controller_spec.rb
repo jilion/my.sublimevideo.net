@@ -10,7 +10,8 @@ describe Admin::MailsController do
 
     it "should assign mail logs array as @mail_logs and mail templates array as @mail_templates and render :index on GET :index" do
       MailLog.stub_chain(:scoped, :by_date, :page) { [mock_mail_log] }
-      MailTemplate.stub_chain(:scoped, :by_date, :page) { [mock_mail_template] }
+      MailTemplate.stub_chain(:not_archived, :by_date, :page) { [mock_mail_template] }
+      MailTemplate.stub_chain(:archived, :by_date, :page) { [mock_mail_template] }
 
       get :index
       assigns(:mail_logs).should eq [mock_mail_log]
@@ -29,7 +30,7 @@ describe Admin::MailsController do
     end
 
     it "should redirect to /admin/mails if create_and_deliver succeed on POST :create" do
-      MailLetter.should delay(:deliver_and_log).with("template_id" => '1', "criteria" => "foo", "admin_id" => @admin.id)
+      Administration::EmailSender.should delay(:deliver_and_log).with("template_id" => '1', "criteria" => "foo", "admin_id" => @admin.id)
 
       post :create, mail: { template_id: '1', criteria: "foo" }
       response.should redirect_to(admin_mails_url)

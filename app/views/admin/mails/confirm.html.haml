@@ -1,0 +1,32 @@
+= title_and_content_header('Email sending confirmation')
+
+%h3 Final preview
+%br
+= render 'admin/mail_templates/final_look', template: @mail_template
+
+%br
+%hr
+%br
+
+%h3
+  Criteria:
+  = params[:mail][:criteria]
+
+%h3
+  This email will be sent to
+  - if params[:mail][:criteria] == 'dev'
+    = "the dev team: #{Administration::EmailSender::DEV_TEAM_EMAILS}"
+  - else
+    = display_integer(eval("User.#{params[:mail][:criteria]}.size"))
+    users.
+
+= form_tag [:admin, :mails] do
+  = hidden_field_tag 'mail[template_id]', params[:mail][:template_id]
+  = hidden_field_tag 'mail[criteria]', params[:mail][:criteria]
+
+  %br
+
+  .entry.submit.send
+    = link_to 'WHAT AM I DOING?!', [:admin, :mails], class: 'dunno_what_i_am_doing'
+    = submit_tag 'I have triple checked, and want to send this email', class: 'send_email', data: { confirm: 'Are you really sure?' }
+    .spacer
