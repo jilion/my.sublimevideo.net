@@ -17,6 +17,7 @@ require 'models/stage'
 Site = Class.new unless defined?(Site)
 App::Component = Class.new unless defined?(App::Component)
 App::ComponentVersion = Class.new unless defined?(App::ComponentVersion)
+CampfireWrapper = Class.new unless defined?(CampfireWrapper)
 
 unless defined?(SiteToken)
   module SiteToken
@@ -144,18 +145,22 @@ describe LoaderGenerator, :fog_mock do
   end
 
   describe ".update_all_dependant_sites" do
-    let(:scoped_sites) { mock(Site) }
+    let(:scoped_sites) { stub }
     before do
-      scoped_sites.stub(:where) { scoped_sites }
-      scoped_sites.stub_chain(:select, :active, :where) { scoped_sites }
-      site.stub(:last_30_days_billable_video_views) { 0 }
-      scoped_sites.stub_chain(:order, :order, :find_each).and_yield(site)
+      App::Component.stub(:find) { app_component }
+      described_class.stub(:_sites_non_important) { scoped_sites }
+      scoped_sites.should_receive(:count) { 42 }
+      scoped_sites.should_receive(:find_each).and_yield(site)
+    end
+
+    it 'delays notification to Campfire' do
+      CampfireWrapper.should delay(:post)
+      described_class.update_all_dependant_sites(app_component.id, 'beta')
     end
 
     context "with app_component version" do
       before do
-        App::Component.stub(:find) { app_component }
-        Site.stub(:scoped) { scoped_sites }
+        described_class.should_receive(:_sites_non_important).with(component: app_component, stage: 'beta') { scoped_sites }
       end
 
       it "delays important sites update" do
@@ -164,7 +169,6 @@ describe LoaderGenerator, :fog_mock do
       end
 
       it "updates all sites" do
-        Site.should_receive(:scoped) { scoped_sites }
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
 
@@ -177,17 +181,11 @@ describe LoaderGenerator, :fog_mock do
     context "with non app_component version" do
       before do
         App::Component.stub(:find) { component }
-        component.stub_chain(:sites, :scoped) { scoped_sites }
+        described_class.should_receive(:_sites_non_important).with(component: component, stage: 'beta') { scoped_sites }
       end
 
       it "delays important sites update" do
         described_class.should delay(:update_important_sites, queue: 'high')
-        described_class.update_all_dependant_sites(app_component.id, 'beta')
-      end
-
-      it "updates component_version component's sites" do
-        component.should_receive(:sites) { scoped_sites }
-        scoped_sites.should_receive(:scoped) { scoped_sites }
         described_class.update_all_dependant_sites(component.id, 'beta')
       end
 
