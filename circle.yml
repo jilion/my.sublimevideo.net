@@ -3,6 +3,9 @@ machine:
     version: 1.9.3-p392
   hosts:
     lvh.me: 127.0.0.1
+    my.lvh.me: 127.0.0.1
+    api.lvh.me: 127.0.0.1
+    admin.lvh.me: 127.0.0.1
 deployment:
   production:
     branch: master
