@@ -1,6 +1,6 @@
 %h3#email_support.title= "Dedicated Email Support"
 .help_box
-  - if @current_user.trial_or_billable?
+  - if email_support?
     = render 'pages/help/email_support_form'
   - else
     %p= raw "Dedicated email support is only accessible to customers with at least a paid add-on."

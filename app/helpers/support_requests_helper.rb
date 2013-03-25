@@ -20,7 +20,7 @@ module SupportRequestsHelper
   end
 
   def business_days
-    days = user_support_manager.max_reply_business_days
+    days = _user_support_manager.max_reply_business_days
     case days
     when 1
       'business day'
@@ -28,12 +28,16 @@ module SupportRequestsHelper
       "#{days} business days"
     end
   end
-  
-  def vip_email_support?
-    user_support_manager.level == 'vip_email'
+
+  def email_support?
+    _user_support_manager.email_support?
   end
-  
-  def user_support_manager
+
+  def vip_email_support?
+    _user_support_manager.vip_email_support?
+  end
+
+  def _user_support_manager
     @user_support_manager ||= UserSupportManager.new(@current_user)
   end
 

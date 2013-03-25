@@ -5,10 +5,18 @@ class UserSupportManager
     @user = user
   end
 
+  def email_support?
+    level =~ /email/
+  end
+
+  def vip_email_support?
+    level == 'vip_email'
+  end
+
   def level
     if _vip_email_support_accessible?
       'vip_email'
-    elsif user.trial_or_billable?
+    elsif user.trial_or_billable? || user.sponsored?
       'email'
     end
   end
@@ -22,7 +30,12 @@ class UserSupportManager
   end
 
   def _vip_email_support_accessible?
-    @vip_email_support_accessible ||= user.sites.not_archived.any? { |site| site.subscribed_to?(AddonPlan.get('support', 'vip')) }
+    @vip_email_support_accessible ||= begin
+      vip_support_addon_plan = AddonPlan.get('support', 'vip')
+      user.sites.not_archived.any? do |site|
+        site.subscribed_to?(vip_support_addon_plan) || site.sponsored_to?(vip_support_addon_plan)
+      end
+    end
   end
 
 end

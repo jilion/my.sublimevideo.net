@@ -239,6 +239,10 @@ class User < ActiveRecord::Base
     billable? || sites.not_archived.any? { |site| site.total_billable_items_price > 0 }
   end
 
+  def sponsored?
+    sites.not_archived.includes(:billable_items).where { billable_items.state == 'sponsored' }.present?
+  end
+
   def name_or_email
     name.presence || email
   end
