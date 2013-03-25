@@ -6,11 +6,23 @@ class UserSupportManager
   end
 
   def level
-    if user.sites.not_archived.any? { |site| site.subscribed_to?(AddonPlan.get('support', 'vip')) }
+    if _vip_email_support_accessible?
       'vip_email'
-    else
+    elsif user.trial_or_billable?
       'email'
     end
+  end
+
+  def max_reply_business_days
+    if _vip_email_support_accessible?
+      1
+    elsif user.trial_or_billable?
+      5
+    end
+  end
+
+  def _vip_email_support_accessible?
+    @vip_email_support_accessible ||= user.sites.not_archived.any? { |site| site.subscribed_to?(AddonPlan.get('support', 'vip')) }
   end
 
 end
