@@ -5,11 +5,10 @@ module SupportRequestsHelper
   end
 
   def support_availability_sentence
-    if support_available?
-      "The support team is #{content_tag(:strong, 'currently available')}."
-    else
-      "The support team is #{content_tag(:strong, 'not currently available')}."
-    end
+    text = ['The support team is']
+    text << (support_available? ? content_tag(:strong, 'currently available') : content_tag(:strong, 'not currently available'))
+
+    (text.join(' ') + '.').html_safe
   end
 
   def support_availability_class
@@ -20,8 +19,22 @@ module SupportRequestsHelper
     options_for_select([[t("support_request.site_token.choose-site_token"), ''], ['', '', { disabled: true }]] + current_user.sites.active.map { |s| [hostname_or_token(s), s.token] }, selected: params[:support_request] ? params[:support_request][:site_token] : nil, disabled: ['-'])
   end
 
-  def support_request_stage_options
-    options_for_select([[t("support_request.stage.choose-stage"), ''], ['', '', { disabled: true }], ['Stable', 'stable'], ['Beta', 'beta']])
+  def business_days
+    days = user_support_manager.max_reply_business_days
+    case days
+    when 1
+      'business day'
+    else
+      "#{days} business days"
+    end
+  end
+  
+  def vip_email_support?
+    user_support_manager.level == 'vip_email'
+  end
+  
+  def user_support_manager
+    @user_support_manager ||= UserSupportManager.new(@current_user)
   end
 
 end

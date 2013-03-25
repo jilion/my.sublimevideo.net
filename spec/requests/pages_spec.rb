@@ -52,7 +52,12 @@ feature "Help page" do
   context "user has the 'email' support level" do
     background do
       sign_in_as :user
-      SiteManager.new(build(:site, user: @current_user)).create
+      site = build(:site, user: @current_user)
+      SiteManager.new(site).create
+      go 'my', "/sites/#{site.to_param}/addons"
+      choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
+      expect { click_button 'Confirm selection' }.to change(site.billable_item_activities, :count).by(2)
+      UserSupportManager.new(@current_user).level.should eq 'email'
       Sidekiq::Worker.clear_all
       go 'my', '/help'
     end
