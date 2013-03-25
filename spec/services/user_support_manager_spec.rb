@@ -19,14 +19,16 @@ describe UserSupportManager do
 
     it 'returns nil if site dont have the VIP email support add-on active & not subscribed (or trial) to any paid add-on' do
       site.should_receive(:subscribed_to?).with(addon) { false }
+      site.should_receive(:sponsored_to?).with(addon) { false }
       user.should_receive(:trial_or_billable?) { false }
       user.should_receive(:sponsored?) { false }
 
       manager.level.should be_nil
     end
 
-    it 'returns nil if site dont have the VIP email support add-on active, not subscribed (or trial) to any paid add-on but sponsored' do
+    it 'returns email if site dont have the VIP email support add-on active, not subscribed (or trial) to any paid add-on but sponsored' do
       site.should_receive(:subscribed_to?).with(addon) { false }
+      site.should_receive(:sponsored_to?).with(addon) { false }
       user.should_receive(:trial_or_billable?) { false }
       user.should_receive(:sponsored?) { true }
 
@@ -35,6 +37,7 @@ describe UserSupportManager do
 
     it 'returns email if site dont have the VIP email support add-on active but subscribed (or trial) to a paid add-on' do
       site.should_receive(:subscribed_to?).with(addon) { false }
+      site.should_receive(:sponsored_to?).with(addon) { false }
       user.should_receive(:trial_or_billable?) { true }
 
       manager.level.should eq 'email'
@@ -42,6 +45,13 @@ describe UserSupportManager do
 
     it 'returns vip_email if site has the VIP email support add-on active' do
       site.should_receive(:subscribed_to?).with(addon) { true }
+
+      manager.level.should eq 'vip_email'
+    end
+
+    it 'returns vip_email if site has the VIP email support add-on active' do
+      site.should_receive(:subscribed_to?).with(addon) { false }
+      site.should_receive(:sponsored_to?) { true }
 
       manager.level.should eq 'vip_email'
     end
