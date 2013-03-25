@@ -4,7 +4,7 @@ require 'capybara/email/rspec'
 require 'capybara/poltergeist'
 
 Capybara.javascript_driver = :poltergeist
-Capybara.server_port = 2999
+Capybara.server_port = 80
 
 RSpec.configure do |config|
   config.before do
