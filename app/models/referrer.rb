@@ -39,12 +39,12 @@ class Referrer
   # = Scopes =
   # ==========
 
-  scope :by_url,             lambda { |way='desc'| order_by([:url, way.to_sym]) }
-  scope :by_hits,            lambda { |way='desc'| order_by([:hits, way.to_sym]) }
-  scope :by_badge_hits,      lambda { |way='desc'| order_by([:badge_hits, way.to_sym]) }
-  scope :by_contextual_hits, lambda { |way='desc'| order_by([:contextual_hits, way.to_sym]) }
-  scope :by_updated_at,      lambda { |way='desc'| order_by([:updated_at, way.to_sym]) }
-  scope :by_created_at,      lambda { |way='desc'| order_by([:created_at, way.to_sym]) }
+  scope :by_url,             ->(way = 'desc') { order_by([:url, way.to_sym]) }
+  scope :by_hits,            ->(way = 'desc') { order_by([:hits, way.to_sym]) }
+  scope :by_badge_hits,      ->(way = 'desc') { order_by([:badge_hits, way.to_sym]) }
+  scope :by_contextual_hits, ->(way = 'desc') { order_by([:contextual_hits, way.to_sym]) }
+  scope :by_updated_at,      ->(way = 'desc') { order_by([:updated_at, way.to_sym]) }
+  scope :by_created_at,      ->(way = 'desc') { order_by([:created_at, way.to_sym]) }
 
   # =================
   # = Class Methods =

@@ -23,8 +23,7 @@ class Log
   # ===============
 
   validates :name,       presence: true, uniqueness: true
-  validates :started_at, presence: true
-  validates :ended_at,   presence: true
+  validates :started_at, :ended_at, presence: true
 
   # =================
   # = Class Methods =
