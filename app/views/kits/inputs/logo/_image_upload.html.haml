@@ -24,7 +24,8 @@
 
 .entry= params[:presenter].render_input_field(setting_key: 'position', show_title: true, partial: 'logo/corners_position_radios')
 
-.entry= params[:presenter].render_input_field(setting_key: 'visibility', show_title: true)
+.entry
+  = params[:presenter].render_input_field(setting_key: 'visibility', show_title: true)
 
 .entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
   = params[:presenter].render_input_field(setting_key: 'link_url')

@@ -2,6 +2,7 @@
 - field_classes << 'no_icon' unless params[:icon]
 
 %h5= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
+
 .entry{ class: params[:entry_class] }
   - if params[:icon]
     = label_tag kit_setting_input_field_id(params), kit_setting_title(params), class: 'icon'

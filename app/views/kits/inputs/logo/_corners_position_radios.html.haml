@@ -1,7 +1,6 @@
 .entry
-  - if params[:show_title]
-    %span{ style: 'font-weight:600' }= kit_setting_title(params)
-    %br
+  %h5= kit_setting_title(params)
+
   %table#logo_position
     %tr
       - %w[top-left top-right].each do |choice|
