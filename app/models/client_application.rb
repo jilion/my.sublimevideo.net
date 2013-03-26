@@ -1,20 +1,14 @@
 class ClientApplication < ActiveRecord::Base
 
-  attr_accessor :token_callback_url
   attr_accessible :name, :url, :callback_url, :support_url
-
-  # ================
-  # = Associations =
-  # ================
+  attr_accessor :token_callback_url
 
   belongs_to :user
 
   has_many :tokens, class_name: "OauthToken", dependent: :delete_all
   has_many :oauth2_verifiers, dependent: :delete_all
 
-  # ===============
-  # = Validations =
-  # ===============
+  before_validation :generate_keys, on: :create
 
   validates :name, :url, :key, :secret, presence: true
   validates :key, uniqueness: true
@@ -22,16 +16,6 @@ class ClientApplication < ActiveRecord::Base
   validates :url, format: { with: /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i }
   validates :support_url, format: { with: /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, allow_blank: true }
   validates :callback_url, format: { with: /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, allow_blank: true }
-
-  # =============
-  # = Callbacks =
-  # =============
-
-  before_validation :generate_keys, on: :create
-
-  # =================
-  # = Class Methods =
-  # =================
 
   def self.find_token(token_key)
     token = OauthToken.includes(:client_application).find_by_token(token_key)
@@ -41,10 +25,6 @@ class ClientApplication < ActiveRecord::Base
       nil
     end
   end
-
-  # ====================
-  # = Instance Methods =
-  # ====================
 
   def oauth_server
     @oauth_server ||= OAuth::Server.new("https://my.sublimevideo.net")
