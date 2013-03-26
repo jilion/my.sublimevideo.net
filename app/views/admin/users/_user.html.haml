@@ -14,7 +14,7 @@
       - if sites.present?
         %ul.no_bullet
           - sites[0,2].each do |site|
-            = content_tag :li, links_to_hostnames(site)
+            = content_tag :li, admin_links_to_hostnames(site)
           %li= link_to("view all (#{sites.size-2} more)", admin_sites_path(user_id: user.id)) if sites.size > 2
       - else
         = '-'

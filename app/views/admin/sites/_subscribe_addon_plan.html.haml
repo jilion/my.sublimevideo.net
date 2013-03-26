@@ -3,7 +3,7 @@
 = form_for [:update_addon_plan_subscription, :admin, site] do |f|
   .entry
     = label_tag :force, 'Addon plan:'
-    = select_tag 'addon_plan_id', addon_plans_for_select(site)
+    = select_tag 'addon_plan_id', admin_addon_plans_options(site)
 
   .entry
     = label_tag :state, 'Action:'

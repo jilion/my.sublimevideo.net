@@ -2,7 +2,7 @@
 
 %p
   = "Main hostname:"
-  %strong= link_to(truncated_hostname(site), "http://#{site.hostname}")
+  %strong= link_to(admin_pretty_hostname(site, site.hostname), url_with_protocol(site.hostname))
   %strong= "|"
   = "Extra hostnames:"
   - extra_hostnames = site.extra_hostnames.to_s.split(/,\s*/).map { |h| link_to(h, "http://#{h}") }

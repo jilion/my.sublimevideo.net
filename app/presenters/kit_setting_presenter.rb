@@ -33,7 +33,7 @@ class KitSettingPresenter
 
   def render_master_input_field(params = {}, &block)
     @view.haml_concat(render_input_field(params))
-    @view.haml_tag('div', @view.capture_haml { yield }, class: 'indent')
+    @view.haml_tag(:div, @view.capture_haml { yield }, class: 'indent')
 
     nil
   end

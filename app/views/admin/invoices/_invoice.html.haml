@@ -13,7 +13,7 @@
 
   %td.site
     %small
-      = links_to_hostnames(invoice.site)
+      = admin_links_to_hostnames(invoice.site)
       = "[#{invoice.site.state}]" unless invoice.site.active?
 
   %td.period
