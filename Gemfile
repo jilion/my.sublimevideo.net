@@ -80,7 +80,7 @@ gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
 gem 'array_stats'
-gem 'createsend' # Campaign Monitor
+gem 'createsend', '~> 2.5' # Campaign Monitor
 
 gem 'airbrake'
 gem 'prowl'
