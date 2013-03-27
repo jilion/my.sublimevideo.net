@@ -31,8 +31,8 @@ class OauthToken < ActiveRecord::Base
   protected
 
   def generate_keys
-    self.token  = OAuth::Helper.generate_key(40)[0, 40]
-    self.secret = OAuth::Helper.generate_key(40)[0, 40]
+    self.token  = OAuth::Helper.generate_key(40)[0,40]
+    self.secret = OAuth::Helper.generate_key(40)[0,40]
   end
 
 end
