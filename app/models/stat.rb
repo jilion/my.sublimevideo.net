@@ -124,16 +124,8 @@ private
         inc_increment(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
       end
       if values[:set]
-        if values[:set]['s']
-          Librato.increment "stats.page_visits.ssl_per_min", by: 1, source: 'ssl'
-        else
-          Librato.increment "stats.page_visits.ssl_per_min", by: 1, source: 'non-ssl'
-        end
-        if values[:set]['jq']
-          Librato.increment "stats.page_visits.jquery", by: 1, source: values[:set]['jq']
-        else
-          Librato.increment "stats.page_visits.jquery", by: 1, source: 'none'
-        end
+        Librato.increment "stats.page_visits.ssl_per_min", by: 1, source: values[:set]['s'] ? 'ssl' : 'non-ssl'
+        Librato.increment 'stats.page_visits.jquery', by: 1, source: values[:set]['jq'] || 'none'
       end
       if values[:add_to_set] && values[:add_to_set]['st'].present?
         values[:add_to_set]['st'][:$each].each do |stage|
