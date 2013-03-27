@@ -4,9 +4,6 @@ class MSVVideoCode.Views.Code extends Backbone.View
   initialize: ->
     this._initUIHelpers()
 
-  #
-  # EVENTS
-  #
   events: ->
     'click .get_the_code': 'render'
 

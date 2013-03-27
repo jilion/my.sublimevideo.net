@@ -1,26 +1,27 @@
 class MSVStats.Views.DatePickersView extends Backbone.View
-  template: JST['date_pickers']
+  initialize: ->
+    $(document).bind 'click', this.close
+    Mousetrap.bind 'esc', => this.close()
 
-  events:
+  events: ->
     'click':               'stopPropagation'
     'click button.cancel': 'close'
     'click button.apply':  'apply'
 
-  initialize: ->
-    $(@el).html(this.template())
-    $(document).click this.close
-    Mousetrap.bind 'esc', => this.close()
-
   render: ->
-    if $(@el).is(":visible") then this.close() else this.show()
-    return this
+    if @$el.is(":visible")
+      this.close()
+    else
+      this.show()
+
+    this
 
   show: ->
-    $(@el).show()
+    @$el.show()
     this.showDatePickers()
 
   close: =>
-    $(@el).hide()
+    @$el.hide()
     this.destroyDatePickers()
 
   apply: ->
@@ -34,8 +35,8 @@ class MSVStats.Views.DatePickersView extends Backbone.View
 
   showDatePickers: ->
     datePickersView = this
-    startTime         = null
-    endTime           = null
+    startTime       = null
+    endTime         = null
     dates = $('#start_time_picker, #end_time_picker').datepicker
       changeMonth: true
       changeYear:  true
@@ -43,12 +44,12 @@ class MSVStats.Views.DatePickersView extends Backbone.View
       minDate:     MSVStats.statsDays.first().date()
       maxDate:     MSVStats.statsDays.last().date()
       onSelect: (selectedDate) ->
-        if (this.id == "start_time_picker")
+        if @id is "start_time_picker"
           option    = "minDate"
           startTime = datePickersView.convertPickerDate(selectedDate)
         else
-          option    = "maxDate"
-          endTime   = datePickersView.convertPickerDate(selectedDate)
+          option  = "maxDate"
+          endTime = datePickersView.convertPickerDate(selectedDate)
         dates.not(this).datepicker('option', option, selectedDate)
     if MSVStats.period.isDays()
       $('#start_time_picker').datepicker('setDate', new Date(MSVStats.period.startTime()))

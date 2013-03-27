@@ -5,9 +5,6 @@ class MSVVideoCode.Views.Embed extends Backbone.View
     this._initUIHelpers()
     this.render()
 
-  #
-  # EVENTS
-  #
   events: ->
     'click input[name=embed_type]':  'updateTypeSettingAndToggleUrlField'
     'change input#embed_url_src':    'updateSetting'

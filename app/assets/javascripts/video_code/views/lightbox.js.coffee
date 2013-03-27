@@ -6,9 +6,6 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     this._initUIHelpers()
     this.render()
 
-  #
-  # EVENTS
-  #
   events: ->
     'click #use_lightbox':            'updateDisplayInLightbox'
     'click input[name=initial_link]': 'updateInitialLink'

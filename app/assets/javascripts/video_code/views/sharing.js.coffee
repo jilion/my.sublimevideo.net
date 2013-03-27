@@ -6,9 +6,6 @@ class MSVVideoCode.Views.Sharing extends Backbone.View
     this._initUIHelpers()
     this.render()
 
-  #
-  # EVENTS
-  #
   events: ->
     'change .kit_setting':             'updateSetting'
     'click input[name=sharing_image]': 'updateSettingsAndToggleImageUrlField'

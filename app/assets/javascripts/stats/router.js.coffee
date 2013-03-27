@@ -34,18 +34,22 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsSeconds: MSVStats.statsSeconds
       period: MSVStats.period
       pusher: MSVStats.pusher
+
     new MSVStats.Views.PeriodSelectorMinutesView
       el: '#period_selectors .minutes'
       statsMinutes: MSVStats.statsMinutes
       period: MSVStats.period
+
     new MSVStats.Views.PeriodSelectorHoursView
       el: '#period_selectors .hours'
       statsHours: MSVStats.statsHours
       period: MSVStats.period
+
     new MSVStats.Views.PeriodSelectorDays30View
       el: '#period_selectors .days30'
       statsDays: MSVStats.statsDays
       period: MSVStats.period
+
     new MSVStats.Views.PeriodSelectorDays365View
       el: '#period_selectors .days365'
       statsDays: MSVStats.statsDays
@@ -104,8 +108,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsMinutes.fetch() if data.m
       MSVStats.statsHours.fetch()   if data.h
       MSVStats.statsDays.fetch()    if data.d
+
       if (data.m && MSVStats.period.isMinutes()) || (data.h && MSVStats.period.isHours()) || (data.d && MSVStats.period.isDays())
         MSVStats.videos.fetch()
+
       if data.s
         secondTime = data.s * 1000
         MSVStats.period.set({
