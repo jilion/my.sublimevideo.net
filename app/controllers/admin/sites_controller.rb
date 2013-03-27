@@ -1,10 +1,14 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :html, except: [:videos_infos, :invoices, :active_pages]
-  respond_to :js, only: [:index, :update, :videos_infos, :invoices, :active_pages]
+  respond_to :js, only: [:index, :update, :generate_loader, :videos_infos, :invoices, :active_pages]
 
-  before_filter { |controller| require_role?('god') if %w[update_app_design_subscription update_addon_plan_subscription].include?(action_name) }
+  before_filter do |controller|
+    if action_name.in?(%w[update_app_design_subscription update_addon_plan_subscription])
+      require_role?('god')
+    end
+  end
   before_filter :set_default_scopes, only: [:index]
-  before_filter :find_site_by_token, only: [:videos_infos, :invoices, :active_pages]
+  before_filter :find_site_by_token, only: [:edit, :update, :generate_loader, :videos_infos, :invoices, :active_pages, :update_app_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -28,7 +32,6 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites/:id/edit
   def edit
-    @site = Site.includes(:user).find_by_token!(params[:id])
     @tags = Site.tag_counts.order{ tags.name }
 
     respond_with(@site)
@@ -36,11 +39,20 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id
   def update
-    @site = Site.find_by_token!(params[:id])
     params[:site].delete(:accessible_stage) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
     respond_with(@site, notice: 'Site has been successfully updated.', location: [:edit, :admin, @site]) do |format|
+      format.js { render 'admin/shared/flash_update' }
+    end
+  end
+
+  # PUT /sites/:id
+  def generate_loader
+    LoaderGenerator.delay.update_all_stages!(@site.id)
+    CampfireWrapper.delay.post("Update all loaders for #{@site.hostname} (#{@site.token}).")
+
+    respond_with(@site, notice: 'Loaders will be regenerated.', location: [:edit, :admin, @site]) do |format|
       format.js { render 'admin/shared/flash_update' }
     end
   end
@@ -59,7 +71,6 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/update_app_design_subscription
   def update_app_design_subscription
-    @site       = Site.find_by_token!(params[:id])
     @app_design = App::Design.find(params[:app_design_id])
 
     options = { allow_custom: true }
@@ -73,7 +84,6 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/update_addon_plan_subscription
   def update_addon_plan_subscription
-    @site       = Site.find_by_token!(params[:id])
     @addon_plan = AddonPlan.find(params[:addon_plan_id])
 
     options = { allow_custom: true }
@@ -100,7 +110,7 @@ class Admin::SitesController < Admin::AdminController
   end
 
   def find_site_by_token
-    @site = Site.find_by_token!(params[:id])
+    @site = Site.includes(:user).find_by_token!(params[:id])
   end
 
 end

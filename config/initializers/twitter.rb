@@ -5,7 +5,7 @@ Twitter.configure do |config|
   config.oauth_token_secret = TwitterWrapper.oauth_token_secret
 end
 
-# Monkey patching to work around this: https://dev.twitter.com/discussions/15989
+# Monkey patching to work around this: https://dev.twitter.com/discussions/15989 / https://github.com/sferik/twitter/issues/370
 module Twitter
   class Client
     def request(method, path, params={}, signature_params=params)

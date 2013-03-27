@@ -22,11 +22,12 @@
   %strong= "|"
   = "Loaders updated_at: #{site.loaders_updated_at}".html_safe
 %p
-  = "Settings.js updated at: #{site.settings_updated_at}"
+  = "settings.js updated at: #{site.settings_updated_at}"
+%p
+  = link_to "View stable loader", cdn_url("js/#{site.token}.js"), onclick: "window.open(this); return false"
   %strong= "|"
-  = link_to "See stable loader", cdn_url("js/#{site.token}.js"), onclick: "window.open(this); return false"
-  = link_to "See beta loader", cdn_url("js/#{site.token}-beta.js"), onclick: "window.open(this); return false"
-  %strong= "|"
-  = link_to "See license content (stable)", cdn_url("l/#{site.token}.js"), onclick: "window.open(this); return false"
-  %strong= "|"
-  = link_to "See settings content (beta)", cdn_url("s/#{site.token}.js"), onclick: "window.open(this); return false"
+  = link_to "View beta loader", cdn_url("js/#{site.token}-beta.js"), onclick: "window.open(this); return false"
+= form_for [:generate_loader, :admin, site], remote: true do |f|
+  = f.submit 'Update loader', data: { confirm: 'Are you sure?' }
+%p
+  = link_to "View settings", cdn_url("s/#{site.token}.js"), onclick: "window.open(this); return false"
