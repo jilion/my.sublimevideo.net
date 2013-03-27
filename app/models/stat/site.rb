@@ -11,6 +11,7 @@ module Stat::Site
 
     field :st, type: Array, default: []     # Stages used
     field :s, type: Boolean, default: false # SSL used
+    field :jq # jQuery version used
 
     index t: 1, d: 1
   end
