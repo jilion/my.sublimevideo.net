@@ -24,7 +24,7 @@ class TrialHandler
   # = Public instance methods =
   # ===========================
   def send_trial_will_expire_emails
-    _days_before_trial_end_array.each do |days_before_trial_end|
+    BusinessModel.days_before_trial_end.each do |days_before_trial_end|
       _subscriptions_exiting_trial_on(days_before_trial_end.days.from_now).each do |subscription|
         BillingMailer.delay.trial_will_expire(subscription.id)
       end
@@ -63,7 +63,7 @@ class TrialHandler
 
   def trial_end_date(design_or_addon_plan)
     if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
-      subscription.created_at + BusinessModel.days_for_trial(subscription).days
+      subscription.created_at + BusinessModel.days_for_trial.days
     else
       nil
     end
@@ -126,10 +126,6 @@ class TrialHandler
 
   def _subscriptions_exiting_trial_on(date)
     site.billable_items.select { |subscription| trial_ends_on?(subscription.item, date) }
-  end
-
-  def _days_before_trial_end_array
-    BusinessModel.days_before_trial_end_old + BusinessModel.days_before_trial_end_new
   end
 
 end

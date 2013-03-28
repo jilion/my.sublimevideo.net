@@ -507,10 +507,6 @@ describe Site, :addons do
       describe '.free' do
         it { Site.free.all.should =~ [site2] }
       end
-
-      describe '.in_beta_trial_ended_after' do
-        it { Site.in_beta_trial_ended_after('social_sharing-standard', Time.now.utc).all.should =~ [site1] }
-      end
     end
 
     describe "invoices" do

@@ -142,10 +142,6 @@ class User < ActiveRecord::Base
   scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
   scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
-  scope :in_beta_trial_ended_after, ->(full_addon_name, timestamp) {
-    site_ids = Site.in_beta_trial_ended_after(full_addon_name, timestamp).map(&:id)
-    active.where(id: site_ids)
-  }
   scope :with_stats_realtime_addon_or_invalid_video_tag_data_uid, -> {
     site_with_realtime_addon_tokens = Site.with_addon_plan('stats-realtime').select(:token).uniq.map(&:token)
     site_with_invalide_video_tag_data_uid = VideoTag.site_tokens(with_invalid_uid: true)

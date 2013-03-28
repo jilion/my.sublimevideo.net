@@ -190,14 +190,6 @@ class Site < ActiveRecord::Base
     active.includes(:billable_items).merge(BillableItem.with_item(addon_plan))
   end
 
-  def self.in_beta_trial_ended_after(full_addon_name, timestamp)
-    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
-
-    active.includes(:billable_item_activities).where{ billable_item_activities.state == 'beta' }
-    .merge(BillableItemActivity.with_item(addon_plan))
-    .where{ date_trunc('day', created_at) <= (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }
-  end
-
   # admin
   scope :user_id, ->(user_id) { where(user_id: user_id) }
 
