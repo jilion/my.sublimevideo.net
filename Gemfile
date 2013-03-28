@@ -130,7 +130,7 @@ group :staging, :production do
   gem 'thin'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
-  gem 'newrelic_moped', github: 'stevebartholomew/newrelic_moped'
+  gem 'newrelic_moped'
 end
 
 group :development do

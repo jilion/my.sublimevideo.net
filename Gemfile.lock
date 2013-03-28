@@ -62,14 +62,6 @@ GIT
       rake
 
 GIT
-  remote: git://github.com/stevebartholomew/newrelic_moped.git
-  revision: 6aec80d5ac6a3f2a345ff8e239d73acbc72a55b3
-  specs:
-    newrelic_moped (0.0.5)
-      moped
-      newrelic_rpm (~> 3.6.0)
-
-GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 590c89b458e21be52825ea9f7532182c68310715
   branch: 1.9.2
@@ -279,11 +271,11 @@ GEM
       ruby-hmac
     formatador (0.2.4)
     google-analytics-turbolinks (0.0.1)
-    guard (1.6.2)
+    guard (1.7.0)
+      formatador (>= 0.2.4)
       listen (>= 0.6.0)
       lumberjack (>= 1.0.2)
       pry (>= 0.9.10)
-      terminal-table (>= 1.4.3)
       thor (>= 0.14.6)
     guard-jasmine (1.13.2)
       childprocess
@@ -376,7 +368,7 @@ GEM
     mongoid-grid_fs (1.7.0)
       mime-types (~> 1.19)
       mongoid (~> 3.0)
-    moped (1.4.4)
+    moped (1.4.5)
     multi_json (1.7.2)
     multi_xml (0.5.3)
     multipart-post (1.2.0)
@@ -386,6 +378,9 @@ GEM
     newrelic-redis (1.4.0)
       newrelic_rpm (~> 3.0)
       redis (< 4.0)
+    newrelic_moped (0.0.6)
+      moped
+      newrelic_rpm (~> 3.6.0)
     newrelic_rpm (3.6.0.78)
     nokogiri (1.5.9)
     oauth (0.4.7)
@@ -542,7 +537,6 @@ GEM
       kaminari
       rails (>= 3.2.12)
       responders
-    terminal-table (1.4.5)
     thin (1.5.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -670,7 +664,7 @@ DEPENDENCIES
   mongoid
   net-scp (= 1.0.4)
   newrelic-redis
-  newrelic_moped!
+  newrelic_moped
   newrelic_rpm
   oauth
   oauth-plugin
