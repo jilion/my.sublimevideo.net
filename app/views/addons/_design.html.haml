@@ -1,5 +1,6 @@
 - design_is_sponsored = site.sponsored_to?(design)
-%tr{ class: highlighted_class(design) }
+
+%tr
   %td
     - if design.free? || design_is_sponsored
       %h5.checked= design_label_content(design)

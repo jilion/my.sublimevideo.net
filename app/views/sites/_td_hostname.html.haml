@@ -3,7 +3,7 @@
     %span.domain
       = link_to url_with_protocol(site.hostname), title: "Go to #{site.hostname}", class: "img_wrap", onclick: "window.open(this);return false" do
         = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=https://my.sublimevideo.net/assets/sites/default_favicon.png", alt: "Favicon", size: "16x16", id: "site_favicon_#{site.id}"
-      = truncate_middle(site.hostname, length: 35)
+      = truncate_middle(site.hostname, length: 26)
 
     - if need_path?(site)
       = tooltip_box href: edit_site_path(site), class: 'warning' do
@@ -17,14 +17,14 @@
         = svg 8, 5, class: "arrow" do
           %path{ d: "M4,5l4-5H0L4,5z", fill: "rgba(9,23,69,0.5)" }
       %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
-        %li{ class: cycle('','alt', name: "actions")}= link_to 'Add-ons', [site, :addons]
-        %li{ class: cycle('','alt', name: "actions")}= link_to 'Players', [site, :kits]
-        %li{ class: cycle('','alt', name: "actions")}= link_to 'Publish video', new_site_video_code_path(site)
-        %li{ class: cycle('','alt', name: "actions")}= link_to 'Loader code', '', class: 'loader_code', data: { token: site.token }
+        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Add-ons', [site, :addons]
+        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Players', [site, :kits]
+        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Publish video', new_site_video_code_path(site)
+        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Loader code', '', class: 'loader_code', data: { token: site.token }
         - if site.realtime_stats_active?
-          %li{ class: cycle('','alt', name: "actions")}= link_to 'Stats', [site, :stats]
-        %li{ class: cycle('','alt', name: "actions")}= link_to 'Settings', [:edit, site]
-        %li{ class: cycle('','alt', name: "actions")}= link_to 'Invoices', [site, :invoices]
+          %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Stats', [site, :stats]
+        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Settings', [:edit, site]
+        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Invoices', [site, :invoices]
       %div{ id: "loader_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
     .token
       %small
