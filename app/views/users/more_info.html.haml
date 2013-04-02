@@ -5,13 +5,12 @@
 
 .content_left.more_info
   = form_for @current_user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_more_info" } do |f|
-    -# %h3.section_title More information about you
     = render 'users/more_info_form_fields', f: f
 
     .break
     .entry.terms
       .checkbox_wrap
-        = f.check_box :newsletter, checked: true
+        = f.check_box :newsletter, checked: false
         = f.label :newsletter, "Subscribe for news & exclusive promotions."
 
     .break
