@@ -34,6 +34,7 @@
                   videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
                       invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages
+               generate_loader_admin_site PUT      /sites/:id/generate_loader(.:format)                      admin/sites#generate_loader
 update_app_design_subscription_admin_site PUT      /sites/:id/update_app_design_subscription(.:format)       admin/sites#update_app_design_subscription
 update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
                               admin_sites GET      /sites(.:format)                                          admin/sites#index
