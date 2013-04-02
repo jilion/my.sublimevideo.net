@@ -22,7 +22,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         if serie.length > 0 and !_.isEmpty(serie.selected) and !_.include(@usedYAxis, serie.yAxis(selected))
           @usedYAxis.push(serie.yAxis(selected))
 
-
   buildSeries: ->
     @series = []
 
@@ -59,7 +58,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
         fontSize: "14px"
         color: '#1e3966'
-
 
   buildYAxis: ->
     yAxis = []
@@ -224,7 +222,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
   chart: (collection) ->
     @collection = collection
-    firstSerie = _.find(@collection, (serie) => !_.isEmpty(serie.selected))
+    firstSerie  = _.find(@collection, (serie) => !_.isEmpty(serie.selected))
 
     this.listUsedYAxis()
     this.buildSeries()
@@ -246,20 +244,20 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             AdminSublimeVideo.period.set(start: newStartDate, end: newEndDate)
             AdminSublimeVideo.chartsHelper.updateTotals()
 
-      navigator:
-        series:
-          type: firstSerie.chartType(firstSerie.selected[0]),
-          color: '#4572A7',
-          fillOpacity: 0.4,
-          dataGrouping:
-            smoothed: true
-          lineWidth: 1
-          marker:
-            enabled: false
-          shadow: false
-        xAxis:
-          labels:
-            y: -15
+      # navigator:
+      #   series:
+      #     type: firstSerie.chartType(firstSerie.selected[0])
+      #     color: '#4572A7'
+      #     fillOpacity: 0.4
+      #     dataGrouping:
+      #       smoothed: true
+      #     lineWidth: 1
+      #     marker:
+      #       enabled: false
+      #     shadow: false
+      #   xAxis:
+      #     labels:
+      #       y: -15
 
       series: @series
 
@@ -276,8 +274,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         enabled: true
         floating: true
         align: 'left'
-        margin: 50
-        y: 25
+        margin: -35
+        y: 35
         borderWidth: 0
         itemHoverStyle:
           cursor: 'default'
