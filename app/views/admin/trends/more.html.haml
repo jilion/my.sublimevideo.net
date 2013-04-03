@@ -7,7 +7,7 @@
   %h3.revenue= "Date range revenue: #{display_amount(Invoice.between(created_at: range_start_date..range_end_date).total_revenue)}"
 
 - not_archived_sites = Site.not_archived.count
-- free_sites         = Site.in_plan('free').count
+- free_sites         = Site.free.count
 
 - total_users       = User.active.count
 - today_signups     = User.active.created_on(Time.now.utc)

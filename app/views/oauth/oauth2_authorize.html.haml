@@ -35,4 +35,4 @@
 
     .entry.update
       = submit_tag "Authorize", class: "blue_button"
-      = link_to "Cancel", params[:redirect_uri], class: "submit_dynamic_button float hl"
+      = link_to "Cancel", html_escape(params[:redirect_uri]), class: "submit_dynamic_button float hl"

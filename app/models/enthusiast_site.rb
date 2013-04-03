@@ -2,21 +2,10 @@ class EnthusiastSite < ActiveRecord::Base
 
   attr_accessible :hostname
 
-  # ================
-  # = Associations =
-  # ================
-
   belongs_to :enthusiast
-
-  # ===============
-  # = Validations =
-  # ===============
 
   validates :hostname, presence: true, hostname: true
 
-  # ====================
-  # = Instance Methods =
-  # ====================
   # add scheme & parse
   def hostname=(attribute)
     write_attribute(:hostname, HostnameHandler.clean(attribute))

@@ -165,16 +165,16 @@ class Site < ActiveRecord::Base
   # ==========
 
   # state
-  scope :active,       where{ state == 'active' }
-  scope :inactive,     where{ state != 'active' }
-  scope :suspended,    where{ state == 'suspended' }
-  scope :archived,     where{ state == 'archived' }
-  scope :not_archived, where{ state != 'archived' }
+  scope :active,       -> { where{ state == 'active' } }
+  scope :inactive,     -> { where{ state != 'active' } }
+  scope :suspended,    -> { where{ state == 'suspended' } }
+  scope :archived,     -> { where{ state == 'archived' } }
+  scope :not_archived, -> { where{ state != 'archived' } }
 
   # attributes queries
-  scope :with_wildcard,              where{ wildcard == true }
-  scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
-  scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
+  scope :with_wildcard,              -> { where{ wildcard == true } }
+  scope :with_path,                  -> { where{ (path != nil) & (path != '') & (path != ' ') } }
+  scope :with_extra_hostnames,       -> { where{ (extra_hostnames != nil) & (extra_hostnames != '') } }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
 
   # addons
@@ -183,7 +183,7 @@ class Site < ActiveRecord::Base
     active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id")
     .merge(BillableItem.subscribed).merge(BillableItem.paid)
   end
-  scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
+  scope :free, -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
   def self.with_addon_plan(full_addon_name)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
 

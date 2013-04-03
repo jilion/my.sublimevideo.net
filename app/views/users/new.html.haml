@@ -1,16 +1,16 @@
-%h2.title= "Create your account"
+%h2.title Create your account
 
-= form_for @user || User.new, as: :user, url: my_url('signup'), html: { id: 'user_signup', class: "main_form" } do |f|
+= form_for @user, as: :user, url: my_url('signup'), html: { id: 'user_signup', class: 'main_form' } do |f|
   - if params[:user_return_to]
     = hidden_field_tag :user_return_to, params[:user_return_to]
 
   .entry.email
-    = f.label :email, "Email", class: "icon"
-    = f.text_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
+    = f.label :email, 'Email', class: 'icon'
+    = f.text_field :email, class: 'text', placeholder: 'Email', required: true
 
   .entry.password
-    = f.label :password, "", class: "icon"
-    = f.password_field :password, class: "text show_password", placeholder: "Password", required: true
+    = f.label :password, '', class: 'icon'
+    = f.password_field :password, class: 'text show_password', placeholder: 'Password', required: true
 
   .break
   .entry.terms
@@ -19,5 +19,5 @@
       = f.label :terms_and_conditions, "I agree to the #{link_to("Terms & Conditions", page_url('terms'), onclick: "window.open(this); return false")}.".html_safe
 
   .entry.submit.sign_up
-    = f.submit "Sign Up"
+    = f.submit 'Sign Up'
     .spacer

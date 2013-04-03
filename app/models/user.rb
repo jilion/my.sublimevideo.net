@@ -149,11 +149,11 @@ class User < ActiveRecord::Base
   }
 
   # sort
-  scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way.upcase}, users.email #{way.upcase}") }
-  scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way.upcase}") }
-  scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way.upcase}") }
-  scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way.upcase}") }
-  scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way.upcase}") }
+  scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way}, users.email #{way}") }
+  scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way}") }
+  scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way}") }
+  scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way}") }
+  scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way}") }
 
   def self.additional_or_conditions
     %w[email name].inject([]) do |memo, field|

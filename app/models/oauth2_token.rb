@@ -1,22 +1,10 @@
 class Oauth2Token < OauthToken
 
-  # ===============
-  # = Validations =
-  # ===============
-
-  validates :user, :secret, presence: true
-
-  # =============
-  # = Callbacks =
-  # =============
+  attr_accessor :state
 
   before_create :set_authorized_at
 
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  attr_accessor :state
+  validates :user, :secret, presence: true
 
   # Implement this to return a hash or array of the capabilities the access token has
   # This is particularly useful if you have implemented user defined permissions.

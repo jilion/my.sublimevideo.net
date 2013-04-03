@@ -3,7 +3,7 @@ require 'findable_and_cached'
 class App::Design < BillableEntity
   include FindableAndCached
 
-  attr_accessible :component, :skin_token, :name, :price, :availability, :required_stage, :stable_at, as: :admin
+  attr_accessible :component, :skin_token, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
 

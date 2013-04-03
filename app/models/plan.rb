@@ -33,11 +33,11 @@ class Plan < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :unpaid_plans,   where{ name >> UNPAID_NAMES }
-  scope :paid_plans,     where{ name << UNPAID_NAMES }
-  scope :standard_plans, where{ name >> STANDARD_NAMES }
-  scope :custom_plans,   where{ name =~ 'custom%' }
-  scope :yearly_plans,   where{ cycle == 'year' }
+  scope :unpaid_plans,   -> { where{ name >> UNPAID_NAMES } }
+  scope :paid_plans,     -> { where{ name << UNPAID_NAMES } }
+  scope :standard_plans, -> { where{ name >> STANDARD_NAMES } }
+  scope :custom_plans,   -> { where{ name =~ 'custom%' } }
+  scope :yearly_plans,   -> { where{ cycle == 'year' } }
 
   # =================
   # = Class Methods =
