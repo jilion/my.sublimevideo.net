@@ -1,16 +1,8 @@
 class Oauth2Verifier < OauthToken
 
-  # ===============
-  # = Validations =
-  # ===============
+  attr_accessor :state
 
   validates :user, presence: true
-
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  attr_accessor :state
 
   def exchange!(params = {})
     OauthToken.transaction do

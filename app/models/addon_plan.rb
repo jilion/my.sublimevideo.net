@@ -1,6 +1,6 @@
 class AddonPlan < BillableEntity
 
-  attr_accessible :addon, :name, :price, :availability, :required_stage, :stable_at, as: :admin
+  attr_accessible :addon, as: :admin
 
   belongs_to :addon
   has_many :components, through: :addon
