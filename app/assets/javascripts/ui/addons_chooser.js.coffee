@@ -5,19 +5,24 @@ class MySublimeVideo.UI.AddonsChooser
     @addonsTotalDiv = $("#addons_total")
     @allInputs = @form.find('input[type=radio], input[type=checkbox]')
 
-    this.setupInputsObservers()
+    this.setup()
 
-  setupInputsObservers: ->
+  setup: ->
     @allInputs.each (index, el) =>
-      el = $(el)
-      el.on 'click', =>
-        this.toggleTrialNotice(el)
+      $el = $(el)
+      this.setupInputsObservers($el)
+      this.toggleTrialNotice($el)
+    this.updateTotal()
+
+  setupInputsObservers: ($el)->
+      $el.on 'click', =>
+        this.toggleTrialNotice($el)
         this.updateTotal()
 
-  toggleTrialNotice: (element) ->
-    $("[name='#{element.attr('name')}']").parents('tr').find('td .trial_days_remaining').hide()
-    trialDaysRemainingDiv = element.parents('tr').find('td .trial_days_remaining')
-    if element.prop('checked')
+  toggleTrialNotice: ($el) ->
+    $("[name='#{$el.prop('name')}']").parents('tr').find('td .trial_days_remaining').hide()
+    trialDaysRemainingDiv = $el.parents('tr').find('td .trial_days_remaining')
+    if $el.prop('checked')
       trialDaysRemainingDiv.show()
     else
       trialDaysRemainingDiv.hide()

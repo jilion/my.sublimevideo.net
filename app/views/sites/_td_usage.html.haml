@@ -12,5 +12,5 @@
         %strong= number_with_delimiter(site.last_30_days_main_video_views + site.last_30_days_extra_video_views + site.last_30_days_embed_video_views)
         %span= 'plays'
       .title_link
-        = link_to 'Add real-time video stats', site_addons_path(site, h: 'stats-realtime'), class: 'hl'
-      = link_to 'Buy Add-on', site_addons_path(site, h: 'stats-realtime'), class: 'buy_addon'
+        = link_to 'Add real-time video stats', site_addon_path(site, 'stats', p: 'realtime'), class: 'hl'
+      = link_to 'Buy Add-on', site_addon_path(site, 'stats', p: 'realtime'), class: 'buy_addon'

@@ -23,6 +23,8 @@
   %tr
     %td
     %td.trial_notice
-      %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+      %small
+        Total per month
+        = link_to content_tag(:sup, '1'), '#footnote-1', class: 'hl'
     %td.price
       %strong#addons_total= display_amount_with_sup(site.total_billable_items_price)
