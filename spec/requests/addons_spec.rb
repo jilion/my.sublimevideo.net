@@ -87,9 +87,9 @@ feature 'Add-on subscription shortcut' do
   end
 
   scenario 'redirects sites/:token/addons?h=stats-realtime to /sites/:token/addons/stats' do
-    go 'my', "sites/#{@site.to_param}/addons?h=stats-realtime"
+    go 'my', "sites/#{@site.to_param}/addons/stats?p=realtime"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats?p=realtime"
   end
 
   scenario 'redirects addons/stats to /sites/:token/addons/stats' do
