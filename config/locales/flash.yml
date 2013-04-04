@@ -25,7 +25,7 @@ en:
       update_addon_plan_subscription:
         notice: 'The %{addon_plan_title} add-on plan has been successfully %{state}.'
     addons:
-      update_all:
+      subscribe:
         notice: 'Your add-ons selection has been confirmed.'
     kits:
       create:

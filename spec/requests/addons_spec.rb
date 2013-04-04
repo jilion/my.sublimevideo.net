@@ -40,7 +40,7 @@ feature 'special /addons page' do
       go 'my', 'addons'
       current_url.should eq "http://my.sublimevideo.dev/login"
       fill_and_submit_login(@user)
-      current_url.should eq "http://my.sublimevideo.dev/sites"
+      current_url.should eq "http://my.sublimevideo.dev/sites/#{@user.sites.last.to_param}/addons"
     end
   end
 
@@ -70,12 +70,32 @@ feature 'special /addons page' do
   context 'user is logged-in with more than 1 sites' do
     background do
       sign_in_as :user_with_sites
+      @site = @current_user.sites.first
     end
 
-    scenario 'redirects to /sites' do
+    scenario 'redirects to /sites/:token/addons' do
       go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/sites"
+      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
     end
+  end
+end
+
+feature 'Add-on subscription shortcut' do
+  background do
+    sign_in_as :user_with_sites
+    @site = @current_user.sites.first
+  end
+
+  scenario 'redirects sites/:token/addons?h=stats-realtime to /sites/:token/addons/stats' do
+    go 'my', "sites/#{@site.to_param}/addons?h=stats-realtime"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
+  end
+
+  scenario 'redirects addons/stats to /sites/:token/addons/stats' do
+    go 'my', "addons/stats"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
   end
 end
 

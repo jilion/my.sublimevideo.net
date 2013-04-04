@@ -29,6 +29,10 @@ class Addon < ActiveRecord::Base
     I18n.t("addons.#{name}")
   end
 
+  def to_param
+    name
+  end
+
 end
 
 # == Schema Information
