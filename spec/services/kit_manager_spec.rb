@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 require 'sidekiq'
 require 'config/sidekiq'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
 
 require 'services/kit_manager'
 

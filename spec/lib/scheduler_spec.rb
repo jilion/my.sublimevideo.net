@@ -3,7 +3,7 @@ require 'timecop'
 require 'active_support/core_ext'
 require 'sidekiq'
 require 'config/sidekiq'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
 
 require 'services/notifier'
 require 'services/site_manager'
