@@ -60,6 +60,7 @@ feature 'special /addons page' do
         current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
       end
     end
+  end
 
   context 'user is logged-in with more than 1 sites' do
     background do
