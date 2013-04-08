@@ -1,2 +1,4 @@
 require 'sublime_video_private_api/spec_helper'
-RSpec.configuration.include(SublimeVideoPrivateApi::SpecHelper)
+RSpec.configure do |config|
+  config.include SublimeVideoPrivateApi::SpecHelper
+end

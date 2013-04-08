@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SettingsGenerator do
+describe SettingsGenerator, :addons do
   context "with populates addons" do
     describe "default settings of a new site" do
       let(:site) {
@@ -11,31 +11,35 @@ describe SettingsGenerator do
       let(:settings) { described_class.new(site, 'settings') }
       subject { settings }
 
-      its(:license) { should eq({
-        hosts: ["test.com"],
-        staging_hosts: [],
-        dev_hosts: ["127.0.0.1", "localhost"],
-        path: nil,
-        wildcard: nil,
-        stage: "beta"
-      } )}
+      it 'has default license' do
+        settings.license.should eq({
+          hosts: ["test.com"],
+          staging_hosts: [],
+          dev_hosts: ["127.0.0.1", "localhost"],
+          path: nil,
+          wildcard: nil,
+          stage: "beta"
+        })
+      end
 
-      its(:app_settings) { should == {
-        "stats" => {
-          settings: {
-            enable: true,
-            realtime: false
-          },
-          allowed_settings: {
-            enable: {
-              values: [true]
+      it 'has default app_settings' do
+        settings.app_settings.should eq({
+          "stats" => {
+            settings: {
+              enable: true,
+              realtime: false
             },
-            realtime: {
-              values: [false]
+            allowed_settings: {
+              enable: {
+                values: [true]
+              },
+              realtime: {
+                values: [false]
+              }
             }
           }
-        },
-      } }
+        })
+      end
 
       describe 'settings.kits["1"][:plugins]' do
         it 'has 3 plugins' do

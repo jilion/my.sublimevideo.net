@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 require 'spec_helper'
 
 feature "Newsletter subscription" do
@@ -10,8 +10,8 @@ feature "Newsletter subscription" do
 
       current_url.should eq 'http://my.sublimevideo.dev/login'
 
-      fill_in 'Email',    with: user.email
-      fill_in 'Password', with: '123456'
+      fill_in 'user[email]',    with: user.email
+      fill_in 'user[password]', with: '123456'
 
       NewsletterSubscriptionManager.should delay(:subscribe).with(user.id)
 

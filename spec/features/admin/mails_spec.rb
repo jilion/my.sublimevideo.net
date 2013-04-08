@@ -76,7 +76,7 @@ feature "Mails sending" do
       ActionMailer::Base.deliveries.should be_empty
       Sidekiq::Worker.clear_all
 
-      select @mail_template.title, from: "Choose a template (very carefully)"
+      select "##{@mail_template.id} - #{@mail_template.title}", from: "Choose a template (very carefully)"
       select "Not Archived (1)", from: "mail[criteria]"
 
       click_button 'Preview email'

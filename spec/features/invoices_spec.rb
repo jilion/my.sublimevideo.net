@@ -139,7 +139,7 @@ feature "Site invoices page" do
 
   context "user has no credit card" do
     background do
-      sign_in_as :user, without_cc: true, kill_user: true
+      sign_in_as :user, without_cc: true
       @site = build(:site, user: @current_user, hostname: 'rymai.com')
       SiteManager.new(@site).create
       @invoice = create(:failed_invoice, site: @site)
@@ -161,7 +161,7 @@ feature "Site invoices page" do
 
   context "user credit card is expired" do
     background do
-      sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
+      sign_in_as :user, cc_expire_on: 2.years.ago
       @current_user.should be_cc_expired
       @site = build(:site, user: @current_user, hostname: 'rymai.com')
       SiteManager.new(@site).create
