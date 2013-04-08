@@ -28,13 +28,6 @@ feature 'special /addons page' do
         current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
       end
     end
-
-    scenario 'redirects to /login and then to /sites' do
-      go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/login"
-      fill_and_submit_login(@user)
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@user.sites.last.to_param}/addons"
-    end
   end
 
   context 'user is logged-in' do

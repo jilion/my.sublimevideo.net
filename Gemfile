@@ -179,7 +179,6 @@ group :tools do
   gem 'annotate'
   gem 'wirble'
   gem 'powder'
-  # gem 'brakeman' # until brakeman dependencies allow haml 4
 
   # Guard
   gem 'ruby_gntp'
