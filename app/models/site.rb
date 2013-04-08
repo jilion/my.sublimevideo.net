@@ -220,22 +220,21 @@ class Site < ActiveRecord::Base
   end
 
   def self.with_page_loads_in_the_last_30_days
-    fields_to_add = %w[m e em].inject([]) do |array, sub_field|
-      array << "$pv.#{sub_field}"; array
-    end
-
     stats = Stat::Site::Day.collection.aggregate([
       { :$match => { d: { :$gte => 30.days.ago.midnight } } },
       { :$project => {
           _id: 0,
           t: 1,
-          pvTot: { :$add => fields_to_add } } },
+          pvmTot: { :$add => "$pv.m" },
+          pveTot: { :$add => "$pv.e" },
+          pvemTot: { :$add => "$pv.em" } } },
       { :$group => {
         _id: '$t',
-        pvTotSum: { :$sum => '$pvTot' }, } }
+        pvmTotSum: { :$sum => '$pvmTot' },
+        pveTotSum: { :$sum => '$pveTot' },
+        pvemTotSum: { :$sum => '$pvemTot' } } }
     ])
-
-    where(token: stats.select { |stat| stat['pvTotSum'] > 0 }.map { |s| s['_id'] })
+    where(token: stats.select { |stat| (stat['pvmTotSum'] + stat['pveTotSum'] + stat['pvemTotSum']) > 0 }.map { |s| s['_id'] })
   end
 
   def self.to_backbone_json
