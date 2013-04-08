@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe SitesTrend do
-
   describe "with a bunch of different sites" do
     let!(:design)     { create(:app_design, price: 0) }
     let!(:addon_plan) { create(:addon_plan, price: 990) }
     before do
-
       user = create(:user)
       create(:site, user: user, state: 'active') # free
       s1 = create(:site, user: user, state: 'active') # in trial => free
@@ -46,6 +44,7 @@ describe SitesTrend do
         sites_stat["al"].should eq({ 'pv' => 3, 'vv' => 3 })
       end
     end
+  end
 
   describe '.json' do
     before do
@@ -61,5 +60,4 @@ describe SitesTrend do
     it { subject[0].should have_key('ar') }
     it { subject[0].should have_key('al') }
   end
-
 end
