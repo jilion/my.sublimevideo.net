@@ -22,7 +22,7 @@ class MailTemplate < ActiveRecord::Base
   scope :archived,     -> { where{ archived_at != nil } }
   scope :not_archived, -> { where(archived_at: nil) }
   scope :by_title,     ->(way = 'asc') { order{ title.send(way) } }
-  scope :by_date,      ->(way='desc') { order{ created_at.send(way) } }
+  scope :by_date,      ->(way = 'desc') { order{ created_at.send(way) } }
 
   # ====================
   # = Instance Methods =

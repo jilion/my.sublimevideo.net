@@ -3,7 +3,7 @@ require 'spec_helper'
 feature "Sticky notices" do
   context "no notice" do
     background do
-      sign_in_as :user, kill_user: true
+      sign_in_as :user
       @site = build(:site, user: @current_user)
       SiteManager.new(@site).create
       go 'my', '/sites'
@@ -18,7 +18,7 @@ feature "Sticky notices" do
 
   context "credit card will expire this month" do
     background do
-      sign_in_as :user, cc_expire_on: Time.utc(Time.now.utc.year, Time.now.utc.month).end_of_month.to_date, kill_user: true
+      sign_in_as :user, cc_expire_on: Time.utc(Time.now.utc.year, Time.now.utc.month).end_of_month.to_date
       @site = build(:site, user: @current_user)
       SiteManager.new(@site).create
       @current_user.should be_cc_expire_this_month
@@ -41,7 +41,7 @@ feature "Sticky notices" do
 
   context "credit card is expired" do
     background do
-      sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
+      sign_in_as :user, cc_expire_on: 2.years.ago
       go 'my', '/sites'
     end
 
@@ -71,7 +71,7 @@ feature "Sticky notices" do
   context "billing address is incomplete" do
     context "user is not billable" do
       background do
-        sign_in_as :user, kill_user: true, billing_address_1: ''
+        sign_in_as :user, billing_address_1: ''
         @current_user.should_not be_billable
         @current_user.should be_cc
         @current_user.should_not be_billing_address_complete

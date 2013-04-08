@@ -2,9 +2,8 @@ require 'spec_helper'
 
 feature 'Kits page' do
   background do
-    sign_in_as :user
-    @site = build(:site, user: @current_user)
-    SiteManager.new(@site).create
+    sign_in_as :user_with_site
+    @site = @current_user.sites.last
     go 'my', "/sites/#{@site.to_param}/players"
   end
 
@@ -42,9 +41,8 @@ end
 
 feature 'New kit' do
   background do
-    sign_in_as :user
-    @site = build(:site, user: @current_user)
-    SiteManager.new(@site).create
+    sign_in_as :user_with_site
+    @site = @current_user.sites.last
     go 'my', "/sites/#{@site.to_param}/players"
     click_link 'New Player'
     current_url.should =~ %r{http://[^/]+/sites/#{@site.to_param}/players/new}

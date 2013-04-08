@@ -3,7 +3,7 @@ require 'configurator'
 require 'rails/railtie'
 require 'sidekiq'
 require 'config/sidekiq'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
 require 'config/carrierwave' # for fog_mock
 
 require 'services/app/component_version_dependencies_solver'

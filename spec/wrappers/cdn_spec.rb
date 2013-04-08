@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
 
 require 'wrappers/edge_cast_wrapper'
 require 'wrappers/voxcast_wrapper'

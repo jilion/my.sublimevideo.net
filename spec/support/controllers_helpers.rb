@@ -92,4 +92,6 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::ControllersHelpers)
+RSpec.configure do |config|
+  config.include Spec::Support::ControllersHelpers
+end

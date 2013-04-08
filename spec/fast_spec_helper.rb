@@ -6,9 +6,6 @@ end
 
 ENV["RAILS_ENV"] ||= 'test'
 
-require 'bundler/setup'
-require_relative 'config/rspec'
-
 unless defined?(Rails)
   module Rails
     def self.root; Pathname.new(File.expand_path('')); end
@@ -23,3 +20,6 @@ unless defined?(Librato)
     end
   end
 end
+
+require 'bundler/setup'
+require_relative 'config/rspec'

@@ -8,14 +8,14 @@ RSpec.configure do |config|
   config.before :each, fog_mock: true do
     set_fog_configuration
   end
-  config.before :all, type: :request do
+  config.before :all, type: :feature do
     set_fog_configuration
   end
 
   config.after :each, fog_mock: true do
     set_file_configuration
   end
-  config.after :all, type: :request do
+  config.after :all, type: :feature do
     set_file_configuration
   end
 end

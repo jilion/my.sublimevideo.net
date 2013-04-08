@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature "Admin session:" do
   scenario "login" do
-    create_admin admin: { email: "john@doe.com", password: "123456" }
+    create(:admin, email: "john@doe.com", password: "123456")
 
     go 'admin', 'login'
     page.should have_no_content 'john@doe.com'
@@ -26,10 +26,7 @@ end
 
 feature "Token authentication:" do
   scenario "works" do
-    create_admin admin: {
-      email: "john@doe.com",
-      password: "123456"
-    }
+    create(:admin, email: "john@doe.com", password: "123456")
     admin = Admin.last
     admin.reset_authentication_token!
     go 'admin', "app/components.json?auth_token=#{admin.authentication_token}"
@@ -91,7 +88,7 @@ feature "Admins invitations:" do
   end
 
   scenario "accept invitation" do
-    invited_admin = send_invite_to :admin, "invited@admin.com"
+    invited_admin = send_invite_to(:admin, "invited@admin.com")
 
     go 'admin', "invitation/accept?invitation_token=#{invited_admin.invitation_token}"
     current_url.should eq "http://admin.sublimevideo.dev/invitation/accept\?invitation_token=#{invited_admin.invitation_token}"

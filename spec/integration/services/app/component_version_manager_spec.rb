@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe App::ComponentVersionManager do
+describe App::ComponentVersionManager, :addons do
   let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
+  let(:zip) { fixture_file('app/e.zip') }
   let(:site) {
     site = build(:site)
     SiteManager.new(site).create
@@ -9,12 +10,12 @@ describe App::ComponentVersionManager do
   }
   let(:component) { site.components.first }
   let(:component_version) { component.versions.build({ token: component.token, version: '2.0.0', zip: zip }, as: :admin) }
-  let(:zip) { fixture_file('app/e.zip') }
 
-  before { component.versions.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin) }
+  before do
+    component.versions.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin)
+  end
 
   describe "#create" do
-
     it "updates site loader" do
       component.versions.last.version.should_not eq component_version.version
 

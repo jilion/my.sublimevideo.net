@@ -1,6 +1,6 @@
 module Spec
   module Support
-    module ModelsHelpers
+    module CreditCardHelpers
 
       def nil_cc_attributes
         {
@@ -87,4 +87,6 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::ModelsHelpers)
+RSpec.configure do |config|
+  config.include Spec::Support::CreditCardHelpers
+end

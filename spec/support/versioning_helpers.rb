@@ -26,4 +26,6 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::VersioningHelpers)
+RSpec.configure do |config|
+  config.include Spec::Support::VersioningHelpers
+end
