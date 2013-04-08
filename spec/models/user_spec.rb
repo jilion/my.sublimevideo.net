@@ -49,7 +49,8 @@ describe User do
 
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:email) }
-    it { should validate_format_of(:billing_email) } #.with(Devise.email_regexp) }
+    it { should allow_value('test@example.com').for(:billing_email) }
+    it { should_not allow_value('example.com').for(:billing_email) }
     it { should ensure_length_of(:billing_postal_code).is_at_most(20) }
     it { should validate_acceptance_of(:terms_and_conditions) }
 
