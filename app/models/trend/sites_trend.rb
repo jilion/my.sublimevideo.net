@@ -24,20 +24,6 @@ class SitesTrend
     self.create(trend_hash(Time.now.utc.midnight))
   end
 
-  def self.update_alive_sites_trends
-    trend_day = self.order_by(d: 1).first.try(:d)
-
-    while trend_day <= Time.now.utc.midnight do
-      if trend = self.where(d: trend_day).first
-        trend.update_attribute(:al, {
-          pv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, 'pv'),
-          vv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, 'vv')
-        })
-      end
-      trend_day += 1.day
-    end
-  end
-
   def self.trend_hash(day)
     {
       d: day.to_time,
