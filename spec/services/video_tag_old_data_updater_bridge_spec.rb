@@ -59,9 +59,6 @@ describe VideoTagOldDataUpdaterBridge do
       VideoTagUpdaterWorker.should_receive(:perform_async).with(site_token, uid, {
         uo: 's',
         t: 'My Video',
-        s: [
-          { 'u' => "http://source1.com", 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' }
-        ]
       })
       updater.update
     end
@@ -89,14 +86,13 @@ describe VideoTagOldDataUpdaterBridge do
       'uo' => 's', 'n' => 'My Video', 'no' => 'a',
       'i' => nil,
       'io' => nil,
-      'cs' => ['source1', 'source2'],
-      's' => {
-        'source2' => { 'u' => "http://source1.com", 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' }
-      }
     } }
 
-    it "doesn't delays to VideoTagUpdaterWorker" do
-      VideoTagUpdaterWorker.should_not_receive(:perform_async)
+    it "delays to VideoTagUpdaterWorker with translated data" do
+      VideoTagUpdaterWorker.should_receive(:perform_async).with(site_token, uid, {
+        uo: 's',
+        t: 'My Video'
+      })
       updater.update
     end
   end
