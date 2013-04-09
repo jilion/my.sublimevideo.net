@@ -11,6 +11,7 @@ module Stat::Site
 
     field :st, type: Array, default: []     # Stages used
     field :s, type: Boolean, default: false # SSL used
+    field :jq # jQuery version used
 
     index t: 1, d: 1
   end
@@ -108,21 +109,22 @@ module Stat::Site
 
       fields_to_add = []
       sub_fields.each do |sub_field|
-        fields_to_add << "$#{options[:view_type]}.#{sub_field}"
+        fields_to_add << [options[:view_type], sub_field]
       end
 
       stats = collection.aggregate([
         { :$match => conditions },
-        { :$project => {
-            _id: 0,
-            t: 1,
-            viewTot: { :$add => fields_to_add } } },
-        { :$group => {
-          _id: '$t',
-          viewTotSum: { :$sum => '$viewTot' }, } }
+        { :$project => fields_to_add.inject({}) { |hash, field|
+            hash["viewTot#{field}"] = { :$add => ["$#{field.join('.')}"] }
+            hash
+          }.merge(_id: 0, t: 1,) },
+        { :$group => fields_to_add.inject({}) { |hash, field|
+            hash["viewTotSum#{field}"] = { :$sum => "$viewTot#{field}" }
+            hash
+          }.merge(_id: '$t') }
       ])
 
-      stats.sum { |stat| stat['viewTotSum'] }
+      stats.sum { |stat| fields_to_add.sum { |field| stat["viewTotSum#{field}"] } }
     end
 
     # Returns an array of Stat::Site objects.

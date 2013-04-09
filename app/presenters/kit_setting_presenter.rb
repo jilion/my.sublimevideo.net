@@ -32,11 +32,8 @@ class KitSettingPresenter
   end
 
   def render_master_input_field(params = {}, &block)
-    params[:data] ||= {}
-    params[:data][:master] = "#{@addon_plan.addon.name}-#{params[:setting_key]}"
-
     @view.haml_concat(render_input_field(params))
-    @view.haml_tag('div', @view.capture_haml { yield }, class: 'indent', data: { dependant: params[:data][:master] })
+    @view.haml_tag(:div, @view.capture_haml { yield }, class: 'indent')
 
     nil
   end

@@ -80,7 +80,7 @@ gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
 gem 'array_stats'
-gem 'createsend' # Campaign Monitor
+gem 'createsend', '~> 2.5' # Campaign Monitor
 
 gem 'airbrake'
 gem 'prowl'
@@ -127,10 +127,10 @@ end
 group :staging, :production do
   gem 'rack-cache'
   gem 'rack-ssl-enforcer'
-  gem 'thin'
+  gem 'unicorn'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
-  gem 'newrelic_moped', '0.0.4.1'
+  gem 'newrelic_moped'
 end
 
 group :development do
@@ -162,10 +162,10 @@ end
 group :test do
   gem 'shoulda-matchers'
   gem 'ffaker'
-  gem 'capybara',            '~> 1.1'
-  gem 'capybara-email',      '~> 1.0.2'
-  gem 'poltergeist',         '~> 1.0.2'
-  gem 'show_me_the_cookies', '~> 1.1.4'
+  gem 'capybara'
+  gem 'capybara-email'
+  gem 'poltergeist'
+  gem 'show_me_the_cookies'
   gem 'webmock',             '~> 1.6.0'
   gem 'typhoeus',            '~> 0.2.0'
   gem 'vcr',                 '~> 1.10.3'
@@ -179,7 +179,6 @@ group :tools do
   gem 'annotate'
   gem 'wirble'
   gem 'powder'
-  # gem 'brakeman' # until brakeman dependencies allow haml 4
 
   # Guard
   gem 'ruby_gntp'

@@ -49,7 +49,8 @@ describe User do
 
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:email) }
-    it { should validate_format_of(:billing_email) } #.with(Devise.email_regexp) }
+    it { should allow_value('test@example.com').for(:billing_email) }
+    it { should_not allow_value('example.com').for(:billing_email) }
     it { should ensure_length_of(:billing_postal_code).is_at_most(20) }
     it { should validate_acceptance_of(:terms_and_conditions) }
 
@@ -650,17 +651,83 @@ describe User do
 
     describe '#billable?' do
       let(:user) { create(:user) }
+      let(:site) { create(:site, user: user) }
+      subject { user }
 
-      it 'counts the # of not archived sites currently paying, returns true if > 0' do
-        user.stub_chain(:sites, :not_archived, :paying, :count) { 1 }
+      context 'with an add-on in trial' do
+        before do
+          create(:addon_plan_billable_item, site: site, state: 'trial')
+        end
 
-        user.should be_billable
+        it { should_not be_billable }
       end
 
-      it 'counts the # of not archived sites currently paying, returns true if <= 0' do
-        user.stub_chain(:sites, :not_archived, :paying, :count) { 0 }
+      context 'with an add-on subscribed' do
+        before do
+          bi = create(:addon_plan_billable_item, site: site, state: 'subscribed')
+        end
 
-        user.should_not be_billable
+        it { should be_billable }
+      end
+
+      context 'with no add-on subscribed or in trial' do
+        before do
+          create(:addon_plan_billable_item, site: site, state: 'sponsored')
+        end
+
+        it { should_not be_billable }
+      end
+    end
+
+    describe '#trial_or_billable?' do
+      let(:user) { create(:user) }
+      let(:site) { create(:site, user: user) }
+      subject { user }
+
+      context 'with an add-on in trial' do
+        before do
+          create(:addon_plan_billable_item, site: site, state: 'trial')
+        end
+
+        it { should be_trial_or_billable }
+      end
+
+      context 'with an add-on subscribed' do
+        before do
+          create(:addon_plan_billable_item, site: create(:site, user: user), state: 'subscribed')
+        end
+
+        it { should be_trial_or_billable }
+      end
+
+      context 'with no add-on subscribed or in trial' do
+        before do
+          create(:addon_plan_billable_item, site: site, state: 'sponsored')
+        end
+
+        it { should_not be_trial_or_billable }
+      end
+    end
+
+    describe '#sponsored?' do
+      let(:user) { create(:user) }
+      let(:site) { create(:site, user: user) }
+      subject { user }
+
+      context 'with an add-on sponsored' do
+        before do
+          create(:addon_plan_billable_item, site: site, state: 'sponsored')
+        end
+
+        it { should be_sponsored }
+      end
+
+      context 'with an add-on subscribed' do
+        before do
+          create(:addon_plan_billable_item, site: site, state: 'subscribed')
+        end
+
+        it { should_not be_sponsored }
       end
     end
 

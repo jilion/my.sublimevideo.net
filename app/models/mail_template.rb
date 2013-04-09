@@ -19,10 +19,10 @@ class MailTemplate < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :archived,     lambda { where{ archived_at != nil } }
-  scope :not_archived, lambda { where(archived_at: nil) }
-  scope :by_title,     lambda { |way='asc'| order{ title.send(way) } }
-  scope :by_date,      lambda { |way='desc'| order{ created_at.send(way) } }
+  scope :archived,     -> { where{ archived_at != nil } }
+  scope :not_archived, -> { where(archived_at: nil) }
+  scope :by_title,     ->(way = 'asc') { order{ title.send(way) } }
+  scope :by_date,      ->(way = 'desc') { order{ created_at.send(way) } }
 
   # ====================
   # = Instance Methods =

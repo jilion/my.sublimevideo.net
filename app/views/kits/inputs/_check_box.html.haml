@@ -1,6 +1,3 @@
-- if params[:title]
-  %h5= params[:title]
-
 .entry.checkbox_wrap
   = hidden_field_tag kit_setting_input_field_name(params), 0, data: kit_setting_data(params)
   = check_box_tag kit_setting_input_field_name(params), 1, SettingsSanitizer.cast_boolean(params[:value]), id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)

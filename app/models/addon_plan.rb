@@ -1,6 +1,6 @@
 class AddonPlan < BillableEntity
 
-  attr_accessible :addon, :name, :price, :availability, :required_stage, :stable_at, as: :admin
+  attr_accessible :addon, as: :admin
 
   belongs_to :addon
   has_many :components, through: :addon
@@ -31,6 +31,9 @@ class AddonPlan < BillableEntity
       joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
     end
   end
+  class << self
+    alias_method :get, :find_cached_by_addon_name_and_name
+  end
 
   def available_for_subscription?(site)
     case availability
@@ -53,10 +56,6 @@ class AddonPlan < BillableEntity
     plugin_id = App::Plugin.where(addon_id: addon.id, app_design_id: dependant_design_id).first.try(:id)
 
     settings_templates.where(app_plugin_id: plugin_id).first
-  end
-
-  class << self
-    alias_method :get, :find_cached_by_addon_name_and_name
   end
 
   private

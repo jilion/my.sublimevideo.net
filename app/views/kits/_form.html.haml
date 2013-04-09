@@ -16,4 +16,9 @@
     = f.label :app_design_id, 'Player design:'
     = f.select :app_design_id, app_designs_for_select(site, kit), {}, data: { addon: 'player', setting: 'kit' }
 
+  %p.note
+    = "Following are the default settings for your player but each setting can always be modified on a per-video basis."
+    %br
+    = raw "Learn more in #{link_to 'the documentation', docs_url('settings/player-settings'), class: 'hl', onclick: 'window.open(this); return false'}."
+
   #player_settings= render 'kits/player_settings', site: site, kit: kit, design: design

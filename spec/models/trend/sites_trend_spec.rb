@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe SitesTrend do
-
   describe "with a bunch of different sites" do
     let!(:design)     { create(:app_design, price: 0) }
     let!(:addon_plan) { create(:addon_plan, price: 990) }
     before do
-
       user = create(:user)
       create(:site, user: user, state: 'active') # free
       s1 = create(:site, user: user, state: 'active') # in trial => free
@@ -46,23 +44,6 @@ describe SitesTrend do
         sites_stat["al"].should eq({ 'pv' => 3, 'vv' => 3 })
       end
     end
-
-    describe '.update_alive_sites_trends' do
-      before do
-        described_class.create(d: 2.day.ago.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
-        described_class.create(d: Time.now.utc.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
-      end
-
-      it 'updates the existing trend to add alive sites trends' do
-        described_class.where(d: 2.day.ago.midnight).first['al'].should be_nil
-        described_class.where(d: Time.now.utc.midnight).first['al'].should be_nil
-
-        described_class.update_alive_sites_trends
-
-        described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'pv' => 2, 'vv' => 2 })
-        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 3, 'vv' => 3 })
-      end
-    end
   end
 
   describe '.json' do
@@ -79,5 +60,4 @@ describe SitesTrend do
     it { subject[0].should have_key('ar') }
     it { subject[0].should have_key('al') }
   end
-
 end

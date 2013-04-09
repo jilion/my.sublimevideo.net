@@ -233,8 +233,10 @@ describe Invoice, :addons do
         specify { described_class.between(created_at: 24.hours.ago..15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
       end
 
-      describe '.open' do
-        specify { Invoice.open.order(:id).should eq [@open_invoice] }
+      describe '.with_state' do
+        specify { Invoice.with_state('open').order(:id).should eq [@open_invoice] }
+        specify { Invoice.with_state('failed').order(:id).should eq [@failed_invoice] }
+        specify { Invoice.with_state('waiting').order(:id).should eq [@waiting_invoice] }
       end
 
       describe '.paid' do
@@ -243,14 +245,6 @@ describe Invoice, :addons do
 
       describe '.refunded' do
         specify { described_class.refunded.order(:id).should eq [@refunded_invoice] }
-      end
-
-      describe '.failed' do
-        specify { described_class.failed.order(:id).should eq [@failed_invoice] }
-      end
-
-      describe '.waiting' do
-        specify { described_class.waiting.order(:id).should eq [@waiting_invoice] }
       end
 
       describe '.open_or_failed' do

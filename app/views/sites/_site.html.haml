@@ -7,17 +7,17 @@
 
   %td.status{ data: { cdn_updated_at: cdn_updated_at(site) } }
     .wrap
-      - if assistant.setup_done?
-        - if site.invoices_failed?
-          = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
-            %span.p= t 'site.status.payment_issue'
-        - elsif site.invoices_open?
-          = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
-            %span.p= t 'site.status.payment_open'
-        - elsif site.invoices_waiting?
-          = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
-            %span.p= t 'site.status.payment_waiting'
-        - elsif cdn_up_to_date?(site)
+      - if site.invoices_failed?
+        = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
+          %span.p= t 'site.status.payment_issue'
+      - elsif site.invoices_open?
+        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
+          %span.p= t 'site.status.payment_open'
+      - elsif site.invoices_waiting?
+        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
+          %span.p= t 'site.status.payment_waiting'
+      - elsif assistant.setup_done?
+        - if cdn_up_to_date?(site)
           = tooltip_box class: "ok" do
             %span.p= t 'site.status.ok'
         - else

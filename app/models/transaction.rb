@@ -51,8 +51,8 @@ class Transaction < ActiveRecord::Base
   # ==========
 
   # state
-  scope :failed, where(state: 'failed')
-  scope :paid,   where(state: 'paid')
+  scope :failed, -> { where(state: 'failed') }
+  scope :paid,   -> { where(state: 'paid') }
 
   # =================
   # = Class Methods =

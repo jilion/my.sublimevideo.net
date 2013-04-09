@@ -1,45 +1,6 @@
 %h3#email_support.title= "Dedicated Email Support"
 .help_box
-  %p
-    Use the form below to submit your issue or question and we'll personally get back to you as quickly as we can.
-    = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
-
-  .support_team_status{ class: support_availability_class }= raw support_availability_sentence
-
-  = form_for @support_request, url: [:support_request], html: { multipart: true } do |f|
-    .entry.select.site_token
-      = f.label :site_token, "", class: "icon"
-      = f.select :site_token, support_request_site_token_options
-
-    .entry.ticket_subject
-      = f.label :subject, "Subject", class: "icon"
-      = f.text_field :subject, class: "text", placeholder: "Subject", required: true
-
-    .entry.message
-      = f.label :message, "Description of your issue or question", class: "icon"
-      = f.text_area :message, class: "text", placeholder: "Description of your issue or question", required: true
-
-    %p.note Please specify a page URL where we'll be able to reproduce the issue.
-    .entry.ticket_test_page
-      -# %h3.section_title= f.label :test_page, "Address of the page you are testing on."
-      %p= f.text_field :test_page, class: "text no_icon", placeholder: "Test page url"
-
-    %p.note Please be as specific as possible (OS, browser, version).
-    .entry.ticket_env
-      -# %h3.section_title= f.label :env, "Environment (OS, browser, version) where the issue occurs."
-      %p= f.text_area :env, class: "text", placeholder: "Environment where the issue occurs"
-      %div.checkbox_wrap
-        = check_box_tag :current_env, '1', false
-        = label_tag :current_env, "Auto-detect my current environment"
-
-    .entry.browse.ticket_upload#ticket_upload
-      = label_tag 'support_request[uploads][]', "Do not hesitate to attach a screenshot, if you feel it can help."
-      .fakeupload
-        %button.blue_button{ tabindex: "-1", name: "browse" }= "Browse"
-        %input.txt{ type: "text", name: "fakeuploadtxt", readonly: "readonly", tabindex: "-1" }
-      = file_field_tag 'support_request[uploads][]', id: 'support_request_uploads_0', onchange: "this.form.fakeuploadtxt.value = this.value.replace(/C:.fakepath./,'')", class: "realupload"
-      %a{ href: '', id: 'cancel_upload', class: 'submit_dynamic_button ', style: 'display:none' }
-        %span Clear the chosen file
-
-    .entry.update
-      = f.submit 'Send', class: "submit blue_button"
+  - if email_support?
+    = render 'pages/help/email_support_form'
+  - else
+    %p= raw "Dedicated email support is only accessible to customers with at least a paid add-on."

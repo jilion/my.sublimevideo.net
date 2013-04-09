@@ -28,10 +28,10 @@ class Tweet
 
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
-  scope :keywords,          lambda { |keywords| where(keywords: keywords) }
-  scope :favorites,         where(favorited: true)
-  scope :by_date,           lambda { |way='desc'| order_by([:tweeted_at, way]) }
-  scope :by_retweets_count, lambda { |way='desc'| order_by([:retweets_count, way]) }
+  scope :keywords,          ->(keywords) { where(keywords: keywords) }
+  scope :favorites,         -> { where(favorited: true) }
+  scope :by_date,           ->(way='desc') { order_by([:tweeted_at, way]) }
+  scope :by_retweets_count, ->(way='desc') { order_by([:retweets_count, way]) }
 
   # ===============
   # = Validations =

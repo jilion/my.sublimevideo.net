@@ -1,0 +1,19 @@
+%table
+  %col
+  %col.odd
+  %col
+
+  = render 'addons/addon', site: site, addon: addon
+
+  %tr
+    %td.break_box{ colspan: 3 }
+  %tr
+    %td
+    %td.trial_notice
+      %small
+        Total per month
+        = link_to content_tag(:sup, '1'), '#footnote-1', class: 'hl'
+    %td.price
+      - addon_plan = site.addon_plan_for_addon_name(addon.name)
+      - price = !addon_plan || site.sponsored_to?(addon_plan) ? 0 : addon_plan.price
+      %strong#addons_total= display_amount_with_sup(price)

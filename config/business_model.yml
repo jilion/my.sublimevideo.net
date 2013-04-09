@@ -1,7 +1,3 @@
-new_trial_date: 2013-02-27 16:30:00.00 00:00 # 5:30pm EST
-days_for_trial_old: 30
-days_for_trial_new: 7
-days_before_trial_end_old:
-  - 5
-days_before_trial_end_new:
+days_for_trial: 7
+days_before_trial_end:
   - 2

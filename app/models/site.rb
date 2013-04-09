@@ -165,16 +165,16 @@ class Site < ActiveRecord::Base
   # ==========
 
   # state
-  scope :active,       where{ state == 'active' }
-  scope :inactive,     where{ state != 'active' }
-  scope :suspended,    where{ state == 'suspended' }
-  scope :archived,     where{ state == 'archived' }
-  scope :not_archived, where{ state != 'archived' }
+  scope :active,       -> { where{ state == 'active' } }
+  scope :inactive,     -> { where{ state != 'active' } }
+  scope :suspended,    -> { where{ state == 'suspended' } }
+  scope :archived,     -> { where{ state == 'archived' } }
+  scope :not_archived, -> { where{ state != 'archived' } }
 
   # attributes queries
-  scope :with_wildcard,              where{ wildcard == true }
-  scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
-  scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
+  scope :with_wildcard,              -> { where{ wildcard == true } }
+  scope :with_path,                  -> { where{ (path != nil) & (path != '') & (path != ' ') } }
+  scope :with_extra_hostnames,       -> { where{ (extra_hostnames != nil) & (extra_hostnames != '') } }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
   scope :without_hostnames, ->(hostnames = []) do
     where { (hostname != nil) & (hostname != '') }.
@@ -193,19 +193,11 @@ class Site < ActiveRecord::Base
     active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id")
     .merge(BillableItem.subscribed).merge(BillableItem.paid)
   end
-  scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
+  scope :free, -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
   def self.with_addon_plan(full_addon_name)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
 
     active.includes(:billable_items).merge(BillableItem.with_item(addon_plan))
-  end
-
-  def self.in_beta_trial_ended_after(full_addon_name, timestamp)
-    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
-
-    active.includes(:billable_item_activities).where{ billable_item_activities.state == 'beta' }
-    .merge(BillableItemActivity.with_item(addon_plan))
-    .where{ date_trunc('day', created_at) <= (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }
   end
 
   # admin
@@ -238,22 +230,21 @@ class Site < ActiveRecord::Base
   end
 
   def self.with_page_loads_in_the_last_30_days
-    fields_to_add = %w[m e em].inject([]) do |array, sub_field|
-      array << "$pv.#{sub_field}"; array
-    end
-
     stats = Stat::Site::Day.collection.aggregate([
       { :$match => { d: { :$gte => 30.days.ago.midnight } } },
       { :$project => {
           _id: 0,
           t: 1,
-          pvTot: { :$add => fields_to_add } } },
+          pvmTot: { :$add => "$pv.m" },
+          pveTot: { :$add => "$pv.e" },
+          pvemTot: { :$add => "$pv.em" } } },
       { :$group => {
         _id: '$t',
-        pvTotSum: { :$sum => '$pvTot' }, } }
+        pvmTotSum: { :$sum => '$pvmTot' },
+        pveTotSum: { :$sum => '$pveTot' },
+        pvemTotSum: { :$sum => '$pvemTot' } } }
     ])
-
-    where(token: stats.select { |stat| stat['pvTotSum'] > 0 }.map { |s| s['_id'] })
+    where(token: stats.select { |stat| (stat['pvmTotSum'] + stat['pveTotSum'] + stat['pvemTotSum']) > 0 }.map { |s| s['_id'] })
   end
 
   def self.to_backbone_json

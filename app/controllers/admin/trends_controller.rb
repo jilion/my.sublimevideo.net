@@ -6,10 +6,6 @@ class Admin::TrendsController < Admin::AdminController
     @selected_period = (params[:p] || "").split('-')
   end
 
-  def show
-    render params[:page]
-  end
-
   def billings
     respond_to do |format|
       format.json { render json: BillingsTrend.json }

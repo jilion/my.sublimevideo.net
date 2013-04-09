@@ -53,4 +53,16 @@ module SitesHelper
     [site.loaders_updated_at.to_i, site.settings_updated_at.to_i].max
   end
 
+  def options_for_sites(sites)
+    options_for_select(_sites_for_select(sites), disabled: '')
+  end
+
+  private
+
+  def _sites_for_select(sites)
+    sites.by_hostname.map do |site|
+      [hostname_or_token(site, length: 20), site.token]
+    end
+  end
+
 end

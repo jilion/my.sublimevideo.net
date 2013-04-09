@@ -50,7 +50,6 @@ describe SitesTasks do
     let!(:addon_plan_3) { create(:addon_plan, required_stage: 'beta', stable_at: nil, price: 0) }
 
     before do
-      BusinessModel.stub(new_trial_date: BusinessModel.days_for_trial_old.days.ago) # should not be needed after new trial duration ransition
       create(:billable_item_activity, site: site1, item: design, state: 'beta', created_at: (BusinessModel.days_for_trial + 1).days.ago) # free
       create(:billable_item, site: site1, item: design, state: 'beta') # free
 

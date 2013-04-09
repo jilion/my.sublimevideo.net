@@ -43,7 +43,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "addon_plan#{n}" }
     price           995
     availability    'public'
-    stable_at        Time.now.utc
+    stable_at       Time.now.utc
   end
 
   factory :app_plugin, class: App::Plugin do

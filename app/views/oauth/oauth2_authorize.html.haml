@@ -5,22 +5,20 @@
   %section.text.dark_box
     %p.desc= raw "Would you like to authorize the application #{link_to(content_tag(:strong, @client_application.name), @client_application.url, onclick: "window.open(this); return false")} to access your account?"
 
-    %p.desc><
+    %p.desc
       = "This application"
-      %strong{ style: "color:#166c00" }= "will be able to"
-      = ":"
+      %strong{ style: "color:#166c00" }= "will be able to:"
     %ul.desc
       -# Always accessible by default
       %li Read information and usage data for your sites.
       - if scopes.include?('site')
         %li Add new sites.
         %li Update existing sites.
-      
 
-    %p.desc><
+
+    %p.desc
       = "This application"
-      %strong{ style: "color:#891619" }= "will not be able to"
-      = ":"
+      %strong{ style: "color:#891619" }= "will not be able to:"
     %ul.desc
       - if scopes.exclude?('site')
         %li Add new sites.
@@ -37,4 +35,4 @@
 
     .entry.update
       = submit_tag "Authorize", class: "blue_button"
-      = link_to "Cancel", params[:redirect_uri], class: "submit_dynamic_button float hl"
+      = link_to "Cancel", html_escape(params[:redirect_uri]), class: "submit_dynamic_button float hl"

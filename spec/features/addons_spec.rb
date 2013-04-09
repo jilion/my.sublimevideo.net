@@ -1,81 +1,89 @@
 require 'spec_helper'
 
 feature 'special /addons page' do
-  context 'user is not logged-in without any site' do
+  context 'user is not logged in' do
     background do
-      @user = create(:user, use_clients: true)
+      @user = create(:user)
     end
 
-    scenario 'redirects to /login and then to /assistant/new-site' do
-      go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/login"
-      fill_and_submit_login(@user)
-      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+    context 'without any site' do
+      scenario 'redirects to /login and then to /assistant/new-site' do
+        go 'my', 'addons'
+        current_url.should eq "http://my.sublimevideo.dev/login"
+        fill_and_submit_login(@user)
+        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+      end
+    end
+
+    context 'with 1 site' do
+      background do
+        @site = build(:site, user: @user)
+        SiteManager.new(@site).create
+      end
+
+      scenario 'redirects to /login and then to /sites/:token/addons' do
+        go 'my', 'addons'
+        current_url.should eq "http://my.sublimevideo.dev/login"
+        fill_and_submit_login(@user)
+        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+      end
     end
   end
 
-  context 'user is not logged-in with 1 site' do
-    background do
-      @user = create(:user, use_clients: true)
-      @site = build(:site, user: @user)
-      SiteManager.new(@site).create
+  context 'user is logged-in' do
+    context 'without any site' do
+      background do
+        sign_in_as :user
+      end
+
+      scenario 'redirects to /assistant/new-site' do
+        go 'my', 'addons'
+        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+      end
     end
 
-    scenario 'redirects to /login and then to /sites/:token/addons' do
-      go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/login"
-      fill_and_submit_login(@user)
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
-    end
-  end
+    context 'with 1 site' do
+      background do
+        sign_in_as :user_with_site
+        @site = @current_user.sites.first
+      end
 
-  context 'user is not logged-in with more than 1 site' do
-    background do
-      @user = create(:user, use_clients: true)
-      SiteManager.new(build(:site, user: @user)).create
-      SiteManager.new(build(:site, user: @user)).create
-    end
-
-    scenario 'redirects to /login and then to /sites' do
-      go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/login"
-      fill_and_submit_login(@user)
-      current_url.should eq "http://my.sublimevideo.dev/sites"
-    end
-  end
-
-  context 'user is logged-in without any site' do
-    background do
-      sign_in_as :user
-    end
-
-    scenario 'redirects to /assistant/new-site' do
-      go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
-    end
-  end
-
-  context 'user is logged-in with 1 site' do
-    background do
-      sign_in_as :user_with_site
-      @site = @current_user.sites.first
-    end
-
-    scenario 'redirects /sites/:token/addons' do
-      go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+      scenario 'redirects /sites/:token/addons' do
+        go 'my', 'addons'
+        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+      end
     end
   end
 
   context 'user is logged-in with more than 1 sites' do
     background do
       sign_in_as :user_with_sites
+      @site = @current_user.sites.first
     end
 
-    scenario 'redirects to /sites' do
+    scenario 'redirects to /sites/:token/addons' do
       go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/sites"
+      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
     end
+  end
+end
+
+feature 'Add-on subscription shortcut' do
+  background do
+    sign_in_as :user_with_sites
+    @site = @current_user.sites.first
+  end
+
+  scenario 'redirects sites/:token/addons?h=stats-realtime to /sites/:token/addons/stats' do
+    go 'my', "sites/#{@site.to_param}/addons/stats?p=realtime"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats?p=realtime"
+  end
+
+  scenario 'redirects addons/stats to /sites/:token/addons/stats' do
+    go 'my', "addons/stats"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
   end
 end
 

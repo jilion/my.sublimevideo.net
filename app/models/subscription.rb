@@ -16,11 +16,11 @@ class Subscription < ActiveRecord::Base
   def self.app_designs
     where(item_type: 'App::Design')
   end
-  
+
   def self.addon_plans
     where(item_type: 'AddonPlan')
   end
-  
+
   def self.beta
     where(state: 'beta')
   end
@@ -28,15 +28,15 @@ class Subscription < ActiveRecord::Base
   def self.subscribed
     where(state: 'subscribed')
   end
-  
+
   def self.active
     where(state: ACTIVE_STATES)
   end
-  
+
   def self.paid
     where{
       ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |
-      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.joins(:addon).paid.pluck("addon_plans.id")))
+      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.paid.pluck("addon_plans.id")))
     }
   end
 

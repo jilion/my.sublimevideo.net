@@ -36,6 +36,7 @@
                   videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
                       invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages
+               generate_loader_admin_site PUT      /sites/:id/generate_loader(.:format)                      admin/sites#generate_loader
 update_app_design_subscription_admin_site PUT      /sites/:id/update_app_design_subscription(.:format)       admin/sites#update_app_design_subscription
 update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
                               admin_sites GET      /sites(.:format)                                          admin/sites#index
@@ -127,10 +128,9 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                  gs_login POST     /gs-login(.:format)                                       users/sessions#create_gs
                            more_user_info GET      /account/more-info(.:format)                              users#more_info
                      account_cancellation GET      /account/cancel(.:format)                                 users/cancellations#new
-                           account_cancel POST     /account/cancel(.:format)                                 users/cancellations#create
+                                   cancel POST     /account/cancel(.:format)                                 users/cancellations#create
                                           DELETE   /notice/:id(.:format)                                     users#hide_notice
                         password_validate POST     /password/validate(.:format)                              users/passwords#validate
-                             account_edit GET      /account/edit(.:format)                                   :controller#:action
                                   sign_up GET      /sign_up(.:format)                                        :controller#sign_up
                                  register GET      /register(.:format)                                       :controller#register
                                    log_in GET      /log_in(.:format)                                         :controller#log_in
@@ -139,6 +139,7 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                   log_out GET      /log_out(.:format)                                        :controller#log_out
                                  sign_out GET      /sign_out(.:format)                                       :controller#sign_out
                                   signout GET      /signout(.:format)                                        :controller#signout
+                                     edit GET      /account/edit(.:format)                                   :controller#edit
                              edit_billing GET      /account/billing/edit(.:format)                           billings#edit
                                   billing PUT      /account/billing(.:format)                                billings#update
                       client_applications GET      /account/applications(.:format)                           client_applications#index
@@ -158,13 +159,15 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                          assistant_player GET|PUT  /assistant/:site_id/player(.:format)                      assistant#player
                   assistant_publish_video GET      /assistant/:site_id/publish-video(.:format)               assistant#publish_video
                         assistant_summary GET|POST /assistant/:site_id/summary(.:format)                     assistant#summary
-                                   addons GET      /addons(.:format)                                         addons#directory
-                   update_all_site_addons PUT      /sites/:site_id/addons/update_all(.:format)               addons#update_all
+                                   addons GET      /addons(.:format)                                         addons#index
+                                    addon GET      /addons/:id(.:format)                                     addons#show
+                    subscribe_site_addons PUT      /sites/:site_id/addons/subscribe(.:format)                addons#subscribe
                               site_addons GET      /sites/:site_id/addons(.:format)                          addons#index
+                               site_addon GET      /sites/:site_id/addons/:id(.:format)                      addons#show
                   set_as_default_site_kit PUT      /sites/:site_id/players/:id/set_as_default(.:format)      kits#set_as_default
              process_custom_logo_site_kit POST     /sites/:site_id/players/:id/process_custom_logo(.:format) kits#process_custom_logo
-                         fields_site_kits GET      /sites/:site_id/players/fields(.:format)                  kits#fields
                           fields_site_kit GET      /sites/:site_id/players/:id/fields(.:format)              kits#fields
+                         fields_site_kits GET      /sites/:site_id/players/fields(.:format)                  kits#fields
                                 site_kits GET      /sites/:site_id/players(.:format)                         kits#index
                                           POST     /sites/:site_id/players(.:format)                         kits#create
                              new_site_kit GET      /sites/:site_id/players/new(.:format)                     kits#new
@@ -189,9 +192,9 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                            new_video_code GET      /publish-video(.:format)                                  video_codes#new
                                           GET      /stats-demo(.:format)                                     site_stats#index {:site_id=>"demo"}
                                     stats GET      /stats(.:format)                                          :controller#:action
-                         sites_stats_demo GET      /sites/stats/demo(.:format)                               :controller#:action
+                                          GET      /sites/stats(.:format)                                    :controller#:action
+                                     demo GET      /sites/stats/demo(.:format)                               :controller#demo
                                           GET      /sites/stats/:site_id(.:format)                           :controller#:action
-                              sites_stats GET      /sites/stats(.:format)                                    :controller#:action
                             stats_exports POST     /stats/exports(.:format)                                  stats_exports#create
                              stats_export GET      /stats/exports/:id(.:format)                              stats_exports#show
                        retry_all_invoices PUT      /invoices/retry_all(.:format)                             invoices#retry_all
@@ -202,8 +205,8 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                           POST     /feedback(.:format)                                       feedbacks#create
                           support_request POST     /help(.:format)                                           support_requests#create
                                   support GET      /support(.:format)                                        :controller#support
-                              pusher_auth POST     /pusher/auth(.:format)                                    pusher#auth
-                           pusher_webhook POST     /pusher/webhook(.:format)                                 pusher#webhook
+                                     auth POST     /pusher/auth(.:format)                                    pusher#auth
+                                  webhook POST     /pusher/webhook(.:format)                                 pusher#webhook
                                      page GET      /:page                                                    pages#show
                                      root          /                                                         :controller#:action
                              rails_routes          /rails/routes(.:format)                                   sextant/routes#index

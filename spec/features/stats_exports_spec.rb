@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 feature 'StatsExport' do
-  let(:video_tag) { VideoTag.new(uid: 'video_uid', title: 'My Video' ) }
+  let(:video_tag) { VideoTag.new(uid: 'video_uid', title: 'My Video') }
 
   background do
-    sign_in_as :user
-    @site = build(:site, user: @current_user)
-    SiteManager.new(@site).create
+    sign_in_as :user_with_site
+    @site = @current_user.sites.last
     create(:billable_item, site: @site, item: @stats_addon_plan_2)
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
@@ -21,6 +20,7 @@ feature 'StatsExport' do
 
     stub_api_for(VideoTag) do |stub|
       stub.get("/private_api/sites/#{@site.token}/video_tags") { |env| [200, {}, [video_tag].to_json] }
+      stub.get("/private_api/sites/#{@site.token}/video_tags/video_uid") { |env| [200, {}, video_tag.to_json] }
     end
   end
 

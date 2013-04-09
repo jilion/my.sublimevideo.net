@@ -1,83 +1,78 @@
 module Admin::SitesHelper
 
+  PAGE_TITLES = {
+    tagged_with: "tagged with '%s'",
+    with_min_billable_video_views: "with at least %s video plays in the last 30 days",
+    search: "matching '%s'",
+    user_id: "for %s",
+    with_state: "%s",
+    with_addon_plan: "with the '%s' add-on",
+  }
+
+  FILTER_TITLES = {
+    addon_plan: "%s (<strong>%s</strong>)"
+  }
+
   def admin_sites_page_title(sites)
-    state = if param = params.detect { |k, v| k.to_sym.in?([:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path]) }
-      _admin_sites_page_title(param[0])
-    elsif params[:tagged_with]
-      _admin_sites_page_title('tagged_with', "'#{params[:tagged_with]}'")
-    elsif params[:with_min_billable_video_views]
-      "with at least #{display_integer(params[:with_min_billable_video_views])} video plays in the last 30 days"
-    elsif params[:search].present?
-      "matching '#{params[:search]}'"
-    elsif params[:user_id]
-      user = User.find(params[:user_id])
-      "for #{user.name_or_email}" if user
-    elsif params[:with_state]
-      "#{params[:with_state]}"
-    elsif params[:with_addon_plan]
-      "with the '#{AddonPlan.get(*params[:with_addon_plan].split('-')).title}' add-on"
+    return unless selected_params = _select_param(:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path, :tagged_with, :with_min_billable_video_views, :search, :user_id, :with_state, :with_addon_plan)
+
+    filter_titles = selected_params.inject([]) do |memo, selected_param|
+      memo << _page_title_from_filter(*selected_param); memo
     end
 
-    [formatted_pluralize(sites.total_count, 'site').titleize, state].join(' ')
+    [formatted_pluralize(sites.total_count, 'site').titleize, filter_titles.to_sentence].join(' ')
   end
 
-  def addon_plans_list_for(addon)
-    addon.plans.includes(:addon).order(:price).inject([]) do |memo, addon_plan|
-      count_of_sites_with_this_addon_plan = Site.with_addon_plan("#{addon.name}-#{addon_plan.name}").size
-      text = "#{addon_plan.title} (#{content_tag(:strong, display_integer(count_of_sites_with_this_addon_plan))})".html_safe
-      href = admin_sites_path(with_addon_plan: "#{addon.name}-#{addon_plan.name}")
-      memo << link_to(text, href, remote: true, class: 'remote')
-    end.join(' | ').html_safe
-  end
-
-  def links_to_hostnames(site)
-    html = ""
-    if site.hostname?
-      html += link_to truncated_hostname(site), url_with_protocol(site.hostname)
-    elsif site.extra_hostnames?
-      html += "(ext) #{joined_links(site.extra_hostnames)}"
-    else
-      html += "(dev) #{joined_links(site.dev_hostnames)}"
+  def addon_plans_filters
+    capture_haml do
+      haml_tag(:ul) do
+        Addon.public.visible.each do |addon|
+          haml_tag(:li, _addon_plans_filter(addon))
+        end
+      end
     end
-    html += " (#{link_to("details", [:edit, :admin, site], title: "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
-    raw html
   end
 
-  def joined_links(hostnames)
-    return if hostnames.empty?
+  def admin_links_to_hostnames(site)
+    html = %w[hostname extra_hostnames dev_hostnames].inject([]) do |memo, hostname_field|
+      break memo if memo.any?
 
-    hostnames = hostnames.split(/,\s*/)
-    first_hostname = hostnames.shift
-    html = link_to first_hostname, "http://#{first_hostname}"
-    html += ", #{hostnames.size} more" unless hostnames.empty?
-    html
+      prefix = hostname_field == 'hostname' ? nil : "(#{hostname_field[0,3]}) "
+      memo << [prefix, _joined_hostname_links(site, site.send(hostname_field))].compact.join(' '); memo
+    end
+    html << "(#{link_to("details", [:edit, :admin, site], title: "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
+
+    html.join(' ').html_safe
   end
 
   # always with span here
-  def truncated_hostname(site, options = {})
-    site_hostname = site.hostname || "no hostname"
+  def admin_pretty_hostname(site, site_hostname, options = {})
+    site_hostname ||= 'no hostname'
     length = options[:truncate] || 1000
-    h_trunc_length = length * 2/3
-    p_trunc_length = (site_hostname.length < h_trunc_length) ? (h_trunc_length - site_hostname.length + (length * 1/3)) : (length * 1/3)
-    uri = ''
-    uri += "<span class='wildcard'>(*.)</span>" if options[:wildcard] && site.wildcard?
-    uri += truncate_middle(site_hostname, length: h_trunc_length)
-    uri += "<span class='path'>/#{site.path.truncate(p_trunc_length)}</span>" if options[:path] && site.path.present?
-    uri.html_safe
+    hostname_trunc_length = length * 2/3
+    path_trunc_length = if site_hostname.size < hostname_trunc_length
+      hostname_trunc_length - site_hostname.size + (length * 1/3)
+    else
+      length * 1/3
+    end
+    html = []
+    html << "<span class='wildcard'>(*.)</span>" if options[:wildcard] && site.wildcard?
+    html << truncate_middle(site_hostname, length: hostname_trunc_length)
+    html << "<span class='path'>/#{site.path.truncate(path_trunc_length)}</span>" if options[:path] && site.path?
+
+    html.join.html_safe
   end
 
-  def app_designs_for_admin_select(site)
-    items = _items_for_select(site, App::Design.order(:price))
-    options_for_select(items)
+  def admin_designs_options(site)
+    options_for_select(_items_for_select(site, App::Design.order(:price)))
   end
 
-  def addon_plans_for_select(site)
+  def admin_addon_plans_options(site)
     grouped_options = {}
-    addons = Addon.all
-
-    addons.each do |addon|
-      items = _items_for_select(site, addon.plans.includes(:addon).order(:price))
-      grouped_options[addon.title] = items if items.present?
+    Addon.all.each do |addon|
+      if items = _items_for_select(site, addon.plans.includes(:addon).order(:price))
+        grouped_options[addon.title] = items
+      end
     end
 
     grouped_options_for_select(grouped_options)
@@ -96,8 +91,55 @@ module Admin::SitesHelper
     end
   end
 
+  def _select_param(*keys)
+    params.select { |k, _| k.to_sym.in?(keys) }
+  end
+
+  def _page_title_from_filter(key, value)
+    key = key.to_sym
+    PAGE_TITLES[key] ? (PAGE_TITLES[key] % _value_for_filter_title_interpolation(key, value)) : _admin_sites_page_title(key)
+  end
+
+  def _value_for_filter_title_interpolation(key, value)
+    case key
+    when :with_min_billable_video_views
+      display_integer(value)
+    when :user_id
+      User.find(value).try(:name_or_email)
+    when :with_addon_plan
+      AddonPlan.get(*value.split('-')).try(:title)
+    else
+      value
+    end
+  end
+
   def _admin_sites_page_title(underscored_name, value = nil)
-    ["#{underscored_name.gsub(/_/, ' ')}", value].compact.join(' ')
+    ["#{underscored_name.to_s.gsub(/_/, ' ')}", value].compact.join(' ')
+  end
+
+  def _addon_plans_filter(addon)
+    addon.plans.includes(:addon).order(:price).inject([]) do |memo, addon_plan|
+      memo << _filter_title_for_addon_plan(addon_plan); memo
+    end.join(' | ').html_safe
+  end
+
+  def _filter_title_for_addon_plan(addon_plan)
+    full_addon_plan_key = "#{addon_plan.addon.name}-#{addon_plan.name}"
+    text = FILTER_TITLES[:addon_plan] % [addon_plan.title, display_integer(Site.with_addon_plan(full_addon_plan_key).size)]
+    href = admin_sites_path(with_addon_plan: full_addon_plan_key)
+
+    link_to(text.html_safe, href, remote: true, class: 'remote')
+  end
+
+  def _joined_hostname_links(site, hostnames)
+    hostnames = hostnames.split(/,\s*/)
+    return if hostnames.empty?
+
+    first_hostname = hostnames.shift
+    html = [link_to(admin_pretty_hostname(site, first_hostname), url_with_protocol(first_hostname))]
+    html << "#{hostnames.size} more" unless hostnames.empty?
+
+    html.join(', ')
   end
 
 end

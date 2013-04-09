@@ -142,10 +142,6 @@ class User < ActiveRecord::Base
   scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
   scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
-  scope :in_beta_trial_ended_after, ->(full_addon_name, timestamp) {
-    site_ids = Site.in_beta_trial_ended_after(full_addon_name, timestamp).map(&:id)
-    active.where(id: site_ids)
-  }
   scope :with_stats_realtime_addon_or_invalid_video_tag_data_uid, -> {
     site_with_realtime_addon_tokens = Site.with_addon_plan('stats-realtime').select(:token).uniq.map(&:token)
     site_with_invalide_video_tag_data_uid = VideoTag.site_tokens(with_invalid_uid: true)
@@ -153,11 +149,11 @@ class User < ActiveRecord::Base
   }
 
   # sort
-  scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way.upcase}, users.email #{way.upcase}") }
-  scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way.upcase}") }
-  scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way.upcase}") }
-  scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way.upcase}") }
-  scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way.upcase}") }
+  scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way}, users.email #{way}") }
+  scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way}") }
+  scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way}") }
+  scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way}") }
+  scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way}") }
 
   def self.additional_or_conditions
     %w[email name].inject([]) do |memo, field|
@@ -233,6 +229,14 @@ class User < ActiveRecord::Base
 
   def billable?
     sites.not_archived.paying.count > 0
+  end
+
+  def trial_or_billable?
+    billable? || sites.not_archived.any? { |site| site.total_billable_items_price > 0 }
+  end
+
+  def sponsored?
+    sites.not_archived.includes(:billable_items).where { billable_items.state == 'sponsored' }.present?
   end
 
   def name_or_email
