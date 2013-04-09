@@ -73,7 +73,7 @@ feature "Site invoices page" do
         scenario "it is possible to retry the payment" do
           VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.pay_invoices_above') }
 
-          @site.invoices.failed.should be_empty
+          @site.invoices.with_state('failed').should be_empty
 
           current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
 

@@ -188,7 +188,7 @@ feature "Suspended page" do
 
         current_url.should eq "http://my.sublimevideo.dev/sites"
 
-        @site.invoices.failed.should be_empty
+        @site.invoices.with_state('failed').should be_empty
         @site.reload.should be_active
         @current_user.reload.should be_active
 

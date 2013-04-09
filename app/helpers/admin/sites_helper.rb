@@ -91,10 +91,6 @@ module Admin::SitesHelper
     end
   end
 
-  def _admin_sites_page_title(underscored_name, value = nil)
-    ["#{underscored_name.to_s.gsub(/_/, ' ')}", value].compact.join(' ')
-  end
-
   def _select_param(*keys)
     params.select { |k, _| k.to_sym.in?(keys) }
   end
@@ -115,6 +111,10 @@ module Admin::SitesHelper
     else
       value
     end
+  end
+
+  def _admin_sites_page_title(underscored_name, value = nil)
+    ["#{underscored_name.to_s.gsub(/_/, ' ')}", value].compact.join(' ')
   end
 
   def _addon_plans_filter(addon)

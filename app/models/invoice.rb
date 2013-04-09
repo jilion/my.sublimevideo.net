@@ -86,12 +86,8 @@ class Invoice < ActiveRecord::Base
 
   scope :paid_between, ->(started_at, ended_at) { between(paid_at: started_at..ended_at) }
 
-  scope :open,           -> { where(state: 'open') }
   scope :paid,           -> { where(state: 'paid').includes(:site).where{ sites.refunded_at == nil } }
   scope :refunded,       -> { where(state: 'paid').includes(:site).where{ sites.refunded_at != nil } }
-  scope :failed,         -> { where(state: 'failed') }
-  scope :waiting,        -> { where(state: 'waiting') }
-  scope :canceled,       -> { where(state: 'canceled') }
   scope :open_or_failed, -> { where(state: %w[open failed]) }
   scope :not_canceled,   -> { where{ state != 'canceled' } }
   scope :not_paid,       -> { where(state: %w[open waiting failed]) }
