@@ -416,7 +416,7 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
-    public_suffix (1.3.0)
+    public_suffix (1.2.0)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.5)
@@ -669,7 +669,7 @@ DEPENDENCIES
   premailer!
   premailer-rails
   prowl
-  public_suffix
+  public_suffix (= 1.2.0)
   pusher!
   quiet_assets
   rack-cache

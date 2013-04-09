@@ -69,7 +69,7 @@ gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast'
 
 gem 'activemerchant'
-gem 'public_suffix'
+gem 'public_suffix', '1.2.0'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 
