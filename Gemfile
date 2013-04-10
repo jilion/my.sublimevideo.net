@@ -87,6 +87,7 @@ gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
 gem 'lograge'
+gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
