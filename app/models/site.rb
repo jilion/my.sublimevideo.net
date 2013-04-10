@@ -172,10 +172,26 @@ class Site < ActiveRecord::Base
   scope :not_archived, -> { where{ state != 'archived' } }
 
   # attributes queries
-  scope :with_wildcard,              -> { where{ wildcard == true } }
+  scope :with_wildcard,              -> { where(wildcard: true) }
   scope :with_path,                  -> { where{ (path != nil) & (path != '') & (path != ' ') } }
   scope :with_extra_hostnames,       -> { where{ (extra_hostnames != nil) & (extra_hostnames != '') } }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+  scope :without_tokens, ->(tokens = []) do
+    where { token << tokens }
+  end
+  scope :without_hostnames, ->(hostnames = []) do
+    where { (hostname != nil) & (hostname != '') }.
+    where { hostname << hostnames }
+  end
+  scope :created_on, ->(timestamp) do
+    where(created_at: Time.parse(timestamp).all_day)
+  end
+  scope :not_tagged_with, ->(tag) do
+    tagged_with(tag, exclude: true)
+  end
+  scope :first_billable_plays_on_week, ->(timestamp) do
+    where(first_billable_plays_at: Time.parse(timestamp).all_week)
+  end
 
   # addons
   scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
@@ -243,6 +259,12 @@ class Site < ActiveRecord::Base
 
   def to_backbone_json(options = {})
     to_json(only: [:token, :hostname])
+  end
+
+  def as_json(options = nil)
+    json = super
+    json['tags'] = tag_list
+    json
   end
 
   %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|

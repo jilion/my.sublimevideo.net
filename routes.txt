@@ -15,6 +15,7 @@
                       edit_admin_password GET      /password/edit(.:format)                                  admin/admins/passwords#edit
                                           PUT      /password(.:format)                                       admin/admins/passwords#update
                   accept_admin_invitation GET      /invitation/accept(.:format)                              admin/admins/invitations#edit
+                  remove_admin_invitation GET      /invitation/remove(.:format)                              admin/admins/invitations#destroy
                          admin_invitation POST     /invitation(.:format)                                     admin/admins/invitations#create
                      new_admin_invitation GET      /invitation/new(.:format)                                 admin/admins/invitations#new
                                           PUT      /invitation(.:format)                                     admin/admins/invitations#update
@@ -107,6 +108,9 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                       admin_app_component GET      /app/components/:id(.:format)                             admin/app/components#show
                                           PUT      /app/components/:id(.:format)                             admin/app/components#update
                                           DELETE   /app/components/:id(.:format)                             admin/app/components#destroy
+                 add_tag_private_api_site PUT      /private_api/sites/:id/add_tag(.:format)                  private_api/sites#add_tag
+                        private_api_sites GET      /private_api/sites(.:format)                              private_api/sites#index
+                         private_api_site GET      /private_api/sites/:id(.:format)                          private_api/sites#show
                          new_user_session GET      /login(.:format)                                          users/sessions#new
                              user_session POST     /login(.:format)                                          users/sessions#create
                      destroy_user_session GET      /logout(.:format)                                         users/sessions#destroy
