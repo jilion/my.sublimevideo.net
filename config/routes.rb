@@ -31,7 +31,7 @@ MySublimeVideo::Application.routes.draw do
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
-  namespace 'api' do
+  namespace :api do
     # Legacy routes
     constraints SubdomainConstraint.new('my') do
 
@@ -174,6 +174,14 @@ MySublimeVideo::Application.routes.draw do
   end # admin.
 
   constraints SubdomainConstraint.new('my') do
+    namespace :private_api do
+      resources :sites, only: [:index, :show] do
+        member do
+          put :add_tag
+        end
+      end
+    end
+
     devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
     devise_scope :user do
       resource :user, only: [], path: '' do

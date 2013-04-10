@@ -453,10 +453,14 @@ describe Site, :addons do
 
     describe "attributes queries" do
       before do
-        @site_wildcard        = create(:site, user: user, wildcard: true)
-        @site_path            = create(:site, user: user, path: "foo", path: 'foo')
+        @site_wildcard        = create(:site, hostname: 'google.com', user: user, wildcard: true)
+        @site_path            = create(:site, hostname: 'facebook.com', user: user, path: "foo", path: 'foo')
         @site_extra_hostnames = create(:site, user: user, extra_hostnames: "foo.com")
         @site_next_cycle_plan = create(:site, user: user)
+      end
+
+      describe ".without_hostnames" do
+        specify { Site.without_hostnames(%w[google.com facebook.com]).all.should =~ [@site_extra_hostnames, @site_next_cycle_plan] }
       end
 
       describe ".with_wildcard" do
