@@ -1,10 +1,5 @@
 # Exporting a single collection from production:
-mongodump -h sublimevideo.member0.mongolayer.com:27017 -d sublimevideo-stats -u heroku -p PASSWORD -o db/backups/ --collection site_day_stats
+mongodump -h sublimevideo.member0.mongolayer.com:27017 -d sublimevideo-stats -u heroku -p MONGOHQ_PASSWORD -o db/backups/ --collection site_day_stats
 
 # Restoring a single collection locally:
-mongorestore -h localhost -d sublimevideo_dev --collection site_day_stats --drop -v db/backups/sublimevideo-stats/site_day_stats.bson
-mongorestore -h localhost -d sublimevideo_dev --collection site_stats --drop -v db/backups/sublimevideo_production/site_stats.bson
-mongorestore -h localhost -d sublimevideo_dev --collection video_stats --drop -v db/backups/sublimevideo_production/video_stats.bson
-
-
-mongorestore -h localhost -d sublimevideo_dev --collection video_tags --drop -v /Users/Thibaud/Desktop/sublimevideo_stats_mongohq/MongoDB/sublimevideo-stats/video_tags.bson
+mongorestore -h localhost -d sublimevideo-stats --collection COLLECTION_NAME --drop -v db/backups/sublimevideo-stats/COLLECTION_NAME.bson

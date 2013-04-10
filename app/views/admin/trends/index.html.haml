@@ -11,7 +11,7 @@
       selectedSeries: selectedSeries
 
     $('a.selector').each () ->
-      if _.any(selectedSeriesString, (selectedSerieString) => selectedSerieString is $(this).data('value'))
+      if _.any(selectedSeriesString, (selectedSerieString) => selectedSerieString is $(this).prop('href').replace(/^.+\?/, ''))
         $(this).addClass('active')
 
 %h2#page_title SublimeVideo Trends
