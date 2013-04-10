@@ -41,10 +41,9 @@ describe SitesTrend do
         sites_stat["pa"].should eq({ 'addons' => 2 })
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 2
-        sites_stat["al"].should eq({ 'pv' => 3, 'vv' => 3 })
+        sites_stat["al"].should eq({ 'pv' => 4, 'vv' => 4 })
       end
     end
-  end
 
     describe '.update_alive_sites_trends' do
       before do
@@ -59,7 +58,7 @@ describe SitesTrend do
         described_class.update_alive_sites_trends
 
         described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'pv' => 2, 'vv' => 2 })
-        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 3, 'vv' => 3 })
+        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 4, 'vv' => 4 })
       end
     end
   end
