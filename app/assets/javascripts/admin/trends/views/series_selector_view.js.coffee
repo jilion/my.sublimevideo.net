@@ -1,5 +1,5 @@
 class AdminSublimeVideo.Views.SeriesSelectorView extends Backbone.View
-  events:
+  events: ->
     'click a.selector': 'updateSelected'
 
   updateSelected: (event) ->
