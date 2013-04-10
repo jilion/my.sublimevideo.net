@@ -3,7 +3,7 @@ require 'has_scope'
 class PrivateApi::SitesController < SublimeVideoPrivateApiController
   has_scope :with_state, :created_on, :not_tagged_with, :by_date
   has_scope :with_min_billable_video_views, :first_billable_plays_on_week
-  has_scope :select, :without_hostnames, type: :array
+  has_scope :select, :without_hostnames, :without_tokens, type: :array
 
   # GET /private_api/sites
   def index
