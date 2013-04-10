@@ -53,7 +53,7 @@ class SitesTrend
   end
 
   def self._number_of_sites_with_usage_in_the_last_30_days(day, metric)
-    Site.active.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
+    Site.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
     .or({ "#{metric}.m" => { "$gt" => 0 } }, { "#{metric}.e" => { "$gt" => 0 } }, { "#{metric}.em" => { "$gt" => 0 } }).distinct(:t)).count
   end
 
