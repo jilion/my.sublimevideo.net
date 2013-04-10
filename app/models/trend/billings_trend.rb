@@ -4,8 +4,8 @@ class BillingsTrend
   include Mongoid::Timestamps
   include Trend
 
-  field :ne, type: Hash    # new sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
-  field :re, type: Hash    # renew sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+  field :ne, type: Hash # new sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+  field :re, type: Hash # renew sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
 
   def self.json_fields
     [:ne, :re]

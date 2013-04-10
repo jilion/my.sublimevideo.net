@@ -30,8 +30,8 @@ class SitesTrend
     while trend_day <= Time.now.utc.midnight do
       if trend = self.where(d: trend_day).first
         trend.update_attribute(:al, {
-          pv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, 'pv'),
-          vv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, 'vv')
+          pv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'pv'),
+          vv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'vv')
         })
       end
       trend_day += 1.day
@@ -46,15 +46,23 @@ class SitesTrend
       su: Site.suspended.count,
       ar: Site.archived.count,
       al: {
-        pv: _number_of_sites_with_usage_in_the_last_30_days(day, 'pv'),
-        vv: _number_of_sites_with_usage_in_the_last_30_days(day, 'vv')
+        pv: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv'),
+        vv: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'vv')
       }
     }
   end
 
-  def self._number_of_sites_with_usage_in_the_last_30_days(day, metric)
-    Site.where(token: Stat::Site::Day.between(d: (day - 30.days).midnight..day.yesterday.end_of_day)
-    .or({ "#{metric}.m" => { "$gt" => 0 } }, { "#{metric}.e" => { "$gt" => 0 } }, { "#{metric}.em" => { "$gt" => 0 } }).distinct(:t)).count
+  def self._number_of_sites_with_usage_in_the_last_30_days(day, options = {})
+    options.reverse_merge!(history: 30.days)
+
+    Stat::Site::Day
+    .between(d: (day - options[:history]).midnight..day.yesterday.end_of_day)
+    .or(*_or_conditions_for_metric(options[:metric]))
+    .distinct(:t).count
+  end
+
+  def self._or_conditions_for_metric(metric)
+    %w[m e em].inject([]) { |memo, field| memo << { "#{metric}.#{field}" => { "$gt" => 0 } }; memo }
   end
 
 end
