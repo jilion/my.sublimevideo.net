@@ -14,6 +14,8 @@ class Admin < ActiveRecord::Base
 
   validates :roles, admin_roles: true
 
+  def remember_me; true; end
+
   def has_role?(role)
     (roles & %W[god #{role}]).present?
   end
