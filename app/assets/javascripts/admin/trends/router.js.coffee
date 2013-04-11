@@ -52,11 +52,10 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
 
   initKeyboardShortcuts: ->
     Mousetrap.bind 'r', =>
-      event.preventDefault()
       _.each AdminSublimeVideo.trends, (collection) -> collection.selected = []
       $('a.selector').removeClass('active')
       this.clearUrl()
-      AdminSublimeVideo.period.trigger('change') # redraw the chart
+      AdminSublimeVideo.graphView.render() # redraw the chart
 
   fetchTrends: ->
     @fetchedTrendsCount = 0
