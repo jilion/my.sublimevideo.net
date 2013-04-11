@@ -180,6 +180,7 @@ MySublimeVideo::Application.routes.draw do
           put :add_tag
         end
       end
+      resources :referrers, only: [:index]
     end
 
     devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]

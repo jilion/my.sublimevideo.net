@@ -5,7 +5,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   has_scope :per, :with_state, :created_on, :created_after, :not_tagged_with, :by_date,
             :with_min_billable_video_views, :first_billable_plays_on_week
-  has_scope :select, :without_hostnames, :without_tokens, type: :array
+  has_scope :select, :without_hostnames, type: :array
 
   # GET /private_api/sites
   def index
