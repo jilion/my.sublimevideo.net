@@ -184,13 +184,19 @@ class Site < ActiveRecord::Base
     where { hostname << hostnames }
   end
   scope :created_on, ->(timestamp) do
-    where(created_at: Time.parse(timestamp).all_day)
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where(created_at: timestamp.all_day)
+  end
+  scope :created_after, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where { created_at > timestamp }
   end
   scope :not_tagged_with, ->(tag) do
     tagged_with(tag, exclude: true)
   end
   scope :first_billable_plays_on_week, ->(timestamp) do
-    where(first_billable_plays_at: Time.parse(timestamp).all_week)
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where(first_billable_plays_at: timestamp.all_week)
   end
 
   # addons

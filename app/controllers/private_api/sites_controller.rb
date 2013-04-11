@@ -3,7 +3,7 @@ require 'has_scope'
 class PrivateApi::SitesController < SublimeVideoPrivateApiController
   before_filter :find_site_by_token!, only: [:show, :add_tag]
 
-  has_scope :per, :with_state, :created_on, :not_tagged_with, :by_date,
+  has_scope :per, :with_state, :created_on, :created_after, :not_tagged_with, :by_date,
             :with_min_billable_video_views, :first_billable_plays_on_week
   has_scope :select, :without_hostnames, :without_tokens, type: :array
 

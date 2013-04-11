@@ -456,7 +456,7 @@ describe Site, :addons do
         @site_wildcard        = create(:site, hostname: 'google.com', user: user, wildcard: true)
         @site_path            = create(:site, hostname: 'facebook.com', user: user, path: "foo", path: 'foo')
         @site_extra_hostnames = create(:site, user: user, extra_hostnames: "foo.com")
-        @site_next_cycle_plan = create(:site, user: user)
+        @site_next_cycle_plan = create(:site, user: user, created_at: 3.days.from_now)
       end
 
       describe ".without_hostnames" do
@@ -473,6 +473,14 @@ describe Site, :addons do
 
       describe ".with_extra_hostnames" do
         specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
+      end
+
+      describe '.created_on' do
+        specify { Site.created_on(3.days.from_now).all.should =~ [@site_next_cycle_plan] }
+      end
+
+      describe '.created_after' do
+        specify { Site.created_after(2.days.from_now).all.should =~ [@site_next_cycle_plan] }
       end
     end
 
