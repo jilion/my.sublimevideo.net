@@ -121,32 +121,30 @@ private
   def self.clean_and_increment_metrics(values)
     if values[:inc]
       values[:inc].each do |field, value|
-        inc_increment(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
+        _increment_librato_for_field(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
       end
+
       if values[:set]
-        Librato.increment "stats.page_visits.ssl_per_min", by: 1, source: values[:set]['s'] ? 'ssl' : 'non-ssl'
-        Librato.increment 'stats.page_visits.jquery', by: 1, source: values[:set]['jq'] || 'none'
+        _increment_librato(event: 'page_visits.ssl_per_min', source: values[:set]['s'] ? 'ssl' : 'non-ssl')
+        _increment_librato(event: 'page_visits.jquery', source: values[:set]['jq'] || 'none')
       end
+
       if values[:add_to_set] && values[:add_to_set]['st'].present?
         values[:add_to_set]['st'][:$each].each do |stage|
-          Librato.increment "stats.page_visits.stage_per_min", by: 1, source: key_to_string(:add_to_set, stage)
+          _increment_librato(event: 'page_visits.stage_per_min', source: key_to_string(:add_to_set, stage))
         end
       else
-        Librato.increment "stats.page_visits.stage_per_min", by: 1, source: 'stable'
+        _increment_librato(event: 'page_visits.stage_per_min', source: 'stable')
       end
     end
+
     values[:videos].values.each do |video_inc|
       if video_inc.present?
         video_inc.each do |field, value|
-          inc_increment(field, value)  if field =~ /^(vv|vl)\.(m|e|em|d|s|i)$/
+          _increment_librato_for_field(field, value) if field =~ /^(vv|vl)\.(m|e|em|d|s|i)$/
         end
       end
     end
-  end
-
-  def self.inc_increment(field, value)
-    keys = field.split('.')
-    Librato.increment "stats.#{key_to_string(:inc, keys[0])}", by: value, source: key_to_string(:inc, keys[1])
   end
 
   def self.key_to_string(namespace, key)
@@ -168,6 +166,17 @@ private
         "a" => 'alpha'
       }
     }[namespace][key]
+  end
+
+  def self._increment_librato_for_field(field, by)
+    keys = field.split('.')
+    _increment_librato(event: key_to_string(:inc, keys[0]), by: by, source: key_to_string(:inc, keys[1]))
+  end
+
+  def self._increment_librato(options = {})
+    options.reverse_merge!(by: 1)
+
+    Librato.increment "stats.#{options[:event]}", by: options[:by], source: options[:source]
   end
 
 end
