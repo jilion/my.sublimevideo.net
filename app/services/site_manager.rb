@@ -71,7 +71,7 @@ class SiteManager
   def unsuspend_billable_items
     set_default_app_designs
     if site.plan_id?
-      update_addon_subscriptions(AddonPlan.free_addon_plans(reject: %w[logo stats support]))
+      update_addon_subscriptions(_free_addon_plans_subscriptions_hash(reject: %w[logo stats support]))
       case site.plan.name
       when 'plus'
         # Sponsor real-time stats
@@ -122,7 +122,7 @@ class SiteManager
   end
 
   def set_default_addon_plans
-    update_addon_subscriptions(AddonPlan.free_addon_plans)
+    update_addon_subscriptions(_free_addon_plans_subscriptions_hash)
   end
 
   def update_design_subscriptions(design_subscriptions, options = {})
@@ -192,6 +192,13 @@ class SiteManager
 
   def build_subscription(design_or_addon, options)
     site.billable_items.build({ item: design_or_addon, state: new_billable_item_state(design_or_addon, options) }, without_protection: true)
+  end
+
+  def _free_addon_plans_subscriptions_hash(*args)
+    AddonPlan.free_addon_plans(*args).reduce({}) do |hash, addon_plan|
+      hash[addon_plan.addon.name.to_sym] = addon_plan.id
+      hash
+    end
   end
 
   def new_billable_item_state(design_or_addon, options = {})

@@ -26,7 +26,7 @@ module Admin::SitesHelper
   def addon_plans_filters
     capture_haml do
       haml_tag(:ul) do
-        Addon.public.visible.each do |addon|
+        Addon.not_custom.visible.each do |addon|
           haml_tag(:li, _addon_plans_filter(addon))
         end
       end

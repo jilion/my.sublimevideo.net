@@ -9,7 +9,13 @@ class BillableEntity < ActiveRecord::Base
   has_many :billable_items, as: :item
   has_many :sites, through: :billable_items
 
-  # scopes defined on abstract class simply don't work when called from a subclass...
+  #
+  # Scopes defined on abstract class simply don't work when called from a subclass...
+  #
+  def self.free
+    where(price: 0)
+  end
+
   def self.paid
     where { (stable_at != nil) & (price > 0) }
   end
@@ -18,10 +24,10 @@ class BillableEntity < ActiveRecord::Base
     where(availability: 'custom')
   end
 
+  def self.not_custom
+    where(availability: %w[hidden public])
   end
 
-  def self.public
-    where(availability: %w[hidden public])
   def self.visible
     where { availability != 'hidden' }
   end
