@@ -2,17 +2,15 @@ module Admin::InvoicesHelper
 
   PAGE_TITLES = {
     search: "matching '%s'",
-    user_id: "for %s",
-    paid: "paid",
-    with_state: "%s"
+    user_id: 'for %s',
+    paid: 'paid',
+    with_state: '%s'
   }
 
   def admin_invoices_page_title(invoices)
     return unless selected_params = _select_param(:paid, :with_state, :user_id, :search)
 
-    filter_titles = selected_params.inject([]) do |memo, selected_param|
-      memo << _page_title_from_filter(*selected_param); memo
-    end
+    filter_titles = selected_params.reduce([]) { |a, e| a << _page_title_from_filter(*e) }
 
     [formatted_pluralize(invoices.total_count, 'invoice').titleize, filter_titles.to_sentence].join(' ')
   end

@@ -27,9 +27,7 @@ class InvoiceCreator
       _set_amount
       _set_renew
 
-      if invoice.save
-        Librato.increment 'invoices.events', source: 'create'
-      end
+      Librato.increment('invoices.events', source: 'create') if invoice.save
     end
   end
 
@@ -73,7 +71,7 @@ class InvoiceCreator
 
   def _build_invoice_item_unless_overlaping_items(item, started_at, ended_at, period, options)
     # Ensure we don't create 2 invoice items with the same item and overlapping periods
-    unless invoice.invoice_items.detect { |ii| ii.item == item && ii.started_at <= started_at && ii.ended_at >= ended_at }
+    unless invoice.invoice_items.find { |ii| ii.item == item && ii.started_at <= started_at && ii.ended_at >= ended_at }
       _build_invoice_item(item, started_at, ended_at, options)
     end
   end

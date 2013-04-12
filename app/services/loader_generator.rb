@@ -89,9 +89,9 @@ class LoaderGenerator
 
   def host
     if Rails.env == 'staging'
-      "//cdn.sublimevideo-staging.net"
+      '//cdn.sublimevideo-staging.net'
     else
-      "//cdn.sublimevideo.net"
+      '//cdn.sublimevideo.net'
     end
   end
 

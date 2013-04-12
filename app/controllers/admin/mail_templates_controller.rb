@@ -30,7 +30,7 @@ class Admin::MailTemplatesController < Admin::AdminController
   # GET /mails/templates/:id/preview
   def preview
     @user = User.first
-    render layout: 'mailer', text: Liquid::Template.parse(@mail_template.body).render("user" => @user)
+    render layout: 'mailer', text: Liquid::Template.parse(@mail_template.body).render(user: @user)
   end
 
   private

@@ -200,14 +200,14 @@ MySublimeVideo::Application.routes.draw do
       end
 
       scope 'account' do
-        get  'more-info' => "users#more_info", as: 'more_user_info'
-        get  'cancel' => "users/cancellations#new", as: 'account_cancellation'
-        post 'cancel' => "users/cancellations#create"
+        get  'more-info' => 'users#more_info', as: 'more_user_info'
+        get  'cancel' => 'users/cancellations#new', as: 'account_cancellation'
+        post 'cancel' => 'users/cancellations#create'
       end
 
       delete '/notice/:id' => 'users#hide_notice'
 
-      post '/password/validate' => "users/passwords#validate"
+      post '/password/validate' => 'users/passwords#validate'
     end
 
     %w[sign_up register].each         { |action| get action => redirect('/signup') }
@@ -300,8 +300,8 @@ MySublimeVideo::Application.routes.draw do
     resources :deals, only: [:show], path: 'd'
 
     scope 'feedback' do
-      get  '/' => "feedbacks#new", as: 'feedback'
-      post '/' => "feedbacks#create"
+      get  '/' => 'feedbacks#new', as: 'feedback'
+      post '/' => 'feedbacks#create'
     end
 
     resource :support_request, only: [:create], path: 'help'
@@ -318,6 +318,6 @@ MySublimeVideo::Application.routes.draw do
   end
 
   # Default url for specs, not reachable by the app because of the my subdomain
-  get '/' => "pages#show", page: 'terms' if Rails.env.test?
+  get '/' => 'pages#show', page: 'terms' if Rails.env.test?
 
 end

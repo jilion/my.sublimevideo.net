@@ -34,9 +34,9 @@ class Subscription < ActiveRecord::Base
   end
 
   def self.paid
-    where{
+    where {
       ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |
-      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.paid.pluck("addon_plans.id")))
+      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.paid.pluck('addon_plans.id')))
     }
   end
 

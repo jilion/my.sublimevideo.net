@@ -40,7 +40,7 @@ module BillableItemsHelper
     when 1
       'last day of trial'
     else
-      if !(billable_item.beta? || billable_item.free?)
+      if !billable_item.beta? && !billable_item.free?
         "free trial – #{pluralize(trial_days_remaining || BusinessModel.days_for_trial, 'day')} remaining"
       end
     end
