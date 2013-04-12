@@ -10,8 +10,10 @@ class LoaderGenerator
 
   def self.update_all_stages!(site_id, options = {})
     site = Site.find(site_id)
+    accessible_stages = Stage.stages_equal_or_more_stable_than(site.accessible_stage)
+
     Stage.stages.each do |stage|
-      if site.active? && stage >= site.accessible_stage
+      if site.active? && stage.in?(accessible_stages)
         generator = new(site, stage, options)
         generator.upload!
         generator.increment_librato('update')
@@ -83,7 +85,7 @@ class LoaderGenerator
     initial_scope = args[:component].app_component? ? Site : args[:component].sites
 
     initial_scope.scoped.where { token << (SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
-    .select(:id).active.where(accessible_stage: Stage.stages_with_access_to(args[:stage]))
+    .select(:id).active.where(accessible_stage: Stage.stages_equal_or_less_stable_than(args[:stage]))
     .order { last_30_days_main_video_views.desc }.order { created_at.desc }
   end
 
