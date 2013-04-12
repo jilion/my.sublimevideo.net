@@ -154,8 +154,9 @@ group :development, :test do
   gem 'timecop'
 
   # Javascript test
-  gem 'jasminerice'
-  gem 'guard-jasmine'
+  gem 'teabag'
+  gem 'guard-teabag'
+
   # Rails routes view
   gem 'sextant'
 end
