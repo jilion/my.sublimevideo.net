@@ -21,10 +21,10 @@ group :frontend do
     watch(%r{config/locales/.+\.yml})
   end
 
-  guard :jasmine, server: :none, jasmine_url: 'http://my.sublimevideo.dev/jasmine', all_on_start: false, keep_failed: false, timeout: 20000 do
+  guard :teabag do
     watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-    watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
+    watch('spec/javascripts/spec_helper.js.coffee')         { "spec/javascripts" }
   end
 
 end
