@@ -127,10 +127,6 @@ GEM
       rack (>= 1.1.0)
     addressable (2.2.8)
     aggregate (0.2.2)
-    airbrake (3.1.11)
-      activesupport
-      builder
-      json
     annotate (2.5.0)
       rake
     arel (3.0.2)
@@ -304,6 +300,8 @@ GEM
       faraday (~> 0.8)
       multi_json (~> 1.7)
     hike (1.2.2)
+    honeybadger (1.6.2)
+      json
     hpricot (0.8.6)
     htmlentities (4.3.1)
     http_parser.rb (0.5.3)
@@ -611,7 +609,6 @@ DEPENDENCIES
   acts-as-taggable-on
   acts_as_api
   addressable (= 2.2.8)
-  airbrake
   annotate
   array_stats
   asset_sync
@@ -656,6 +653,7 @@ DEPENDENCIES
   haml
   haml_coffee_assets
   has_scope
+  honeybadger
   hpricot
   jasminerice
   json
