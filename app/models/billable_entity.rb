@@ -1,5 +1,3 @@
-require 'stage'
-
 class BillableEntity < ActiveRecord::Base
   self.abstract_class = true
   AVAILABILITIES = %w[hidden public custom]

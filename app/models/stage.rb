@@ -12,7 +12,7 @@ class Stage
   #   Stage.stages_equal_or_more_stable_than('beta') #=> %w[beta alpha]
   #
   def self.stages_equal_or_less_stable_than(stage)
-    STAGES[STAGES.index(stage)..-1]
+    stages[stages.index(stage)..-1]
   end
 
   # Returns the given stage + the stages that are more stable
@@ -22,7 +22,7 @@ class Stage
   #   Stage.stages_equal_or_more_stable_than('beta') #=> %w[stable beta]
   #
   def self.stages_equal_or_more_stable_than(stage)
-    STAGES[0..STAGES.index(stage)]
+    stages[0..stages.index(stage)]
   end
 
   # Returns the stage for a given version.
