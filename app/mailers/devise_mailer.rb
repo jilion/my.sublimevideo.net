@@ -1,6 +1,8 @@
 class DeviseMailer < Devise::Mailer
-  layout 'mailer'
-  default from: I18n.t('mailer.info.email')
+  default from: 'SublimeVideo <info@sublimevideo.net>'
+
   helper :application
   add_template_helper(UrlsHelper)
+
+  layout 'mailer'
 end
