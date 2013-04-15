@@ -82,7 +82,7 @@ gem 'twitter'
 gem 'array_stats'
 gem 'createsend', '~> 2.5' # Campaign Monitor
 
-gem 'airbrake'
+gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'

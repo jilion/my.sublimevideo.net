@@ -39,7 +39,7 @@ class Referrer
   # = Scopes =
   # ==========
 
-  scope :with_tokens,        ->(tokens) { where(token: tokens) }
+  scope :with_tokens,        ->(tokens) { where(:token.in => tokens.map(&:to_i)) }
   scope :by_url,             ->(way = 'desc') { order_by([:url, way.to_sym]) }
   scope :by_hits,            ->(way = 'desc') { order_by([:hits, way.to_sym]) }
   scope :by_badge_hits,      ->(way = 'desc') { order_by([:badge_hits, way.to_sym]) }

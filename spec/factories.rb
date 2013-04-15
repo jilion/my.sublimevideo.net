@@ -74,7 +74,7 @@ FactoryGirl.define do
 
   factory :referrer do
     url   "http://bob.com"
-    token { '123456' }
+    sequence(:token) { |n| n }
     hits  12
   end
 

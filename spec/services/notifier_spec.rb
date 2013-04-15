@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-require 'airbrake'
+require 'honeybadger'
 
 require 'wrappers/prowl_wrapper'
 require 'services/notifier'
@@ -11,24 +11,24 @@ describe Notifier do
     let(:exception) { Exception.new('exception') }
 
     before do
-      Airbrake.stub(:notify)
+      Honeybadger.stub(:notify_or_ignore)
       ProwlWrapper.stub(:notify)
       Rails.stub_chain(:env, :production?) { false }
       Rails.stub_chain(:env, :staging?) { false }
     end
 
-    it "should notify via airbrake" do
-      Airbrake.should_receive(:notify).with(Exception.new(message))
+    it "should notify via Honeybadger" do
+      Honeybadger.should_receive(:notify_or_ignore).with(Exception.new(message))
       Notifier.send(message)
     end
 
-    it "should notify via airbrake with exception" do
-      Airbrake.should_receive(:notify).with(exception, error_message: message)
+    it "should notify via Honeybadger with exception" do
+      Honeybadger.should_receive(:notify_or_ignore).with(exception, error_message: message)
       Notifier.send(message, exception: exception)
     end
 
-    it "should notify via airbrake with message as exception" do
-      Airbrake.should_receive(:notify).with(exception)
+    it "should notify via Honeybadger with message as exception" do
+      Honeybadger.should_receive(:notify_or_ignore).with(exception)
       Notifier.send(exception)
     end
 
