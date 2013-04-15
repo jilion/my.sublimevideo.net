@@ -52,7 +52,7 @@ class InvoiceCreator
 
   def _handle_items_subscribed_before_period(period, options)
     _subscribed_activities_before(period.first).each do |activity|
-      end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
+      end_activity_date = _end_activity_for_activity(activity, period)
 
       if period.cover?(end_activity_date)
         _build_invoice_item_unless_overlaping_items(activity.item, period.first, end_activity_date, period, options)
@@ -64,7 +64,7 @@ class InvoiceCreator
     _subscribed_activities_during(period).each do |activity|
       next if activity.item.beta? || activity.item.free?
 
-      end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
+      end_activity_date = _end_activity_for_activity(activity, period)
       _build_invoice_item_unless_overlaping_items(activity.item, activity.created_at, end_activity_date, period, options)
     end
   end
@@ -93,7 +93,9 @@ class InvoiceCreator
   end
 
   def _end_activity_for_activity(activity, period)
-    _find_item_for_activity(activity).state(%w[canceled suspended sponsored]).during((activity.created_at..period.last)).order('created_at ASC').first
+    _find_item_for_activity(activity).state(%w[canceled suspended sponsored])
+    .during((activity.created_at..period.last)).order('created_at ASC').first
+    .try(:created_at) || period.last
   end
 
   def _find_item_for_activity(activity)
