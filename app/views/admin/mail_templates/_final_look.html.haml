@@ -1,6 +1,6 @@
 %p
   %strong= "Subject: "
-  = Liquid::Template.parse(template.subject).render(user: User.first)
+  = Liquid::Template.parse(template.subject).render('user' => user)
 %br
 
 %iframe{ src: preview_admin_mail_template_path(template), width: 830, height: 600 }

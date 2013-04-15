@@ -2,6 +2,7 @@ class Admin::MailTemplatesController < Admin::AdminController
   respond_to :html
 
   before_filter { |controller| require_role?('god') }
+  before_filter :_find_first_user, only: [:edit, :preview]
   before_filter :_find_mail_template, only: [:edit, :update, :preview]
 
   # GET /mails/templates/new
@@ -29,11 +30,14 @@ class Admin::MailTemplatesController < Admin::AdminController
 
   # GET /mails/templates/:id/preview
   def preview
-    @user = User.first
-    render layout: 'mailer', text: Liquid::Template.parse(@mail_template.body).render(user: @user)
+    render layout: 'mailer', text: Liquid::Template.parse(@mail_template.body).render('user' => @user)
   end
 
   private
+
+  def _find_first_user
+    @user = User.first
+  end
 
   def _find_mail_template
     @mail_template = MailTemplate.find(params[:id])
