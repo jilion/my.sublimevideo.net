@@ -32,9 +32,8 @@ class HostnameHandler
   # one site or list of sites separated by comma
   def self.wildcard?(*args)
     hostnames = args.shift
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).any? { |h| h =~ /\*/ }
-    end
+
+    clean(hostnames).split(/,\s*/).any? { |h| h =~ /\*/ } if hostnames.present?
   end
 
   # one site or list of sites separated by comma
@@ -50,25 +49,20 @@ class HostnameHandler
   def self.include_hostname?(*args)
     hostnames = args.shift
     record = args.shift
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).any? { |h| h == record.try(:hostname) }
-    end
+
+    clean(hostnames).split(/,\s*/).any? { |h| h == record.try(:hostname) } if hostnames.present?
   end
 
   def self.detect_error(*args)
     record = args.shift
     hostnames = args.shift
-    args.detect do |validation|
-      send("#{validation}?", hostnames, record)
-    end
+    args.find { |validation| send("#{validation}?", hostnames, record) }
   end
 
   private
 
   def self._main_valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
-    end
+    clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) } if hostnames.present?
   end
 
   # one site or list of sites separated by comma
@@ -110,7 +104,7 @@ class HostnameHandler
 
   def self.valid_one?(hostname)
     hostname.strip!
-    return true if ["blogspot.com", "appspot.com", "operaunite.com"].include?(hostname)
+    return true if %w[blogspot.com appspot.com operaunite.com].include?(hostname)
     ssp = PublicSuffix.parse(hostname)
     ssp.sld.present? && !PSEUDO_TLD.include?(ssp.tld)
   rescue
@@ -136,7 +130,7 @@ class HostnameHandler
   def self.ipv4_local?(hostname)
     begin
       addr = Addrinfo.tcp(hostname, 80)
-      hostname == "0.0.0.0" || addr.ipv4_private? || addr.ipv4_loopback?
+      hostname == '0.0.0.0' || addr.ipv4_private? || addr.ipv4_loopback?
     rescue
       false
     end

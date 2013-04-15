@@ -175,7 +175,7 @@ end
 private
 
 def argv(var_name, default = nil)
-  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+  if var = ARGV.find { |arg| arg =~ /(#{var_name}=)/i }
     var.sub($1, '')
   else
     ARGV.try(:[], 1)

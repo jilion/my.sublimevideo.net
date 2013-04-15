@@ -2,48 +2,28 @@ class DealActivation < ActiveRecord::Base
 
   attr_accessible :deal_id, :user_id
 
-  # ================
-  # = Associations =
-  # ================
-
   belongs_to :deal
   belongs_to :user
-
-  # ===============
-  # = Validations =
-  # ===============
 
   validates :deal_id, presence: true, uniqueness: { scope: :user_id }
   validates :user_id, presence: true
 
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :active, lambda { includes(:deal).merge(Deal.active) }
-
-  # =============
-  # = Callbacks =
-  # =============
+  scope :active, -> { includes(:deal).merge(Deal.active) }
 
   before_validation :ensure_available_to_user, if: :deal_id?
   before_validation :ensure_deal_is_active, if: :deal_id?
   before_validation :set_activated_at
 
-private
+  private
 
   # before_validation
   def ensure_deal_is_active
-    unless deal.active?
-      self.errors.add(:base, "This deal is not active.")
-    end
+    self.errors.add(:base, 'This deal is not active.') unless deal.active?
   end
 
   # before_validation
   def ensure_available_to_user
-    unless deal.available_to?(user)
-      self.errors.add(:base, "You can't activate this deal.")
-    end
+    self.errors.add(:base, "You can't activate this deal.") unless deal.available_to?(user)
   end
 
   # before_validation
@@ -68,4 +48,3 @@ end
 #
 #  index_deal_activations_on_deal_id_and_user_id  (deal_id,user_id) UNIQUE
 #
-

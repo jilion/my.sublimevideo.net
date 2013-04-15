@@ -50,13 +50,13 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
   # https://devcenter.heroku.com/articles/rack-cache-memcached-static-assets-rails31
   config.action_dispatch.rack_cache = {
-    :metastore    => Dalli::Client.new,
-    :entitystore  => 'file:tmp/cache/rack/body',
-    :allow_reload => false
+    metastore:    Dalli::Client.new,
+    entitystore:  'file:tmp/cache/rack/body',
+    allow_reload: false
   }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = "//cdn.sublimevideo.net"
+  config.action_controller.asset_host = '//cdn.sublimevideo.net'
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )

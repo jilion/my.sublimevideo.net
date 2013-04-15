@@ -65,7 +65,7 @@ module VoxcastLogFileFormat
   end
 
   def gif_request?(request)
-    request[:path_stem] == "/_.gif"
+    request[:path_stem] == '/_.gif'
   end
 
   def page_load_event?(request)

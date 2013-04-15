@@ -4,10 +4,10 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the email address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "SublimeVideo <info@sublimevideo.net>"
+  config.mailer_sender = 'SublimeVideo <info@sublimevideo.net>'
 
   # Configure the class responsible to send emails.
-  config.mailer = "DeviseMailer"
+  config.mailer = 'DeviseMailer'
 
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
@@ -40,7 +40,7 @@ Devise.setup do |config|
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
   # modifying a user and when used to authenticate or find a user. Default is :email.
-  config.strip_whitespace_keys = [ :email ]
+  config.strip_whitespace_keys = [:email]
 
   # Tell if authentication through request.params is enabled. True by default.
   # It can be set to an array that will enable params authentication only for the
@@ -82,7 +82,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 10
 
   # Setup a pepper to generate the encrypted password.
-  config.pepper = "2f46c3f9675d213710beb6d72733a3838700b4df1f379fd5502501555a8b58024a21a71b6bc6f1db2e34bf28e33978437b100d82362669305d00c02fb260ca50"
+  config.pepper = '2f46c3f9675d213710beb6d72733a3838700b4df1f379fd5502501555a8b58024a21a71b6bc6f1db2e34bf28e33978437b100d82362669305d00c02fb260ca50'
 
   # ==> Configuration for :confirmable
   # A period that the user is allowed to access the website even without

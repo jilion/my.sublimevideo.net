@@ -11,14 +11,16 @@ class PlayerMangler
   end
 
   def mangle_hash(hash, parent_key = nil)
-    Hash[hash.map { |key, value|
+    hash_content = hash.map do |key, value|
       key = key.to_s.camelcase(:lower)
       if value.is_a?(Hash)
         [mangle_key(key, parent_key), mangle_hash(value, key)]
       else
         [mangle_key(key, parent_key), value]
       end
-    }]
+    end
+
+    Hash[hash_content]
   end
 
   def mangle_key(key, parent_key = nil)

@@ -11,7 +11,7 @@ class PusherController < ApplicationController
       )
       render json: authenticated_response
     else
-      render text: "Not authorized", status: '403'
+      render text: 'Not authorized', status: '403'
     end
   end
 

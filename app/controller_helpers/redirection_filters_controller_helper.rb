@@ -6,7 +6,7 @@ module RedirectionFiltersControllerHelper
 
   def redirect_wrong_password_to(url)
     if params[:user].blank? || !current_user.valid_password?(params[:user][:current_password])
-      flash[:alert] = "The given password is invalid!"
+      flash[:alert] = 'The given password is invalid!'
       redirect_to url and return
     end
   end

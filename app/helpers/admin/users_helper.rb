@@ -2,11 +2,11 @@ module Admin::UsersHelper
 
   def admin_users_page_title(users)
     state = if params[:free]
-      " free"
+      ' free'
     elsif params[:paying]
-      " paying"
+      ' paying'
     elsif params[:with_balance]
-      " with a balance"
+      ' with a balance'
     elsif params[:with_state]
       " #{params[:with_state]}"
     elsif params[:tagged_with]

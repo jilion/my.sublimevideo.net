@@ -18,7 +18,7 @@ module UserModules::CreditCard
       self.errors.add(:cc_full_name, :blank) unless credit_card.name?
 
       # I18n Warning: credit_card errors are not localized
-      credit_card.errors.reject { |k,v| v.empty? }.each do |attribute, errors|
+      credit_card.errors.reject { |k, v| v.empty? }.each do |attribute, errors|
         _custom_errors_handling(attribute, errors)
       end
     end
@@ -43,9 +43,9 @@ module UserModules::CreditCard
     def cc_full_name=(attribute)
       @cc_full_name = attribute
       if attribute.present?
-        names = attribute.split(" ")
+        names = attribute.split(' ')
         @cc_first_name = names.first
-        @cc_last_name  = names.size > 1 ? names.drop(1).join(" ") : "-"
+        @cc_last_name  = names.size > 1 ? names.drop(1).join(' ') : '-'
       end
     end
 
@@ -122,15 +122,13 @@ module UserModules::CreditCard
         Notifier.send("Credit card authorization unknown status: #{auth["STATUS"]}")
       end
 
-      unless auth['STATUS'] == '5'
-        _set_last_failed_cc_authorize_fields!(auth)
-      end
+      _set_last_failed_cc_authorize_fields!(auth) unless auth['STATUS'] == '5'
     end
 
     private
 
     def _custom_errors_handling(attribute, errors)
-      attribute = case attribute
+      case attribute
       when 'month', 'first_name', 'last_name'
         # do nothing
       when 'year'
@@ -138,9 +136,7 @@ module UserModules::CreditCard
       when 'brand', 'number'
         self.errors.add(:"cc_#{attribute}", :invalid)
       else
-        errors.each do |error|
-          self.errors.add(:"cc_#{attribute}", error)
-        end
+        errors.each { |error| self.errors.add(:"cc_#{attribute}", error) }
       end
     end
 

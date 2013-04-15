@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
   include PaperTrailControllerHelper
   include CookiesControllerHelper
   include DealsControllerHelper
-  include StagesControllerHelper
   include TransactionControllerHelper
   include DisplayCase::ExhibitsHelper
 

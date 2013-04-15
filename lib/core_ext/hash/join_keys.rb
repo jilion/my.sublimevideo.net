@@ -6,9 +6,7 @@ class Hash
   #
   #   h.join_keys #=> { 'x.y' => 5, 'z' => 2 }
   def join_keys
-    self.inject(self.class.new(0)) { |hash, attrs|
-      join_key(hash, *attrs)
-    }
+    self.reduce(self.class.new(0)) { |hash, attrs| join_key(hash, *attrs) }
   end
 
   private

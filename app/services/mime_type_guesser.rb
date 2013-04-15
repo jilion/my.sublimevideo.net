@@ -1,7 +1,7 @@
 class MimeTypeGuesser
 
   def self.guess(url)
-    head(url)['content-type']
+    head(url)[:content_type]
   end
 
   private
@@ -18,11 +18,11 @@ class MimeTypeGuesser
     when Net::HTTPSuccess, Net::HTTPRedirection
       response
     when Net::HTTPClientError
-      { 'content-type' => "4" }
+      { content_type: '4' }
     else
-      { 'content-type' => "" }
+      { content_type: '' }
     end
   rescue => ex
-    { 'content-type' => "4" }
+    { content_type: '4' }
   end
 end

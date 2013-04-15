@@ -3,7 +3,7 @@ require 'tempfile'
 module VoxcastWrapper
   include Configurator
 
-  config_file 'voxcast.yml'
+  config_file     'voxcast.yml'
   config_accessor :key, :secret, :device_id, :hostname
 
   class << self
@@ -32,7 +32,7 @@ module VoxcastWrapper
     def logs_list(hostname)
       rescue_and_retry(2) do
         logs = client.voxel_voxcast_ondemand_logs_list(device_id: device_id, hostname: hostname)
-        logs["log_files"]["sites"]["hostname"]["log_file"]
+        logs['log_files']['sites']['hostname']['log_file']
       end
     end
 

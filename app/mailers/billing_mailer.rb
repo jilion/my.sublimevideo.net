@@ -9,13 +9,13 @@ class BillingMailer < Mailer
     @no_reply = true
 
     key = case @days_until_end
-    when 0
-      'today'
-    when 1
-      'tomorrow'
-    else
-      'in_days'
-    end
+          when 0
+            'today'
+          when 1
+            'tomorrow'
+          else
+            'in_days'
+          end
 
     mail(to: @user.email,
          subject: _subject(__method__, keys: [key], addon: "#{@item.title} #{@item.kind_for_email}", days: @days_until_end))

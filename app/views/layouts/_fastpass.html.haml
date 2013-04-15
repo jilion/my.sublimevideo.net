@@ -1,1 +1,1 @@
-= raw fastpass_script(GetSatisfactionWrapper.consumer_key, GetSatisfactionWrapper.consumer_secret, current_user.email, current_user.name.presence || 'Anonymous', current_user.id, Rails.env.production? || Rails.env.staging?)
+= raw fastpass_script(key: GetSatisfactionWrapper.consumer_key, secret: GetSatisfactionWrapper.consumer_secret, email: current_user.email, name: current_user.name.presence || 'Anonymous', uid: current_user.id, secure: Rails.env.production? || Rails.env.staging?)

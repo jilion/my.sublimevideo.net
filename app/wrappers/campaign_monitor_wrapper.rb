@@ -19,7 +19,7 @@ class CampaignMonitorWrapper
   end
 
   def import(params = {})
-    subscribers = params[:users].inject([]) do |memo, user|
+    subscribers = params[:users].reduce([]) do |memo, user|
       custom_params = self.class._build_custom_params(segment: params[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
 
       memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }

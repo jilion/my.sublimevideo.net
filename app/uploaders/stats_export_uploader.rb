@@ -21,12 +21,13 @@ class StatsExportUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    Rails.env.test? ? "uploads/stats_exports" : "stats_exports"
+    Rails.env.test? ? 'uploads/stats_exports' : 'stats_exports'
   end
 
   def compress
     return if file.content_type == 'application/zip'
-    cache_stored_file! if !cached?
+
+    cache_stored_file! unless cached?
 
     zip_path = current_path + '.zip'
     Zip::ZipFile.open(zip_path, Zip::ZipFile::CREATE) do |zipfile|

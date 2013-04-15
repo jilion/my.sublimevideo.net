@@ -21,7 +21,7 @@ module Searchable
         end
       end
 
-      eval "scopes.where { #{or_conditions.map{ |c| "(#{c})" }.join(' | ')} }"
+      eval "scopes.where { #{or_conditions.map { |c| "(#{c})" }.join(' | ')} }"
     end
 
     def additional_or_conditions

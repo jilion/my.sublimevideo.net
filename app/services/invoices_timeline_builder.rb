@@ -8,8 +8,8 @@ class InvoicesTimelineBuilder
   end
 
   def timeline
-    (start_time.to_date..end_time.to_date).inject([]) do |amounts, day|
-      amounts << (invoices[day] ? invoices[day].sum { |i| i.amount } : 0)
+    (start_time.to_date..end_time.to_date).reduce([]) do |a, day|
+      a << (invoices[day] ? invoices[day].sum { |i| i.amount } : 0)
     end
   end
 end

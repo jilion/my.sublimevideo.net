@@ -86,14 +86,14 @@ class Invoice < ActiveRecord::Base
 
   scope :paid_between, ->(started_at, ended_at) { between(paid_at: started_at..ended_at) }
 
-  scope :paid,           -> { where(state: 'paid').includes(:site).where{ sites.refunded_at == nil } }
-  scope :refunded,       -> { where(state: 'paid').includes(:site).where{ sites.refunded_at != nil } }
+  scope :paid,           -> { where(state: 'paid').includes(:site).where { sites.refunded_at == nil } }
+  scope :refunded,       -> { where(state: 'paid').includes(:site).where { sites.refunded_at != nil } }
   scope :open_or_failed, -> { where(state: %w[open failed]) }
-  scope :not_canceled,   -> { where{ state != 'canceled' } }
+  scope :not_canceled,   -> { where { state != 'canceled' } }
   scope :not_paid,       -> { where(state: %w[open waiting failed]) }
   scope :renew,          ->(bool = true) { where(renew: bool) }
   scope :site_id,        ->(site_id) { where(site_id: site_id) }
-  scope :user_id,        ->(user_id) { joins(:user).where{ user.id == user_id } }
+  scope :user_id,        ->(user_id) { joins(:user).where { user.id == user_id } }
 
   scope :for_month, ->(date) { for_period(date.all_month) }
 
@@ -123,7 +123,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def last_transaction
-    transactions.order{ created_at.asc }.last
+    transactions.order { created_at.asc }.last
   end
 
   def refunded?
@@ -138,7 +138,7 @@ class Invoice < ActiveRecord::Base
 
   def no_invoice_for_the_same_month
     first_invoice_item = invoice_items.first
-    if first_invoice_item && site.invoices.not_canceled.where{ id != my{id} }.for_month(first_invoice_item.started_at).any?
+    if first_invoice_item && site.invoices.not_canceled.where { id != my { id } }.for_month(first_invoice_item.started_at).any?
       self.errors.add(:base, 'Already one invoice for this month.')
     end
   end

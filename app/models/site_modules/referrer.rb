@@ -16,22 +16,22 @@ module SiteModules::Referrer
   end
 
   def referrer_type(referrer, timestamp = Time.now.utc)
-    return "invalid" if referrer.nil? || referrer.length < 10
+    return 'invalid' if referrer.nil? || referrer.length < 10
+
     if past_site = version_at(timestamp)
       referrer.gsub!(/\[|\]/, '')
       if past_site.main_referrer?(referrer)
-        "main"
+        'main'
       elsif past_site.extra_referrer?(referrer)
-        "extra"
+        'extra'
       elsif past_site.dev_referrer?(referrer)
-        "dev"
+        'dev'
       else
-        "invalid"
+        'invalid'
       end
     end
   rescue => ex
-    # Notifier.send("Referrer (#{referrer}), site_id (#{self.id}), timestamp #{timestamp} type could not be guessed: #{ex.message}", exception: ex)
-    "invalid"
+    'invalid'
   end
 
   def main_referrer?(referrer)

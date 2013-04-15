@@ -23,10 +23,10 @@ module Admin::AdminHelper
   end
 
   def display_tags_list(tags, filter_name = :tagged_with)
-    links = tags.inject([]) do |list, tag|
-      list << link_to("#{tag.name} (#{display_integer(tag.count)})", url_for(filter_name => tag.name), remote: true, class: 'remote')
+    links = tags.reduce([]) do |a, e|
+      a << link_to("#{e.name} (#{display_integer(e.count)})", url_for(filter_name => e.name), remote: true, class: 'remote')
     end
-    raw links.join(" | ")
+    raw links.join(' | ')
   end
 
   def formatted_pluralize(count, singular, plural = nil)

@@ -21,8 +21,8 @@ class VoxcastStatsLogFileFormat < RequestLogAnalyzer::FileFormat::Base
   def self.report_trackers
     analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
     analyze.frequency(:stats, title: :stats,
-      category: lambda { |r| [remove_timestamp(r), r[:useragent]] },
-      if: lambda { |r| countable_hit?(r) && gif_request?(r) && good_token?(r) }
+      category: ->(r) { [remove_timestamp(r), r[:useragent]] },
+      if: ->(r) { countable_hit?(r) && gif_request?(r) && good_token?(r) }
     )
     analyze.trackers
   end

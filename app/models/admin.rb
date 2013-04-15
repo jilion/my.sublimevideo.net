@@ -8,20 +8,22 @@ class Admin < ActiveRecord::Base
 
   serialize :roles, Array
 
-  has_many :mail_logs, class_name: "MailLog"
+  has_many :mail_logs, class_name: 'MailLog'
 
-  scope :by_date, lambda { |way='desc'| order{ created_at.send(way) } }
+  scope :by_date, ->(way = 'desc') { order { created_at.send(way) } }
 
   validates :roles, admin_roles: true
 
-  def remember_me; true; end
+  def self.roles
+    ROLES
+  end
+
+  def remember_me
+    true
+  end
 
   def has_role?(role)
     (roles & %W[god #{role}]).present?
-  end
-
-  def self.roles
-    ROLES
   end
 end
 

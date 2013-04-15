@@ -54,7 +54,7 @@ class Api::ApisController < ActionController::Base
   end
 
   def access_denied
-    body = { status: 401, error: "Unauthorized!" }
+    body = { status: 401, error: 'Unauthorized!' }
     render(request.format.ref => body, status: 401)
   end
 

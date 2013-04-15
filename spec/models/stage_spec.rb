@@ -10,17 +10,31 @@ describe Stage do
     end
   end
 
-  describe ".stages_with_access_to" do
-    it "returns all stages with access to 'alpha'" do
-      Stage.stages_with_access_to('stable').should eq %w[stable beta alpha]
+  describe ".stages_equal_or_less_stable_than" do
+    it "returns all stages less stable than 'stable'" do
+      Stage.stages_equal_or_less_stable_than('stable').should eq %w[stable beta alpha]
     end
 
-    it "returns all stages with access to 'beta'" do
-      Stage.stages_with_access_to('beta').should eq %w[beta alpha]
+    it "returns all stages less stable than 'beta'" do
+      Stage.stages_equal_or_less_stable_than('beta').should eq %w[beta alpha]
     end
 
-    it "returns all stages with access to 'alpha'" do
-      Stage.stages_with_access_to('alpha').should eq %w[alpha]
+    it "returns all stages less stable than 'alpha'" do
+      Stage.stages_equal_or_less_stable_than('alpha').should eq %w[alpha]
+    end
+  end
+
+  describe ".stages_equal_or_more_stable_than" do
+    it "returns all stages less stable than 'stable'" do
+      Stage.stages_equal_or_more_stable_than('stable').should eq %w[stable]
+    end
+
+    it "returns all stages less stable than 'beta'" do
+      Stage.stages_equal_or_more_stable_than('beta').should eq %w[stable beta]
+    end
+
+    it "returns all stages less stable than 'alpha'" do
+      Stage.stages_equal_or_more_stable_than('alpha').should eq %w[stable beta alpha]
     end
   end
 

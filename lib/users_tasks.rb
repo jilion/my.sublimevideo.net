@@ -18,8 +18,8 @@ module UsersTasks
 
   def self.campaign_monitor_import(users, custom_fields)
     list = CampaignMonitorWrapper.lists['sublimevideo']
-    users_to_import = users.inject([]) do |memo, user|
-      memo << { id: user.id, email: user.email, name: user.name }.merge(custom_fields)
+    users_to_import = users.reduce([]) do |a, user|
+      a << { id: user.id, email: user.email, name: user.name }.merge(custom_fields)
     end
     CampaignMonitorWrapper.import(
       list_id: list['list_id'],

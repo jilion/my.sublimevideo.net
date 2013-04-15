@@ -11,10 +11,10 @@ class Feedback < ActiveRecord::Base
   # ==========
 
   # sort
-  scope :by_user,   ->(way = 'desc') { order{ user_id.send(way) } }
-  scope :by_kind,   ->(way = 'desc') { order{ kind.send(way) } }
-  scope :by_reason, ->(way = 'desc') { order{ reason.send(way) } }
-  scope :by_date,   ->(way = 'desc') { order{ created_at.send(way) } }
+  scope :by_user,   ->(way = 'desc') { order { user_id.send(way) } }
+  scope :by_kind,   ->(way = 'desc') { order { kind.send(way) } }
+  scope :by_reason, ->(way = 'desc') { order { reason.send(way) } }
+  scope :by_date,   ->(way = 'desc') { order { created_at.send(way) } }
 
   validates :reason, inclusion: REASONS
 

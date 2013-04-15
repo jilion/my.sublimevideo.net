@@ -63,24 +63,24 @@ class AddonSystemPopulator < Populator
 
   def addon_seeds
     [
-        lambda { { name: 'video_player',   kind: 'videoPlayer',   design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'controls',       kind: 'controls',      design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'initial',        kind: 'initial',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'sharing',        kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'social_sharing', kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'embed',          kind: 'embed',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'image_viewer',   kind: 'imageViewer',   design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'logo',           kind: 'logo',          design_dependent: false, parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'lightbox',       kind: 'lightbox',      design_dependent: true,  parent_addon: nil } },
-        lambda { { name: 'api',            kind: 'api',           design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'stats',          kind: 'stats',         design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'support',        kind: 'support',       design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'preview_tools',  kind: 'previewTools',  design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'action',         kind: 'action',        design_dependent: false, parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'cuezones',       kind: 'cuezones',      design_dependent: false, parent_addon: Addon.get('video_player') } }
+        -> { { name: 'video_player',   kind: 'videoPlayer',   design_dependent: false, parent_addon: nil } },
+        -> { { name: 'controls',       kind: 'controls',      design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'initial',        kind: 'initial',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'sharing',        kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'social_sharing', kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'embed',          kind: 'embed',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'image_viewer',   kind: 'imageViewer',   design_dependent: false, parent_addon: nil } },
+        -> { { name: 'logo',           kind: 'logo',          design_dependent: false, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'lightbox',       kind: 'lightbox',      design_dependent: true,  parent_addon: nil } },
+        -> { { name: 'api',            kind: 'api',           design_dependent: false, parent_addon: nil } },
+        -> { { name: 'stats',          kind: 'stats',         design_dependent: false, parent_addon: nil } },
+        -> { { name: 'support',        kind: 'support',       design_dependent: false, parent_addon: nil } },
+        -> { { name: 'preview_tools',  kind: 'previewTools',  design_dependent: false, parent_addon: nil } },
+        -> { { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'action',         kind: 'action',        design_dependent: false, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'cuezones',       kind: 'cuezones',      design_dependent: false, parent_addon: Addon.get('video_player') } }
     ]
   end
 

@@ -4,10 +4,10 @@ module SitesTasks
       LoaderGenerator.delay(queue: 'high').update_all_stages!(site.id) if options[:loaders]
       SettingsGenerator.delay(queue: 'high').update_all!(site.id) if options[:settings]
     end
-    puts "Important sites scheduled..."
+    puts 'Important sites scheduled...'
 
     scheduled = 0
-    Site.active.select(:id).order{ last_30_days_main_video_views.desc }.find_each do |site|
+    Site.active.select(:id).order { last_30_days_main_video_views.desc }.find_each do |site|
       LoaderGenerator.delay(queue: 'loader').update_all_stages!(site.id) if options[:loaders]
       SettingsGenerator.delay(queue: 'low').update_all!(site.id) if options[:settings]
 

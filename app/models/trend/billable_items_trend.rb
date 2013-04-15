@@ -24,17 +24,17 @@ class BillableItemsTrend
     }
 
     BillableItem::STATES.each do |state|
-      first_key = state == 'subscribed' ? 'sb' : state[0,2]
-      hash[first_key] = Hash.new { |h,k| h[k] = Hash.new(0) }
+      first_key = state == 'subscribed' ? 'sb' : state[0, 2]
+      hash[first_key] = Hash.new { |h, k| h[k] = Hash.new(0) }
 
       billable_items = BillableItem.select('item_type, item_id, COUNT(item_id) as count').where(state: state).group(:item_type, :item_id)
       billable_items.each do |billable_item|
         second_key = case billable_item.item
-        when App::Design
-          'design'
-        when AddonPlan
-          billable_item.item.addon.name
-        end
+                     when App::Design
+                       'design'
+                     when AddonPlan
+                       billable_item.item.addon.name
+                     end
         hash[first_key][second_key][billable_item.item.name] += billable_item.count.to_i
       end
     end

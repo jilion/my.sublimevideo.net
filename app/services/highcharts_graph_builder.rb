@@ -18,21 +18,22 @@ class HighchartsGraphBuilder
 
   def draw(options = { on_dom_ready: true })
     result = "new Highcharts.Chart(#{draw_options});"
-    result = "$(document).ready(function() {" + result + "});" if options[:on_dom_ready]
+    result = '$(document).ready(function() {' + result + '});' if options[:on_dom_ready]
 
-    '<script type="text/javascript">' + result + "</script>"
+    '<script type="text/javascript">' + result + '</script>'
   end
 
 private
 
   def draw_options
-    result = "{ "
+    result = '{ '
     if @options.to_json.inspect.size > 2
-      result += @options.to_json[1..-2]
-      result += ", " if @raw_options.present?
+      result << @options.to_json[1..-2]
+      result << ', ' if @raw_options.present?
     end
-    result << @raw_options.join(", ") if @raw_options.present?
-    result + " }"
+    result << @raw_options.join(', ') if @raw_options.present?
+
+    "#{result} }"
   end
 
 end

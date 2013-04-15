@@ -52,7 +52,7 @@ class Referrer
   # =================
 
   def self.create_or_update_from_trackers!(trackers)
-    ref_hash = trackers.detect { |t| t.options[:title] == :referrers }.categories
+    ref_hash = trackers.find { |t| t.options[:title] == :referrers }.categories
     ref_hash.each do |url_and_token, hits|
       url, token = url_and_token[0],  url_and_token[1]
       if referrer = Referrer.where(url: url, token: token).first

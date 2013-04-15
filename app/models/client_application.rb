@@ -5,7 +5,7 @@ class ClientApplication < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :tokens, class_name: "OauthToken", dependent: :delete_all
+  has_many :tokens, class_name: 'OauthToken', dependent: :delete_all
   has_many :oauth2_verifiers, dependent: :delete_all
 
   before_validation :generate_keys, on: :create
@@ -13,8 +13,8 @@ class ClientApplication < ActiveRecord::Base
   validates :name, :url, :key, :secret, presence: true
   validates :key, uniqueness: true
 
-  validates :url, format: { with: URI::regexp(%w(http https)) }
-  validates :support_url, :callback_url, format: { with: URI::regexp(%w(http https)), allow_blank: true }
+  validates :url, format: { with: URI::regexp(%w[http https]) }
+  validates :support_url, :callback_url, format: { with: URI::regexp(%w[http https]), allow_blank: true }
 
   def self.find_token(token_key)
     token = OauthToken.includes(:client_application).find_by_token(token_key)

@@ -59,7 +59,7 @@ module Stat::Site
   module ClassMethods
 
     def last_30_days_page_visits(token, type = :billable)
-      last_30_days_stats(token).sum { |stat|
+      last_30_days_stats(token).sum do |stat|
         case type
         when :main, :extra, :dev, :invalid
           stat.pv[type.to_s[0]].to_i
@@ -68,19 +68,19 @@ module Stat::Site
         when :billable
           stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['em'].to_i
         end
-      }
+      end
     end
 
     def all_time_page_visits(token)
-      Rails.cache.fetch "Stat::Site.all_time_page_visits##{token}", expires_in: 1.hour do
-        self.where(t: { :$in => Array.wrap(token) }).entries.sum { |stat|
+      Rails.cache.fetch ['Stat::Site.all_time_page_visits', token], expires_in: 1.hour do
+        self.where(t: { :$in => Array.wrap(token) }).entries.sum do |stat|
           stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['d'].to_i + stat.pv['i'].to_i + stat.pv['em'].to_i
-        }
+        end
       end
     end
 
     def last_30_days_stats(token)
-      Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
+      Rails.cache.fetch ['Stat::Site.last_30_days_stats', token], expires_in: 1.hour do
         self.where(t: { :$in => Array.wrap(token) }).between(d: 30.days.ago.midnight..1.day.ago.end_of_day).entries
       end
     end
@@ -111,17 +111,16 @@ module Stat::Site
       sub_fields.each do |sub_field|
         fields_to_add << [options[:view_type], sub_field]
       end
+      map, reduce = { _id: 0, t: 1 }, { _id: '$t' }
+      fields_to_add.each do |field|
+        map["viewTot#{field}"] = { :$add => ["$#{field.join('.')}"] }
+        reduce["viewTotSum#{field}"] = { :$sum => "$viewTot#{field}" }
+      end
 
       stats = collection.aggregate([
         { :$match => conditions },
-        { :$project => fields_to_add.inject({}) { |hash, field|
-            hash["viewTot#{field}"] = { :$add => ["$#{field.join('.')}"] }
-            hash
-          }.merge(_id: 0, t: 1,) },
-        { :$group => fields_to_add.inject({}) { |hash, field|
-            hash["viewTotSum#{field}"] = { :$sum => "$viewTot#{field}" }
-            hash
-          }.merge(_id: '$t') }
+        { :$project => map },
+        { :$group => reduce }
       ])
 
       stats.sum { |stat| fields_to_add.sum { |field| stat["viewTotSum#{field}"] } }
@@ -149,27 +148,24 @@ module Stat::Site
       conditions.deep_merge!(d: { :$gte => options[:from] }) if options[:from]
       conditions.deep_merge!(d: { :$lte => options[:to] }) if options[:to]
       if options[:demo] && options[:period] == 'days'
-        conditions.deep_merge!(d: { :$gte => Time.utc(2011,11,29) }) if options[:from]
+        conditions.deep_merge!(d: { :$gte => Time.utc(2011, 11, 29) }) if options[:from]
       end
 
       sub_fields = %w[m e em] # billable fields: main, extra and embed
       sub_fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
 
       stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
+        map, reduce = { _id: '$d' }, {}
+        sub_fields.each do |field|
+          map["#{field}Sum"] = { :$sum => "$#{options[:view_type]}.#{field}" }
+          reduce[field] = "$#{field}Sum"
+        end
+
         collection.aggregate([
           { :$match => conditions },
-          { :$group => sub_fields.inject({}) { |hash, field|
-              hash["#{field}Sum"] = { :$sum => "$#{options[:view_type]}.#{field}" }
-              hash
-            }.merge(_id: '$d') },
-          { :$project => {
-              _id: 0,
-              d: '$_id',
-              options[:view_type] => sub_fields.inject({}) { |hash, field|
-                hash[field] = "$#{field}Sum"
-                hash
-              } } },
-          { :$sort => { d: 1 } },
+          { :$group => map },
+          { :$project => { _id: 0, d: '$_id', options[:view_type] => reduce } },
+          { :$sort => { d: 1 } }
         ])
       else
         (options[:stats] || scoped).where(conditions).order_by(d: 1).entries
@@ -188,7 +184,7 @@ module Stat::Site
     def fill_missing_values_for_last_stats(stats, options = {})
       options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)
 
-      if !(options[:from] || options[:to])
+      if !options[:from] && !options[:to]
         options[:from] = stats.min_by { |s| s['d'] }['d'] || Time.now
         options[:to]   = stats.max_by { |s| s['d'] }['d'] || (Time.now - 1.second)
       end

@@ -167,7 +167,7 @@ module GraphsHelper
     {
       enabled: options[:enabled],
       text: "Generated at: #{l(Time.now.utc, format: :seconds_timezone)} / Copyright © #{Date.today.year} - SublimeVideo®",
-      href: "http://sublimevideo.net"
+      href: 'http://sublimevideo.net'
     }
   end
 
