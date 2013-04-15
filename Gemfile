@@ -40,6 +40,7 @@ gem 'acts_as_api'
 
 # Internals
 gem 'dalli'
+gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
 
