@@ -25,7 +25,7 @@ class SiteCountersUpdater
   # = Public instance methods =
   # ===========================
   def set_first_billable_plays_at
-    if stat = site.day_stats.order_by(d: 1).detect { |s| s.billable_vv >= 10 }
+    if stat = site.day_stats.order_by(d: 1).entries.find { |s| s.billable_vv >= 10 }
       site.update_column(:first_billable_plays_at, stat.respond_to?(:d) ? stat.d : stat.day)
     end
   end
@@ -44,8 +44,7 @@ class SiteCountersUpdater
 
   # Delayed method
   def self._update_last_30_days_counters(site_id)
-    updater = new(Site.find(site_id))
-    updater.update_last_30_days_counters
+    new(Site.find(site_id)).update_last_30_days_counters
   end
 
   def _update_last_30_days_video_tags_counters

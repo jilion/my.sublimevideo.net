@@ -14,10 +14,12 @@ class PusherWrapper
 
   def self.handle_webhook(webhook)
     webhook.events.each do |event|
-      channel = PusherChannel.new(event["channel"])
-      case event["name"]
-      when 'channel_occupied'; channel.occupied!
-      when 'channel_vacated'; channel.vacated!
+      channel = PusherChannel.new(event['channel'])
+      case event['name']
+      when 'channel_occupied'
+        channel.occupied!
+      when 'channel_vacated'
+        channel.vacated!
       end
     end
   end
@@ -33,6 +35,5 @@ class PusherWrapper
   rescue Pusher::Error
     false
   end
-
 
 end

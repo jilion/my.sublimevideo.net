@@ -6,14 +6,11 @@ class SiteStatsController < ApplicationController
 
   # GET /sites/:site_id/stats
   def index
+    stats = Stat::Site.json(@site.token, period: params[:period] || 'minutes', demo: demo_site?)
+
     respond_to do |format|
       format.html
-      format.json {
-        render json: Stat::Site.json(@site.token,
-          period: params[:period] || 'minutes',
-          demo: demo_site?
-        )
-      }
+      format.json { render json: stats }
     end
   end
 

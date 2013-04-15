@@ -6,9 +6,7 @@ class DealsController < ApplicationController
 
   def show
     deal_activation = current_user.deal_activations.build(deal_id: @deal.id)
-    if deal_activation.save
-      cookies.delete :d, domain: :all
-    end
+    cookies.delete(:d, domain: :all) if deal_activation.save
 
     respond_to do |format|
       format.html { redirect_to :sites }

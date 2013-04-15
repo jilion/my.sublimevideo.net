@@ -56,7 +56,7 @@ class Log
   def trackers(log_format, options = {})
     trackers = with_log_file_in_tmp { |file| LogAnalyzer.parse(file, log_format) }
     if options[:title].present?
-      trackers = trackers.detect { |t| t.options[:title] == options[:title] }.categories
+      trackers = trackers.find { |t| t.options[:title] == options[:title] }.categories
     end
     trackers
   end

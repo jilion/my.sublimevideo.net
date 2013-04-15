@@ -66,12 +66,13 @@ private
   #
   def self.incs_from_trackers(trackers)
     trackers = only_stats_trackers(trackers)
-    incs     = Hash.new { |h,k| h[k] = {
-      inc: Hash.new(0),
-      set: {},
-      add_to_set: Hash.new { |h,k| h[k] = { :$each => [] }  },
-      videos: Hash.new { |h,k| h[k] = Hash.new(0) }
-    } }
+    incs     = Hash.new do |h, k| h[k] = {
+        inc: Hash.new(0),
+        set: {},
+        add_to_set: Hash.new { |h, k| h[k] = { :$each => [] }  },
+        videos: Hash.new { |h, k| h[k] = Hash.new(0) }
+      }
+    end
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
@@ -115,7 +116,7 @@ private
   end
 
   def self.only_stats_trackers(trackers)
-    trackers.detect { |t| t.options[:title] == :stats }.categories
+    trackers.find { |t| t.options[:title] == :stats }.categories
   end
 
   def self.clean_and_increment_metrics(values)
@@ -150,20 +151,20 @@ private
   def self.key_to_string(namespace, key)
     {
       inc: {
-        "pv" => "page_visits",
-        "vv" => "video_plays",
-        "vl" => "video_loads",
-        "m"  => "main",
-        "e"  => "extra",
-        "em" => "embed",
-        "d"  => "dev",
-        "s"  => "staging",
-        "i"  => "invalid"
+        'pv' => 'page_visits',
+        'vv' => 'video_plays',
+        'vl' => 'video_loads',
+        'm'  => 'main',
+        'e'  => 'extra',
+        'em' => 'embed',
+        'd'  => 'dev',
+        's'  => 'staging',
+        'i'  => 'invalid'
       },
       add_to_set: {
-        "s" => 'stable',
-        "b" => 'beta',
-        "a" => 'alpha'
+        's' => 'stable',
+        'b' => 'beta',
+        'a' => 'alpha'
       }
     }[namespace][key]
   end

@@ -17,7 +17,7 @@ module TwitterWrapper
             Twitter.send(method_name, *args)
           end
         rescue Twitter::Error::TooManyRequests => error
-          Notifier.send("Too many Twitter requests.")
+          Notifier.send('Too many Twitter requests.')
         end
       else
         super

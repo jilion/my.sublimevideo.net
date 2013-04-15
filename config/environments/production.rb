@@ -62,13 +62,13 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
   # https://devcenter.heroku.com/articles/rack-cache-memcached-static-assets-rails31
   config.action_dispatch.rack_cache = {
-    :metastore    => Dalli::Client.new,
-    :entitystore  => 'file:tmp/cache/rack/body',
-    :allow_reload => false
+    metastore:    Dalli::Client.new,
+    entitystore:  'file:tmp/cache/rack/body',
+    allow_reload: false
   }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = "https://cdn.sublimevideo.net"
+  config.action_controller.asset_host = 'https://cdn.sublimevideo.net'
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -77,8 +77,8 @@ MySublimeVideo::Application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: "smtp.sendgrid.net",
-    port: "587",
+    address: 'smtp.sendgrid.net',
+    port: '587',
     authentication: :plain,
     user_name: ENV['SENDGRID_USERNAME'],
     password: ENV['SENDGRID_PASSWORD'],

@@ -2,7 +2,7 @@
 module Admin::GraphsHelper
 
   def graph_start_date
-    range_start_date - (moving_average_length-1).days
+    range_start_date - (moving_average_length - 1).days
   end
 
   def graph_end_date

@@ -6,42 +6,19 @@ class MailLog < ActiveRecord::Base
   serialize :user_ids
   serialize :snapshot
 
-  # ================
-  # = Associations =
-  # ================
-
-  belongs_to :template, class_name: "MailTemplate", foreign_key: "template_id"
+  belongs_to :template, class_name: 'MailTemplate', foreign_key: 'template_id'
   belongs_to :admin
 
-  # ===============
-  # = Validations =
-  # ===============
-
-  validates :template_id, presence: true
-  validates :admin_id,    presence: true
-  validates :criteria,    presence: true
-  validates :user_ids,    presence: true
-
-  # =============
-  # = Callbacks =
-  # =============
+  validates :template_id, :admin_id, :criteria, :user_ids, presence: true
 
   before_create :snapshotize_template
 
-  # ==========
-  # = Scopes =
-  # ==========
-
   # sort
-  scope :by_template_title, ->(way = 'asc') { includes(:template).order{ template.title.send(way) } }
-  scope :by_admin_email,    ->(way = 'asc') { includes(:admin).order{ admin.email.send(way) } }
-  scope :by_date,           ->(way = 'desc') { order{ created_at.send(way) } }
+  scope :by_template_title, ->(way = 'asc') { includes(:template).order { template.title.send(way) } }
+  scope :by_admin_email,    ->(way = 'asc') { includes(:admin).order { admin.email.send(way) } }
+  scope :by_date,           ->(way = 'desc') { order { created_at.send(way) } }
 
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-private
+  private
 
   def snapshotize_template
     self.snapshot = MailTemplate.find(template_id).snapshotize
@@ -66,4 +43,3 @@ end
 #
 #  index_mail_logs_on_template_id  (template_id)
 #
-

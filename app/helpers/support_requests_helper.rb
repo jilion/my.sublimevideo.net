@@ -12,11 +12,11 @@ module SupportRequestsHelper
   end
 
   def support_availability_class
-    support_available? ? "available" : "not_available"
+    support_available? ? 'available' : 'not_available'
   end
 
   def support_request_site_token_options
-    options_for_select([[t("support_request.site_token.choose-site_token"), ''], ['', '', { disabled: true }]] + current_user.sites.active.map { |s| [hostname_or_token(s), s.token] }, selected: params[:support_request] ? params[:support_request][:site_token] : nil, disabled: ['-'])
+    options_for_select([[t('support_request.site_token.choose-site_token'), ''], ['', '', { disabled: true }]] + current_user.sites.active.map { |s| [hostname_or_token(s), s.token] }, selected: params[:support_request] ? params[:support_request][:site_token] : nil, disabled: ['-'])
   end
 
   def business_days

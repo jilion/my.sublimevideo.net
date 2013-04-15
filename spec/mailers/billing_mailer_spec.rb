@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe BillingMailer do
 
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:user, cc_expire_on: 1.day.from_now).id }
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]).id }
-  # it_should_behave_like "common mailer checks", %w[trial_will_expire trial_has_expired], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:addon_plan_billable_item).id }
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: -> { FactoryGirl.create(:user, cc_expire_on: 1.day.from_now).id }
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: -> { FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]).id }
+  # it_should_behave_like "common mailer checks", %w[trial_will_expire trial_has_expired], from: [I18n.t('mailer.billing.email')], params: -> { FactoryGirl.create(:addon_plan_billable_item).id }
 
   describe "specific checks" do
     let(:user)          { create(:user, cc_expire_on: 1.day.from_now) }

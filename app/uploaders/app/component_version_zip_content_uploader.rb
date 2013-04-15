@@ -13,10 +13,9 @@ class App::ComponentVersionZipContentUploader
       content_type = FileHeaderAnalyzer.new(zipfile.to_s).content_type
       zipfile.get_input_stream do |io|
         put_object(object_name, io.read,
-          'Cache-Control' => "max-age=29030400, public",
-          'Content-Type'  => content_type,
-          'x-amz-acl'     => 'public-read'
-        )
+                   'Cache-Control' => 'max-age=29030400, public',
+                   'Content-Type'  => content_type,
+                   'x-amz-acl'     => 'public-read')
       end
     end
   end

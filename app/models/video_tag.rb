@@ -5,7 +5,7 @@ require 'rescue_me'
 class VideoTag
   include SublimeVideoPrivateApi::Model
   uses_private_api :videos
-  collection_path "/private_api/sites/:site_token/video_tags"
+  collection_path '/private_api/sites/:site_token/video_tags'
 
   def self.count(params = {})
     rescue_and_retry(3) do

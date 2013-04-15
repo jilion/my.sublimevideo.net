@@ -11,9 +11,9 @@ class LogUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.test?
-      "uploads/voxcast"
+      'uploads/voxcast'
     else
-      "voxcast"
+      'voxcast'
     end
   end
 

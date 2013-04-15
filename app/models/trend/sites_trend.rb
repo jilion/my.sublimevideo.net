@@ -62,7 +62,7 @@ class SitesTrend
   end
 
   def self._or_conditions_for_metric(metric)
-    %w[m e em].inject([]) { |memo, field| memo << { "#{metric}.#{field}" => { "$gt" => 0 } }; memo }
+    %w[m e em].reduce([]) { |a, e| a << { "#{metric}.#{e}" => { :$gt => 0 } } }
   end
 
 end

@@ -10,12 +10,12 @@ module SiteModules::BillableItem
   end
 
   def addon_plan_for_addon_name(addon_name)
-    addon_plans.includes(:addon).where{ addons.name == addon_name }.first
+    addon_plans.includes(:addon).where { addons.name == addon_name }.first
   end
 
   def total_billable_items_price
-    app_designs.where{ (billable_items.state >> %w[trial subscribed]) }.sum(:price) +
-    addon_plans.where{ (billable_items.state >> %w[trial subscribed]) }.sum(:price)
+    app_designs.where { (billable_items.state >> %w[trial subscribed]) }.sum(:price) +
+    addon_plans.where { (billable_items.state >> %w[trial subscribed]) }.sum(:price)
   end
 
 end

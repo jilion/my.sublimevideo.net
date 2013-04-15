@@ -3,8 +3,8 @@ require 'spec_helper'
 describe UserMailer do
   let(:user) { create(:user) }
 
-  it_should_behave_like "common mailer checks", %w[welcome inactive_account], params: lambda { FactoryGirl.create(:user) }, no_signature: true
-  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: lambda { FactoryGirl.create(:user).id }
+  it_should_behave_like "common mailer checks", %w[welcome inactive_account], params: -> { FactoryGirl.create(:user) }, no_signature: true
+  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: -> { FactoryGirl.create(:user).id }
 
   describe "#welcome" do
     before do
