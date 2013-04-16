@@ -1,12 +1,12 @@
 = form_for [:admin, mail_template] do |f|
   %p
-    = f.label :title
-    = f.text_field :title
+    = f.label :title, 'Title (internal)'
+    = f.text_field :title, size: 60
   %p
     = f.label :subject
-    = f.text_field :subject
+    = f.text_field :subject, size: 60
   %p
     = f.label :body
-    = f.text_area :body
+    = f.text_area :body, style: 'width:900px'
   .actions
     = f.submit "#{mail_template.new_record? ? 'Create' : 'Update'} mail template", class: "add"

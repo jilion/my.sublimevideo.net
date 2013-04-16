@@ -93,11 +93,6 @@ namespace :db do
       timed { Populate.mail_templates }
     end
 
-    desc "Create fake video_tags. e.g.: rake 'db:populate:video_tags[abcd1234]'"
-    task :video_tags, [:login] => [:environment] do |t, args|
-      timed { Populate.video_tags(args.login) }
-    end
-
     desc "Send emails (via letter_opener). e.g.: rake 'db:populate:emails[remy]'"
     task :emails, [:login] => [:environment] do |t, args|
       timed { Populate.send_all_emails(args.login) }
@@ -180,7 +175,7 @@ end
 private
 
 def argv(var_name, default = nil)
-  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+  if var = ARGV.find { |arg| arg =~ /(#{var_name}=)/i }
     var.sub($1, '')
   else
     ARGV.try(:[], 1)

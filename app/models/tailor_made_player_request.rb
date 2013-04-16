@@ -3,7 +3,7 @@ class TailorMadePlayerRequest
   uses_private_api :www
 
   def self.topics
-    @topics ||= get_raw(:topics)[:data]
+    @topics ||= get_raw(:topics)[:parsed_data][:data]
   end
 
   def document?

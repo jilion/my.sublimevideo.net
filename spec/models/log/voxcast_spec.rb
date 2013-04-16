@@ -61,9 +61,9 @@ describe Log::Voxcast do
     subject { create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', file: log_file) }
 
     its(:created_at) { should be_present }
-    its(:hostname)   { should == '4076.voxcdn.com' }
-    its("file.url")  { should == "/uploads/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz" }
-    its("file.size") { should == 848 }
+    its(:hostname)   { should eq '4076.voxcdn.com' }
+    its("file.url")  { should eq "/uploads/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz" }
+    its("file.size") { should eq 848 }
 
     it "should have good log content" do
       log = described_class.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -73,11 +73,13 @@ describe Log::Voxcast do
     end
 
     it "should delay parse_log methods after create" do
-      described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
-      create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id', file: log_file)
+      Timecop.freeze do
+        described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
+        described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
+        described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
+        described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
+        create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id', file: log_file)
+      end
     end
   end
 
@@ -212,7 +214,10 @@ describe Log::Voxcast do
         video_tags_trackers = stub
         @log.should_receive(:trackers).with('VoxcastVideoTagsLogFileFormat', title: :video_tags) { video_tags_trackers }
         VideoTagTrackersParser.should_receive(:extract_video_tags_data).with(video_tags_trackers) { video_tags_data }
-        VideoTagUpdater.should delay(:update).with('site_token', 'uid', { 'video' => 'data' })
+        VideoTagOldDataUpdaterBridge.should_receive(:new).with('site_token', 'uid', { 'video' => 'data' }) { |mock|
+          mock.should_receive(:update)
+          mock
+        }
         @log.parse_and_create_video_tags!
       end
 

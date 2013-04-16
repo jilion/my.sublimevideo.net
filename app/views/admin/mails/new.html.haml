@@ -1,16 +1,16 @@
 = title_and_content_header("Send an email")
 
-= form_tag admin_mails_path do
+= form_tag [:confirm, :admin, :mails] do
   .entry.template
-    = label_tag 'mail_template_id', "Template"
-    = select_tag 'mail[template_id]', options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.id)
+    %h3= label_tag 'mail_template_id', 'Choose a template (very carefully)'
+    = select_tag 'mail[template_id]', mail_templates_for_select(@mail_template), include_blank: true
 
   .entry.criteria
-    = label_tag 'mail_criteria', "Send this email to: "
+    %h3= label_tag 'mail_criteria', 'Who should receive the email?'
     = select_tag 'mail[criteria]', mails_criteria
 
   %br
 
   .entry.submit.send
-    = submit_tag "Send email", data: { confirm: 'Are you sure?' }
+    = submit_tag 'Preview email', class: 'send_email'
     .spacer

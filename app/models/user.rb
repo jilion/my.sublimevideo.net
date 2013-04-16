@@ -1,11 +1,14 @@
+require 'searchable'
+
 class User < ActiveRecord::Base
   include UserModules::CreditCard
+  include Searchable
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :async
 
   def self.cookie_domain
-    ".sublimevideo.net"
+    '.sublimevideo.net'
   end
 
   # Mail template
@@ -16,7 +19,8 @@ class User < ActiveRecord::Base
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
   attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
                   :name, :postal_code, :country, :confirmation_comment,
-                  :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country,
+                  :billing_email, :billing_name, :billing_address_1, :billing_address_2,
+                  :billing_postal_code, :billing_city, :billing_region, :billing_country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :newsletter, :terms_and_conditions
@@ -50,13 +54,14 @@ class User < ActiveRecord::Base
 
   # API
   has_many :client_applications
-  has_many :tokens, class_name: "OauthToken", order: 'authorized_at DESC', include: [:client_application]
+  has_many :tokens, class_name: 'OauthToken', order: 'authorized_at DESC', include: [:client_application]
 
   # ===============
   # = Validations =
   # ===============
 
   validates :email, presence: true, email_uniqueness: true, format: { with: Devise.email_regexp }
+  validates :billing_email, format: { with: Devise.email_regexp }, allow_blank: true
 
   with_options if: :password_required? do |v|
     v.validates_presence_of :password, on: :create
@@ -76,10 +81,11 @@ class User < ActiveRecord::Base
 
   before_save :set_password
 
-  before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
+  before_save :prepare_pending_credit_card, if: ->(user) { user.credit_card(true).valid? } # in user/credit_card
 
-  after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
-  after_save :newsletter_update
+  after_save :register_credit_card_on_file, if: ->(user) { user.cc_register } # in user/credit_card
+  after_save :_update_newsletter_subscription
+  after_update :_update_newsletter_user_infos
 
   after_update :zendesk_update
 
@@ -88,9 +94,13 @@ class User < ActiveRecord::Base
   # =================
 
   state_machine initial: :active do
-    event(:suspend)   { transition :active => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
+    event(:suspend)   { transition active: :suspended }
+    event(:unsuspend) { transition suspended: :active }
     event(:archive)   { transition all - [:archived] => :archived }
+
+    before_transition on: :archive do |user, transition|
+      user.archived_at = Time.now.utc
+    end
   end
 
   # ==========
@@ -98,25 +108,25 @@ class User < ActiveRecord::Base
   # ==========
 
   # state
-  scope :invited,      -> { where{ invitation_token != nil } }
+  scope :invited,      -> { where { invitation_token != nil } }
   # some beta users don't come from svs but were directly invited from msv!!
-  scope :beta,         -> { where{ (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } }
-  scope :active,       -> { where{ state == 'active' } }
-  scope :inactive,     -> { where{ state != 'active' } }
-  scope :suspended,    -> { where{ state == 'suspended' } }
-  scope :archived,     -> { where{ state == 'archived' } }
-  scope :not_archived, -> { where{ state != 'archived' } }
+  scope :beta,         -> { where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } }
+  scope :active,       -> { where { state == 'active' } }
+  scope :inactive,     -> { where { state != 'active' } }
+  scope :suspended,    -> { where { state == 'suspended' } }
+  scope :archived,     -> { where { state == 'archived' } }
+  scope :not_archived, -> { where { state != 'archived' } }
 
   # billing
   scope :paying,     -> { active.includes(:sites, :billable_items).merge(Site.paying) }
-  scope :paying_ids, -> { active.select("DISTINCT(users.id)").joins("INNER JOIN sites ON sites.user_id = users.id INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :free,       -> { active.where{ id << User.paying_ids } }
+  scope :paying_ids, -> { active.select('DISTINCT(users.id)').joins('INNER JOIN sites ON sites.user_id = users.id INNER JOIN billable_items ON billable_items.site_id = sites.id').merge(BillableItem.subscribed).merge(BillableItem.paid) }
+  scope :free,       -> { active.where { id << User.paying_ids } }
 
   # credit card
   scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
-  scope :with_cc,              -> { where{ (cc_type != nil) & (cc_last_digits != nil) } }
+  scope :with_cc,              -> { where { (cc_type != nil) & (cc_last_digits != nil) } }
   scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
-  scope :with_balance,         -> { where{ balance > 0 } }
+  scope :with_balance,         -> { where { balance > 0 } }
   scope :last_credit_card_expiration_notice_sent_before, ->(date) {
       where { last_credit_card_expiration_notice_sent_at < date }
   }
@@ -132,23 +142,21 @@ class User < ActiveRecord::Base
   scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
   scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
-  scope :in_beta_trial_ended_after, ->(full_addon_name, timestamp) {
-    site_ids = Site.in_beta_trial_ended_after(full_addon_name, timestamp).map(&:id)
-    active.where(id: site_ids)
+  scope :with_stats_realtime_addon_or_invalid_video_tag_data_uid, -> {
+    site_with_realtime_addon_tokens = Site.with_addon_plan('stats-realtime').select(:token).uniq.map(&:token)
+    site_with_invalide_video_tag_data_uid = VideoTag.site_tokens(with_invalid_uid: true)
+    joins(:sites).where(sites: { token: (site_with_realtime_addon_tokens + site_with_invalide_video_tag_data_uid).uniq })
   }
 
   # sort
-  scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way.upcase}, users.email #{way.upcase}") }
-  scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way.upcase}") }
-  scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way.upcase}") }
-  scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way.upcase}") }
-  scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way.upcase}") }
+  scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way}, users.email #{way}") }
+  scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way}") }
+  scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way}") }
+  scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way}") }
+  scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way}") }
 
-  def self.search(q)
-    includes(:sites).where{
-      (lower(:email) =~ lower("%#{q}%")) | (lower(:name) =~ lower("%#{q}%")) |
-      (lower(sites.hostname) =~ lower("%#{q}%")) | (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
-    }
+  def self.additional_or_conditions
+    %w[email name].reduce([]) { |a, e| a << ("lower(#{e}) =~ " + 'lower("%#{q}%")') }
   end
 
   # =================
@@ -158,7 +166,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
   def self.find_for_authentication(conditions = {})
-    where(conditions).where{ state != 'archived' }.first
+    where(conditions).where { state != 'archived' }.first
   end
 
   # ====================
@@ -212,7 +220,7 @@ class User < ActiveRecord::Base
   end
 
   def more_info_incomplete?
-    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
+    [company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
     [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
   end
 
@@ -220,8 +228,20 @@ class User < ActiveRecord::Base
     sites.not_archived.paying.count > 0
   end
 
+  def trial_or_billable?
+    billable? || sites.not_archived.any? { |site| site.total_billable_items_price > 0 }
+  end
+
+  def sponsored?
+    sites.not_archived.includes(:billable_items).where { billable_items.state == 'sponsored' }.present?
+  end
+
   def name_or_email
     name.presence || email
+  end
+
+  def billing_name_or_billing_email
+    billing_name.presence || billing_email
   end
 
   def billing_address(fallback_to_name = true)
@@ -237,15 +257,15 @@ class User < ActiveRecord::Base
   end
 
   def activated_deals
-    deal_activations.active.order{ activated_at.desc }.map(&:deal)
+    deal_activations.active.order { activated_at.desc }.map(&:deal)
   end
 
   def latest_activated_deal
-    deal_activations.order{ activated_at.desc }.first.try(:deal)
+    deal_activations.order { activated_at.desc }.first.try(:deal)
   end
 
   def latest_activated_deal_still_active
-    deal_activations.active.order{ activated_at.desc }.first.try(:deal)
+    deal_activations.active.order { activated_at.desc }.first.try(:deal)
   end
 
   def support_requests
@@ -264,21 +284,24 @@ class User < ActiveRecord::Base
 
   # validate
   def validates_current_password
-    return if @skip_password_validation
-    return if @bypass_postpone # For devise reconfirmation
+    # @bypass_postpone if for devise reconfirmation
+    return if @skip_password_validation || @bypass_postpone || !_current_password_needed?
 
-    if persisted? &&
-      ((state_changed? && archived?) || @password.present? || email_changed?) &&
-      errors.empty? &&
-      # handle Devise password reset!!
-      # at first, Devise call valid? and then reset_password_token is not nil so no problem, but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
-      (reset_password_token.nil? && !reset_password_token_changed?)
-      if current_password.blank?
-        self.errors.add(:current_password, :blank)
-      elsif !valid_password?(current_password)
-        self.errors.add(:current_password, :invalid)
-      end
+    if current_password.blank?
+      self.errors.add(:current_password, :blank)
+    elsif !valid_password?(current_password)
+      self.errors.add(:current_password, :invalid)
     end
+  end
+
+  def _current_password_needed?
+    persisted? &&
+    ((state_changed? && archived?) || @password.present? || email_changed?) &&
+    errors.empty? &&
+    # handle Devise password reset!!
+    # at first, Devise call valid? and then reset_password_token is not nil so no problem,
+    # but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
+    (reset_password_token.nil? && !reset_password_token_changed?)
   end
 
   # before_save
@@ -290,19 +313,25 @@ class User < ActiveRecord::Base
   end
 
   # after_save
-  def newsletter_update
-    if newsletter_changed?
-      if newsletter?
-        NewsletterSubscriptionManager.delay.subscribe(self.id)
-      else
-        NewsletterSubscriptionManager.delay.unsubscribe(self.id)
-      end
-    end
+  def _update_newsletter_subscription
+    return unless newsletter_changed?
 
     if newsletter?
-      if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
-        NewsletterSubscriptionManager.delay.update(self.id, { email: email_was || email, user: { email: email, name: name, newsletter: newsletter? } })
-      end
+      NewsletterSubscriptionManager.delay.subscribe(self.id)
+    else
+      NewsletterSubscriptionManager.delay.unsubscribe(self.id)
+    end
+  end
+
+  # after_update
+  def _update_newsletter_user_infos
+    return unless newsletter?
+
+    if email_changed? || name_changed?
+      NewsletterSubscriptionManager.delay.update(self.id, {
+        email: email_was || email,
+        user: { email: email, name: name, newsletter: newsletter? }
+      })
     end
   end
 
@@ -337,6 +366,7 @@ end
 #  billing_address_2                          :string(255)
 #  billing_city                               :string(255)
 #  billing_country                            :string(255)
+#  billing_email                              :string(255)
 #  billing_name                               :string(255)
 #  billing_postal_code                        :string(255)
 #  billing_region                             :string(255)

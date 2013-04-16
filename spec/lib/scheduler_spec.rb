@@ -1,8 +1,9 @@
 require 'fast_spec_helper'
+require 'timecop'
 require 'active_support/core_ext'
 require 'sidekiq'
 require 'config/sidekiq'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
 
 require 'services/notifier'
 require 'services/site_manager'
@@ -39,13 +40,13 @@ describe Scheduler do
     end
 
     it "notifies if number of jobs is higher than threshold" do
-      sidekiq_queue.should_receive(:size) { 10001 }
+      sidekiq_queue.should_receive(:size) { 100_001 }
       Notifier.should_receive(:send)
       described_class.supervise_queues
     end
 
     it "doesn't notify if number of jobs is low" do
-      sidekiq_queue.should_receive(:size) { 9999 }
+      sidekiq_queue.should_receive(:size) { 99_999 }
       Notifier.should_not_receive(:send)
       described_class.supervise_queues
     end
@@ -54,20 +55,20 @@ describe Scheduler do
   describe ".schedule_daily_tasks" do
     it "schedules InvoiceCreator.create_invoices_for_month" do
       InvoiceCreator.should delay(:create_invoices_for_month,
+        at: (Time.now.utc.tomorrow.midnight + 30.minutes).to_i
+      )
+      described_class.schedule_daily_tasks
+    end
+
+    it "schedules TrialHandler.send_trial_will_expire_emails" do
+      TrialHandler.should delay(:send_trial_will_expire_emails,
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules TrialHandler.send_trial_will_expire_email" do
-      TrialHandler.should delay(:send_trial_will_expire_email,
-        at: Time.now.utc.tomorrow.midnight.to_i
-      )
-      described_class.schedule_daily_tasks
-    end
-
-    it "schedules TrialHandler.activate_billable_items_out_of_trial!" do
-      TrialHandler.should delay(:activate_billable_items_out_of_trial!,
+    it "schedules TrialHandler.activate_billable_items_out_of_trial" do
+      TrialHandler.should delay(:activate_billable_items_out_of_trial,
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -96,16 +97,14 @@ describe Scheduler do
 
     it "schedules User.send_emails" do
       CreditCardExpirationNotifier.should delay(:send_emails,
-        at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules NewInactiveUserNotifier.send_emails" do
       NewInactiveUserNotifier.should delay(:send_emails,
-        at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
@@ -113,7 +112,7 @@ describe Scheduler do
     it "schedules UsersTrend.create_trends" do
       UsersTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -121,7 +120,7 @@ describe Scheduler do
     it "schedules SitesTrend.create_trends" do
       SitesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -129,15 +128,15 @@ describe Scheduler do
     it "schedules BillingsTrend.create_trends" do
       BillingsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules RevenuesTrend.create_trends" do
       RevenuesTrend.should delay(:create_trends,
-        at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        at: (Time.now.utc.tomorrow.midnight + 3.hours).to_i,
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -145,7 +144,7 @@ describe Scheduler do
     it "schedules BillingsTrend.create_trends" do
       BillableItemsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -153,7 +152,7 @@ describe Scheduler do
     it "schedules SiteStatsTrend.create_trends" do
       SiteStatsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -161,7 +160,7 @@ describe Scheduler do
     it "schedules SiteUsagesTrend.create_trends" do
       SiteUsagesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -169,7 +168,7 @@ describe Scheduler do
     it "schedules TweetsTrend.create_trends" do
       TweetsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -177,7 +176,7 @@ describe Scheduler do
     it "schedules TailorMadePlayerRequestsTrend.create_trends" do
       TailorMadePlayerRequestsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_daily_tasks
     end
@@ -187,7 +186,7 @@ describe Scheduler do
     it "schedules Tweet.save_new_tweets_and_sync_favorite_tweets" do
       Tweet.should delay(:save_new_tweets_and_sync_favorite_tweets,
         at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
+        queue: 'low'
       )
       described_class.schedule_hourly_tasks
     end
@@ -195,14 +194,16 @@ describe Scheduler do
 
   describe ".schedule_frequent_tasks" do
     it "schedules 10 times Log::Voxcast.delay_download_and_create_new_logs" do
-      10.times do |i|
-        Log::Voxcast.should delay(:download_and_create_new_logs,
-          queue: "high",
-          at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
-        )
-      end
+      Timecop.freeze do
+        10.times do |i|
+          Log::Voxcast.should delay(:download_and_create_new_logs,
+            queue: 'high',
+            at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
+          )
+        end
 
-      described_class.schedule_frequent_tasks
+        described_class.schedule_frequent_tasks
+      end
     end
   end
 end

@@ -1,14 +1,6 @@
-class BillableItem < ActiveRecord::Base
-  INACTIVE_STATES = %w[suspended] unless defined? INACTIVE_STATES
-  ACTIVE_STATES   = %w[beta trial subscribed sponsored] unless defined? ACTIVE_STATES
-  STATES          = INACTIVE_STATES + ACTIVE_STATES unless defined? STATES
+class BillableItem < Subscription
+  self.table_name = 'billable_items' # Be prepared for BillableItem renamed SubscriptionCurrent
 
-  attr_accessible :item, :site, :state, as: :admin
-
-  belongs_to :site
-  belongs_to :item, polymorphic: true
-
-  validates :item, :site, :state, presence: true
   validates :item_id, uniqueness: { scope: [:item_type, :site_id] }
   validates :state, inclusion: STATES
 
@@ -25,45 +17,21 @@ class BillableItem < ActiveRecord::Base
   after_save ->(billable_item) do
     if billable_item.state_changed?
       billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin)
-
-      free_or_paid = billable_item.item.price.zero? ? 'free' : 'paid'
-      Librato.increment "addons.#{billable_item.state}", source: "#{free_or_paid}.#{billable_item.item_parent_kind}-#{billable_item.item.name}"
+      _increment_librato
     end
   end
 
   after_destroy ->(billable_item) do
     billable_item.site.billable_item_activities.create({ item: billable_item.item, state: 'canceled' }, as: :admin)
-
-    free_or_paid = billable_item.item.price.zero? ? 'free' : 'paid'
-    Librato.increment 'addons.canceled', source: "#{free_or_paid}.#{billable_item.item_parent_kind}-#{billable_item.item.name}"
+    _increment_librato(state: 'canceled')
   end
 
-  # ==========
-  # = Scopes =
-  # ==========
+  private
 
-  scope :app_designs, -> { where(item_type: 'App::Design') }
-  scope :addon_plans, -> { where(item_type: 'AddonPlan') }
-
-  # States
-  scope :beta,        -> { where(state: 'beta') }
-  scope :subscribed,  -> { where(state: 'subscribed') }
-  scope :active,      -> { where { state >> ACTIVE_STATES } }
-  scope :paid,        -> do
-    where{
-      ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |
-      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.joins(:addon).paid.pluck("addon_plans.id")))
-    }
+  def _increment_librato(options = {})
+    source = "#{free? ? 'free' : 'paid'}.#{item_parent_kind}-#{item.name}"
+    Librato.increment "addons.#{options[:state] || state}", source: source
   end
-
-  def active?
-    ACTIVE_STATES.include?(state)
-  end
-
-  def item_parent_kind
-    item.is_a?(App::Design) ? 'design' : item.addon.name
-  end
-
 end
 
 # == Schema Information

@@ -18,13 +18,15 @@ describe 'Image and Thumbnail', ->
 
     describe 'setDimensions()', ->
       it 'sets the width, height and ratio', ->
-        @image.setDimensions(false, 'http://sublimevideo.net/demo/dartmoor.jpg', { width:800, height:350 })
+        @image.setDimensions(false, 'http://sublimevideo.net/demo/dartmoor.jpg', { width: 800, height: 350 })
+
         expect(@image.get('width')).toEqual(800)
         expect(@image.get('height')).toEqual(350)
         expect(@image.get('ratio')).toEqual(350 / 800)
 
       it 'an error occured, doens\'t set the width, height nor ratio', ->
-        @image.setDimensions(true, 'http://sublimevideo.net/demo/dartmoor.jpg', { width:800, height:350 })
+        @image.setDimensions(true, 'http://sublimevideo.net/demo/dartmoor.jpg', { width: 800, height: 350 })
+
         expect(@image.get('width')).toEqual(0)
         expect(@image.get('height')).toEqual(0)
         expect(@image.get('ratio')).toEqual(1)
@@ -35,7 +37,8 @@ describe 'Image and Thumbnail', ->
 
     describe 'setDimensions()', ->
       it 'sets the width, height and ratio', ->
-        @thumb.setDimensions(false, 'http://sublimevideo.net/demo/dartmoor.jpg', { width:800, height:350 })
+        @thumb.setDimensions(false, 'http://sublimevideo.net/demo/dartmoor.jpg', { width: 800, height: 350 })
+
         expect(@thumb.get('width')).toEqual(800)
         expect(@thumb.get('height')).toEqual(350)
         expect(@thumb.get('ratio')).toEqual(350 / 800)
@@ -43,7 +46,8 @@ describe 'Image and Thumbnail', ->
         expect(@thumb.get('thumbHeight')).toEqual(350)
 
       it 'an error occured, doens\'t set the width, height nor ratio', ->
-        @thumb.setDimensions(true, 'http://sublimevideo.net/demo/dartmoor.jpg', { width:800, height:350 })
+        @thumb.setDimensions(true, 'http://sublimevideo.net/demo/dartmoor.jpg', { width: 800, height: 350 })
+
         expect(@thumb.get('width')).toEqual(0)
         expect(@thumb.get('height')).toEqual(0)
         expect(@thumb.get('ratio')).toEqual(1)
@@ -73,12 +77,6 @@ describe 'Image and Thumbnail', ->
       it 'maximum is 800', ->
         @thumb.setThumbWidth(5000)
         expect(@thumb.get('thumbWidth')).toEqual(800)
-
-    describe 'setThumbHeightWithRatio()', ->
-      it 'sets thumbHeight from thumbWidth and ratio', ->
-        @thumb.set(thumbWidth:300, ratio:0.5)
-        @thumb.setThumbHeightWithRatio()
-        expect(@thumb.get('thumbHeight')).toEqual(150)
 
     describe 'viewable()', ->
       it 'returns false if initialLink is text and src is empty', ->

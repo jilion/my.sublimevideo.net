@@ -57,4 +57,6 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::MailersHelpers)
+RSpec.configure do |config|
+  config.include Spec::Support::MailersHelpers
+end

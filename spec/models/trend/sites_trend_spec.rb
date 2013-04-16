@@ -1,39 +1,64 @@
 require 'spec_helper'
 
 describe SitesTrend do
-
-  describe "with a bunch of different sites", :addons do
+  describe "with a bunch of different sites" do
+    let!(:design)     { create(:app_design, price: 0) }
+    let!(:addon_plan) { create(:addon_plan, price: 990) }
     before do
       user = create(:user)
       create(:site, user: user, state: 'active') # free
-      s = create(:site, user: user, state: 'active') # in trial => free
-      create(:design_billable_item, state: 'trial', site: s, item: @twit_design)
+      s1 = create(:site, user: user, state: 'active') # in trial => free
+      create(:design_billable_item, state: 'trial', site: s1, item: design)
 
-      s = create(:site, user: user, state: 'archived') # in trial & archived
-      create(:design_billable_item, state: 'trial', site: s, item: @twit_design)
+      s2 = create(:site, user: user, state: 'archived') # in trial & archived
+      create(:design_billable_item, state: 'trial', site: s2, item: design)
 
-      s = create(:site, user: user, state: 'active') # not in trial but design free => free
-      create(:design_billable_item, state: 'subscribed', site: s, item: @twit_design)
+      s3 = create(:site, user: user, state: 'active') # not in trial but design free => free
+      create(:design_billable_item, state: 'subscribed', site: s3, item: design)
 
-      s = create(:site, user: user, state: 'active') # not in trial
-      create(:addon_plan_billable_item, state: 'subscribed', site: s, item: @logo_addon_plan_2)
+      s4 = create(:site, user: user, state: 'active') # not in trial
+      create(:addon_plan_billable_item, state: 'subscribed', site: s4, item: addon_plan)
 
-      s = create(:site, user: user, state: 'active') # not in trial
-      create(:addon_plan_billable_item, state: 'subscribed', site: s, item: @support_addon_plan_2)
+      s5 = create(:site, user: user, state: 'active') # not in trial
+      create(:addon_plan_billable_item, state: 'subscribed', site: s5, item: addon_plan)
 
       create(:site, user: user, state: 'suspended') # suspended
       create(:site, user: user, state: 'archived') # archived
+
+      create(:site_day_stat, t: s1.token, d: 31.days.ago.midnight, pv: { m: 1 }, vv: { m: 1 }) # not in the last 30 days
+      create(:site_day_stat, t: s2.token, d: 1.day.ago.midnight, pv: { m: 1 }, vv: { m: 1 }) # not taken in account (archived)
+      create(:site_day_stat, t: s3.token, d: 30.days.ago.midnight, pv: { m: 1 }, vv: { m: 1 }) # in the last 30 days
+      create(:site_day_stat, t: s4.token, d: 1.days.ago.midnight, pv: { e: 1 }, vv: { e: 1 })
+      create(:site_day_stat, t: s5.token, d: 1.day.ago.midnight, pv: { em: 1 }, vv: { em: 1 })
     end
 
-    describe ".create_trends" do
-      it "should create sites stats for states & plans" do
+    describe '.create_trends' do
+      it 'creates sites stats for states & plans' do
         described_class.create_trends
         described_class.count.should eq 1
         sites_stat = described_class.last
-        sites_stat["fr"].should == { "free" => 3 }
-        sites_stat["pa"].should == { "addons" => 2 }
+        sites_stat["fr"].should eq({ 'free' => 3 })
+        sites_stat["pa"].should eq({ 'addons' => 2 })
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 2
+        sites_stat["al"].should eq({ 'pv' => 4, 'vv' => 4 })
+      end
+    end
+
+    describe '.update_alive_sites_trends' do
+      before do
+        described_class.create(d: 2.day.ago.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
+        described_class.create(d: Time.now.utc.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
+      end
+
+      it 'updates the existing trend to add alive sites trends' do
+        described_class.where(d: 2.day.ago.midnight).first['al'].should be_nil
+        described_class.where(d: Time.now.utc.midnight).first['al'].should be_nil
+
+        described_class.update_alive_sites_trends
+
+        described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'pv' => 2, 'vv' => 2 })
+        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 4, 'vv' => 4 })
       end
     end
   end
@@ -50,6 +75,6 @@ describe SitesTrend do
     it { subject[0].should have_key('pa') }
     it { subject[0].should have_key('su') }
     it { subject[0].should have_key('ar') }
+    it { subject[0].should have_key('al') }
   end
-
 end

@@ -10,35 +10,39 @@ class LoaderGenerator
 
   def self.update_all_stages!(site_id, options = {})
     site = Site.find(site_id)
+    accessible_stages = Stage.stages_equal_or_more_stable_than(site.accessible_stage)
+
     Stage.stages.each do |stage|
-      if site.active? && stage >= site.accessible_stage
-        new(site, stage, options).upload!
-        Librato.increment 'loader.update', source: stage
+      if site.active? && stage.in?(accessible_stages)
+        generator = new(site, stage, options)
+        generator.upload!
+        generator.increment_librato('update')
       elsif options[:deletable]
-        new(site, stage, options).delete!
-        Librato.increment 'loader.delete', source: stage
+        generator = new(site, stage, options)
+        generator.delete!
+        generator.increment_librato('delete')
       end
     end
   end
 
   def self.update_all_dependant_sites(component_id, stage)
+    component = App::Component.find(component_id)
+    component.clear_caches # force cache clearance
+
     delay(queue: 'high').update_important_sites
 
-    component = App::Component.find(component_id)
-    if component.app_component?
-      sites = Site.scoped
-    else
-      sites = component.sites.scoped
-    end
-    sites = sites.where { token << (SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
-    sites = sites.select(:id).active.where(accessible_stage: Stage.stages_with_access_to(stage))
-    sites.order { last_30_days_main_video_views.desc }.order { created_at.desc }.find_each do |site|
+    sites = _sites_non_important(component: component, stage: stage)
+    CampfireWrapper.delay.post("Start updating all loaders for #{sites.count} sites with the #{stage} stage accessible")
+    sites.find_each do |site|
       delay(queue: 'loader').update_all_stages!(site.id)
     end
+    notify_when_loader_queue_is_empty
   end
 
   def self.update_important_sites
-    Site.select(:id).where { token >> (::SiteToken.tokens + IMPORTANT_SITE_TOKENS) }.each do |site|
+    sites = Site.select(:id).where { token >> (::SiteToken.tokens + IMPORTANT_SITE_TOKENS) }
+    CampfireWrapper.delay.post("Start updating all loaders for #{sites.count} *important* sites")
+    sites.each do |site|
       delay(queue: 'high').update_all_stages!(site.id)
     end
   end
@@ -63,13 +67,33 @@ class LoaderGenerator
     components_dependencies.select { |token, version| token != App::Component.app_component.token }
   end
 
-private
+  def increment_librato(action)
+    Librato.increment "loader.#{action}", source: stage
+  end
+
+  def self.notify_when_loader_queue_is_empty
+    if Sidekiq::Queue.new(:loader).size.zero?
+      CampfireWrapper.delay.post('All loaders updated!')
+    else
+      delay(at: 1.minute.from_now.change(min: 0).to_i, queue: 'low').notify_when_loader_queue_is_empty
+    end
+  end
+
+  private
+
+  def self._sites_non_important(args = {})
+    initial_scope = args[:component].app_component? ? Site : args[:component].sites
+
+    initial_scope.scoped.where { token << (SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
+    .select(:id).active.where(accessible_stage: Stage.stages_equal_or_less_stable_than(args[:stage]))
+    .order { last_30_days_main_video_views.desc }.order { created_at.desc }
+  end
 
   def host
     if Rails.env == 'staging'
-      "//cdn.sublimevideo-staging.net"
+      '//cdn.sublimevideo-staging.net'
     else
-      "//cdn.sublimevideo.net"
+      '//cdn.sublimevideo.net'
     end
   end
 

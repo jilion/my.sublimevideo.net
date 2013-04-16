@@ -6,7 +6,7 @@ class SitesPopulator < Populator
     PopulateHelpers.empty_tables(Site)
 
     User.all.each do |user|
-      BASE_SITES.each do |hostname|
+      BASE_SITES.sample(3).each do |hostname|
         created_at = rand(24).months.ago
         Timecop.travel(created_at)
         site = user.sites.build(hostname: hostname)
@@ -16,7 +16,7 @@ class SitesPopulator < Populator
           App::Design.custom.each do |design|
             app_designs[design.name] = design.id if rand >= 0.6
           end
-          AddonPlan.where{ price > 0 }.each do |addon_plan|
+          AddonPlan.where { price > 0 }.each do |addon_plan|
             addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
           end
           options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
@@ -25,7 +25,7 @@ class SitesPopulator < Populator
         if rand >= 0.5
           Timecop.return
           Timecop.travel(created_at + 30.days)
-          TrialHandler.activate_billable_items_out_of_trial_for_site!(site.id)
+          TrialHandler.new(site).activate_billable_items_out_of_trial
         end
         Timecop.return
         puts "#{site.hostname} created for #{user.name}"

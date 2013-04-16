@@ -14,21 +14,35 @@ class Admin::MailsController < Admin::AdminController
       @mail_logs = apply_scopes(MailLog.scoped).page(params[:page])
     end
     if params[:mail_templates] || templates_and_logs
-      @mail_templates = apply_scopes(MailTemplate.scoped).page(params[:page])
+      @mail_templates = apply_scopes(MailTemplate.not_archived).page(params[:page])
+      @archived_mail_templates = apply_scopes(MailTemplate.archived).page(params[:page])
     end
   end
 
   # GET /mails/new
   def new
-    @mail_log      = MailLog.new
-    @mail_template = MailTemplate.find_by_id(params[:template_id]) || MailTemplate.first
+    _find_mail_template(params[:template_id]) if params[:template_id]
+    @mail_log = MailLog.new
+  end
+
+  # POST /mails/confirm
+  def confirm
+    @user = User.first
+    _find_mail_template(params[:mail][:template_id])
   end
 
   # POST /mails
   def create
-    MailLetter.delay.deliver_and_log(params[:mail].merge(admin_id: current_admin.id))
+    Administration::EmailSender.delay.deliver_and_log(params[:mail].merge(admin_id: current_admin.id))
+    redirect_to [:admin, :mails], notice: 'Sending in progress...'
+  end
 
-    redirect_to [:admin, :mails], notice: "Sending in progress..."
+  private
+
+  def _find_mail_template(template_id)
+    @mail_template = MailTemplate.find(template_id)
+  rescue ActiveRecord::RecordNotFound
+    redirect_to [:new, :admin, :mail], alert: 'Please select an email template!'
   end
 
 end

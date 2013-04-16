@@ -1,7 +1,7 @@
 = title_and_content_header("Your account is suspended")
 
 #suspended
-  - failed_invoices = current_user.invoices.failed
+  - failed_invoices = current_user.invoices.with_state('failed')
 
   %h3.section_title Suspension reason
   - if failed_invoices.any?

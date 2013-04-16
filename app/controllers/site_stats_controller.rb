@@ -6,14 +6,11 @@ class SiteStatsController < ApplicationController
 
   # GET /sites/:site_id/stats
   def index
+    stats = Stat::Site.json(@site.token, period: params[:period] || 'minutes', demo: demo_site?)
+
     respond_to do |format|
       format.html
-      format.json {
-        render json: Stat::Site.json(@site.token,
-          period: params[:period] || 'minutes',
-          demo: demo_site?
-        )
-      }
+      format.json { render json: stats }
     end
   end
 
@@ -27,7 +24,7 @@ class SiteStatsController < ApplicationController
   private
 
   def redirect_user_without_stats_addon
-    redirect_to root_url unless @site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
+    redirect_to root_url unless @site.subscribed_to?(AddonPlan.get('stats', 'realtime'))
   end
 
 end

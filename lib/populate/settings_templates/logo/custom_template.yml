@@ -30,6 +30,8 @@ position:
 
 image_url:
   type: image
+  values: ~
 
 link_url:
   type: url
+  values: ~

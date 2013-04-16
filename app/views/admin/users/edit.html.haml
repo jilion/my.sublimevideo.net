@@ -88,4 +88,13 @@
   %hr
   %br
 
+- if has_role?('god')
+  %h3 Archive user
+
+  = form_for [:admin, @user], method: 'delete' do |f|
+    = f.submit 'Archive', data: { confirm: "Are you sure?" }
+  %br
+  %hr
+  %br
+
 %p= link_to "Back to users", admin_users_path

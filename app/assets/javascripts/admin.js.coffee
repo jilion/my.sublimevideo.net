@@ -1,7 +1,6 @@
 #= require sublimevideo
-#= require jquery.pjax
 #= require underscore
-#= require highcharts/highcharts
+#= require highstock/highstock
 #= require mousetrap.min
 #= require chosen-jquery
 #
@@ -10,6 +9,9 @@
 #= require_tree ./admin/form
 #= require_tree ./admin/app
 #= require admin/trends
+#
+#= require google-analytics-turbolinks
+#= require turbolinks
 
 window.MySublimeVideo =
   UI: {}
@@ -83,13 +85,9 @@ AdminSublimeVideo.documentReady = ->
     rangeInput.on 'change', (event) ->
       $('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger(rangeInput.val()))
 
-$(document).ready ->
+$(window).bind 'page:change', ->
+  SublimeVideo.documentReady()
   AdminSublimeVideo.documentReady()
 
-  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax]):not(.selector)').pjax '[data-pjax-container]',
-    timeout: 2000
-  $('[data-pjax-container]')
-    .on 'pjax:end', ->
-      SublimeVideo.documentReady()
-      AdminSublimeVideo.documentReady()
-
+$(document).ready ->
+  AdminSublimeVideo.documentReady()

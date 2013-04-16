@@ -14,32 +14,34 @@ class RevenuesTrend
     if self.present?
       self.order_by(d: 1).last.try(:d)
     else
-      (BillableItemActivity.order{ created_at.asc }.first.created_at).midnight - 1.day
+      (BillableItemActivity.order { created_at.asc }.first.created_at).midnight - 1.day
     end
   end
 
   def self.trend_hash(day)
     hash = {
       d: day.to_time,
-      r: Hash.new { |h,k| h[k] = Hash.new(0) }
+      r: Hash.new { |h, k| h[k] = Hash.new(0) }
     }
 
-    ::Site.not_archived.find_each(batch_size: 1000) do |site|
-      invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site)
+    ::Site.not_archived.find_each do |site|
+      invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site, price_per_day_of_year: true)
 
       invoice_service.invoice.invoice_items.each do |invoice_item|
-        second_key = case invoice_item.type
-                     when 'InvoiceItem::AppDesign'
-                       'design'
-                     when 'InvoiceItem::AddonPlan'
-                       invoice_item.item.addon.name
-                     end
-        third_key = invoice_item.item.name
-        hash[:r][second_key][third_key] += invoice_item.amount
+        hash[:r][_second_key_for_hash(invoice_item)][invoice_item.item.name] += invoice_item.amount
       end
     end
 
     hash
+  end
+
+  def self._second_key_for_hash(invoice_item)
+    case invoice_item.type
+    when 'InvoiceItem::AppDesign'
+      'design'
+    when 'InvoiceItem::AddonPlan'
+      invoice_item.item.addon.name
+    end
   end
 
 end

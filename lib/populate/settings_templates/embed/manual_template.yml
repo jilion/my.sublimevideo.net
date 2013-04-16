@@ -1,0 +1,16 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+type:
+  type: string
+  values:
+    - manual
+  default: manual
+
+size:
+  type: size
+  default: '640'

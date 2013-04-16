@@ -2,12 +2,8 @@ class Admin::TrendsController < Admin::AdminController
   respond_to :html, :json
 
   def index
-    @selected_series = params.select { |p| %w[controller action].exclude? p }.keys.map { |p| p.split('.') }
-    @selected_period = (params[:p] || "").split('-')
-  end
-
-  def show
-    render params[:page]
+    @selected_period = params.delete(:p) { '' }.split('-')
+    @selected_series = params.select { |key| %w[controller action].exclude?(key) }.keys.map { |p| p.split('.') }
   end
 
   def billings

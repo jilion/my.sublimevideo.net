@@ -9,6 +9,7 @@ en:
         path: "Custom path"
       user:
         terms_and_conditions: "Terms & Conditions"
+        billing_email: "Billing email address"
         billing_address_1: "Street"
         billing_postal_code: "Postal code"
         billing_city: "City"
@@ -36,21 +37,21 @@ en:
                 one: "You have 1 invoice not paid preventing you from deleting this site"
                 other: "You have %{count} invoices not paid preventing you from deleting this site"
             hostname:
-              invalid:  "is invalid"
+              main_invalid:  "is invalid"
               wildcard: "is invalid, please check wildcard option instead"
               taken:    "is already registered"
             dev_hostnames:
-              invalid: "are invalid"
+              dev_invalid: "are invalid"
               wildcard: "are invalid, please check wildcard option instead"
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"
             extra_hostnames:
-              invalid: "are invalid"
+              extra_invalid: "are invalid"
               wildcard: "are invalid, please check wildcard option instead"
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"
             staging_hostnames:
-              invalid: "are invalid"
+              extra_invalid: "are invalid"
               wildcard: "are invalid, please check wildcard option instead"
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"

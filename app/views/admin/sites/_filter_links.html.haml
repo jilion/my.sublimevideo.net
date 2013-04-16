@@ -26,9 +26,7 @@
 
 %p.filters
   With add-on:
-  %ul
-    - Addon.public.visible.each do |addon|
-      %li= addon_plans_list_for(addon)
+  = addon_plans_filters
 
 = "-----------------------------------------------"
 

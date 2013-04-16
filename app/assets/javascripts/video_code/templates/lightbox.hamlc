@@ -1,37 +1,7 @@
 .checkbox_wrap
-  %input#use_lightbox{ type: "checkbox", checked: @video.get('displayInLightbox'), data: { master: 'use_lightbox' } }
-  %label{ for: "use_lightbox", title: "SublimeVideo's integrated lightbox displays your videos in a floating player" } Display this video in a lightbox
+  %input#use_lightbox{ type: "checkbox", checked: MSVVideoCode.video.get('displayInLightbox'), data: { master: 'use_lightbox' } }
+  %label{ for: 'use_lightbox', title: "SublimeVideo's integrated lightbox displays your videos in a floating player" } Display this video in a lightbox
 .spacer
 
 .indent{ data: { dependant: 'use_lightbox' } }
-  %h5 Initial link (anchor)
-
-  %p.info
-    When clicked, the lightbox trigger will open the player in a lightbox.
-    The trigger can be either an image or text.
-
-  .content_left
-    #initial_link
-      .radio_wrap
-        %input#initial_link_image{ type: "radio", name: "initial_link", value: "image", checked: (@video.get('thumbnail').get('initialLink') is 'image') }
-        %label{ for: "initial_link_image" } Image
-
-      .radio_wrap
-        %input#initial_link_text{ type: "radio", name: "initial_link", value: "text", checked: (@video.get('thumbnail').get('initialLink') is 'text') }
-        %label{ for: "initial_link_text" } Text
-    .spacer
-    .entry#thumb_box
-      %label.icon{ for: "thumb_src" } Image URL or Text
-      %input#thumb_src.text.source{ type: "text", placeholder: "Image URL or Text", value: @video.get('thumbnail').get('src'), size: 50 }
-      %span#thumb_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
-      %span#thumb_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
-
-  #initial_link_image_extra.content_right
-    %h5 Size
-    .entry.size{ style: "margin-top:10px" }
-      %input#thumb_width.text{ type: "text", name: "thumb_width", value: @video.get('thumbnail').get('thumbWidth'), size: 4, maxlength: 4 }
-      x
-      %input#thumb_height.text{ type: "text", name: "thumb_height", value: @video.get('thumbnail').get('thumbHeight'), size: 4, maxlength: 4 }
-      %p
-        %a.hl.reset{ href: "" } Reset to original size
-  .spacer
+  != JST['video_code/templates/lightbox/initial_link']()

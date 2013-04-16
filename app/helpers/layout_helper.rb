@@ -17,17 +17,15 @@ module LayoutHelper
   end
 
   def sticky_notices(user, sites)
-    { credit_card_warning: user,
-      billing_address_incomplete: user
-    }.inject({}) do |memo, (method, arg)|
+    { credit_card_warning: user, billing_address_incomplete: user }.reduce({}) do |a, (method, arg)|
       result = send(method, arg)
-      memo[method] = result if result
-      memo
+      a[method] = result if result
+      a
     end
   end
-  
+
   def svg(width, height, options = {}, &block)
-    content_tag(:svg, options.reverse_merge(version: "1.1", xmlns: "http://www.w3.org/2000/svg", width: width, height: height)) do
+    content_tag(:svg, options.reverse_merge(version: '1.1', xmlns: 'http://www.w3.org/2000/svg', width: width, height: height)) do
       capture_haml(&block) if block_given?
     end
   end

@@ -1,16 +1,8 @@
 class Oauth2Verifier < OauthToken
 
-  # ===============
-  # = Validations =
-  # ===============
+  attr_accessor :state
 
   validates :user, presence: true
-
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  attr_accessor :state
 
   def exchange!(params = {})
     OauthToken.transaction do
@@ -37,7 +29,7 @@ class Oauth2Verifier < OauthToken
   protected
 
   def generate_keys
-    self.token         = OAuth::Helper.generate_key(20)[0,20]
+    self.token         = OAuth::Helper.generate_key(20)[0, 20]
     self.valid_to      = 10.minutes.from_now
     self.authorized_at = Time.now.utc
   end

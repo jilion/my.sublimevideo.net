@@ -30,24 +30,21 @@ module VideoTagsHelper
 
   def playable_lightbox(video_tag, options = {})
     tags = []
-    tags << link_to("//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4",
-      class: 'sublime'
-    ) do
+    tags << link_to('//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4', class: 'sublime') do
       # TO DO USE SSL PROXY (data.sv.net)
-      image_tag video_tag.poster_url, size: options[:size]
+      image_tag(video_tag.poster_url, size: options[:size])
     end
     tags << content_tag(:video,
-      class: "sublime lightbox",
-      # TO DO USE SSL PROXY (data.sv.net)
-      poster: video_tag.poster_url,
-      width: 640, height: 360,
-      data: { name: video_tag.name, uid: video_tag.uid },
-      preload: 'none',
-      style: 'display:none'
-    ) do
-      sources = video_tag.used_sources.map do |source|
-        options = { src: source.last['url'] }
-        options[:data] = { quality: 'hd' } if source.last['quality'] == 'hd'
+                        class: 'sublime lightbox',
+                        # TO DO USE SSL PROXY (data.sv.net)
+                        poster: video_tag.poster_url,
+                        width: 640, height: 360,
+                        data: { name: video_tag.name, uid: video_tag.uid },
+                        preload: 'none',
+                        style: 'display:none') do
+      sources = video_tag.sources.map do |source|
+        options = { src: source[:url] }
+        options[:data] = { quality: 'hd' } if source[:quality] == 'hd'
         tag('source', options)
       end
       sources.join.html_safe

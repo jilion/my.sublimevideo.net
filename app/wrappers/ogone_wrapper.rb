@@ -2,28 +2,15 @@ module OgoneWrapper
   include Configurator
 
   config_file 'ogone.yml'
-  config_accessor :login, :user, :password, :signature, :signature_out, :signature_encryptor, :created_after_10_may_2010, :currency
+  config_accessor :login, :user, :password, :signature, :signature_out, :signature_encryptor, :created_after_10_may_2010, :currency, :status
 
   class << self
 
-    def store(*args)
-      Librato.increment 'payment_gateway.store_credit_card', source: 'ogone'
-      gateway.store(*args)
-    end
-
-    def void(*args)
-      Librato.increment 'payment_gateway.void_authorization', source: 'ogone'
-      gateway.void(*args)
-    end
-
-    def purchase(*args)
-      Librato.increment 'payment_gateway.purchase', source: 'ogone'
-      gateway.purchase(*args)
-    end
-
-    def refund(*args)
-      Librato.increment 'payment_gateway.refund', source: 'ogone'
-      gateway.refund(*args)
+    %w[store void purchase refund].each do |method_name|
+      define_method method_name do |*args|
+        Librato.increment "payment_gateway.#{method_name}", source: 'ogone'
+        gateway.send(method_name, *args)
+      end
     end
 
     def sha_out_keys

@@ -25,19 +25,21 @@ describe AddonPlan do
     it { should validate_numericality_of(:price) }
   end
 
-  describe 'Scopes' do
+  describe '.free_addon_plans' do
     before do
       create(:addon_plan, price: 999, stable_at: nil)
-      @addon_plan1 = create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 0)
-      @addon_plan2 = create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 999)
+      create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 999)
+      @addon_plan1 = create(:addon_plan, availability: 'public', price: 0)
+      @addon_plan2 = create(:addon_plan, availability: 'hidden', price: 0)
+      create(:addon_plan, availability: 'custom', price: 0)
     end
 
-    describe '.paid' do
-      it { described_class.paid.should =~ [@addon_plan2] }
+    it 'returns a subscriptions hash with all the free addon plans' do
+      described_class.free_addon_plans.should =~ [@addon_plan1, @addon_plan2]
     end
 
-    describe '.custom' do
-      it { described_class.custom.should =~ [@addon_plan1, @addon_plan2] }
+    it 'returns a subscriptions hash with all the free addon plans minus the one for which the add-on should be rejected' do
+      described_class.free_addon_plans(reject: [@addon_plan1.addon.name]).should =~ [@addon_plan2]
     end
   end
 
@@ -47,12 +49,6 @@ describe AddonPlan do
     end
 
     it { described_class.get('foo', 'bar').should eq @addon_plan }
-  end
-
-  describe '#not_custom?' do
-    it { addon_plan1.should be_not_custom }
-    it { addon_plan2.should be_not_custom }
-    it { addon_plan3.should_not be_not_custom }
   end
 
   describe '#available_for_subscription?' do
@@ -71,18 +67,6 @@ describe AddonPlan do
 
       it { addon_plan3.available_for_subscription?(site).should be_true }
     end
-  end
-
-  describe '#beta?' do
-    it { build(:addon_plan, stable_at: nil).should be_beta }
-    it { build(:addon_plan, stable_at: Time.now).should_not be_beta }
-  end
-
-  describe '#free?' do
-    it { build(:addon_plan, stable_at: nil, price: 0).should be_free }
-    it { build(:addon_plan, stable_at: nil, price: 10).should_not be_free }
-    it { build(:addon_plan, stable_at: Time.now, price: 0).should be_free }
-    it { build(:addon_plan, stable_at: Time.now, price: 10).should_not be_free }
   end
 end
 
@@ -105,4 +89,3 @@ end
 #  index_addon_plans_on_addon_id           (addon_id)
 #  index_addon_plans_on_addon_id_and_name  (addon_id,name) UNIQUE
 #
-

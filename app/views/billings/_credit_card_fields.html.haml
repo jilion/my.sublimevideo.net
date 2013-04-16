@@ -1,34 +1,29 @@
-#credit_card
-  %h3.section_title
-    - if user.cc?
-      = "Update credit card"
-    - else
-      = "Register a credit card"
+%h3.section_title Register a credit card
 
-  #credit_card_box
-    .left
-      .entry.card
-        - UserModules::CreditCard::BRANDS.each do |brand|
-          .radio_wrap
-            = f.radio_button :cc_brand, brand, id: "user_cc_brand_#{brand}"
-            = f.label :cc_brand, content_tag(:span, t("user.credit_card.type.#{brand}")), class: brand, title: t("user.credit_card.type.#{brand}"), for: "user_cc_brand_#{brand}"
-        .spacer
+#credit_card_box
+  .left
+    .entry.card
+      - UserModules::CreditCard::BRANDS.each do |brand|
+        .radio_wrap
+          = f.radio_button :cc_brand, brand, id: "user_cc_brand_#{brand}"
+          = f.label :cc_brand, content_tag(:span, t("user.credit_card.type.#{brand}")), class: brand, title: t("user.credit_card.type.#{brand}"), for: "user_cc_brand_#{brand}"
+      .spacer
 
-      .entry.name
-        = f.label :cc_full_name, nil, class: "icon", for: "user_cc_full_name"
-        = f.text_field :cc_full_name, class: "text", placeholder: "Name on card", required: true, autocomplete: :off, id: "user_cc_full_name"
+    .entry.name
+      = f.label :cc_full_name, nil, class: "icon", for: "user_cc_full_name"
+      = f.text_field :cc_full_name, class: "text", placeholder: "Name on card", required: true, autocomplete: :off, id: "user_cc_full_name"
 
-      .entry.card_number
-        = f.label :cc_number, nil, class: "icon", for: "user_cc_number"
-        = f.text_field :cc_number, class: "text", placeholder: "Card number", size: 16+3, required: true, autocomplete: :off, id: "user_cc_number"
+    .entry.card_number
+      = f.label :cc_number, nil, class: "icon", for: "user_cc_number"
+      = f.text_field :cc_number, class: "text", placeholder: "Card number", size: 16+3, required: true, autocomplete: :off, id: "user_cc_number"
 
-      .entry.select.float
-        = f.label :cc_expiration_year
-        = f.select :cc_expiration_month, options_for_select([['01',1],['02',2],['03',3],['04',4],['05',5],['06',6],['07',7],['08',8],['09',9],['10',10],['11',11],['12',12]], selected: f.object.credit_card.month), {}, { required: true, id: "user_cc_expiration_month" }
-        = f.select :cc_expiration_year, options_for_select((Time.now.year..Time.now.year+20), selected: f.object.credit_card.year), {}, { required: true, id: "user_cc_expiration_year" }
+    .entry.select.float
+      = f.label :cc_expiration_year
+      = f.select :cc_expiration_month, options_for_select([['01',1],['02',2],['03',3],['04',4],['05',5],['06',6],['07',7],['08',8],['09',9],['10',10],['11',11],['12',12]], selected: f.object.credit_card.month), {}, { required: true, id: "user_cc_expiration_month" }
+      = f.select :cc_expiration_year, options_for_select((Time.now.year..Time.now.year+20), selected: f.object.credit_card.year), {}, { required: true, id: "user_cc_expiration_year" }
 
-      .entry.small_field
-        = f.label :cc_verification_value, "Security Code", for: "user_cc_verification_value"
-        = f.text_field :cc_verification_value, class: "text no_icon", placeholder: "CSC", required: true, autocomplete: :off, id: "user_cc_verification_value"
+    .entry.small_field
+      = f.label :cc_verification_value, "Security Code", for: "user_cc_verification_value"
+      = f.text_field :cc_verification_value, class: "text no_icon", placeholder: "CSC", required: true, autocomplete: :off, id: "user_cc_verification_value"
 
-    .spacer
+  .spacer

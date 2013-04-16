@@ -1,7 +1,15 @@
 class MSVVideoCode.Views.Lightbox extends Backbone.View
   template: JST['video_code/templates/lightbox']
 
-  events:
+  initialize: ->
+    this._listenToModelsEvents()
+    this._initUIHelpers()
+    this.render()
+
+  #
+  # EVENTS
+  #
+  events: ->
     'click #use_lightbox':            'updateDisplayInLightbox'
     'click input[name=initial_link]': 'updateInitialLink'
     'change #thumb_src':              'updateSrc'
@@ -9,21 +17,6 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     'change #thumb_height':           'updateThumbHeight'
     'click .reset':                   'resetThumbDimensions'
 
-  initialize: ->
-    @uiHelper = new MSVVideoCode.Helpers.UIAssetHelper 'thumb'
-
-    _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderStatus'
-    MSVVideoCode.thumbnail.bind 'change:initialLink', this.renderExtraSettings
-    MSVVideoCode.thumbnail.bind 'change:src',         this.renderStatus
-    MSVVideoCode.thumbnail.bind 'change:found',       this.renderStatus
-    MSVVideoCode.thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
-    MSVVideoCode.thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
-
-    this.render()
-
-  #
-  # EVENTS
-  #
   updateDisplayInLightbox: (event) ->
     MSVVideoCode.video.set(displayInLightbox: event.target.checked)
 
@@ -35,10 +28,12 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     MSVVideoCode.thumbnail.setAndPreloadSrc(event.target.value)
 
   updateThumbWidth: (event) ->
-    MSVVideoCode.thumbnail.setThumbWidth(parseInt(event.target.value, 10))
+    MSVVideoCode.thumbnail.setThumbWidth(event.target.value)
+    this.renderThumbHeight()
 
   updateThumbHeight: (event) ->
-    MSVVideoCode.thumbnail.setThumbHeight(parseInt(event.target.value, 10))
+    MSVVideoCode.thumbnail.setThumbHeight(event.target.value)
+    this.renderThumbWidth()
 
   resetThumbDimensions: (event) ->
     MSVVideoCode.thumbnail.setThumbWidth(MSVVideoCode.thumbnail.get('width'))
@@ -48,10 +43,16 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
   #
   # BINDINGS
   #
+  _listenToModelsEvents: ->
+    this.listenTo(MSVVideoCode.thumbnail, {
+      'change:initialLink': this.renderExtraSettings
+      'change:thumbWidth':  this.renderThumbWidth
+      'change:thumbHeight': this.renderThumbHeight
+    })
+    this.listenTo(MSVVideoCode.thumbnail, 'change:src change:found', this.renderStatus)
+
   render: ->
-    $(@el).find('#lightbox_settings_fields').html this.template
-      video: MSVVideoCode.video
-    $(@el).show()
+    @$el.html this.template()
     this.renderStatus()
 
     this
@@ -64,10 +65,10 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     this.renderStatus()
 
   renderThumbWidth: ->
-    $("#thumb_width").attr(value: MSVVideoCode.thumbnail.get('thumbWidth'))
+    $("#thumb_width").val(MSVVideoCode.thumbnail.get('thumbWidth'))
 
   renderThumbHeight: ->
-    $("#thumb_height").attr(value: MSVVideoCode.thumbnail.get('thumbHeight'))
+    $("#thumb_height").val(MSVVideoCode.thumbnail.get('thumbHeight'))
 
   renderStatus: ->
     @uiHelper.hideErrors()
@@ -80,3 +81,9 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
       @uiHelper.renderError('not_found')
     else
       @uiHelper.renderValid()
+
+  #
+  # PRIVATE
+  #
+  _initUIHelpers: ->
+    @uiHelper = new MSVVideoCode.Helpers.UIAssetHelper('thumb')

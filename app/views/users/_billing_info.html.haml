@@ -9,7 +9,7 @@
   %p.link= link_to "#{current_user.cc? ? 'Update' : 'Register'} credit card", [:edit, :billing]
 
 #billing_info.dark_box
-  %h4 Billing Address
+  %h4 Billing Details
 
   - if current_user.billable? && !current_user.billing_address_complete?
     %p.alert
@@ -17,6 +17,19 @@
       %br
       = raw t('app.please_link', link: link_to(t('app.update_it'), [:edit, :billing])) + '.'
 
-  = simple_format(current_user.billing_address(false))
+  %p
+    %strong Billing Email Address
+    %p
+      - unless current_user.billing_email?
+        = raw t('user.billing_email.missing', email: current_user.email)
+      = current_user.billing_email
+
+  %p.link= link_to "Update billing email address", [:edit, :billing]
+
+  %br
+
+  %p
+    %strong Billing Address
+    = simple_format(current_user.billing_address(false))
 
   %p.link= link_to "Update billing address", [:edit, :billing]

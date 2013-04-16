@@ -14,7 +14,7 @@ describe CampaignMonitorWrapper do
   specify { CampaignMonitorWrapper.lists['sublimevideo_newsletter']['list_id'].should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
 
   before {
-    described_class.stub(log_bad_request: true)
+    described_class.stub(_log_bad_request: true)
     Librato.stub(:increment)
   }
 
@@ -54,19 +54,19 @@ describe CampaignMonitorWrapper do
       subscriber['EmailAddress'].should eq user1.email
       subscriber['Name'].should         eq user1.name
       subscriber['State'].should        eq 'Active'
-      subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
-      subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq '13'
-      subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq 'true'
-      subscriber['CustomFields'].detect { |h| h.values.include?('billable') }['Value'].should eq 'false'
+      subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
+      subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq '13'
+      subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq 'true'
+      subscriber['CustomFields'].find { |h| h.values.include?('billable') }['Value'].should eq 'false'
       # user 2
       subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.lists['sublimevideo']['list_id'], user2.email)
       subscriber['EmailAddress'].should eq user2.email
       subscriber['Name'].should         eq user2.name
       subscriber['State'].should        eq 'Active'
-      subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
-      subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq '14'
-      subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq 'false'
-      subscriber['CustomFields'].detect { |h| h.values.include?('billable') }['Value'].should eq 'true'
+      subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
+      subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq '14'
+      subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq 'false'
+      subscriber['CustomFields'].find { |h| h.values.include?('billable') }['Value'].should eq 'true'
     end
   end
 
@@ -137,9 +137,9 @@ describe CampaignMonitorWrapper do
         subscriber['EmailAddress'].should eq subscribe_user.email
         subscriber['Name'].should         eq subscribe_user.name
         subscriber['State'].should        eq 'Active'
-        subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
-        subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq subscribe_user.id.to_s
-        subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq subscribe_user.beta.to_s
+        subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
+        subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq subscribe_user.id.to_s
+        subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq subscribe_user.beta.to_s
       end
     end
 

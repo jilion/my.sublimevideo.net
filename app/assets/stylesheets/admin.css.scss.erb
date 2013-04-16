@@ -1033,3 +1033,64 @@ li.logout a {
 }
 
 li.logout span {display:none}
+
+a.dunno_what_i_am_doing {
+  display:block;
+  background:#ba2034;
+  color:#fff;
+  text-decoration:none;
+  font-size:25px;
+  font-weight:bold;
+  text-align:center;
+  text-shadow:none;
+  width:250px;
+  padding:20px 15px;
+  margin:20px auto;
+  border-radius:8px;
+  -webkit-border-radius:8px;
+  -moz-border-radius:8px;
+}
+input.send_email {
+  display:block;
+  background:#32a149;
+  color:#fff;
+  text-decoration:none;
+  font-size:13px;
+  text-align:center;
+  text-shadow:none;
+  padding:10px 10px;
+  margin:10px auto;
+  border:0;
+  border-radius:5px;
+  -webkit-border-radius:8px;
+  -moz-border-radius:8px;
+}
+
+#flash {
+/*  position:absolute;*/
+/*  width:880px;*/
+  width:100%;
+  height:40px;
+  margin:0 auto;
+/*  left:0;
+  right:0;
+  top:110px;
+*/  overflow:hidden;
+}
+
+#flash div {
+  margin:0;
+  padding:8px 12px 10px;
+}
+
+#flash .alert {
+  color:#6e0000;
+  @include gradient(#fccccc,#f8a1a1,#fcc1c1);
+}
+
+#flash .notice {
+  color:#6e4b00;
+  text-shadow:rgba(255,255,255,0.8) 0 1px 0;
+  @include gradient(#fcf3cc,#f8e9a1,#faedb3);
+  @include border-radius(4px);
+}

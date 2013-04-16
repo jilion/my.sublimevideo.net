@@ -1,8 +1,11 @@
+require 'searchable'
+
 class Site < ActiveRecord::Base
   include SiteModules::BillableItem
   include SiteModules::Billing
   include SiteModules::Referrer
   include SiteModules::Usage
+  include Searchable
 
   DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost' unless defined?(DEFAULT_DEV_DOMAINS)
@@ -32,7 +35,6 @@ class Site < ActiveRecord::Base
   belongs_to :default_kit, class_name: 'Kit'
   belongs_to :plan # legacy
   belongs_to :user
-  has_many :video_tags
 
   # Invoices
   has_many :invoices, class_name: '::Invoice'
@@ -56,8 +58,8 @@ class Site < ActiveRecord::Base
   def components
     # via_designs = app_designs_components.scoped
     # app_design_ids = [nil] + app_designs.map(&:id)
-    # via_addon_plans = addon_plans_components.where{app_plugins.app_design_id.in(app_design_ids)}
-    # App::Component.where{id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}
+    # via_addon_plans = addon_plans_components.where {app_plugins.app_design_id.in(app_design_ids)}
+    # App::Component.where {id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}
 
     # Query via addon_plans is too slow and useless for now
     app_designs_components
@@ -67,12 +69,15 @@ class Site < ActiveRecord::Base
   def usages
     SiteUsage.where(site_id: id)
   end
+
   def referrers
     Referrer.where(token: token)
   end
+
   def day_stats
     Stat::Site::Day.where(t: token)
   end
+
   def views
     @views ||= Stat::Site::Day.views_sum(token: token)
   end
@@ -101,11 +106,7 @@ class Site < ActiveRecord::Base
 
   # Only when accessible_stage change in admin
   after_save ->(site) do
-    if site.accessible_stage_changed?
-      # Delay for 5 seconds to be sure that commit transaction is done.
-      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
-    end
+    site.delay_update_loaders_and_settings if site.accessible_stage_changed?
   end
 
   # =================
@@ -115,25 +116,23 @@ class Site < ActiveRecord::Base
   state_machine initial: :active do
     event(:archive)   { transition all - [:archived] => :archived }
     event(:suspend)   { transition all - [:suspended] => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
+    event(:unsuspend) { transition suspended: :active }
 
     after_transition ->(site) do
-      # Delay for 5 seconds to be sure that commit transaction is done.
-      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
+      site.delay_update_loaders_and_settings
     end
 
-    before_transition :on => :suspend do |site, transition|
+    before_transition on: :suspend do |site, transition|
       SiteManager.new(site).suspend_billable_items
       Librato.increment 'sites.events', source: 'suspend'
     end
 
-    before_transition :on => :unsuspend do |site, transition|
+    before_transition on: :unsuspend do |site, transition|
       SiteManager.new(site).unsuspend_billable_items
       Librato.increment 'sites.events', source: 'unsuspend'
     end
 
-    before_transition :on => :archive do |site, transition|
+    before_transition on: :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
       SiteManager.new(site).cancel_billable_items
@@ -147,37 +146,48 @@ class Site < ActiveRecord::Base
   # ==========
 
   # state
-  scope :active,       where{ state == 'active' }
-  scope :inactive,     where{ state != 'active' }
-  scope :suspended,    where{ state == 'suspended' }
-  scope :archived,     where{ state == 'archived' }
-  scope :not_archived, where{ state != 'archived' }
+  scope :active,       -> { where { state == 'active' } }
+  scope :inactive,     -> { where { state != 'active' } }
+  scope :suspended,    -> { where { state == 'suspended' } }
+  scope :archived,     -> { where { state == 'archived' } }
+  scope :not_archived, -> { where { state != 'archived' } }
 
   # attributes queries
-  scope :with_wildcard,              where{ wildcard == true }
-  scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
-  scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
+  scope :with_wildcard,              -> { where(wildcard: true) }
+  scope :with_path,                  -> { where { (path != nil) & (path != '') & (path != ' ') } }
+  scope :with_extra_hostnames,       -> { where { (extra_hostnames != nil) & (extra_hostnames != '') } }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+  scope :without_hostnames, ->(hostnames = []) do
+    where { (hostname != nil) & (hostname != '') }.
+    where { hostname << hostnames }
+  end
+  scope :created_on, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where(created_at: timestamp.all_day)
+  end
+  scope :created_after, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where { created_at > timestamp }
+  end
+  scope :not_tagged_with, ->(tag) do
+    tagged_with(tag, exclude: true)
+  end
+  scope :first_billable_plays_on_week, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where(first_billable_plays_at: timestamp.all_week)
+  end
 
   # addons
   scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :paying_ids, -> { active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
+  scope :paying_ids, -> do
+    active.select('DISTINCT(sites.id)').joins('INNER JOIN billable_items ON billable_items.site_id = sites.id')
+    .merge(BillableItem.subscribed).merge(BillableItem.paid)
+  end
+  scope :free, -> { active.includes(:billable_items).where { id << Site.paying_ids } }
   def self.with_addon_plan(full_addon_name)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
 
-    active.includes(:billable_items)
-    .where { billable_items.item_type == addon_plan.class.to_s }
-    .where { billable_items.item_id == addon_plan.id }
-  end
-
-  def self.in_beta_trial_ended_after(full_addon_name, timestamp)
-    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
-
-    active.includes(:billable_item_activities).where{ billable_item_activities.state == 'beta' }
-    .where{ billable_item_activities.item_type == addon_plan.class.to_s }
-    .where{ billable_item_activities.item_id == addon_plan.id }
-    .where{ date_trunc('day', created_at) <= (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }
+    active.includes(:billable_items).merge(BillableItem.with_item(addon_plan))
   end
 
   # admin
@@ -187,8 +197,6 @@ class Site < ActiveRecord::Base
   scope :by_hostname,                ->(way = 'asc')  { order("#{quoted_table_name()}.hostname #{way}, #{quoted_table_name()}.token #{way}") }
   scope :by_user,                    ->(way = 'desc') { includes(:user).order("name #{way}, email #{way}") }
   scope :by_state,                   ->(way = 'desc') { order("#{quoted_table_name()}.state #{way}") }
-  scope :by_google_rank,             ->(way = 'desc') { where{ google_rank >= 0 }.order("#{quoted_table_name()}.google_rank #{way}") }
-  scope :by_alexa_rank,              ->(way = 'desc') { where{ alexa_rank >= 1 }.order("#{quoted_table_name()}.alexa_rank #{way}") }
   scope :by_date,                    ->(way = 'desc') { order("#{quoted_table_name()}.created_at #{way}") }
   scope :by_trial_started_at,        ->(way = 'desc') { order("#{quoted_table_name()}.trial_started_at #{way}") }
   scope :by_last_30_days_video_tags, ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_video_tags #{way}") }
@@ -204,35 +212,28 @@ class Site < ActiveRecord::Base
     ELSE -1 END #{way}")
   }
 
-  def self.search(q)
-    joins(:user).where{
-      (lower(user.email) =~ lower("%#{q}%")) |
-      (lower(user.name) =~ lower("%#{q}%")) |
-      (lower(:token) =~ lower("%#{q}%")) |
-      (lower(:hostname) =~ lower("%#{q}%")) |
-      (lower(:extra_hostnames) =~ lower("%#{q}%")) |
-      (lower(:staging_hostnames) =~ lower("%#{q}%")) |
-      (lower(:dev_hostnames) =~ lower("%#{q}%"))
-    }
+  def self.additional_or_conditions
+    %w[token hostname extra_hostnames staging_hostnames dev_hostnames].reduce([]) do |a, e|
+      a << ("lower(#{e}) =~ " + 'lower("%#{q}%")')
+    end
   end
 
   def self.with_page_loads_in_the_last_30_days
-    fields_to_add = %w[m e em].inject([]) do |array, sub_field|
-      array << "$pv.#{sub_field}"; array
-    end
-
     stats = Stat::Site::Day.collection.aggregate([
       { :$match => { d: { :$gte => 30.days.ago.midnight } } },
       { :$project => {
           _id: 0,
           t: 1,
-          pvTot: { :$add => fields_to_add } } },
+          pvmTot: { :$add => '$pv.m' },
+          pveTot: { :$add => '$pv.e' },
+          pvemTot: { :$add => '$pv.em' } } },
       { :$group => {
         _id: '$t',
-        pvTotSum: { :$sum => '$pvTot' }, } }
+        pvmTotSum: { :$sum => '$pvmTot' },
+        pveTotSum: { :$sum => '$pveTot' },
+        pvemTotSum: { :$sum => '$pvemTot' } } }
     ])
-
-    where(token: stats.select { |stat| stat['pvTotSum'] > 0 }.map { |s| s['_id'] })
+    where(token: stats.select { |stat| (stat['pvmTotSum'] + stat['pveTotSum'] + stat['pvemTotSum']) > 0 }.map { |s| s['_id'] })
   end
 
   def self.to_backbone_json
@@ -241,6 +242,12 @@ class Site < ActiveRecord::Base
 
   def to_backbone_json(options = {})
     to_json(only: [:token, :hostname])
+  end
+
+  def as_json(options = nil)
+    json = super
+    json['tags'] = tag_list
+    json
   end
 
   %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|
@@ -259,6 +266,12 @@ class Site < ActiveRecord::Base
 
   def unmemoize_all
     unmemoize_all_usages
+  end
+
+  def delay_update_loaders_and_settings
+    # Delay for 5 seconds to be sure that commit transaction is done.
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
   end
 
 end

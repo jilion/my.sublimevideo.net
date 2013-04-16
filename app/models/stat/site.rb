@@ -11,6 +11,7 @@ module Stat::Site
 
     field :st, type: Array, default: []     # Stages used
     field :s, type: Boolean, default: false # SSL used
+    field :jq # jQuery version used
 
     index t: 1, d: 1
   end
@@ -58,38 +59,29 @@ module Stat::Site
   module ClassMethods
 
     def last_30_days_page_visits(token, type = :billable)
-      last_30_days_stats(token).sum { |stat|
+      last_30_days_stats(token).sum do |stat|
         case type
-        when :main
-          stat.pv['m'].to_i
-        when :extra
-          stat.pv['e'].to_i
-        when :dev
-          stat.pv['d'].to_i
-        when :invalid
-          stat.pv['i'].to_i
+        when :main, :extra, :dev, :invalid
+          stat.pv[type.to_s[0]].to_i
         when :embed
           stat.pv['em'].to_i
         when :billable
           stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['em'].to_i
         end
-      }
+      end
     end
 
     def all_time_page_visits(token)
-      Rails.cache.fetch "Stat::Site.all_time_page_visits##{token}", expires_in: 1.hour do
-        self.where(t: { :$in => Array.wrap(token) }).entries.sum { |stat|
+      Rails.cache.fetch ['Stat::Site.all_time_page_visits', token], expires_in: 1.hour do
+        self.where(t: { :$in => Array.wrap(token) }).entries.sum do |stat|
           stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['d'].to_i + stat.pv['i'].to_i + stat.pv['em'].to_i
-        }
+        end
       end
     end
 
     def last_30_days_stats(token)
-      from = 30.days.ago.midnight
-      to   = 1.day.ago.end_of_day
-
-      Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
-        self.where(t: { :$in => Array.wrap(token) }).between(d: from..to).entries
+      Rails.cache.fetch ['Stat::Site.last_30_days_stats', token], expires_in: 1.hour do
+        self.where(t: { :$in => Array.wrap(token) }).between(d: 30.days.ago.midnight..1.day.ago.end_of_day).entries
       end
     end
 
@@ -117,21 +109,21 @@ module Stat::Site
 
       fields_to_add = []
       sub_fields.each do |sub_field|
-        fields_to_add << "$#{options[:view_type]}.#{sub_field}"
+        fields_to_add << [options[:view_type], sub_field]
+      end
+      map, reduce = { _id: 0, t: 1 }, { _id: '$t' }
+      fields_to_add.each do |field|
+        map["viewTot#{field}"] = { :$add => ["$#{field.join('.')}"] }
+        reduce["viewTotSum#{field}"] = { :$sum => "$viewTot#{field}" }
       end
 
       stats = collection.aggregate([
         { :$match => conditions },
-        { :$project => {
-            _id: 0,
-            t: 1,
-            viewTot: { :$add => fields_to_add } } },
-        { :$group => {
-          _id: '$t',
-          viewTotSum: { :$sum => '$viewTot' }, } }
+        { :$project => map },
+        { :$group => reduce }
       ])
 
-      stats.sum { |stat| stat['viewTotSum'] }
+      stats.sum { |stat| fields_to_add.sum { |field| stat["viewTotSum#{field}"] } }
     end
 
     # Returns an array of Stat::Site objects.
@@ -156,27 +148,24 @@ module Stat::Site
       conditions.deep_merge!(d: { :$gte => options[:from] }) if options[:from]
       conditions.deep_merge!(d: { :$lte => options[:to] }) if options[:to]
       if options[:demo] && options[:period] == 'days'
-        conditions.deep_merge!(d: { :$gte => Time.utc(2011,11,29) }) if options[:from]
+        conditions.deep_merge!(d: { :$gte => Time.utc(2011, 11, 29) }) if options[:from]
       end
 
       sub_fields = %w[m e em] # billable fields: main, extra and embed
       sub_fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
 
       stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
+        map, reduce = { _id: '$d' }, {}
+        sub_fields.each do |field|
+          map["#{field}Sum"] = { :$sum => "$#{options[:view_type]}.#{field}" }
+          reduce[field] = "$#{field}Sum"
+        end
+
         collection.aggregate([
           { :$match => conditions },
-          { :$group => sub_fields.inject({}) { |hash, field|
-              hash["#{field}Sum"] = { :$sum => "$#{options[:view_type]}.#{field}" }
-              hash
-            }.merge(_id: '$d') },
-          { :$project => {
-              _id: 0,
-              d: '$_id',
-              options[:view_type] => sub_fields.inject({}) { |hash, field|
-                hash[field] = "$#{field}Sum"
-                hash
-              } } },
-          { :$sort => { d: 1 } },
+          { :$group => map },
+          { :$project => { _id: 0, d: '$_id', options[:view_type] => reduce } },
+          { :$sort => { d: 1 } }
         ])
       else
         (options[:stats] || scoped).where(conditions).order_by(d: 1).entries
@@ -195,7 +184,7 @@ module Stat::Site
     def fill_missing_values_for_last_stats(stats, options = {})
       options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)
 
-      if !(options[:from] || options[:to])
+      if !options[:from] && !options[:to]
         options[:from] = stats.min_by { |s| s['d'] }['d'] || Time.now
         options[:to]   = stats.max_by { |s| s['d'] }['d'] || (Time.now - 1.second)
       end
@@ -216,19 +205,15 @@ module Stat::Site
   end
 
   def self.json(site_token, options = {})
-    options[:from], options[:to] = period_intervals(site_token, options[:period])
+    options[:from], options[:to] = _period_bounds(site_token, options[:period])
     options[:token] = site_token
 
     json_stats = if options[:from].present? && options[:to].present?
       case options[:period]
       when 'seconds'
         Stat::Site::Second.last_stats(options.merge(fill_missing_days: false))
-      when 'minutes'
-        Stat::Site::Minute.last_stats(options.merge(fill_missing_days: true))
-      when 'hours'
-        Stat::Site::Hour.last_stats(options.merge(fill_missing_days: true))
-      when 'days'
-        Stat::Site::Day.last_stats(options.merge(fill_missing_days: true))
+      when 'minutes', 'hours', 'days'
+        Stat::Site.const_get(options[:period].classify).last_stats(options.merge(fill_missing_days: true))
       end
     else
       []
@@ -239,30 +224,35 @@ module Stat::Site
 
 private
 
-  def self.period_intervals(site_token, period)
-    case period
-    when 'seconds'
-      to    = 2.seconds.ago.change(usec: 0).utc
-      from  = to - 59.seconds
-    when 'minutes'
-      site  = ::Site.find_by_token(site_token)
-      last_minute_stat = Stat::Site::Minute.order_by(d: 1).last
-      to   = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
-      from = to - 59.minutes
-    when 'hours'
-      to   = 1.hour.ago.change(min: 0, sec: 0).utc
-      from = to - 23.hours
-    when 'days'
-      site  = ::Site.find_by_token(site_token)
-      stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
-      to    = 1.day.ago.midnight
-      from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-    end
-
-    [from, to]
+  def self._period_bounds(site_token, period)
+    send("_#{period}_bounds", site_token)
   end
 
+  def self._seconds_bounds(site_token)
+    to = 2.seconds.ago.change(usec: 0).utc
 
+    [to - 59.seconds, to]
+  end
+
+  def self._minutes_bounds(site_token)
+    last_minute_stat = Stat::Site::Minute.where(t: site_token).order_by(d: 1).last
+    to               = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
+
+    [to - 59.minutes, to]
+  end
+
+  def self._hours_bounds(site_token)
+    to = 1.hour.ago.change(min: 0, sec: 0).utc
+
+    [to - 23.hours, to]
+  end
+
+  def self._days_bounds(site_token)
+    stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
+    to    = 1.day.ago.midnight
+
+    [[(stats.first.try(:d) || Time.now.utc), to - 364.days].min, to]
+  end
 end
 
 # == Schema Information

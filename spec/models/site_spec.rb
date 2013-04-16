@@ -31,7 +31,6 @@ describe Site, :addons do
     it { should belong_to(:default_kit) }
     it { should have_many(:invoices) }
     it { should have_one(:last_invoice) }
-    it { should have_many :video_tags }
 
     it { should have_many(:billable_items) }
     it { should have_many(:app_designs).through(:billable_items) }
@@ -149,7 +148,7 @@ describe Site, :addons do
     end
   end
 
-  pending "Versioning" do
+  describe "Versioning" do
     let(:site) { with_versioning { create(:site) } }
 
     it "works!" do
@@ -235,19 +234,19 @@ describe Site, :addons do
           site.suspend!
 
           site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'suspended').should have(1).item
+          site.billable_items.with_item(@classic_design)            .state('suspended').should have(1).item
+          site.billable_items.with_item(@flat_design)               .state('suspended').should have(1).item
+          site.billable_items.with_item(@light_design)              .state('suspended').should have(1).item
+          site.billable_items.with_item(@video_player_addon_plan_1) .state('suspended').should have(1).item
+          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('suspended').should have(1).item
+          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('suspended').should have(1).item
+          site.billable_items.with_item(@stats_addon_plan_1)        .state('suspended').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_1)         .state('suspended').should have(1).item
+          site.billable_items.with_item(@controls_addon_plan_1)     .state('suspended').should have(1).item
+          site.billable_items.with_item(@initial_addon_plan_1)      .state('suspended').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_1)        .state('suspended').should have(1).item
+          site.billable_items.with_item(@api_addon_plan_1)          .state('suspended').should have(1).item
+          site.billable_items.with_item(@support_addon_plan_1)      .state('suspended').should have(1).item
         end
 
         it "increments metrics" do
@@ -274,19 +273,19 @@ describe Site, :addons do
           site.unsuspend!
 
           site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
+          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
+          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
+          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_1)         .state('subscribed').should have(1).item
+          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
+          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end
       end
 
@@ -302,28 +301,28 @@ describe Site, :addons do
 
         it 'unsuspend all billable items' do
           site.reload.billable_items.should have(13).items
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_2).state('trial').should have(1).item
 
           site.suspend!
 
-          site.reload.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.reload.billable_items.with_item(@logo_addon_plan_2).state('suspended').should have(1).item
 
           site.unsuspend!
 
           site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
+          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
+          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
+          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
+          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_2)         .state('trial').should have(1).item
+          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
+          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
+          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end
       end
     end
@@ -394,10 +393,14 @@ describe Site, :addons do
 
     describe "attributes queries" do
       before do
-        @site_wildcard        = create(:site, user: user, wildcard: true)
-        @site_path            = create(:site, user: user, path: "foo", path: 'foo')
+        @site_wildcard        = create(:site, hostname: 'google.com', user: user, wildcard: true)
+        @site_path            = create(:site, hostname: 'facebook.com', user: user, path: "foo", path: 'foo')
         @site_extra_hostnames = create(:site, user: user, extra_hostnames: "foo.com")
-        @site_next_cycle_plan = create(:site, user: user)
+        @site_next_cycle_plan = create(:site, user: user, created_at: 3.days.from_now)
+      end
+
+      describe ".without_hostnames" do
+        specify { Site.without_hostnames(%w[google.com facebook.com]).all.should =~ [@site_extra_hostnames, @site_next_cycle_plan] }
       end
 
       describe ".with_wildcard" do
@@ -410,6 +413,14 @@ describe Site, :addons do
 
       describe ".with_extra_hostnames" do
         specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
+      end
+
+      describe '.created_on' do
+        specify { Site.created_on(3.days.from_now).all.should =~ [@site_next_cycle_plan] }
+      end
+
+      describe '.created_after' do
+        specify { Site.created_after(2.days.from_now).all.should =~ [@site_next_cycle_plan] }
       end
     end
 
@@ -447,10 +458,6 @@ describe Site, :addons do
 
       describe '.free' do
         it { Site.free.all.should =~ [site2] }
-      end
-
-      describe '.in_beta_trial_ended_after' do
-        it { Site.in_beta_trial_ended_after('social_sharing-standard', Time.now.utc).all.should =~ [site1] }
       end
     end
 
@@ -494,6 +501,19 @@ describe Site, :addons do
 
       specify { Site.with_page_loads_in_the_last_30_days.all.should =~ [site1, site2] }
     end
+
+    describe '.search' do
+      let(:site) { create(:site) }
+
+      specify { described_class.search(site.token).should eq [site] }
+      specify { described_class.search(site.hostname).should eq [site] }
+      specify { described_class.search(site.extra_hostnames).should eq [site] }
+      specify { described_class.search(site.staging_hostnames).should eq [site] }
+      specify { described_class.search(site.dev_hostnames).should eq [site] }
+      specify { described_class.search(site.user.email).should eq [site] }
+      specify { described_class.search(site.user.name).should eq [site] }
+    end
+
   end # Scopes
 
 end

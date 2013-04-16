@@ -10,7 +10,8 @@ Bundler.require *Rails.groups(assets: %w(development test))
 # If you want your assets lazily compiled in production, use this line
 # Bundler.setup(:default, :assets, Rails.env)
 
-# Required from svl, needed for rake assets:precompile when initialize_on_precompile is false
+# Required from sublime_video_layout, needed for rake assets:precompile when
+# initialize_on_precompile is false
 require 'site_token' unless defined?(SiteToken)
 
 module MySublimeVideo
@@ -19,10 +20,14 @@ module MySublimeVideo
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.middleware.use Rack::Pjax
-
     # http://ileitch.github.com/2012/03/24/rails-32-code-reloading-from-lib.html
     config.watchable_dirs['lib'] = [:rb]
+
+    # Enable the asset pipeline
+    config.assets.enabled = true
+
+    # Version of your assets, change this if you want to expire all your assets
+    config.assets.version = '1.0'
 
     # http://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets
     # For faster asset precompiles, you can partially load your application
@@ -31,17 +36,13 @@ module MySublimeVideo
     # application objects or methods. Heroku requires this to be false.
     config.assets.initialize_on_precompile = false
 
-    # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+    # Precompile additional assets (application.js, application.css, and all
+    # non-JS/CSS are already added)
     config.assets.precompile += %w[admin.js admin.css]
     config.assets.precompile += %w[invoices.css invoices_print.css]
-    # Duplicated from svl engine because not loader when initialize_on_precompile is false
-    config.assets.precompile += %w[errors.css ie.css]
-
-     # Enable the asset pipeline
-     config.assets.enabled = true
-
-     # Version of your assets, change this if you want to expire all your assets
-     config.assets.version = '1.0'
+    # Required from sublime_video_layout, needed for rake assets:precompile when
+    # initialize_on_precompile is false
+    config.assets.precompile += %w[email.css errors.css ie.css]
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -59,7 +60,7 @@ module MySublimeVideo
     end
 
     # Configure the default encoding used in templates for Ruby 1.9.
-    config.encoding = "utf-8"
+    config.encoding = 'utf-8'
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:protection_key, :password, :cc_]

@@ -1,12 +1,11 @@
 /*
 *= require 'sublimevideo'
 *= require 'sites'
-*= require 'kits_and_video_codes'
 *= require 'addons'
-*= require 'video_tags'
-*= require 'plans'
-*= require 'stats'
+*= require 'kits'
 *= require 'video_code'
+*= require 'video_tags'
+*= require 'stats'
 */
 
 @import "css3";
@@ -129,7 +128,7 @@ header, header .shadow, header .lights {
   padding:20px 0;
 }
 
-#content h2.hostname {
+#content h2.hostname, #content h3.hostname {
   float:left;
 }
 
@@ -1209,11 +1208,11 @@ section.oauth .entry.update .blue_button {
   @include box-shadow(inset rgba(255,255,255,0.2) 0 1px 0);
 }
 
-.footnotes ol {
+.footnotes ul {
   padding:0 10px 0 20px;
 }
 
-.footnotes ol li {
+.footnotes ul li {
   padding:3px 0;
 }
 

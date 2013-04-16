@@ -1,17 +1,19 @@
 class AdminSublimeVideo.Views.SeriesSelectorView extends Backbone.View
-  events:
+  events: ->
     'click a.selector': 'updateSelected'
 
   updateSelected: (event) ->
     event.stopPropagation()
-    clickedFilter = $(event.currentTarget)
-    selection     = clickedFilter.data('value').split('.')
+    $clickedFilter = $(event.target)
+    serie = $clickedFilter.attr('href').replace(/[\?#]/, '')
+    selection = _.compact(serie.split('.'))
 
-    this.toggleSubCategory(selection[0], _.rest(selection))
-    this.toggleFilterStyle(clickedFilter)
-    AdminSublimeVideo.trendsRouter.updateUrl(null, clickedFilter.data('value'))
+    if selection.length > 0
+      this.toggleSubCategory(selection[0], _.rest(selection))
+      this.toggleFilterStyle($clickedFilter)
+      AdminSublimeVideo.trendsRouter.updateUrl(null, serie)
 
-    AdminSublimeVideo.graphView.render()
+      AdminSublimeVideo.graphView.render()
 
     false
 

@@ -123,20 +123,6 @@ describe BillableItem do
     end
   end
 
-  describe '#active?' do
-    %w[suspended].each do |state|
-      it "is active when in the #{state} state" do
-        build(:addon_plan_billable_item, state: state).should_not be_active
-      end
-    end
-
-    %w[subscribed sponsored].each do |state|
-      it "isn't active when in the #{state} state" do
-        build(:addon_plan_billable_item, state: state).should be_active
-      end
-    end
-  end
-
 end
 
 # == Schema Information

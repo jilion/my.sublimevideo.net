@@ -13,8 +13,7 @@ end
 
 class PageExistsConstraint
   def matches?(request)
-    pages = Dir.glob('app/views/pages/*.html.haml').map { |p| p.match(%r(app/views/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
+    Dir.glob("app/views/pages/#{request.params['page']}.html.haml").any?
   end
 end
 
@@ -23,6 +22,11 @@ def https_if_prod_or_staging
 end
 
 MySublimeVideo::Application.routes.draw do
+
+  # if Rails.env.development?
+  #   require 'i18n/extra_translations'
+  #   mount I18n::ExtraTranslations::Server.new => '/i18n'
+  # end
 
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
@@ -53,6 +57,7 @@ MySublimeVideo::Application.routes.draw do
           get :videos_infos
           get :invoices
           get :active_pages
+          put :generate_loader
           put :update_app_design_subscription
           put :update_addon_plan_subscription
         end
@@ -64,7 +69,7 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
-      resources :users, only: [:index, :show, :edit, :update] do
+      resources :users, only: [:index, :show, :edit, :update, :destroy] do
         member do
           get :become
           get :stats
@@ -117,10 +122,18 @@ MySublimeVideo::Application.routes.draw do
 
       resources :deals, only: [:index]
       resources :deal_activations, only: [:index], path: 'deals/activations'
-      resources :mails, only: [:index, :new, :create]
+      resources :mails, only: [:index, :new, :create] do
+        collection do
+          post :confirm
+        end
+      end
       scope 'mails' do
-        resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'
-        resources :mail_logs,      only: [:show],                         path: 'logs'
+        resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates' do
+          member do
+            get :preview
+          end
+        end
+        resources :mail_logs, only: [:show], path: 'logs'
       end
 
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'
@@ -134,40 +147,47 @@ MySublimeVideo::Application.routes.draw do
 
   constraints SubdomainConstraint.new('my') do
     namespace :private_api do
-      resources :users
-      resources :sites
+      resources :sites, only: [:index, :show] do
+        member do
+          put :add_tag
+        end
+      end
+      resources :referrers, only: [:index]
     end
 
     devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
     devise_scope :user do
       resource :user, only: [], path: '' do
-        get    :new,     path: '/signup', as: 'signup'
-        post   :create,  path: '/signup'
+        get  :new,     path: '/signup', as: 'signup'
+        post :create,  path: '/signup'
 
-        get    :edit,    path: '/account', as: 'edit'
-        put    :update,  path: '/account', as: 'update'
+        get  :edit,    path: '/account', as: 'edit'
+        put  :update,  path: '/account', as: 'update'
       end
       get  '/login'    => 'users/sessions#new', as: 'login_user'
 
-      get  '/gs-login' => 'users/sessions#new_gs'
-      post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
+      scope 'gs-login' do
+        get  '/' => 'users/sessions#new_gs'
+        post '/' => 'users/sessions#create_gs', as: 'gs_login'
+      end
 
-      get '/account/more-info' => "users#more_info", as: 'more_user_info'
-
-      get  '/account/cancel' => "users/cancellations#new", as: 'account_cancellation'
-      post '/account/cancel' => "users/cancellations#create"
+      scope 'account' do
+        get  'more-info' => 'users#more_info', as: 'more_user_info'
+        get  'cancel' => 'users/cancellations#new', as: 'account_cancellation'
+        post 'cancel' => 'users/cancellations#create'
+      end
 
       delete '/notice/:id' => 'users#hide_notice'
 
-      post '/password/validate' => "users/passwords#validate"
+      post '/password/validate' => 'users/passwords#validate'
     end
-    get '/account/edit' => redirect('/account')
 
     %w[sign_up register].each         { |action| get action => redirect('/signup') }
     %w[log_in sign_in signin].each    { |action| get action => redirect('/login') }
     %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
 
     scope 'account' do
+      get 'edit' => redirect('/account')
       resource :billing, only: [:edit, :update]
       resources :applications, controller: 'client_applications', as: 'client_applications' # don't change this, used by oauth-plugin
     end
@@ -184,26 +204,28 @@ MySublimeVideo::Application.routes.draw do
       post '/access_token' => 'oauth#token', as: :oauth_token
     end
 
-    match '/assistant/new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
-    match '/assistant/:site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
-    match '/assistant/:site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
-    get   '/assistant/:site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
-    match  '/assistant/:site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
+    scope 'assistant' do
+      match 'new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
+      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
+      match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
+      get   ':site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
+      match ':site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
+    end
 
-    get '/addons' => 'addons#directory'
+    resources :addons, only: [:index, :show]
 
     resources :sites, only: [:index, :edit, :update, :destroy] do
-      resources :addons, only: [:index] do
-        collection do
-          put :update_all
-        end
+      resources :addons, only: [:index, :show] do
+        put :subscribe, on: :collection
       end
 
       resources :kits, except: [:destroy], path: 'players' do
-        put  :set_as_default, on: :member
-        post :process_custom_logo, on: :member
+        member do
+          put  :set_as_default
+          post :process_custom_logo
+          get :fields
+        end
         get :fields, on: :collection
-        get :fields, on: :member
       end
 
       resources :invoices, only: [:index] do
@@ -222,6 +244,7 @@ MySublimeVideo::Application.routes.draw do
         get :videos, on: :collection
       end
     end
+
     # Legacy redirect
     get  '/video-code-generator' => redirect('/publish-video')
     post '/mime-type-check' => 'video_codes#mime_type_check'
@@ -230,10 +253,13 @@ MySublimeVideo::Application.routes.draw do
     get '/publish-video' => 'video_codes#new', as: 'new_video_code'
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     get '/stats' => redirect('/stats-demo')
+
     # old backbone route
-    get '/sites/stats/demo' => redirect('/stats-demo')
-    get '/sites/stats/:site_id' => redirect { |params, req| "/sites/#{params[:site_id]}/stats" }
-    get '/sites/stats' => redirect('/sites')
+    scope 'sites/stats' do
+      get '/' => redirect('/sites')
+      get 'demo' => redirect('/stats-demo')
+      get ':site_id' => redirect { |params, req| "/sites/#{params[:site_id]}/stats" }
+    end
 
     resources :stats_exports, only: [:create, :show], path: 'stats/exports'
 
@@ -245,14 +271,18 @@ MySublimeVideo::Application.routes.draw do
 
     resources :deals, only: [:show], path: 'd'
 
-    get  '/feedback' => "feedbacks#new", as: 'feedback'
-    post '/feedback' => "feedbacks#create"
+    scope 'feedback' do
+      get  '/' => 'feedbacks#new', as: 'feedback'
+      post '/' => 'feedbacks#create'
+    end
 
     resource :support_request, only: [:create], path: 'help'
     %w[support].each { |action| get action, to: redirect('/help') }
 
-    post '/pusher/auth' => 'pusher#auth'
-    post '/pusher/webhook' => 'pusher#webhook'
+    scope 'pusher' do
+      post 'auth' => 'pusher#auth'
+      post 'webhook' => 'pusher#webhook'
+    end
 
     get '/:page' => 'pages#show', as: :page, constraints: PageExistsConstraint.new, format: false
 
@@ -260,6 +290,6 @@ MySublimeVideo::Application.routes.draw do
   end
 
   # Default url for specs, not reachable by the app because of the my subdomain
-  get '/' => "pages#show", page: 'terms' if Rails.env.test?
+  get '/' => 'pages#show', page: 'terms' if Rails.env.test?
 
 end

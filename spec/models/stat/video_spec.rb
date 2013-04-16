@@ -4,6 +4,14 @@ describe Stat::Video do
 
   describe ".top_videos" do
     let(:site) { create(:site) }
+    let(:video_tags) {
+      6.times.map { |i| VideoTag.new(site_token: site.token, uid: "video#{i}", title: "Video #{i}") }
+    }
+    before {
+      stub_api_for(VideoTag) do |stub|
+        stub.get("/private_api/sites/#{site.token}/video_tags") { |env| [200, {}, video_tags.to_json] }
+      end
+    }
     before { Timecop.freeze Time.utc(2011,11,21,12) }
     after { Timecop.return }
 
@@ -13,7 +21,6 @@ describe Stat::Video do
 
       before {
         6.times do |video_i|
-          create(:video_tag, site: site, uid: "video#{video_i}", name: "Video #{video_i}")
           24.times do |hour_i|
             next if hour_i%2 == 0
             create(:video_hour_stat, st: site.token, u: "video#{video_i}", d: (hour_i + 1).hours.ago.utc.change(min: 0),
@@ -30,8 +37,7 @@ describe Stat::Video do
 
       it "adds video_tag meta data" do
         video = Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:videos].first
-        video["name"].should eql "Video 5"
-        video["name_origin"].should eql "attribute"
+        video[:title].should eq "Video 5"
       end
 
       it "replaces vv_hash by vv_array" do
@@ -48,7 +54,6 @@ describe Stat::Video do
 
       before {
         6.times do |video_i|
-          create(:video_tag, site: site, uid: "video#{video_i}")
           66.times do |second_i|
             next if second_i%2 == 0
             create(:video_second_stat, st: site.token, u: "video#{video_i}", d: (second_i).seconds.ago.utc.change(usec: 0),
@@ -64,9 +69,9 @@ describe Stat::Video do
       specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:from].should eq from.to_i }
 
       it "replaces vv_hash by vv_array and vl_hash by vl_hash" do
-        videos = Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video["name"] }.reverse
+        videos = Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video[:title] }.reverse
         video  = videos.first
-        video["uid"].should eql "video5"
+        video[:uid].should eql "video5"
         video["vv_sum"].should eq(2220)
         video["vv_array"].should be_nil
         video["vv_hash"].should have(30).items

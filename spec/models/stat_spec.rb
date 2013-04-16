@@ -20,7 +20,7 @@ describe Stat do
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
               inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
-              set: {},
+              set: { "jq" => '1.9.0' },
               add_to_set: { "st" => { :$each => ['s', 'b'] } },
               videos: {
                 "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
@@ -102,6 +102,13 @@ describe Stat do
           Stat::Site::Day.where(t: 'site1234', d: @log.day).first.st.should eq []
         end
 
+        it "adds jQuery info" do
+          Stat.create_stats_from_trackers!(@log, nil)
+
+          Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).first.jq.should eq '1.9.0'
+          Stat::Site::Day.where(t: 'site1234', d: @log.day).first.jq.should be_nil
+        end
+
         it "create 2 day video stats for all sites" do
           Stat.create_stats_from_trackers!(@log, nil)
 
@@ -157,6 +164,8 @@ describe Stat do
           Librato.should_receive(:increment).with("stats.page_visits.stage_per_min", by: 1, source: "beta")
           Librato.should_receive(:increment).with("stats.page_visits.ssl_per_min", by: 1, source: "ssl")
           Librato.should_receive(:increment).with("stats.page_visits.ssl_per_min", by: 1, source: "non-ssl")
+          Librato.should_receive(:increment).with("stats.page_visits.jquery", by: 1, source: "none")
+          Librato.should_receive(:increment).with("stats.page_visits.jquery", by: 1, source: "1.9.0")
           Stat.create_stats_from_trackers!(@log, @trackers)
         end
       end

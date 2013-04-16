@@ -5,7 +5,7 @@ ruby '1.9.3'
 
 gem 'bundler'
 
-gem 'rails', '3.2.12'
+gem 'rails', '3.2.12' # until 3.2.14 is out!
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
 
@@ -24,7 +24,9 @@ gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
 gem 'premailer', github: 'jilion/premailer'
-gem 'premailer-rails3'
+gem 'premailer-rails'
+gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
+gem 'google-analytics-turbolinks'
 
 # Auth / invitations
 gem 'devise', '~> 2.1.2'
@@ -37,6 +39,7 @@ gem 'oauth-plugin'
 
 # Internals
 gem 'dalli'
+gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
 
@@ -55,20 +58,18 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
-gem 'excon', '~> 0.16.0' # https://github.com/fog/fog/issues/1580
+gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
 gem 'cocaine'
-
-gem 'rack-pjax'
 
 # CDN
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast'
 
 gem 'activemerchant'
-gem 'public_suffix'
+gem 'public_suffix', '1.2.0'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 
@@ -79,13 +80,14 @@ gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
 gem 'array_stats'
-gem 'createsend' # Campaign Monitor
+gem 'createsend', '~> 2.5' # Campaign Monitor
 
-gem 'airbrake'
+gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
 gem 'lograge'
+gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
@@ -102,10 +104,6 @@ gem 'zendesk_api'
 # App
 gem 'solve'
 
-# Videos
-gem 'vimeo'
-gem 'youtube_it'
-
 # Update was needed, but not directly used by mysv
 gem 'json'
 gem 'net-scp', '1.0.4'
@@ -119,8 +117,7 @@ group :assets do
   gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
-
-  gem 'rails-backbone', '~> 0.6.0'
+  gem 'backbone-rails'
 end
 gem 'sass-rails'
 
@@ -131,7 +128,7 @@ end
 group :staging, :production do
   gem 'rack-cache'
   gem 'rack-ssl-enforcer'
-  gem 'thin'
+  gem 'unicorn'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
@@ -140,7 +137,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'launchy', '2.1.0' # after dependency on addressable ~> 2.3
+  gem 'launchy',        '2.1.0' # after dependency on addressable ~> 2.3
   gem 'letter_opener'
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
@@ -148,6 +145,7 @@ group :development do
 
   gem 'better_errors'
   gem 'binding_of_caller'
+  # gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
 end
 
 group :development, :test do
@@ -156,23 +154,23 @@ group :development, :test do
   gem 'timecop'
 
   # Javascript test
-  gem 'jasminerice'
-  gem 'guard-jasmine'
+  gem 'teabag'
+  gem 'guard-teabag'
+
   # Rails routes view
   gem 'sextant'
 end
 
 group :test do
-  gem 'rspec'
-  gem 'shoulda-matchers',   github: 'thoughtbot/shoulda-matchers'
+  gem 'shoulda-matchers'
   gem 'ffaker'
-  gem 'capybara', '~> 1.1'
-  gem 'capybara-email', '~> 1.0.2'
-  gem 'poltergeist', '~> 1.0.2'
-  gem 'show_me_the_cookies', '~> 1.1.4'
-  gem 'webmock', '~> 1.6.0'
-  gem 'typhoeus', '~> 0.2.0'
-  gem 'vcr', '~> 1.10.3'
+  gem 'capybara'
+  gem 'capybara-email'
+  gem 'poltergeist'
+  gem 'show_me_the_cookies'
+  gem 'webmock',             '~> 1.6.0'
+  gem 'typhoeus',            '~> 0.2.0'
+  gem 'vcr',                 '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl'
@@ -183,7 +181,6 @@ group :tools do
   gem 'annotate'
   gem 'wirble'
   gem 'powder'
-  # gem 'brakeman' # until brakeman dependencies allow haml 4
 
   # Guard
   gem 'ruby_gntp'

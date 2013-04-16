@@ -1,5 +1,5 @@
-- title "Site: ##{@site.id} | #{@site.token} - #{link_to(truncated_hostname(@site), "http://#{@site.hostname}")}"
-= content_header("##{@site.id} | #{@site.token} - #{link_to(truncated_hostname(@site), "http://#{@site.hostname}")}")
+- title "Site: ##{@site.id} | #{@site.token} - #{link_to(admin_pretty_hostname(@site, @site.hostname), url_with_protocol(@site.hostname))}"
+= content_header("##{@site.id} | #{@site.token} - #{link_to(admin_pretty_hostname(@site, @site.hostname), url_with_protocol(@site.hostname))}")
 
 = render 'admin/shared/tags', object: @site
 %br
@@ -22,8 +22,7 @@
 %hr
 %br
 
-#stats
-  %h3= link_to 'View stats graph', stats_admin_site_path(@site), data: { remote: true }
+#stats= render 'stats', site: @site
 %br
 %hr
 %br

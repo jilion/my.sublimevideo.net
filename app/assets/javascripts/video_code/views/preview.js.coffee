@@ -2,14 +2,15 @@ class MSVVideoCode.Views.Preview extends Backbone.View
   template: JST['video_code/templates/preview']
 
   initialize: ->
-    @videoTagHelper = new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video)
+    this._listenToModelsEvents()
+    this._initUIHelpers()
 
-    _.bindAll this, 'delayedRender'
-    MSVVideoCode.kits.bind      'change',     this.delayedRender
-    MSVVideoCode.video.bind     'change',     this.delayedRender
-    MSVVideoCode.poster.bind    'change:src', this.delayedRender
-    MSVVideoCode.sources.bind   'change',     this.delayedRender
-    MSVVideoCode.thumbnail.bind 'change',     this.delayedRender
+  #
+  # BINDINGS
+  #
+  _listenToModelsEvents: ->
+    _.each MSVVideoCode.playerModels, (model) =>
+      this.listenTo(model, 'change', this.delayedRender)
 
   # Ensure multiple sequential render are not possible
   #
@@ -19,38 +20,30 @@ class MSVVideoCode.Views.Preview extends Backbone.View
 
   render: ->
     if MSVVideoCode.video.viewable() and (!MSVVideoCode.video.get('displayInLightbox') or MSVVideoCode.thumbnail.viewable())
-      this.refreshPreview()
-      $(@el).show()
+      this._refreshPreview()
+      @$el.show()
     else
-      $(@el).hide()
+      @$el.hide()
 
     this
 
-  refreshPreview: ->
+  #
+  # PRIVATE
+  #
+  _initUIHelpers: ->
+    @videoTagHelper = new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video)
+
+  _refreshPreview: ->
     @currentScroll = $(window).scrollTop()
+    @currentPreviewHeight = @$el.height()
 
     sublime.unprepare('video-preview') if $('#video-preview').exists()
-    kitSettings = MSVVideoCode.kits.selected.get('settings')
-    settings = {}
-    settings = this.combineKitAndVideoSettings()
-    settings['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
-
-    $(@el).html this.template
-      video: MSVVideoCode.video
-      videoTagHelper: @videoTagHelper
-      settings: settings
-
+    @$el.html this.template(videoTagHelper: @videoTagHelper, settings: this._settings())
     sublime.prepare(if MSVVideoCode.video.get('displayInLightbox') then 'lightbox-trigger' else 'video-preview')
+    $(window).scrollTop(@currentScroll - (@currentPreviewHeight - @$el.height()))
 
-    $(window).scrollTop(@currentScroll)
-
-  combineKitAndVideoSettings: ->
+  _settings: ->
     s = {}
-    _.defaults(s, MSVVideoCode.kits.selected.get('settings'))
-    _.each MSVVideoCode.video.get('settings'), (addonSettings, addonName) ->
-      if s[addonName]?
-        _.extend(s[addonName], addonSettings)
-      else
-        s[addonName] = addonSettings
+    s['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
 
-    s
+    _.extend(s, MSVVideoCode.kits.selected.get('settings'), MSVVideoCode.video.get('settings'))

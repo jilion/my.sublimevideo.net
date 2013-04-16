@@ -1,34 +1,16 @@
 class OauthToken < ActiveRecord::Base
 
-  # ================
-  # = Associations =
-  # ================
+  attr_accessible :user, :client_application, :scope, :callback_url
 
   belongs_to :user
   belongs_to :client_application
 
-  # ===============
-  # = Validations =
-  # ===============
+  before_validation :generate_keys, on: :create
 
   validates :client_application, :token, presence: true
   validates :token, uniqueness: true
 
-  # =============
-  # = Callbacks =
-  # =============
-
-  before_validation :generate_keys, on: :create
-
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :valid, where{ (invalidated_at == nil) & (authorized_at != nil) }
-
-  # ====================
-  # = Instance Methods =
-  # ====================
+  scope :valid, -> { where { (invalidated_at == nil) & (authorized_at != nil) } }
 
   def invalidated?
     invalidated_at?
@@ -49,8 +31,8 @@ class OauthToken < ActiveRecord::Base
   protected
 
   def generate_keys
-    self.token  = OAuth::Helper.generate_key(40)[0,40]
-    self.secret = OAuth::Helper.generate_key(40)[0,40]
+    self.token  = OAuth::Helper.generate_key(40)[0, 40]
+    self.secret = OAuth::Helper.generate_key(40)[0, 40]
   end
 
 end

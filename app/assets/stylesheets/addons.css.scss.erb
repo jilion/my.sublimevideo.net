@@ -20,6 +20,14 @@
   text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
 }
 
+#addons table th a {
+  color:#c5dbff;
+}
+
+#addons table th a .icon-arrow {
+  margin-left:3px;
+}
+
 #addons table tr:first-child th {
   @include border-radius(4px 4px 0 0);
 }
@@ -52,6 +60,11 @@
   text-align:right;
 }
 
+#addons table td.trial_notice a.hl {
+  border-bottom:none;
+  text-decoration:underline;
+}
+
 #addons table td.price {
   width:130px;
   text-align:center;
@@ -80,4 +93,19 @@
 #addons_total {
   font-size:25px;
   font-weight:600;
+}
+
+#addons .site_chooser {
+  padding-top:10px;
+}
+
+#addons .site_chooser h2.hostname {
+  padding-top:10px;
+  font-size:23px;
+  font-weight:600;
+}
+
+#addons .site_select_wrap {
+  margin-top:12px;
+  margin-left:15px;
 }

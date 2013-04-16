@@ -11,12 +11,12 @@ describe TailorMadePlayerRequest do
   } }
   let(:topics) { %w[agency standalone platform other] }
 
-  before {
+  before do
     stub_api_for(TailorMadePlayerRequest) do |stub|
       stub.get("/private_api/tailor_made_player_requests/1") { |env| [200, {}, attributes.to_json] }
       stub.get("/private_api/tailor_made_player_requests/topics") { |env| [200, {}, topics.to_json] }
     end
-  }
+  end
 
   describe "instance" do
     subject { TailorMadePlayerRequest.find(1) }

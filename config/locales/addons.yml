@@ -5,6 +5,7 @@ en:
     image_viewer:   'Image Viewer'
     stats:          'Analytics'
     logo:           'On-Video Logo'
+    cuezones:       'Cue Zones'
     controls:       'Controls'
     initial:        'Start View'
     sharing:        'Sharing Buttons'
@@ -38,6 +39,9 @@ en:
       disabled: 'No SublimeVideo logo'
       custom:   'Your logo'
 
+    cuezones:
+      standard: 'Cue Zones API'
+
     controls:
       standard: 'Standard controls'
 
@@ -51,7 +55,8 @@ en:
       standard: 'Social sharing'
 
     embed:
-      standard: 'Manual embedding'
+      manual: 'Manual embed'
+      auto: 'Auto embed'
 
     api:
       standard: 'SublimeVideo player basic JavaScript API'

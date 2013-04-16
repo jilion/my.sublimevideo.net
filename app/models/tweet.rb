@@ -21,17 +21,17 @@ class Tweet
   index tweeted_at: 1
   index keywords: 1
 
-  belongs_to :retweeted_tweet, class_name: "Tweet", inverse_of: :retweets
-  has_many   :retweets, class_name: "Tweet", inverse_of: :retweeted_tweet
+  belongs_to :retweeted_tweet, class_name: 'Tweet', inverse_of: :retweets
+  has_many   :retweets, class_name: 'Tweet', inverse_of: :retweeted_tweet
 
-  KEYWORDS = ["jilion", "sublimevideo", "aelios", "aeliosapp", "videojs", "jw player"]
+  KEYWORDS = ['jilion', 'sublimevideo', 'aelios', 'aeliosapp', 'videojs', 'jw player']
 
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
-  scope :keywords,          lambda { |keywords| where(keywords: keywords) }
-  scope :favorites,         where(favorited: true)
-  scope :by_date,           lambda { |way='desc'| order_by([:tweeted_at, way]) }
-  scope :by_retweets_count, lambda { |way='desc'| order_by([:retweets_count, way]) }
+  scope :keywords,          ->(keywords) { where(keywords: keywords) }
+  scope :favorites,         -> { where(favorited: true) }
+  scope :by_date,           ->(way = 'desc') { order_by([:tweeted_at, way]) }
+  scope :by_retweets_count, ->(way = 'desc') { order_by([:retweets_count, way]) }
 
   # ===============
   # = Validations =
@@ -79,7 +79,7 @@ class Tweet
         from_user:         tweet.from_user,
         to_user_id:        tweet.to_user_id,
         to_user:           tweet.to_user,
-        iso_language_code: tweet.iso_language_code,
+        iso_language_code: tweet.lang,
         profile_image_url: tweet.user.profile_image_url_https,
         source:            tweet.source,
         content:           tweet.text,

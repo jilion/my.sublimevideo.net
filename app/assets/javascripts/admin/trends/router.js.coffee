@@ -10,20 +10,16 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
 
     AdminSublimeVideo.timeRangeTitleView = new AdminSublimeVideo.Views.TimeRangeTitleView
       el: '#time_range_title'
-      period: AdminSublimeVideo.period
 
     new AdminSublimeVideo.Views.PeriodSelectorView
       el: '#period_selectors'
-      period: AdminSublimeVideo.period
 
     AdminSublimeVideo.datePickersView = new AdminSublimeVideo.Views.DatePickersView
       el: '#date_pickers'
-      period: AdminSublimeVideo.period
 
     AdminSublimeVideo.graphView = new AdminSublimeVideo.Views.GraphView
       el: '#chart'
       collection: AdminSublimeVideo.trends
-      period: AdminSublimeVideo.period
 
     AdminSublimeVideo.seriesSelectorView = new AdminSublimeVideo.Views.SeriesSelectorView
       el: '#series_selectors'
@@ -31,7 +27,9 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
   initModels: ->
     AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period
     unless _.isEmpty @selectedPeriod
-      AdminSublimeVideo.period.set(start: new Date(parseInt(@selectedPeriod[0])), end: new Date(parseInt(@selectedPeriod[1])))
+      AdminSublimeVideo.period.set
+        start: new Date(parseInt(@selectedPeriod[0]))
+        end: new Date(parseInt(@selectedPeriod[1]))
 
     AdminSublimeVideo.trends["billings"]                    = new AdminSublimeVideo.Collections.BillingsTrends(this.selectedSeriesFor('billings'))
     AdminSublimeVideo.trends["revenues"]                    = new AdminSublimeVideo.Collections.RevenuesTrends(this.selectedSeriesFor('revenues'))
@@ -54,11 +52,10 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
 
   initKeyboardShortcuts: ->
     Mousetrap.bind 'r', =>
-      event.preventDefault()
       _.each AdminSublimeVideo.trends, (collection) -> collection.selected = []
-      $('a.selector').removeClass 'active'
+      $('a.selector').removeClass('active')
       this.clearUrl()
-      AdminSublimeVideo.period.change() # redraw the chart
+      AdminSublimeVideo.graphView.render() # redraw the chart
 
   fetchTrends: ->
     @fetchedTrendsCount = 0

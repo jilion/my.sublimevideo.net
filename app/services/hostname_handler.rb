@@ -17,40 +17,28 @@ class HostnameHandler
     end
   end
 
-  # one site or list of sites separated by comma
-  def self.valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
-    end
+  def self.main_invalid?(*args)
+    !_main_valid?(args.shift)
+  end
+
+  def self.extra_invalid?(*args)
+    !_extra_valid?(args.shift)
+  end
+
+  def self.dev_invalid?(*args)
+    !_dev_valid?(args.shift)
   end
 
   # one site or list of sites separated by comma
-  def self.extra_valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
-    else
-      true
-    end
+  def self.wildcard?(*args)
+    hostnames = args.shift
+
+    clean(hostnames).split(/,\s*/).any? { |h| h =~ /\*/ } if hostnames.present?
   end
 
   # one site or list of sites separated by comma
-  def self.dev_valid?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).all? { |h| dev_valid_one?(h) }
-    else
-      true
-    end
-  end
-
-  # one site or list of sites separated by comma
-  def self.wildcard?(hostnames)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).any? { |h| h =~ /\*/ }
-    end
-  end
-
-  # one site or list of sites separated by comma
-  def self.duplicate?(hostnames)
+  def self.duplicate?(*args)
+    hostnames = args.shift
     if hostnames.present?
       hostnames = clean(hostnames).split(/,\s*/)
       hostnames.count > hostnames.uniq.count
@@ -58,13 +46,42 @@ class HostnameHandler
   end
 
   # one site or list of sites separated by comma
-  def self.include?(hostnames, hostname)
-    if hostnames.present?
-      clean(hostnames).split(/,\s*/).any? { |h| h == hostname }
-    end
+  def self.include_hostname?(*args)
+    hostnames = args.shift
+    record = args.shift
+
+    clean(hostnames).split(/,\s*/).any? { |h| h == record.try(:hostname) } if hostnames.present?
+  end
+
+  def self.detect_error(*args)
+    record = args.shift
+    hostnames = args.shift
+    args.find { |validation| send("#{validation}?", hostnames, record) }
   end
 
   private
+
+  def self._main_valid?(hostnames)
+    clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) } if hostnames.present?
+  end
+
+  # one site or list of sites separated by comma
+  def self._extra_valid?(hostnames)
+    if hostnames.present?
+      clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
+    else
+      true
+    end
+  end
+
+  # one site or list of sites separated by comma
+  def self._dev_valid?(hostnames)
+    if hostnames.present?
+      clean(hostnames).split(/,\s*/).all? { |h| dev_valid_one?(h) }
+    else
+      true
+    end
+  end
 
   def self.clean_one(hostname)
     hostname.downcase!
@@ -87,7 +104,7 @@ class HostnameHandler
 
   def self.valid_one?(hostname)
     hostname.strip!
-    return true if ["blogspot.com", "appspot.com", "operaunite.com"].include?(hostname)
+    return true if %w[blogspot.com appspot.com operaunite.com].include?(hostname)
     ssp = PublicSuffix.parse(hostname)
     ssp.sld.present? && !PSEUDO_TLD.include?(ssp.tld)
   rescue
@@ -113,7 +130,7 @@ class HostnameHandler
   def self.ipv4_local?(hostname)
     begin
       addr = Addrinfo.tcp(hostname, 80)
-      hostname == "0.0.0.0" || addr.ipv4_private? || addr.ipv4_loopback?
+      hostname == '0.0.0.0' || addr.ipv4_private? || addr.ipv4_loopback?
     rescue
       false
     end

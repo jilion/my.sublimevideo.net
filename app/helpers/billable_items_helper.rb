@@ -1,24 +1,16 @@
 # coding: utf-8
 module BillableItemsHelper
 
-  def highlighted_class(billable_item)
-    return nil unless params[:h]
-
-    param_billable_item = params[:h].split('-')
-
-    highlited_class = if billable_item.is_a?(App::Design)
-      param_billable_item[0] == billable_item.name ? 'highlight' : nil
-    elsif param_billable_item.size == 2
-      param_billable_item[0] == billable_item.addon.name && param_billable_item[1] == billable_item.name ? 'highlight' : nil
-    end
-  end
-
   def design_label_content(design)
     raw t("app_designs.#{design.name}") + beta_loader_required_notice(design).to_s
   end
 
   def addon_label_content(addon_plan)
     raw t("addon_plans.#{addon_plan.addon.name}.#{addon_plan.name}") + beta_loader_required_notice(addon_plan).to_s
+  end
+
+  def addon_plan_is_selected?(site, addon_plan)
+    (action_name == 'show' && params[:p] == addon_plan.name) || site.addon_plans.include?(addon_plan)
   end
 
   def beta_loader_required_notice(addon_plan)
@@ -40,15 +32,16 @@ module BillableItemsHelper
   end
 
   def trial_days_remaining(site, billable_item)
-    trial_days_remaining_for_billable_item = site.trial_days_remaining_for_billable_item(billable_item)
-    case trial_days_remaining_for_billable_item
+    trial_days_remaining = TrialHandler.new(site).trial_days_remaining(billable_item)
+
+    case trial_days_remaining
     when 0
       'trial ended'
     when 1
       'last day of trial'
     else
-      if !(billable_item.beta? || billable_item.free?)
-        "free trial – #{pluralize(trial_days_remaining_for_billable_item || 30, 'day')} remaining"
+      if !billable_item.beta? && !billable_item.free?
+        "free trial – #{pluralize(trial_days_remaining || BusinessModel.days_for_trial, 'day')} remaining"
       end
     end
   end

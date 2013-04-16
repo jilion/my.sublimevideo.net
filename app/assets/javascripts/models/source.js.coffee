@@ -5,8 +5,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
     ratio: 9/16
     format: 'mp4'
     quality: 'base'
-    dataName: ''
-    dataUID: ''
     currentMimeType: ''
 
   setAndPreloadSrc: (src) ->
@@ -32,7 +30,7 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
       dataType: 'text'
       context: document.body
       success: (data, textStatus, jqXHR) =>
-        if data is "4"
+        if data is 'invalid'
           this.set(found: false)
           this.set(currentMimeType: '')
         else
@@ -86,12 +84,12 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
 
   reset: ->
     super()
-    this.set(dataName: '')
-    this.set(dataUID: '')
-    this.set(keepRatio: true)
-    this.set(embedWidth: null)
-    this.set(embedHeight: null)
-    this.set(currentMimeType: '')
+    this.set({
+      keepRatio: true
+      embedWidth: null
+      embedHeight: null
+      currentMimeType: ''
+    }, silent: true)
 
 class MySublimeVideo.Collections.Sources extends Backbone.Collection
   model: MySublimeVideo.Models.Source

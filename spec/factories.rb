@@ -14,18 +14,19 @@ FactoryGirl.define do
   end
 
   factory :user_no_cc, class: User do
-    name                 "John Doe"
-    billing_name         "Remy Coutable"
-    billing_address_1    "Avenue de France 71"
-    billing_address_2    "Batiment B"
-    billing_postal_code  "1004"
-    billing_city         "Lausanne"
-    billing_region       "VD"
-    billing_country      "CH"
-    use_personal         true
-    sequence(:email)     { |n| "email#{n}@user.com" }
-    password             "123456"
-    terms_and_conditions "1"
+    name                     "John Doe"
+    sequence(:billing_email) { |n| "email#{n}@user.com" }
+    billing_name             "Remy Coutable"
+    billing_address_1        "Avenue de France 71"
+    billing_address_2        "Batiment B"
+    billing_postal_code      "1004"
+    billing_city             "Lausanne"
+    billing_region           "VD"
+    billing_country          "CH"
+    use_personal             true
+    sequence(:email)         { |n| "email#{n}@user.com" }
+    password                 "123456"
+    terms_and_conditions     "1"
 
     factory :user do
       cc_type        'visa'
@@ -73,7 +74,7 @@ FactoryGirl.define do
 
   factory :referrer do
     url   "http://bob.com"
-    token { '123456' }
+    sequence(:token) { |n| n }
     hits  12
   end
 
@@ -218,47 +219,6 @@ FactoryGirl.define do
   factory :video_hour_stat, class: Stat::Video::Hour do
   end
   factory :video_day_stat, class: Stat::Video::Day do
-  end
-
-  factory :video_tag do
-    site
-    site_token      { site.token }
-    sequence(:uid)  { |n| "video_uid_#{n}" }
-    uid_origin      'attribute'
-    sequence(:name) { |n| "Video Tag #{n}" }
-    name_origin     'attribute'
-    poster_url      'http://media.sublimevideo.net/vpa/ms_800.jpg'
-    size            '640x360'
-    duration        '10000'
-
-    current_sources %w[57fb2708 27fe0de1 2625adcf ff83f239]
-    sources         { {
-      '57fb2708' => {
-        url: 'http://media.sublimevideo.net/vpa/ms_360p.mp4',
-        quality: 'base',
-        family: 'mp4',
-        resolution: '640x360'
-      },
-      '27fe0de1' => {
-        url: 'http://media.sublimevideo.net/vpa/ms_720p.mp4',
-        quality: 'hd',
-        family: 'mp4',
-        resolution: '1280x720'
-      },
-      '2625adcf' => {
-        url: 'http://media.sublimevideo.net/vpa/ms_360p.webm',
-        quality: 'base',
-        family: 'webm',
-        resolution: '640x360'
-      },
-      'ff83f239' => {
-        url: 'http://media.sublimevideo.net/vpa/ms_720p.webm',
-        quality: 'hd',
-        family: 'webm',
-        resolution: '1280x720'
-      }
-    } }
-    settings       { { 'badged' => true } }
   end
 
   factory :stats_export do

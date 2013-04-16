@@ -1,3 +1,5 @@
+require 'configurator'
+
 class ProwlWrapper
   include Configurator
 
@@ -6,7 +8,7 @@ class ProwlWrapper
   class << self
     def notify(message)
       prowl_client.add(
-        event: "Alert",
+        event: 'Alert',
         priority: 2,
         description: message.to_s
       )
@@ -14,8 +16,8 @@ class ProwlWrapper
 
     def prowl_client
       @prowl_client ||= Prowl.new(
-        apikey: ProwlWrapper.api_keys.join(","),
-        application: "MySublime"
+        apikey: ProwlWrapper.api_keys.join(','),
+        application: 'MySublime'
       )
     end
   end

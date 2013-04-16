@@ -1,8 +1,6 @@
 $('#spinner').data().spinner.stop()
-$('#preview_custom_logo').css(opacity: 1).html $('<img />').attr
-  src: '<%= j cdn_url(@logo_path) %>?<%= Time.now.to_i %>'
-  width: '<%= @logo_width / 2 %>'
-  height: '<%= @logo_height / 2 %>'
+imgAttrs = { src: '<%= j cdn_url(@logo_path) %>?<%= Time.now.to_i %>', width: '<%= @logo_width / 2 %>', height: '<%= @logo_height / 2 %>' }
+$('#preview_custom_logo').css(opacity: 1).html($('<img />').attr(imgAttrs))
 $('#kit_setting-logo-image_url').val('<%= j cdn_url(@logo_path) %>').change()
 
 <% if (@logo_width * @logo_height) > (400*120) %>

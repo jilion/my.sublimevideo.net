@@ -1,4 +1,3 @@
-
 class NewsletterSubscriptionManager
   attr_reader :user
 
@@ -24,8 +23,8 @@ class NewsletterSubscriptionManager
     #
     # users must respond to id, email, name and beta? (only the id is actually required)
     def import(users)
-      users_to_import = users.inject([]) do |memo, user|
-        memo << { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s }
+      users_to_import = users.reduce([]) do |a, user|
+        a << { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s, billable: user.billable?.to_s }
       end
       CampaignMonitorWrapper.delay.import(
         list_id: list['list_id'],
@@ -56,7 +55,7 @@ class NewsletterSubscriptionManager
     CampaignMonitorWrapper.subscribe(
       list_id: self.class.list['list_id'],
       segment: self.class.list['segment'],
-      user: { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s }
+      user: { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s, billable: user.billable?.to_s }
     )
   end
 

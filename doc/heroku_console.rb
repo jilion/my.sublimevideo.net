@@ -1,5 +1,5 @@
 # Sites ith active videos without Schooltube & Railscast
-sites = Site.where{(last_30_days_video_tags > 0) & (token.not_in ['2xrynuh2', '3s7oes9q'])}.scoped
+sites = Site.where {(last_30_days_video_tags > 0) & (token.not_in ['2xrynuh2', '3s7oes9q'])}.scoped
 
 sum = sites.count
 # => 3830
@@ -23,7 +23,7 @@ CSV.generate do |csv|
   Site.all.each do |site|
     plan = site.plan.try(:title)
     all_billed_plays = Stat::Site::Day.views_sum(token: site.token, billable_only: true)
-    all_video_tags = site.video_tags.count
+    all_video_tags = VideoTag.count(_site_token: site.token)
     last_30d_bill_plays = site.last_30_days_main_video_views.to_i + site.last_30_days_extra_video_views.to_i
     last_30d_video_tags = site.last_30_days_video_tags.to_i
     csv << [site.id, site.token, site.hostname.presence, site.state, plan, all_billed_plays, all_video_tags, last_30d_bill_plays, last_30d_video_tags]
@@ -35,7 +35,7 @@ end
 
 # for old plans
 d = Time.utc(2012,1,1)
-a = SitesTrend.where(d: d).first[:plans_count].inject({}) do |hash, (plan_id, c)|
+a = SitesTrend.where(d: d).first[:plans_count].reduce({}) do |hash, (plan_id, c)|
   hash[Plan.find(plan_id).title] = c if plan_id.present?
   hash
 end

@@ -8,14 +8,14 @@ class App::ComponentVersionZipContentUploader
   def store_zip_content(zip_path)
     Zip::ZipFile.foreach(zip_path) do |zipfile|
       next if zipfile.name =~ /__MACOSX|.DS_Store/ || zipfile.directory?
+
       object_name  = upload_path.join(zipfile.name).to_s
       content_type = FileHeaderAnalyzer.new(zipfile.to_s).content_type
       zipfile.get_input_stream do |io|
         put_object(object_name, io.read,
-          'Cache-Control' => "max-age=29030400, public",
-          'Content-Type'  => content_type,
-          'x-amz-acl'     => 'public-read'
-        )
+                   'Cache-Control' => 'max-age=29030400, public',
+                   'Content-Type'  => content_type,
+                   'x-amz-acl'     => 'public-read')
       end
     end
   end

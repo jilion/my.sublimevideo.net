@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 require 'sidekiq'
 require 'config/sidekiq'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
 
 require 'services/newsletter_subscription_manager'
 require 'services/user_manager'
@@ -112,61 +112,75 @@ describe UserManager do
       user.stub_chain(:tokens) { tokens }
       tokens.stub(:update_all)
       user.stub(:archive!)
-      user.stub(:archived_at=)
-      feedback.stub(:user_id=)
       feedback.stub(:save!)
       site1.stub(:archive!)
       site2.stub(:archive!)
     end
 
-    it "increments metrics" do
+    it 'increments metrics' do
       Librato.should_receive(:increment).with('users.events', source: 'archive')
+
       service.archive
     end
 
-    context 'without feedback' do
-      it 'touches archived_at' do
-        user.should_receive(:archived_at=)
-        service.archive
+    describe 'options' do
+      describe ':feedback option' do
+        context 'with a feedback' do
+          it 'saves feedback' do
+            feedback.should_receive(:save!)
+
+            service.archive(feedback: feedback)
+          end
+        end
       end
 
-      it 'archives user' do
-        user.should_receive(:archive!)
-        service.archive
-      end
+      describe ':skip_password option' do
+        context 'set to true' do
+          it 'calls skip_password(:archive!)' do
+            user.should_receive(:skip_password).with(:archive!)
 
-      it 'archives sites' do
-        site1.should_receive(:archive!)
-        site2.should_receive(:archive!)
-        service.archive
-      end
+            service.archive(skip_password: true)
+          end
+        end
+        context 'set to false' do
+          it 'calls skip_password(:archive!)' do
+            user.should_receive(:archive!)
 
-      it 'invalidates tokens' do
-        tokens.should_receive(:update_all).with(invalidated_at: an_instance_of(Time))
-        service.archive
-      end
-
-      it 'delays the unsubscription from the newsletter' do
-        NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
-        service.archive
-      end
-
-      it 'delays the sending of the account archived email' do
-        UserMailer.should delay(:account_archived).with(user.id)
-        service.archive
+            service.archive(skip_password: false)
+          end
+        end
       end
     end
 
-    context 'with feedback' do
-      it 'sets feedback\'s user_id' do
-        feedback.should_receive(:user_id=).with(user.id)
-        service.archive(feedback)
-      end
+    it 'archives the user' do
+      user.should_receive(:archive!)
 
-      it 'saves feedback' do
-        feedback.should_receive(:save!)
-        service.archive(feedback)
-      end
+      service.archive
+    end
+
+    it 'archives the sites' do
+      site1.should_receive(:archive!)
+      site2.should_receive(:archive!)
+
+      service.archive
+    end
+
+    it 'invalidates tokens' do
+      tokens.should_receive(:update_all).with(invalidated_at: an_instance_of(Time))
+
+      service.archive
+    end
+
+    it 'delays the unsubscription from the newsletter' do
+      NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
+
+      service.archive
+    end
+
+    it 'delays the sending of the account archived email' do
+      UserMailer.should delay(:account_archived).with(user.id)
+
+      service.archive
     end
   end
 

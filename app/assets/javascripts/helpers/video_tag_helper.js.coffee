@@ -18,13 +18,10 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generateClass(options)
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
-    attributes.push "data-youtube-id=\"#{@video.get('youTubeId')}\"" if @video.get('origin') is 'youtube'
-    attributes.push "data-autoresize=\"#{@video.get('autoresize')}\""
-    attributes.push this.generateDataSettingsAttribute(options)
-    attributes.push this.generateDataUIDAndName()
+    attributes.push this.generateTitle() if @video.get('title')
     attributes.push this.generateStyle()
+    attributes.push this.generateDataSettingsAttribute(options)
     attributes.push "preload=\"none\""
-    attributes.push "autoplay" if @video.get('autoplay')
 
     code = "#{@extraSpaces}<video #{_.compact(attributes).join(' ')}>\n"
     code += this.generateSources() unless @video.get('origin') is 'youtube'
@@ -60,34 +57,58 @@ class MySublimeVideo.Helpers.VideoTagHelper
     else
       "#{@video.get('thumbnail').get('src')}"
 
+  generateDataSettingsAttributeContent: (options = {}) ->
+    this.generateDataSettings(options) if _.isEmpty @dataSettings
+    _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
+
   generateDataSettingsAttribute: (options = {}) ->
     this.generateDataSettings(options)
     if _.isEmpty @dataSettings
       ''
     else
-      if options['allTogether']
-        _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
+      if options['allDataSettingsTogether']
+        "data-settings=\"#{this.generateDataSettingsAttributeContent()}\""
       else
         _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}=\"#{v}\""; a), []).join(' ')
 
   generateDataSettings: (opts = {}) ->
     options = {}
     _.extend(options, opts)
-    _.defaults(options, { addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+    _.defaults(options, { kitReplacement: true, addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
 
     if options['settings']?
       this.generateDataSettingsFromJSON(options)
     else
       this.generateDataSettingsFromDOM(options['addons'])
 
-    this.replacePlayerKitSettingWithRealPreviewKitIdentifier()
+    this.replacePlayerKitSettingWithRealPreviewKitIdentifier() if options['kitReplacement']
+    this.setDataUID()
+    this.setYouTubeID()
+    this.setAutoresize()
+    this.setAutoplay()
 
     @dataSettings
 
   replacePlayerKitSettingWithRealPreviewKitIdentifier: ->
     if @dataSettings['player-kit']?
       selectedOption = $("select[data-addon='player']").find("option[value='#{@dataSettings['player-kit']}']")
-      @dataSettings['player-kit'] = selectedOption.data('kit-id')
+      @dataSettings['player-kit'] = selectedOption.data('preview-kit-id')
+
+  setDataUID: ->
+    if not @dataSettings['uid']? and @video.get('uid')?
+      @dataSettings['uid'] = @video.get('uid')
+
+  setYouTubeID: ->
+    if not @dataSettings['youtube-id']? and @video.get('origin') is 'youtube'
+      @dataSettings['youtube-id'] = @video.get('youTubeId')
+
+  setAutoresize: ->
+    if not @dataSettings['autoresize']? and @video.get('autoresize') isnt 'none'
+      @dataSettings['autoresize'] = @video.get('autoresize')
+
+  setAutoplay: ->
+    if not @dataSettings['autoplay']? and @video.get('autoplay')
+      @dataSettings['autoplay'] = @video.get('autoplay')
 
   generateClass: (options = {}) ->
     if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
@@ -102,14 +123,8 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateStyle: ->
     if @video.get('displayInLightbox') then "style=\"display:none\"" else ''
 
-  generateDataUIDAndName: ->
-    dataUIDAndName = []
-    if dataUID = @video.get('dataUID')
-      dataUIDAndName.push "data-uid=\"#{dataUID}\""
-    if dataName = @video.get('dataName')
-      dataUIDAndName.push "data-name=\"#{dataName}\""
-
-    dataUIDAndName.join(' ')
+  generateTitle: ->
+    "title=\"#{@video.get('title')}\""
 
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''

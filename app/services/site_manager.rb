@@ -71,7 +71,7 @@ class SiteManager
   def unsuspend_billable_items
     set_default_app_designs
     if site.plan_id?
-      update_addon_subscriptions(AddonPlan.free_addon_plans(reject: %w[logo stats support]))
+      update_addon_subscriptions(_free_addon_plans_subscriptions_hash(reject: %w[logo stats support]))
       case site.plan.name
       when 'plus'
         # Sponsor real-time stats
@@ -122,7 +122,7 @@ class SiteManager
   end
 
   def set_default_addon_plans
-    update_addon_subscriptions(AddonPlan.free_addon_plans)
+    update_addon_subscriptions(_free_addon_plans_subscriptions_hash)
   end
 
   def update_design_subscriptions(design_subscriptions, options = {})
@@ -144,7 +144,7 @@ class SiteManager
     when '0'
       cancel_design(design)
     else
-      if billable_item = site.billable_items.app_designs.where(item_id: design.id).first
+      if billable_item = site.billable_items.with_item(design).first
         update_billable_item_state!(billable_item, options)
       elsif design.not_custom? || options[:allow_custom]
         build_subscription(design, options)
@@ -163,7 +163,7 @@ class SiteManager
 
       cancel_addon(addon, except_addon_plan: addon_plan)
 
-      if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
+      if billable_item = site.billable_items.with_item(addon_plan).first
         update_billable_item_state!(billable_item, options)
       elsif addon_plan.not_custom? || options[:allow_custom]
         build_subscription(addon_plan, options)
@@ -172,14 +172,14 @@ class SiteManager
   end
 
   def cancel_design(design)
-    site.billable_items.app_designs.where(item_id: design.id).destroy_all
+    site.billable_items.with_item(design).destroy_all
   end
 
   def cancel_addon(addon, options = {})
     addon_plan_ids_to_cancel  = addon.plans.pluck(:id)
     addon_plan_ids_to_cancel -= [options[:except_addon_plan].id] if options[:except_addon_plan]
 
-    site.billable_items.addon_plans.where{ item_id >> addon_plan_ids_to_cancel }.destroy_all
+    site.billable_items.addon_plans.where { item_id >> addon_plan_ids_to_cancel }.destroy_all
   end
 
   def update_billable_item_state!(billable_item, options)
@@ -194,6 +194,13 @@ class SiteManager
     site.billable_items.build({ item: design_or_addon, state: new_billable_item_state(design_or_addon, options) }, without_protection: true)
   end
 
+  def _free_addon_plans_subscriptions_hash(*args)
+    AddonPlan.free_addon_plans(*args).reduce({}) do |hash, addon_plan|
+      hash[addon_plan.addon.name.to_sym] = addon_plan.id
+      hash
+    end
+  end
+
   def new_billable_item_state(design_or_addon, options = {})
     if options[:suspended]
       'suspended'
@@ -205,7 +212,7 @@ class SiteManager
       end
     elsif design_or_addon.beta?
       'beta'
-    elsif design_or_addon.free? || site.out_of_trial?(design_or_addon)
+    elsif design_or_addon.free? || TrialHandler.new(site).out_of_trial?(design_or_addon)
       'subscribed'
     else
       'trial'

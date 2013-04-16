@@ -1,3 +1,6 @@
+# http://mines.mouldwarp.com/2012/11/subdomains-in-rails-apps-current-brief.html
+ROOT_DOMAIN = 'lvh.me'  # yes, it's a magic domain for 127.0.0.1 //smackaho.st RIP
+
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
@@ -10,8 +13,8 @@ MySublimeVideo::Application.configure do
   # def eager_load!; end
 
   # Configure static asset server for tests with Cache-Control for performance
-  config.serve_static_assets = true
-  config.static_cache_control = "public, max-age=3600"
+  config.serve_static_assets  = true
+  config.static_cache_control = 'public, max-age=3600'
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true

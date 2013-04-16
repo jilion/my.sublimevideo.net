@@ -2,18 +2,18 @@ en:
   kit:
     video_player:
       settings:
-        volume_enable: 'Enable volume control'
-        fullmode_enable: 'Enable full-mode'
+        volume_enable: 'Volume control'
+        fullmode_enable: 'Full-mode control'
         fullmode_priority: 'Set the preferred mode to maximize the player'
-        on_end: 'Player behavior upon video playback end:'
+        on_end: 'Player behavior upon video playback end'
       values:
         fullmode_priority:
           screen: 'Prefer full-screen when possible'
           window: 'Prefer full-window when possible'
         on_end:
-          nothing: 'Do nothing (stays on last frame) - Default'
-          replay: 'Replay the video (loop)'
-          stop: 'Stop the video (goes back to poster frame)'
+          nothing: 'Stay on last frame'
+          replay: 'Replay the video'
+          stop: 'Stop the video and go back to the start view'
 
     controls:
       settings:
@@ -33,43 +33,33 @@ en:
 
     lightbox:
       settings:
-        on_open: 'Opening behavior:'
-        overlay_opacity: 'Overlay opacity'
-        overlay_color: 'Overlay color'
+        on_open: 'Once the lightbox is opened...'
+        overlay_opacity: 'Background overlay opacity'
+        overlay_color: 'Background overlay color'
         close_button_enable: 'Close button'
         close_button_visibility: 'Visibility'
         close_button_position: 'Position'
       values:
         on_open:
-          play: 'Autoplay video'
-          nothing: 'Wait for user to click on "Play"'
+          play: 'Automatically start the video playback'
+          nothing: 'Wait for the user to click the "play" button'
         close_button_visibility:
           autohide: 'Auto-hide'
-          visible: 'Visible'
+          visible: 'Always visible'
         close_button_position:
           left: 'Top left'
           right: 'Top right'
 
-    stats:
-      title: 'Statistics settings'
-      settings:
-        enabled: 'Enable statistics'
-        realtime: 'Enable real-time statistics'
-
     logo:
       settings:
-        enable: 'SublimeVideo logo'
-        enable_custom: 'Enable logo'
-        type: 'Select logo'
-        visibility: 'SublimeVideo logo'
-        visibility_custom: 'Visibility:'
-        position: 'Logo position on video:'
-        image_url: 'Your logo'
-        link_url: 'Logo click url:'
+        enable: 'On-video logo'
+        visibility: 'Visibility'
+        position: 'Position'
+        link_url: 'Logo click URL'
       values:
         type:
           sv: 'SublimeVideo logo'
-          custom: 'Your logo'
+          custom: 'Your own logo'
         visibility:
           autohide: 'Auto-hide'
           visible: 'Always visible'
@@ -82,15 +72,14 @@ en:
     social_sharing:
       title: 'Sharing settings'
       settings:
-        enable: 'Enable sharing button'
-        icon: 'Choose icon:'
-        url: 'Default sharing URL:'
-        buttons: 'Social sharing buttons:'
-        image: 'Sharing message image:'
+        enable: 'Sharing button'
+        icon: 'Sharing icon'
+        url: 'Default sharing URL'
+        buttons: 'Sharing buttons'
+        image: "Sharing message image"
         title: 'Default title'
-        text: 'Default sharing message:'
-        twitter_text: 'Default sharing message:'
-        twitter_via: 'Twitter via username:'
+        text: 'Default sharing message'
+        twitter_via: 'Twitter "via" username'
         link_enable: 'Show link field'
       values:
         image:
@@ -101,15 +90,7 @@ en:
     embed:
       title: 'Embed settings'
       settings:
-        url: 'Default embed URL:'
-        size: 'Default embed size:'
-
-    api:
-      standard: 'SublimeVideo player basic JavaScript API'
-
-    support:
-      standard: 'Forum & email support'
-      vip:      'VIP email support'
-
-    buy_action:
-      standard: 'Standard buy button'
+        enable: 'Embed button'
+        type: 'Embed type'
+        url: 'Default embed URL'
+        size: 'Default embed size'

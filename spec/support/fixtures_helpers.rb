@@ -10,4 +10,6 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::FixturesHelpers)
+RSpec.configure do |config|
+  config.include Spec::Support::FixturesHelpers
+end

@@ -382,47 +382,6 @@ describe UserModules::CreditCard do
       end
     end
 
-    describe "#apply_pending_credit_card_info" do
-      UserModules::CreditCard::BRANDS.each do |brand|
-        context brand do
-          let(:cc_attributes) { send "valid_cc_attributes_#{brand}" }
-          let(:user) { build(:user_no_cc, cc_attributes) }
-          before do
-            user.prepare_pending_credit_card
-            user.cc_register = false
-          end
-
-          it "sets cc_xxx fields and resets all pending_cc_xxx and last_failed_cc_authorize_xxx fields" do
-            user.pending_cc_type.should eq cc_attributes[:cc_brand]
-            user.pending_cc_last_digits.should eq cc_attributes[:cc_number][-4,4]
-            user.pending_cc_expire_on.should eq Time.utc(cc_attributes[:cc_expiration_year], cc_attributes[:cc_expiration_month]).end_of_month.to_date
-            user.pending_cc_updated_at.should be_present
-            user.cc_type.should be_nil
-            user.cc_last_digits.should be_nil
-            user.cc_expire_on.should be_nil
-            user.cc_updated_at.should be_nil
-
-            user.apply_pending_credit_card_info
-
-            user.reload
-            user.pending_cc_type.should be_nil
-            user.pending_cc_last_digits.should be_nil
-            user.pending_cc_expire_on.should be_nil
-            user.pending_cc_updated_at.should be_nil
-
-            user.cc_type.should eq cc_attributes[:cc_brand]
-            user.cc_last_digits.should eq cc_attributes[:cc_number][-4,4]
-            user.cc_expire_on.should eq Time.utc(cc_attributes[:cc_expiration_year], cc_attributes[:cc_expiration_month]).end_of_month.to_date
-            user.cc_updated_at.should be_present
-
-            user.last_failed_cc_authorize_at.should be_nil
-            user.last_failed_cc_authorize_status.should be_nil
-            user.last_failed_cc_authorize_error.should be_nil
-          end
-        end
-      end
-    end
-
     describe "#register_credit_card_on_file" do
       UserModules::CreditCard::BRANDS.each do |brand|
         let(:user) { build(:user_no_cc, send("valid_cc_attributes_#{brand}")) }
@@ -443,6 +402,7 @@ describe UserModules::CreditCard do
 
     describe "#process_credit_card_authorization_response" do
       let(:d3d_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "?",
         "STATUS" => "46",
         "PAYID" => "1234",
@@ -450,35 +410,41 @@ describe UserModules::CreditCard do
         "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>")
       } }
       let(:authorized_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "0",
         "STATUS" => "5",
         "PAYID" => "1234"
       } }
       let(:waiting_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "0",
         "STATUS" => "51",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Waiting"
       } }
       let(:invalid_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "5",
         "STATUS" => "0",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Invalid credit card number"
       } }
       let(:refused_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "3",
         "STATUS" => "2",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Refused credit card number"
       } }
       let(:canceled_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "40001134",
         "STATUS" => "1",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Authentication failed, please retry or cancel"
       } }
       let(:unknown_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "2",
         "STATUS" => "52",
         "PAYID" => "1234",

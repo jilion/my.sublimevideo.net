@@ -1,0 +1,20 @@
+%h4 Video metadata settings
+
+%p.info
+  ~ 'Fill in these attributes to identify and name your videos. These fields will also be used by SublimeVideo\'s '
+  != succeed '.', ->
+    %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('addons/stats'), onclick: "window.open(this); return false" } Universal Real-Time Statistics platform
+
+%h5
+  %label{ for: "uid" } UID
+#uid.entry
+  %input#uid_src.text.no_icon{ type: "text", placeholder: "Video unique ID", value: MSVVideoCode.video.get('uid'), size: 8 }
+  %span#uid_src_invalid.inline_alert{ style: "display:none" }
+    ~ 'Please provides '
+    != succeed '.', ->
+      %a{ href: SublimeVideo.Misc.Utils.docsUrl('settings/player-settings#uid'), onclick: "window.open(this); return false" } a valid UID
+
+%h5
+  %label{ for: "title" } Title
+#title.entry
+  %input#title_src.text.no_icon{ type: "text", placeholder: "Video title", value: MSVVideoCode.video.get('title'), size: 50 }

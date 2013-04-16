@@ -47,65 +47,68 @@ class AddonSystemPopulator < Populator
 
   def app_design_seeds
     [
-      { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public',                         component: App::Component.get('app')      },
-      { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', required_stage: 'beta', component: App::Component.get('app')      },
-      { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', required_stage: 'beta', component: App::Component.get('app')      },
-      { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('twit')     },
-      { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('html5')    },
-      { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('sony')     },
-      { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('svnet')    },
-      { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('anthony')  },
-      { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('next15')   },
-      { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('df')       },
-      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', required_stage: 'beta', component: App::Component.get('blizzard') }
+      { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('twit')     },
+      { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('html5')    },
+      { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('sony')     },
+      { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('svnet')    },
+      { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('anthony')  },
+      { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('next15')   },
+      { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
+      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') }
     ]
   end
 
   def addon_seeds
     [
-        lambda { { name: 'video_player',   kind: 'videoPlayer',   design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'controls',       kind: 'controls',      design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'initial',        kind: 'initial',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'sharing',        kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'social_sharing', kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'embed',          kind: 'embed',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'image_viewer',   kind: 'imageViewer',   design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'logo',           kind: 'logo',          design_dependent: false, parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'lightbox',       kind: 'lightbox',      design_dependent: true,  parent_addon: nil } },
-        lambda { { name: 'api',            kind: 'api',           design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'stats',          kind: 'stats',         design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'support',        kind: 'support',       design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'preview_tools',  kind: 'previewTools',  design_dependent: false, parent_addon: nil } },
-        lambda { { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'action',         kind: 'action',        design_dependent: false, parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player')  }}
+        -> { { name: 'video_player',   kind: 'videoPlayer',   design_dependent: false, parent_addon: nil } },
+        -> { { name: 'controls',       kind: 'controls',      design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'initial',        kind: 'initial',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'sharing',        kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'social_sharing', kind: 'sharing',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'embed',          kind: 'embed',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'image_viewer',   kind: 'imageViewer',   design_dependent: false, parent_addon: nil } },
+        -> { { name: 'logo',           kind: 'logo',          design_dependent: false, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'lightbox',       kind: 'lightbox',      design_dependent: true,  parent_addon: nil } },
+        -> { { name: 'api',            kind: 'api',           design_dependent: false, parent_addon: nil } },
+        -> { { name: 'stats',          kind: 'stats',         design_dependent: false, parent_addon: nil } },
+        -> { { name: 'support',        kind: 'support',       design_dependent: false, parent_addon: nil } },
+        -> { { name: 'preview_tools',  kind: 'previewTools',  design_dependent: false, parent_addon: nil } },
+        -> { { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'action',         kind: 'action',        design_dependent: false, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        -> { { name: 'cuezones',       kind: 'cuezones',      design_dependent: false, parent_addon: Addon.get('video_player') } }
     ]
   end
 
   def addon_plan_seeds
     [
-      { name: 'standard',  price: 0,    addon: Addon.get('video_player'),   availability: 'hidden', stable_at: nil },
+      { name: 'standard',  price: 0,    addon: Addon.get('video_player'),   availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('lightbox'),       availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('image_viewer'),   availability: 'hidden', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('preview_tools'),  availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('end_actions'),    availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'invisible', price: 0,    addon: Addon.get('stats'),          availability: 'hidden',                         stable_at: Time.now.utc },
-      { name: 'realtime',  price: 990,  addon: Addon.get('stats'),          availability: 'public',                         stable_at: Time.now.utc },
-      { name: 'sublime',   price: 0,    addon: Addon.get('logo'),           availability: 'public',                         stable_at: Time.now.utc },
-      { name: 'disabled',  price: 990,  addon: Addon.get('logo'),           availability: 'public',                         stable_at: Time.now.utc },
-      { name: 'custom',    price: 1990, addon: Addon.get('logo'),           availability: 'public', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('controls'),       availability: 'hidden', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('initial'),        availability: 'hidden', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('sharing'),        availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'), availability: 'public', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('embed'),          availability: 'public', required_stage: 'beta', stable_at: nil },
+      { name: 'standard',  price: 0,    addon: Addon.get('image_viewer'),   availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('preview_tools'),  availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('end_actions'),    availability: 'custom', stable_at: Time.now.utc },
+      { name: 'invisible', price: 0,    addon: Addon.get('stats'),          availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'realtime',  price: 990,  addon: Addon.get('stats'),          availability: 'public', stable_at: Time.now.utc },
+      { name: 'sublime',   price: 0,    addon: Addon.get('logo'),           availability: 'public', stable_at: Time.now.utc },
+      { name: 'disabled',  price: 990,  addon: Addon.get('logo'),           availability: 'public', stable_at: Time.now.utc },
+      { name: 'custom',    price: 1990, addon: Addon.get('logo'),           availability: 'public', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('controls'),       availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('initial'),        availability: 'hidden', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('sharing'),        availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'), availability: 'public', stable_at: Time.now.utc },
+      { name: 'manual',    price: 0,    addon: Addon.get('embed'),          availability: 'public', stable_at: Time.now.utc },
+      { name: 'auto',      price: 990,  addon: Addon.get('embed'),          availability: 'public', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('api'),            availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
       { name: 'vip',       price: 9990, addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('buy_action'),     availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('info'),           availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 0,    addon: Addon.get('action'),         availability: 'custom', required_stage: 'beta', stable_at: nil }
+      { name: 'standard',  price: 0,    addon: Addon.get('buy_action'),     availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('info'),           availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,    addon: Addon.get('action'),         availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 690,  addon: Addon.get('cuezones'),       availability: 'public', stable_at: Time.now.utc }
     ]
   end
 
@@ -167,14 +170,15 @@ class AddonSystemPopulator < Populator
 
       { name: 'info_sony',              token: 'tj.tj.aeb',   addon: Addon.get('info'),           design: App::Design.get('sony'),     component: App::Component.get('sony') },
 
-
       { name: 'buy_action_blizzard',    token: 'aca.aca.acb', addon: Addon.get('buy_action'),     design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
 
       { name: 'preview_tools_svnet',    token: 'sj.sj.sk',    addon: Addon.get('preview_tools'),  design: nil,                         component: App::Component.get('svnet') },
 
       { name: 'end_actions_twit',       token: 'sf.sf.agb',   addon: Addon.get('end_actions'),    design: App::Design.get('twit'),     component: App::Component.get('twit') },
 
-      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: nil,                         component: App::Component.get('svnet') }
+      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: nil,                         component: App::Component.get('svnet') },
+
+      { name: 'cuezones',               token: 'sa.sh.ud',    addon: Addon.get('cuezones'),       design: nil,                         component: App::Component.get('app') }
     ]
   end
 
@@ -238,15 +242,21 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_flat')   },
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_light')  },
 
-      { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_classic')         },
-      { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_flat')            },
-      { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_light')           },
+      { addon_plan: AddonPlan.get('embed', 'manual'),            plugin: App::Plugin.get('embed_classic')         },
+      { addon_plan: AddonPlan.get('embed', 'manual'),            plugin: App::Plugin.get('embed_flat')            },
+      { addon_plan: AddonPlan.get('embed', 'manual'),            plugin: App::Plugin.get('embed_light')           },
+
+      { addon_plan: AddonPlan.get('embed', 'auto'),              plugin: App::Plugin.get('embed_classic')         },
+      { addon_plan: AddonPlan.get('embed', 'auto'),              plugin: App::Plugin.get('embed_flat')            },
+      { addon_plan: AddonPlan.get('embed', 'auto'),              plugin: App::Plugin.get('embed_light')           },
 
       { addon_plan: AddonPlan.get('preview_tools', 'standard'),  plugin: App::Plugin.get('preview_tools_svnet') },
 
       { addon_plan: AddonPlan.get('end_actions', 'standard'),    plugin: App::Plugin.get('end_actions_twit')    },
 
-      { addon_plan: AddonPlan.get('buy_action', 'standard'),     plugin: App::Plugin.get('buy_action_blizzard') }
+      { addon_plan: AddonPlan.get('buy_action', 'standard'),     plugin: App::Plugin.get('buy_action_blizzard') },
+
+      { addon_plan: AddonPlan.get('cuezones', 'standard'),       plugin: App::Plugin.get('cuezones') }
     ]
   end
 

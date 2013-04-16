@@ -4,14 +4,14 @@ RSpec.configure do |config|
   config.before :all, addons: true do
     create_default_addons
   end
-  config.before :all, type: :request do
+  config.before :all, type: :feature do
     create_default_addons
   end
 
   config.after :all, addons: true do
     clear_default_addons
   end
-  config.after :all, type: :request do
+  config.after :all, type: :feature do
     clear_default_addons
   end
 end
@@ -32,7 +32,6 @@ def clear_default_addons
 end
 
 def instantiate_variables
-  # @app_comp = App::Component.find_by_name('app')
   @classic_design = App::Design.get('classic')
   @flat_design    = App::Design.get('flat')
   @light_design   = App::Design.get('light')
@@ -51,7 +50,6 @@ def instantiate_variables
   @stats_addon = Addon.get('stats')
   @stats_addon_plan_1 = AddonPlan.get('stats', 'invisible')
   @stats_addon_plan_2 = AddonPlan.get('stats', 'realtime')
-  # @stats_addon_plan_3 = AddonPlan.get('stats', 'disabled')
 
   @logo_addon        = Addon.get('logo')
   @logo_addon_plan_1 = AddonPlan.get('logo', 'sublime')
@@ -68,7 +66,8 @@ def instantiate_variables
   @social_sharing_addon_plan_1 = AddonPlan.get('social_sharing', 'standard')
 
   @embed_addon        = Addon.get('embed')
-  @embed_addon_plan_1 = AddonPlan.get('embed', 'standard')
+  @embed_addon_plan_1 = AddonPlan.get('embed', 'manual')
+  @embed_addon_plan_2 = AddonPlan.get('embed', 'auto')
 
   @api_addon        = Addon.get('api')
   @api_addon_plan_1 = AddonPlan.get('api', 'standard')

@@ -1,100 +1,39 @@
-class VideoTag < ActiveRecord::Base
-  serialize :current_sources, Array
-  serialize :sources, Hash
-  serialize :settings, ActiveRecord::Coders::Hstore
+require 'sublime_video_private_api/model'
+require 'active_record/errors'
+require 'rescue_me'
 
-  belongs_to :site
+class VideoTag
+  include SublimeVideoPrivateApi::Model
+  uses_private_api :videos
+  collection_path '/private_api/sites/:site_token/video_tags'
 
-  # scope :custom_search, lambda { |query|
-  #   where(:$or => [
-  #     { n: /.*#{query}.*/i },
-  #     { u: /.*#{query}.*/i }
-  #   ])
-  # }
+  def self.count(params = {})
+    rescue_and_retry(3) do
+      # get_raw mutates the params hash, so dup it before (so it won't break in case of a retry)
+      get_raw(:count, params.dup)[:parsed_data][:data][:count].to_i
+    end
+  end
 
-  # filter
-  scope :last_30_days_active, -> { where{ updated_at >= 30.days.ago.midnight } }
-  scope :last_90_days_active, -> { where{ updated_at >= 90.days.ago.midnight } }
-  # scope :hosted_on_sublimevideo, where({}) # TODO Thibaud
-  # scope :not_hosted_on_sublimevideo, where({}) # TODO Thibaud
-  # scope :inactive, where(state: 'inactive')
-  scope :active, -> { where{ (uid_origin != nil) & (name_origin != nil)} }
-  # scope :all, where({}) # TODO Thibaud
+  def self.site_tokens(params = {})
+    # get_raw mutates the params hash, so dup it before (so it won't break in case of a retry)
+    get_raw('/private_api/video_tags/site_tokens', params.dup)[:parsed_data][:data][:site_tokens]
+  end
 
-  # sort
-  scope :by_name,  lambda { |way = 'desc'| order{ name.send(way) } }
-  scope :by_date,  lambda { |way = 'desc'| order{ created_at.send(way) } }
-  # scope :by_state, lambda { |way='desc'| order_by([:state, way.to_sym]) }
+  def self.backbone_attributes
+    [:uid, :uid_origin, :title, :poster_url, :sources_id, :sources_origin]
+  end
 
-  validates :site_id, presence: true, uniqueness: { scope: :uid }
-  validates :site_token, presence: true
-  validates :uid, :uid_origin, presence: true
-  validates :uid_origin, inclusion: %w[attribute source]
-  validates :name_origin, inclusion: %w[attribute source youtube vimeo], allow_nil: true
-  validates :sources_origin, inclusion: %w[youtube vimeo other], allow_nil: true
+  def backbone_data
+    attributes.slice(*self.class.backbone_attributes)
+  end
 
   def to_param
     uid
   end
 
-  def uid=(attribute)
-    write_attribute :uid, attribute.to_s.try(:to, 254)
-  end
-
-  def name=(attribute)
-    write_attribute :name, attribute.try(:to, 254)
-  end
-
-  def duration=(attribute)
-    duration = attribute.to_i.in?(0..2147483647) ? attribute.to_i : nil
-    write_attribute :duration, duration
-  end
-
-  def sources=(attributes)
-    attributes.each do |crc32, source_data|
-      unless sources[crc32] == source_data
-        sources_will_change!
-        sources[crc32] = source_data
-      end
-    end
-    write_attribute :sources, sources
-  end
-
-  # TODO Remove once VideoTag data only get from CORS
-  def used_sources
-    sources.select { |key, value| key.in?(current_sources) }
-  end
-
-  def backbone_data
-    attributes.slice(*%w[uid uid_origin name name_origin poster_url sources_id sources_origin])
+  def self.find(*args)
+    super(*args)
+  rescue URI::InvalidURIError => ex
+    raise ActiveRecord::RecordNotFound, ex
   end
 end
-
-# == Schema Information
-#
-# Table name: video_tags
-#
-#  created_at      :datetime         not null
-#  current_sources :text
-#  duration        :integer
-#  id              :integer          not null, primary key
-#  name            :string(255)
-#  name_origin     :string(255)
-#  poster_url      :text
-#  settings        :hstore
-#  site_id         :integer          not null
-#  site_token      :string(255)      not null
-#  size            :string(255)
-#  sources         :text
-#  sources_id      :string(255)
-#  sources_origin  :string(255)
-#  uid             :string(255)      not null
-#  uid_origin      :string(255)      not null
-#  updated_at      :datetime         not null
-#
-# Indexes
-#
-#  index_video_tags_on_site_id_and_uid         (site_id,uid) UNIQUE
-#  index_video_tags_on_site_id_and_updated_at  (site_id,updated_at)
-#
-

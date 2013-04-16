@@ -3,8 +3,8 @@ require 'spec_helper'
 describe UserMailer do
   let(:user) { create(:user) }
 
-  it_should_behave_like "common mailer checks", %w[welcome inactive_account], params: lambda { FactoryGirl.create(:user) }, no_signature: true
-  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: lambda { FactoryGirl.create(:user).id }
+  it_should_behave_like "common mailer checks", %w[welcome inactive_account], params: -> { FactoryGirl.create(:user) }, no_signature: true
+  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: -> { FactoryGirl.create(:user).id }
 
   describe "#welcome" do
     before do
@@ -12,13 +12,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it "should set proper subject" do
-      last_delivery.subject.should eql I18n.t('mailer.user_mailer.welcome')
-    end
-
-    it "should set a body that contain info" do
-      last_delivery.body.encoded.should include "Welcome to SublimeVideo!"
-    end
+    it { last_delivery.to.should eq [user.email] }
+    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.welcome') }
+    it { last_delivery.body.encoded.should include "Welcome to SublimeVideo!" }
   end
 
   describe "#inactive_account" do
@@ -27,13 +23,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it "should set proper subject" do
-      last_delivery.subject.should eql I18n.t('mailer.user_mailer.inactive_account')
-    end
-
-    it "should set a body that contain info" do
-      last_delivery.body.encoded.should include "It's been a week since you've signed up to SublimeVideo"
-    end
+    it { last_delivery.to.should eq [user.email] }
+    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.inactive_account') }
+    it { last_delivery.body.encoded.should include "It's been a week since you've signed up to SublimeVideo" }
   end
 
   describe "#account_suspended" do
@@ -42,13 +34,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it "should set proper subject" do
-      last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_suspended')
-    end
-
-    it "should set a body that contain info" do
-      last_delivery.body.encoded.should include "Your SublimeVideo account has been suspended due to non-payment."
-    end
+    it { last_delivery.to.should eq [user.email] }
+    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.account_suspended') }
+    it { last_delivery.body.encoded.should include "Your SublimeVideo account has been suspended due to non-payment." }
   end
 
   describe "#account_unsuspended" do
@@ -57,13 +45,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it "should set proper subject" do
-      last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_unsuspended')
-    end
-
-    it "should set a body that contain info" do
-      last_delivery.body.encoded.should include "Your SublimeVideo account has been reactivated."
-    end
+    it { last_delivery.to.should eq [user.email] }
+    it { last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_unsuspended') }
+    it { last_delivery.body.encoded.should include "Your SublimeVideo account has been reactivated." }
   end
 
   describe "#account_archived" do
@@ -72,13 +56,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it "should set proper subject" do
-      last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_archived')
-    end
-
-    it "should set a body that contain info" do
-      last_delivery.body.encoded.should include "This is to confirm that the cancellation of your SublimeVideo account"
-    end
+    it { last_delivery.to.should eq [user.email] }
+    it { last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_archived') }
+    it { last_delivery.body.encoded.should include "This is to confirm that the cancellation of your SublimeVideo account" }
   end
 
 end

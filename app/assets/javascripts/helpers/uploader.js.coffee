@@ -28,8 +28,8 @@ class MySublimeVideo.Helpers.Uploader
 
     @uploader.bind 'FilesAdded', (up, files) ->
       $.each files, (i, file) ->
-        $('#uploader_error').text ''
-        $('#filelist').append "<div class='file'>#{file.name}</div>"
+        $('#uploader_error').text('')
+        $('#filelist').append("<div class='file'>#{file.name}</div>")
         $('#uploadfiles').show()
       up.refresh() # Reposition Flash/Silverlight
 

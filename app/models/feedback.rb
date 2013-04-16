@@ -11,24 +11,25 @@ class Feedback < ActiveRecord::Base
   # ==========
 
   # sort
-  scope :by_user,   lambda { |way='desc'| order{ user_id.send(way) } }
-  scope :by_kind,   lambda { |way='desc'| order{ kind.send(way) } }
-  scope :by_reason, lambda { |way='desc'| order{ reason.send(way) } }
-  scope :by_date,   lambda { |way='desc'| order{ created_at.send(way) } }
+  scope :by_user,   ->(way = 'desc') { order { user_id.send(way) } }
+  scope :by_kind,   ->(way = 'desc') { order { kind.send(way) } }
+  scope :by_reason, ->(way = 'desc') { order { reason.send(way) } }
+  scope :by_date,   ->(way = 'desc') { order { created_at.send(way) } }
 
   validates :reason, inclusion: REASONS
 
-  def self.new_trial_feedback(*args)
-    new_feedback(:trial, *args)
+  def self.new_trial_feedback(user, *args)
+    new_feedback(:trial, user, *args)
   end
 
-  def self.new_account_cancellation_feedback(*args)
-    new_feedback(:account_cancellation, *args)
+  def self.new_account_cancellation_feedback(user, *args)
+    new_feedback(:account_cancellation, user, *args)
   end
 
-  def self.new_feedback(kind, *args)
+  def self.new_feedback(kind, user, *args)
     feedback = new(*args)
     feedback.kind = kind
+    feedback.user_id = user.id
 
     feedback
   end

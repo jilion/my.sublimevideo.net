@@ -15,7 +15,7 @@ MySublimeVideo::Application.configure do
   config.action_controller.perform_caching = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = "http://my.sublimevideo.dev"
+  config.action_controller.asset_host = 'http://my.sublimevideo.dev'
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
@@ -33,6 +33,8 @@ MySublimeVideo::Application.configure do
 
   # Use a different cache store in production
   config.cache_store = :dalli_store
+
+  CacheDigests::TemplateDigestor.cache = ActiveSupport::Cache::NullStore.new
 
   # Expands the lines which load the assets
   config.assets.debug = true
@@ -57,8 +59,6 @@ MySublimeVideo::Application.configure do
     #                 :receiver => 'your_account@jabber.org',
     #                 :show_online_status => true }
     Bullet.rails_logger = true
-    # Bullet.airbrake = true
-    Bullet.disable_browser_cache = true
   end
 
 end

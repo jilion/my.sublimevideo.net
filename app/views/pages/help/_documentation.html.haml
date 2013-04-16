@@ -1,6 +1,9 @@
 %h3#documentation.title= "Documentation"
 .help_box
-  %p= raw "We recommend that you start by reading our documentation to understand how to implement and make full use of SublimeVideo Player. To start, check out our #{link_to "Quickstart Guide", docs_url('beta/quickstart-guide'), class: "hl"} and #{link_to "FAQ", docs_url('beta/player-faq'), class: "hl"} page, then use our #{link_to "Video Publishing Assistant", new_video_code_url, class: "hl"} to easily create properly configured &lt;video&gt; elements for your site that are automatically optimized for SublimeVideo. If you encounter any problems please take a look at our #{link_to "Troubleshooting", docs_url('beta/troubleshooting'), class: "hl"} page."
+  %p
+    We recommend that you start by reading our documentation to understand how to implement and make full use of SublimeVideo Player.
+    = raw "To start, check out our #{link_to "Quickstart Guide", docs_url('quickstart-guide'), class: "hl"} and #{link_to "FAQ", docs_url('player-faq'), class: "hl"} page, then use our #{link_to "Video Publishing Assistant", new_video_code_url, class: "hl"} to easily create properly configured &lt;video&gt; elements for your site that are automatically optimized for SublimeVideo."
+    = raw "If you encounter any problems please take a look at our #{link_to "Troubleshooting", docs_url('troubleshooting'), class: "hl"} page."
 
   %p.search_box
     %form{ action: docs_url('search'), method: 'get', class: 'getsatisfaction' }
