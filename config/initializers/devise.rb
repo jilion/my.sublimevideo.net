@@ -4,7 +4,7 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the email address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = 'SublimeVideo <info@sublimevideo.net>'
+  # config.mailer_sender = 'info@sublimevideo.net'
 
   # Configure the class responsible to send emails.
   config.mailer = 'DeviseMailer'
