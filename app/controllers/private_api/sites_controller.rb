@@ -6,6 +6,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   has_scope :per, :with_state, :created_on, :created_after, :not_tagged_with, :by_date,
             :with_min_billable_video_views, :first_billable_plays_on_week
   has_scope :select, :without_hostnames, type: :array
+  has_scope :not_archived, type: :boolean
 
   # GET /private_api/sites
   def index
@@ -38,7 +39,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   private
 
   def find_site_by_token!
-    @site = apply_scopes(Site.find_by_token(params[:id]))
+    @site = apply_scopes(Site.find_by_token!(params[:id]))
   end
 
   def list_of_params_as_string(list)

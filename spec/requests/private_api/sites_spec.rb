@@ -22,6 +22,14 @@ describe 'Private API Sites requests' do
       body[0]['token'].should eq site3.token
     end
 
+    it 'supports :not_archived scope' do
+      get 'private_api/sites.json', { not_archived: true }, @env
+      body = MultiJson.load(response.body)
+      body.should have(2).sites
+      body[0]['token'].should eq site1.token
+      body[1]['token'].should eq site2.token
+    end
+
     it 'supports :created_on scope' do
       get 'private_api/sites.json', { created_on: 2.days.ago }, @env
       body = MultiJson.load(response.body)
@@ -61,15 +69,19 @@ describe 'Private API Sites requests' do
   end
 
   describe 'show' do
-    it 'finds site per token' do
-      get "private_api/sites/#{site1.token}.json", {}, @env
-      MultiJson.load(response.body).should_not have_key("site")
+    context 'existing token' do
+      it 'finds site per token' do
+        get "private_api/sites/#{site1.token}.json", {}, @env
+        MultiJson.load(response.body).should_not have_key("site")
+        response.status.should eq 200
+      end
     end
   end
 
   describe 'add_tag' do
     it 'adds tag to site' do
       put "private_api/sites/#{site2.token}/add_tag.json", { tag: 'adult' }, @env
+
       site2.tag_list.should include('adult')
       response.status.should eq 204
     end
@@ -77,14 +89,16 @@ describe 'Private API Sites requests' do
     describe 'requires the :tag param' do
       it 'returns a 400 if :tag is missing' do
         put "private_api/sites/#{site1.token}/add_tag.json", {}, @env
-        response.status.should eq 400
+
         MultiJson.load(response.body).should eq({ 'error' => 'Missing :tag parameters.' })
+        response.status.should eq 400
       end
 
       it 'returns a 400 if :tag is nil' do
         put "private_api/sites/#{site1.token}/add_tag.json", { tag: nil }, @env
-        response.status.should eq 400
+
         MultiJson.load(response.body).should eq({ 'error' => 'Missing :tag parameters.' })
+        response.status.should eq 400
       end
     end
   end
