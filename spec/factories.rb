@@ -273,6 +273,7 @@ FactoryGirl.define do
     client_application
     user
     callback_url "http://test.com/callback"
+    authorized_at { Time.now.utc }
   end
 
   factory :oauth2_verifier do
