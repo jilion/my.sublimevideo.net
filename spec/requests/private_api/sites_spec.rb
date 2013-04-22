@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Private API Sites requests' do
   let!(:site1) { create(:site, hostname: 'google.com').tap { |s| s.tag_list << 'adult'; s.save! } }
-  let!(:site2) { create(:site, hostname: 'facebook.com', first_billable_plays_at: Time.now.utc) }
+  let!(:site2) { create(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc) }
   let!(:site3) { create(:site, created_at: 2.days.ago, state: 'archived') }
   before do
     set_api_credentials
@@ -15,34 +15,18 @@ describe 'Private API Sites requests' do
       MultiJson.load(response.body).should have(2).sites
     end
 
-    it 'supports :with_state scope' do
-      get 'private_api/sites.json', { with_state: 'archived' }, @env
-      body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site3.token
-    end
-
-    it 'supports :not_archived scope' do
-      get 'private_api/sites.json', { not_archived: true }, @env
-      body = MultiJson.load(response.body)
-      body.should have(2).sites
-      body[0]['token'].should eq site1.token
-      body[1]['token'].should eq site2.token
-    end
-
     it 'supports :created_on scope' do
       get 'private_api/sites.json', { created_on: 2.days.ago }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
-      body[0]['token'].should eq site3.token
+      body[0]['token'].should eq site2.token
     end
 
     it 'supports :not_tagged_with scope' do
       get 'private_api/sites.json', { not_tagged_with: 'adult' }, @env
       body = MultiJson.load(response.body)
-      body.should have(2).sites
+      body.should have(1).site
       body[0]['token'].should eq site2.token
-      body[1]['token'].should eq site3.token
     end
 
     it 'supports :select scope' do
@@ -57,7 +41,7 @@ describe 'Private API Sites requests' do
       get 'private_api/sites.json', { without_hostnames: %w[google.com facebook.com] }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
-      body[0]['token'].should eq site3.token
+      body[0]['token'].should eq site2.token
     end
 
     it 'supports :first_billable_plays_on_week scope' do
@@ -66,13 +50,26 @@ describe 'Private API Sites requests' do
       body.should have(1).site
       body[0]['token'].should eq site2.token
     end
+
+    it 'supports :user_id scope' do
+      get "private_api/users/#{site1.user_id}/sites.json", {}, @env
+      body = MultiJson.load(response.body)
+      body.should have(1).site
+      body[0]['token'].should eq site1.token
+    end
   end
 
   describe 'show' do
-    context 'existing token' do
+    context 'non existing site' do
+      it 'raise an ActiveRecord::RecordNotFound' do
+        expect { get 'private_api/sites/42.json', {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'existing site' do
       it 'finds site per token' do
         get "private_api/sites/#{site1.token}.json", {}, @env
-        MultiJson.load(response.body).should_not have_key("site")
+        MultiJson.load(response.body)['token'].should eq site1.token
         response.status.should eq 200
       end
     end

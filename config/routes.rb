@@ -147,6 +147,9 @@ MySublimeVideo::Application.routes.draw do
 
   constraints SubdomainConstraint.new('my') do
     namespace :private_api do
+      resources :users, only: [:show] do
+        resources :sites, only: [:index]
+      end
       resources :sites, only: [:index, :show] do
         member do
           put :add_tag
