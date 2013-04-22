@@ -1,35 +1,31 @@
 = title_and_content_header("Details for '#{@application.name}'")
 
--# FIXME: Replace with calls to api.sublimevideo.net
--#%p
--#  %strong Main Application URL:
--#  %code= @application.url
--#%p
--#  %strong Callback URL:
--#  %code= @application.callback_url
--#
--#%p
--#  %strong Consumer Key:
--#  %code= @application.key
--#%p
--#  %strong Consumer Secret:
--#  %code= @application.secret
--#
--#
--#%p
--#  %strong Authorize URL:
--#  %code
--#    = oauth_authorize_url
--#    -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.authorize_path}"
--#%p
--#  %strong Access Token URL:
--#  %code
--#    = oauth_token_url
--#    -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.token_path}"
--#
--#-# %p
--#-#   We support hmac-sha1 (recommended) as well as plain text in ssl mode.
--#
--#= link_to 'Edit', edit_client_application_path(@application)
--#= " | "
--#= link_to 'Back', [:client_applications]
+%p
+  %strong Main Application URL:
+  %code= @application.url
+%p
+  %strong Callback URL:
+  %code= @application.callback_url
+
+%p
+  %strong Consumer Key:
+  %code= @application.key
+%p
+  %strong Consumer Secret:
+  %code= @application.secret
+
+
+%p
+  %strong Authorize URL:
+  %code
+    = oauth_authorize_url
+    -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.authorize_path}"
+%p
+  %strong Access Token URL:
+  %code
+    = oauth_token_url
+    -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.token_path}"
+
+= link_to 'Edit', edit_client_application_path(@application)
+= " | "
+= link_to 'Back', [:client_applications]
