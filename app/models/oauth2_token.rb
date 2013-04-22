@@ -13,15 +13,15 @@ class Oauth2Token < OauthToken
   # end
 
   def as_json(options = {})
-    d = { access_token: token, token_type: 'bearer' }
-    d[:expires_in] = expires_in if valid_to
+    d = { user_id: user_id, access_token: token, token_type: 'bearer' }
+    d[:expires_in] = expires_in if expires_at
     d
   end
 
   def to_query
     q = "access_token=#{token}&token_type=bearer"
     q << "&state=#{URI.escape(state)}" if @state
-    q << "&expires_in=#{expires_in}" if valid_to
+    q << "&expires_in=#{expires_in}" if expires_at
     q << "&scope=#{URI.escape(scope)}" if scope
     q
   end
@@ -42,6 +42,7 @@ end
 #  callback_url          :string(255)
 #  client_application_id :integer
 #  created_at            :datetime         not null
+#  expires_at            :datetime
 #  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
 #  scope                 :string(255)
@@ -50,7 +51,6 @@ end
 #  type                  :string(20)
 #  updated_at            :datetime         not null
 #  user_id               :integer
-#  valid_to              :datetime
 #  verifier              :string(20)
 #
 # Indexes

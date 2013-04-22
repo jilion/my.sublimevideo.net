@@ -877,7 +877,7 @@ CREATE TABLE oauth_tokens (
     scope character varying(255),
     authorized_at timestamp without time zone,
     invalidated_at timestamp without time zone,
-    valid_to timestamp without time zone,
+    expires_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -2365,3 +2365,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130225091913');
 INSERT INTO schema_migrations (version) VALUES ('20130314135911');
 
 INSERT INTO schema_migrations (version) VALUES ('20130321125702');
+
+INSERT INTO schema_migrations (version) VALUES ('20130422092535');
