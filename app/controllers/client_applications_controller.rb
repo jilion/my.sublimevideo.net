@@ -1,6 +1,6 @@
 class ClientApplicationsController < ApplicationController
-  before_filter :team_accessible_only
-  before_filter :get_client_application, only: [:show, :edit, :update, :destroy]
+  before_filter :_team_accessible_only
+  before_filter :_find_client_application, only: [:show, :edit, :update, :destroy]
 
   # GET /account/applications
   def index
@@ -46,11 +46,11 @@ class ClientApplicationsController < ApplicationController
 
   private
 
-  def team_accessible_only
+  def _team_accessible_only
     redirect_to [:edit, :user] unless current_user.email =~ /@jilion.com$/
   end
 
-  def get_client_application
+  def _find_client_application
     unless @application = current_user.client_applications.find(params[:id])
       flash.now[:error] = 'Wrong application id'
       raise ActiveRecord::RecordNotFound
