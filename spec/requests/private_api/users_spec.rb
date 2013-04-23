@@ -25,8 +25,7 @@ describe 'Private API Users requests' do
 
     context 'archived user' do
       it 'finds user per id' do
-        get "private_api/users/#{user2.id}.json", {}, @env
-        response.status.should eq 404
+        expect { get "private_api/users/#{user2.id}.json", {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
