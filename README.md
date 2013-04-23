@@ -37,7 +37,7 @@
 This app is using the following private Gemfury gems:
 
 * [SublimeVideo layout gem](https://github.com/jilion/sublime_video_layout).
-* [SublimeVideo private API gem](https://github.com/jilion/sublime_private_api).
+* [SublimeVideo private API gem](https://github.com/jilion/sublime_video_private_api).
 
 ## Generate the JS docs
 
