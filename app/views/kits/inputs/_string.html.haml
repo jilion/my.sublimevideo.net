@@ -6,5 +6,5 @@
 .entry{ class: params[:entry_class] }
   - if params[:icon]
     = label_tag kit_setting_input_field_id(params), kit_setting_title(params), class: 'icon'
-  = text_field_tag kit_setting_input_field_name(params), params[:setting], id: kit_setting_input_field_id(params), class: field_classes.join(' '), data: kit_setting_data(params)
+  = text_field_tag kit_setting_input_field_name(params), params[:setting], id: kit_setting_input_field_id(params), class: field_classes.join(' '), data: kit_setting_data(params), placeholder: params[:placeholder]
 .spacer

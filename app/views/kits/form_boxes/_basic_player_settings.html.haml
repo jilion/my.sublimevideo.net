@@ -1,6 +1,6 @@
 #basic_player_settings.expandable_settings_box
   - kit_settings_expanding_handler('basic_player') do
-    = link_to "#{t('addons.video_player')} settings", ''
+    = link_to t('kit.video_player.title'), ''
   - kit_settings_expendable_block('basic_player') do
     = render 'kits/form_boxes/basic_player/initial_settings', site: site, kit: kit, design: design
     = render 'kits/form_boxes/basic_player/controls_settings', site: site, kit: kit, design: design
