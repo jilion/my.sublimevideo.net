@@ -7,3 +7,6 @@
 = render 'kits/form_boxes/social_sharing_settings', site: site, kit: kit, design: design
 
 = render 'kits/form_boxes/embed_settings', site: site, kit: kit, design: design
+
+- if early_access?('google_analytics_addon')
+  = render 'kits/form_boxes/google_analytics_settings', site: site, kit: kit, design: design

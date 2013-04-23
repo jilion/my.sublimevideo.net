@@ -1,7 +1,7 @@
 - if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
   #lightbox_settings.expandable_settings_box
     - kit_settings_expanding_handler('lightbox') do
-      = link_to "#{t('addons.lightbox')} settings", ''
+      = link_to t('kit.lightbox.title'), ''
     - kit_settings_expendable_block('lightbox') do
       = presenter.render_input_field(setting_key: 'on_open', show_title: true)
       = presenter.render_input_field(setting_key: 'overlay_opacity')

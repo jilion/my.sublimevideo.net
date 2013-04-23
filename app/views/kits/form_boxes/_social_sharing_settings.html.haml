@@ -1,7 +1,7 @@
 - if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
   #sharing_settings.expandable_settings_box
     - kit_settings_expanding_handler('sharing') do
-      = link_to "#{t('addons.social_sharing')} settings", ''
+      = link_to t('kit.social_sharing.title'), ''
     - kit_settings_expendable_block('sharing') do
       = presenter.render_master_input_field(setting_key: 'enable') do
         = presenter.render_input_field(setting_key: 'icon', partial: 'sharing/icons_radios')
@@ -10,6 +10,7 @@
         = presenter.render_input_field(setting_key: 'buttons', partial: 'sharing/buttons_dragndrop')
         = presenter.render_input_field(setting_key: 'image', show_title: true)
         %p.info
-          = raw "You can provide a link to a specific image in the #{link_to "Publish video", new_site_video_code_path(site), class: "hl"} page. Read our #{link_to "documentation", docs_url('addons/sharing'), onclick: "window.open(this); return false", class: "hl" } for more info."
+          = raw "You can provide a link to a specific image in the #{link_to 'Publish video', new_site_video_code_path(site), class: 'hl'} page."
+          = raw "Read our #{link_to 'documentation', docs_url('addons/sharing'), onclick: 'window.open(this); return false', class: 'hl' } for more info."
         = presenter.render_input_field(setting_key: 'twitter_via', entry_class: 'email', icon: true)
         = presenter.render_input_field(setting_key: 'link_enable', title: 'Link field')
