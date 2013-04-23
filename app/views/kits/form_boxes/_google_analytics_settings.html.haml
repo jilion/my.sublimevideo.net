@@ -3,10 +3,10 @@
     - kit_settings_expanding_handler('google_analytics') do
       = link_to t('kit.google_analytics.title'), ''
     - kit_settings_expendable_block('google_analytics') do
-      %p.info
-        Please note that you are responsible for embedding the Google Analytics tracking code in your pages.
-        = raw "Read our #{link_to 'documentation', docs_url('addons/google_analytics'), onclick: 'window.open(this); return false', class: 'hl' } for more info."
       = presenter.render_master_input_field(setting_key: 'enable') do
+        %p.info
+          Please note that you are responsible for embedding the Google Analytics tracking code in your pages.
+          = raw "Read our #{link_to 'documentation', docs_url('addons/google_analytics'), onclick: 'window.open(this); return false', class: 'hl' } for more info."
         = presenter.render_input_field(setting_key: 'account', placeholder: 'UA-XXXXX-X')
         %p.info
           By default, your Google Analytics account ID will be automatically retrieved from your pages but you can override it with this setting.
