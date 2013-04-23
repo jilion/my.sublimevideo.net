@@ -1,7 +1,7 @@
 - if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
   #logo_settings.expandable_settings_box
     - kit_settings_expanding_handler('logo') do
-      = link_to "#{t('addons.logo')} settings", ''
+      = link_to t('kit.logo.title'), ''
     - kit_settings_expendable_block('logo') do
       - unless presenter.addon_plan.name == 'custom'
         = hidden_field_tag "kit[settings][logo][type]", presenter.settings_template[:type][:default], class: 'previewable', data: { addon: 'logo', setting: 'type' }

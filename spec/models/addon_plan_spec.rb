@@ -89,4 +89,3 @@ end
 #  index_addon_plans_on_addon_id           (addon_id)
 #  index_addon_plans_on_addon_id_and_name  (addon_id,name) UNIQUE
 #
-

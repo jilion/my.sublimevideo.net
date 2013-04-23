@@ -16,6 +16,7 @@ MySublimeVideo::Application.configure do
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   config.action_controller.asset_host = 'http://my.sublimevideo.dev'
+  # config.action_controller.asset_host = 'http://my.sublimevideo.192.168.0.19.xip.io'
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false

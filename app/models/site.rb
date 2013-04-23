@@ -7,8 +7,8 @@ class Site < ActiveRecord::Base
   include SiteModules::Usage
   include Searchable
 
-  DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
-  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost' unless defined?(DEFAULT_DEV_DOMAINS)
+  DEFAULT_DOMAIN = 'please-edit.me'
+  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
 
   # Versioning
   has_paper_trail ignore: [

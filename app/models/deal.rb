@@ -59,4 +59,3 @@ end
 #
 #  index_deals_on_token  (token) UNIQUE
 #
-

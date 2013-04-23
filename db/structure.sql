@@ -1264,13 +1264,6 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY active_admin_comments ALTER COLUMN id SET DEFAULT nextval('active_admin_comments_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY addon_plans ALTER COLUMN id SET DEFAULT nextval('addon_plans_id_seq'::regclass);
 
 
@@ -1708,20 +1701,6 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY versions
     ADD CONSTRAINT versions_pkey PRIMARY KEY (id);
-
-
---
--- Name: index_active_admin_comments_on_author_type_and_author_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_active_admin_comments_on_author_type_and_author_id ON active_admin_comments USING btree (author_type, author_id);
-
-
---
--- Name: index_active_admin_comments_on_namespace; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_active_admin_comments_on_namespace ON active_admin_comments USING btree (namespace);
 
 
 --
@@ -2354,10 +2333,6 @@ INSERT INTO schema_migrations (version) VALUES ('20130206133628');
 
 INSERT INTO schema_migrations (version) VALUES ('20130206143947');
 
-INSERT INTO schema_migrations (version) VALUES ('20130206205343');
-
-INSERT INTO schema_migrations (version) VALUES ('20130206205344');
-
 INSERT INTO schema_migrations (version) VALUES ('20130219102331');
 
 INSERT INTO schema_migrations (version) VALUES ('20130225091913');
@@ -2365,5 +2340,3 @@ INSERT INTO schema_migrations (version) VALUES ('20130225091913');
 INSERT INTO schema_migrations (version) VALUES ('20130314135911');
 
 INSERT INTO schema_migrations (version) VALUES ('20130321125702');
-
-INSERT INTO schema_migrations (version) VALUES ('20130422092535');

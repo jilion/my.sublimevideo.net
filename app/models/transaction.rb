@@ -284,4 +284,3 @@ end
 #
 #  index_transactions_on_order_id  (order_id) UNIQUE
 #
-
