@@ -1,0 +1,10 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+account:
+  type: string
+  values: ~

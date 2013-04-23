@@ -1,7 +1,7 @@
 - if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
   #sharing_settings.expandable_settings_box
     - kit_settings_expanding_handler('sharing') do
-      = link_to "#{t('addons.social_sharing')} settings", ''
+      = link_to t('kit.social_sharing.title'), ''
     - kit_settings_expendable_block('sharing') do
       = presenter.render_master_input_field(setting_key: 'enable') do
         = presenter.render_input_field(setting_key: 'icon', partial: 'sharing/icons_radios')

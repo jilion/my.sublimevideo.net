@@ -1,0 +1,9 @@
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
+  #google_analytics_settings.expandable_settings_box
+    - kit_settings_expanding_handler('google_analytics') do
+      = link_to t('kit.google_analytics.title'), ''
+    - kit_settings_expendable_block('google_analytics') do
+      = presenter.render_master_input_field(setting_key: 'enable') do
+        = presenter.render_input_field(setting_key: 'account', placeholder: 'UA-XXXXX-X')
+        %p.info
+          By default, your Google Analytics account ID will be automatically retrieved from your pages but you can override it with this setting.
