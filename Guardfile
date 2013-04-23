@@ -3,7 +3,6 @@ notification :gntp
 group :frontend do
 
   guard :pow do
-    watch('.rvmrc')
     watch(%r{^\.pow(rc|env)$})
     watch('config/boot.rb')
     watch('config/application.rb')
