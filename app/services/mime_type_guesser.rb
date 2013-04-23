@@ -9,7 +9,6 @@ class MimeTypeGuesser
     default_response = { 'content-type' => 'invalid' }
     uri  = URI.parse(URI.escape(uri_str))
     opts = { use_ssl: uri.scheme == 'https', read_timeout: 3 }
-    default_response = { 'content-type' => 'invalid' }
 
     response = Net::HTTP.start(uri.host, uri.port, opts) do |http|
       http.head(uri.path)
