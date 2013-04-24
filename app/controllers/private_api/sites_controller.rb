@@ -44,7 +44,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   end
 
   def _find_site_by_token!
-    @site = apply_scopes(_base_scopes.find_by_token!(params[:id]))
+    @site = apply_scopes(_base_scopes).find_by_token!(params[:id])
   end
 
   def _base_scopes

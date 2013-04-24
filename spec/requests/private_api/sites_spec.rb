@@ -21,6 +21,7 @@ describe 'Private API Sites requests' do
       body.should have(2).sites
       body[0]['token'].should eq site1.token
       body[1]['token'].should eq site2.token
+      response.status.should eq 200
     end
 
     it 'supports :created_on scope' do
@@ -28,6 +29,7 @@ describe 'Private API Sites requests' do
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
+      response.status.should eq 200
     end
 
     it 'supports :not_tagged_with scope' do
@@ -35,6 +37,7 @@ describe 'Private API Sites requests' do
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
+      response.status.should eq 200
     end
 
     it 'supports :select scope' do
@@ -43,6 +46,7 @@ describe 'Private API Sites requests' do
       video_tag.should have_key('token')
       video_tag.should have_key('hostname')
       video_tag.should_not have_key('dev_hostnames')
+      response.status.should eq 200
     end
 
     it 'supports :without_hostnames scope' do
@@ -50,6 +54,7 @@ describe 'Private API Sites requests' do
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
+      response.status.should eq 200
     end
 
     it 'supports :first_billable_plays_on_week scope' do
@@ -57,13 +62,15 @@ describe 'Private API Sites requests' do
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
+      response.status.should eq 200
     end
 
     it 'supports :user_id scope' do
-      get "private_api/users/#{site1.user_id}/sites.json", {}, @env
+      get "private_api/sites.json", { user_id: site1.user_id }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site1.token
+      response.status.should eq 200
     end
   end
 
@@ -71,8 +78,24 @@ describe 'Private API Sites requests' do
     context 'existing token' do
       it 'finds site per token' do
         get "private_api/sites/#{site1.token}.json", {}, @env
-        MultiJson.load(response.body).should_not have_key("site")
+        body = MultiJson.load(response.body)
+        body['token'].should eq site1.token
         response.status.should eq 200
+      end
+    end
+
+    context 'site belongs to given user' do
+      it 'supports :user_id scope' do
+        get "private_api/sites/#{site1.token}.json", { user_id: site1.user_id }, @env
+        body = MultiJson.load(response.body)
+        body['token'].should eq site1.token
+        response.status.should eq 200
+      end
+    end
+
+    context 'site do not belong to given user' do
+      it 'supports :user_id scope' do
+        expect { get "private_api/sites/#{site1.token}.json", { user_id: site2.user_id }, @env }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
