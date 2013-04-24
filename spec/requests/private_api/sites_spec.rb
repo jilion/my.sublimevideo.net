@@ -15,15 +15,6 @@ describe 'Private API Sites requests' do
       MultiJson.load(response.body).should have(2).sites
     end
 
-<<<<<<< HEAD
-=======
-    it 'supports :with_state scope' do
-      get 'private_api/sites.json', { with_state: 'archived' }, @env
-      body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site3.token
-    end
-
     it 'supports :not_archived scope' do
       get 'private_api/sites.json', { not_archived: true }, @env
       body = MultiJson.load(response.body)
@@ -32,7 +23,6 @@ describe 'Private API Sites requests' do
       body[1]['token'].should eq site2.token
     end
 
->>>>>>> c373302... Add the :not_archived scope to the private API
     it 'supports :created_on scope' do
       get 'private_api/sites.json', { created_on: 2.days.ago }, @env
       body = MultiJson.load(response.body)
