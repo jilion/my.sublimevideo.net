@@ -15,6 +15,14 @@ describe 'Private API Sites requests' do
       MultiJson.load(response.body).should have(2).sites
     end
 
+    it 'supports :not_archived scope' do
+      get 'private_api/sites.json', { not_archived: true }, @env
+      body = MultiJson.load(response.body)
+      body.should have(2).sites
+      body[0]['token'].should eq site1.token
+      body[1]['token'].should eq site2.token
+    end
+
     it 'supports :created_on scope' do
       get 'private_api/sites.json', { created_on: 2.days.ago }, @env
       body = MultiJson.load(response.body)
