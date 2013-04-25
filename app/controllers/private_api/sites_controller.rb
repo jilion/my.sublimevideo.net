@@ -11,12 +11,16 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites
   def index
+    expires_in 2.minutes
     respond_with(@sites)
   end
 
   # GET /private_api/sites/:id
   def show
-    respond_with(@site)
+    expires_in 2.minutes
+    if stale?(@site)
+      respond_with(@site)
+    end
   end
 
   # PUT /private_api/sites/:id/add_tag

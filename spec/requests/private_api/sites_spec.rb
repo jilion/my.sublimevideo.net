@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'Private API Sites requests' do
-  let!(:site1) { create(:site, hostname: 'google.com').tap { |s| s.tag_list << 'adult'; s.save! } }
-  let!(:site2) { create(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc) }
+  let!(:site1) { create(:site, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)).tap { |s| s.tag_list << 'adult'; s.save! } }
+  let!(:site2) { create(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)) }
   let!(:site3) { create(:site, created_at: 2.days.ago, state: 'archived') }
   before do
     set_api_credentials
@@ -10,6 +10,13 @@ describe 'Private API Sites requests' do
   end
 
   describe 'index' do
+    describe 'caching strategy' do
+      it_behaves_like 'valid caching headers', cache_validation: false do
+        let(:url) { "private_api/sites.json" }
+        let(:update_record) { -> { site1.update_attribute(:hostname, 'example.com') } }
+      end
+    end
+
     it 'supports :per scope' do
       get 'private_api/sites.json', { per: 2 }, @env
       MultiJson.load(response.body).should have(2).sites
@@ -75,6 +82,14 @@ describe 'Private API Sites requests' do
   end
 
   describe 'show' do
+    describe 'caching strategy' do
+      it_behaves_like 'valid caching headers' do
+        let(:url) { "private_api/sites/#{site1.token}.json" }
+        let(:expected_last_modified) { site1.updated_at }
+        let(:update_record) { -> { site1.update_attribute(:hostname, 'example.com') } }
+      end
+    end
+
     context 'existing token' do
       it 'finds site per token' do
         get "private_api/sites/#{site1.token}.json", {}, @env
