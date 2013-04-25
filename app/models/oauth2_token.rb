@@ -26,6 +26,10 @@ class Oauth2Token < OauthToken
     q
   end
 
+  def expires_in
+    expires_at.to_i - Time.now.to_i
+  end
+
   protected
 
   def set_authorized_at

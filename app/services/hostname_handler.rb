@@ -1,4 +1,6 @@
 require 'ipaddr'
+require 'cgi'
+require 'public_suffix'
 
 class HostnameHandler
 
@@ -50,7 +52,7 @@ class HostnameHandler
     hostnames = args.shift
     record = args.shift
 
-    clean(hostnames).split(/,\s*/).any? { |h| h == record.try(:hostname) } if hostnames.present?
+    clean(hostnames).split(/,\s*/).any? { |h| h == record.hostname } if hostnames.present?
   end
 
   def self.detect_error(*args)
@@ -86,6 +88,7 @@ class HostnameHandler
   def self.clean_one(hostname)
     hostname.downcase!
     hostname.gsub!(%r(^.+://), '')
+    hostname = CGI::escapeHTML(hostname)
     begin
       pss = PublicSuffix.parse(hostname)
       if pss.trd == 'www'

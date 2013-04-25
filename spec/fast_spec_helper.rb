@@ -1,10 +1,10 @@
-$LOAD_PATH.unshift("#{Dir.pwd}/app") unless $LOAD_PATH.include?("#{Dir.pwd}/app")
+$LOAD_PATH.unshift("#{Dir.pwd}/app")
 Dir['app/**/'].each do |dir|
   path = "#{Dir.pwd}/#{dir}"
-  $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
+  $LOAD_PATH.unshift(path) unless path =~ %r{^app/(assets|views)}
 end
 
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
 
 unless defined?(Rails)
   module Rails
