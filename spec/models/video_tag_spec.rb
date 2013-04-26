@@ -35,7 +35,7 @@ describe VideoTag do
     let(:video_tag) { VideoTag.new(title: 'Video Title', created_at: 1.day.ago) }
 
     it "slices only needed data" do
-      video_tag.backbone_data.should eq(title: "Video Title")
+      video_tag.backbone_data.should eq('title' => 'Video Title')
     end
   end
 

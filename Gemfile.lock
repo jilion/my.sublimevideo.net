@@ -55,9 +55,9 @@ GIT
 
 GIT
   remote: git://github.com/remiprev/her.git
-  revision: 585e91cefc3318cc54c293fe5a3ca3556007fbaf
+  revision: 9d808e1ffec0d399400b438cb2aa27c9f4264b36
   specs:
-    her (0.6.3)
+    her (0.6.4)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       faraday (~> 0.8)
@@ -541,7 +541,7 @@ GEM
       haml
       jquery-rails
       rails (>= 3.2.12)
-    sublime_video_private_api (1.3.2)
+    sublime_video_private_api (1.3.3)
       activesupport (>= 3.2)
       her (~> 0.6.1)
       kaminari

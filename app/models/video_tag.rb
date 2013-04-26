@@ -1,4 +1,4 @@
-require 'sublime_video_private_api/model'
+require 'sublime_video_private_api'
 require 'active_record/errors'
 require 'rescue_me'
 
