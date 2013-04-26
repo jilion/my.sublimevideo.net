@@ -37,7 +37,7 @@ describe Stat::Video do
 
       it "adds video_tag meta data" do
         video = Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:videos].first
-        video[:title].should eq "Video 5"
+        video["title"].should eq "Video 5"
       end
 
       it "replaces vv_hash by vv_array" do
@@ -69,9 +69,9 @@ describe Stat::Video do
       specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:from].should eq from.to_i }
 
       it "replaces vv_hash by vv_array and vl_hash by vl_hash" do
-        videos = Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video[:title] }.reverse
+        videos = Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video["title"] }.reverse
         video  = videos.first
-        video[:uid].should eql "video5"
+        video["uid"].should eq "video5"
         video["vv_sum"].should eq(2220)
         video["vv_array"].should be_nil
         video["vv_hash"].should have(30).items
