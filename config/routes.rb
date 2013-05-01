@@ -31,33 +31,6 @@ MySublimeVideo::Application.routes.draw do
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
-  namespace :api do
-    # Legacy routes
-    constraints SubdomainConstraint.new('my') do
-
-      get 'test_request' => 'apis#test_request'
-      resources :sites, only: [:index, :show] do
-        member do
-          get :usage
-        end
-      end
-
-    end
-  end
-
-  scope module: 'api', as: 'api' do
-    constraints SubdomainConstraint.new('api') do
-
-      get 'test_request' => 'apis#test_request'
-      resources :sites, only: [:index, :show] do
-        member do
-          get :usage
-        end
-      end
-
-    end
-  end # api.
-
   constraints SubdomainConstraint.new('admin') do
     # We put this block out of the following scope to avoid double admin_admin in url helpers...
     devise_for :admins, module: 'admin/admins', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
@@ -81,7 +54,6 @@ MySublimeVideo::Application.routes.draw do
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do
-          get :stats
           get :videos_infos
           get :invoices
           get :active_pages
@@ -161,7 +133,7 @@ MySublimeVideo::Application.routes.draw do
             get :preview
           end
         end
-        resources :mail_logs,      only: [:show],                         path: 'logs'
+        resources :mail_logs, only: [:show], path: 'logs'
       end
 
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'

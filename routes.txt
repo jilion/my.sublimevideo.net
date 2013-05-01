@@ -1,13 +1,5 @@
                                    teabag          /teabag                                                   Teabag::Engine
                                                    /docs(/*rest)(.:format)                                   :controller#:action
-                         api_test_request GET      /api/test_request(.:format)                               api/apis#test_request
-                           usage_api_site GET      /api/sites/:id/usage(.:format)                            api/sites#usage
-                                api_sites GET      /api/sites(.:format)                                      api/sites#index
-                                 api_site GET      /api/sites/:id(.:format)                                  api/sites#show
-                                          GET      /test_request(.:format)                                   api/apis#test_request
-                                          GET      /sites/:id/usage(.:format)                                api/sites#usage
-                                          GET      /sites(.:format)                                          api/sites#index
-                                          GET      /sites/:id(.:format)                                      api/sites#show
                         new_admin_session GET      /login(.:format)                                          admin/admins/sessions#new
                             admin_session POST     /login(.:format)                                          admin/admins/sessions#create
                     destroy_admin_session GET      /logout(.:format)                                         admin/admins/sessions#destroy
@@ -32,7 +24,6 @@
                                admin_exit GET      /exit(.:format)                                           :controller#exit
                                admin_root          /                                                         :controller#:action
                               admin_admin          /                                                         :controller#:action
-                         stats_admin_site GET      /sites/:id/stats(.:format)                                admin/sites#stats
                   videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
                       invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages

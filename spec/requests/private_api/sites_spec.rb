@@ -90,11 +90,16 @@ describe 'Private API Sites requests' do
       end
     end
 
-    context 'existing token' do
+    context 'non existing site' do
+      it 'raise an ActiveRecord::RecordNotFound' do
+        expect { get 'private_api/sites/42.json', {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'existing site' do
       it 'finds site per token' do
         get "private_api/sites/#{site1.token}.json", {}, @env
-        body = MultiJson.load(response.body)
-        body['token'].should eq site1.token
+        MultiJson.load(response.body)['token'].should eq site1.token
         response.status.should eq 200
       end
     end

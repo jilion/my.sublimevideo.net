@@ -26,9 +26,6 @@
     = oauth_token_url
     -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.token_path}"
 
--# %p
--#   We support hmac-sha1 (recommended) as well as plain text in ssl mode.
-
 = link_to 'Edit', edit_client_application_path(@application)
 = " | "
 = link_to 'Back', [:client_applications]

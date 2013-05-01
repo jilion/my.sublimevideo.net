@@ -48,3 +48,4 @@ end
 #
 #  index_deal_activations_on_deal_id_and_user_id  (deal_id,user_id) UNIQUE
 #
+

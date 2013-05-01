@@ -28,28 +28,6 @@ class Site < ActiveRecord::Base
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
 
-  # =======
-  # = API =
-  # =======
-
-  acts_as_api
-
-  api_accessible :v1_self_private do |template|
-    template.add :token
-    template.add :hostname, as: :main_domain
-    template.add ->(site) { site.extra_hostnames.try(:split, ', ') || [] }, as: :extra_domains
-    template.add ->(site) { site.dev_hostnames.try(:split, ', ') || [] }, as: :dev_domains
-    template.add ->(site) { site.staging_hostnames.try(:split, ', ') || [] }, as: :staging_domains
-    template.add ->(site) { site.wildcard? }, as: :wildcard
-    template.add ->(site) { site.path || '' }, as: :path
-    template.add :accessible_stage
-  end
-
-  api_accessible :v1_usage_private do |template|
-    template.add :token
-    template.add ->(site) { site.usages.between(day: 60.days.ago.midnight..Time.now.utc.end_of_day) }, as: :usage, template: :v1_self_private
-  end
-
   # ================
   # = Associations =
   # ================
