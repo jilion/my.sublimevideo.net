@@ -20,9 +20,6 @@ module MySublimeVideo
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    require 'oauth/rack/oauth_filter'
-    config.middleware.use OAuth::Rack::OAuthFilter
-
     # http://ileitch.github.com/2012/03/24/rails-32-code-reloading-from-lib.html
     config.watchable_dirs['lib'] = [:rb]
 
