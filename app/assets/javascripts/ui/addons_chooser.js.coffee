@@ -42,9 +42,11 @@ class MySublimeVideo.UI.AddonsChooser
       if trialEnded = _.find(this.checkedInputs(), (el) -> $(el).data('trial-ended'))
         @actionsDiv.find('.submit').hide()
         @actionsDiv.find('.credit_card_needed').show()
+        @form.on 'submit', (e) -> e.preventDefault()
       else
         @actionsDiv.find('.submit').show()
         @actionsDiv.find('.credit_card_needed').hide()
+        @form.off 'submit'
 
   checkedInputs: ->
     @form.find('input[type=radio]:checked, input[type=checkbox]:checked')

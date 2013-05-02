@@ -34,16 +34,16 @@ module BillableItemsHelper
   def trial_days_remaining_text(trial_days_remaining, billable_item)
     case trial_days_remaining
     when 0
-      if current_user.cc? && !current_user.cc_expired?
-        'trial ended'
-      else
-        raw "Please #{link_to('provide a credit card', edit_billing_url(return_to: url_for), class: 'hl')} in order to subscribe to this add-on."
+      t = 'Trial ended.'
+      if !current_user.cc? || current_user.cc_expired?
+        t << " Please #{link_to('provide a valid credit card', edit_billing_url(return_to: url_for), class: 'hl')}."
       end
+      raw t
     when 1
-      'last day of trial'
+      'Last day of trial.'
     else
       if !billable_item.beta? && !billable_item.free?
-        "free trial – #{pluralize(trial_days_remaining || BusinessModel.days_for_trial, 'day')} remaining"
+        "Free trial – #{pluralize(trial_days_remaining || BusinessModel.days_for_trial, 'day')} remaining."
       end
     end
   end
