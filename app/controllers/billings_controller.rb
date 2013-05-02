@@ -7,7 +7,7 @@ class BillingsController < ApplicationController
     _store_return_to
   end
 
-  # PUT /billing
+  # PUT /account/billing
   def update
     @user.assign_attributes(params[:user].merge(remote_ip: request.try(:remote_ip)))
 
