@@ -22,9 +22,9 @@
 
       .actions.center
         = submit_tag 'Confirm subscription', class: 'submit green_button'
-        .credit_card_needed{ style: 'display:none' }
+        .credit_card_needed.notice{ style: 'display:none' }
           Please
-          = link_to('provide valid credit card details', edit_billing_url(return_to: url_for), class: 'hl')
+          = link_to 'provide valid credit card details', edit_billing_url(return_to: url_for)
           in order to subscribe to this add-on.
       .spacer
     = render 'addons/footnotes', site: @site

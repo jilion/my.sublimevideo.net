@@ -36,7 +36,7 @@ module BillableItemsHelper
     when 0
       t = 'Trial ended.'
       if !current_user.cc? || current_user.cc_expired?
-        t << " Please #{link_to('provide a valid credit card', edit_billing_url(return_to: url_for), class: 'hl')}."
+        t << "<br />Please #{link_to('provide a credit card', edit_billing_url(return_to: url_for), class: 'hl')}."
       end
       raw t
     when 1
