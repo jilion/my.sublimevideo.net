@@ -2,6 +2,7 @@ class BillingsController < ApplicationController
 
   # GET /account/billing/edit
   def edit
+    session[:return_to] = params.delete(:return_to) if params[:return_to]
     @user = User.find(current_user.id)
   end
 
@@ -15,7 +16,8 @@ class BillingsController < ApplicationController
         if @user.d3d_html # 3-d secure identification needed
           format.html { render text: d3d_html_inject(@user.d3d_html), notice: '', alert: '' }
         else # everything's all right
-          format.html { redirect_to [:edit, :user], notice_and_alert_from_user(@user) }
+          redirect_route = session[:return_to] ? session.delete(:return_to) : [:edit, :user]
+          format.html { redirect_to redirect_route, notice_and_alert_from_user(@user) }
         end
       else
         flash[:notice] = flash[:alert] = ''

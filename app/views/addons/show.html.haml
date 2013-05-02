@@ -1,10 +1,10 @@
 - title("Subscribe to the #{content_tag(:em, @addon.title)} add-on for #{hostname_or_token(@site)}")
-%h2= raw "Subscribe to the #{content_tag(:em, @addon.title)} add-on"
+= content_header "Subscribe to the #{content_tag(:em, @addon.title)} add-on"
 .big_break
 
 #addons
   #addons_table_wrap
-    = form_for @site, url: [:subscribe, @site, :addons], method: 'put', html: { id: 'edit_addons', class: 'disableable' } do |f|
+    = form_for @site, url: [:subscribe, @site, :addons], method: 'put', html: { id: 'edit_addons', class: 'disableable', data: { credit_card: current_user.cc? && !current_user.cc_expired? } } do |f|
       .site_chooser
         %p.desc= "You're about to subscribe to this add-in for the following domain:"
         %h2.hostname= hostname_or_token(@site, length: 30)
@@ -20,6 +20,11 @@
 
       = render 'addons/subscribe_to_addon_table', site: @site, addon: @addon
 
-      .actions.center= submit_tag 'Confirm subscription', class: 'submit green_button'
+      .actions.center
+        = submit_tag 'Confirm subscription', class: 'submit green_button'
+        .credit_card_needed.notice{ style: 'display:none' }
+          Please
+          = link_to 'provide valid credit card details', edit_billing_url(return_to: url_for)
+          in order to subscribe to this add-on.
       .spacer
     = render 'addons/footnotes', site: @site

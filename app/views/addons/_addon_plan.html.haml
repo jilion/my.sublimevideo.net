@@ -1,0 +1,35 @@
+- addon_plan_is_sponsored = site.sponsored_to?(plan)
+- price = addon_plan_is_sponsored || plan.beta? ? 0 : plan.price
+- trial_days_remaining = TrialHandler.new(site).trial_days_remaining(plan)
+- trial_ended = trial_days_remaining == 0
+
+%tr
+  %td
+    - if addon_plans_available_for_subscription.size > 1
+      .radio_wrap
+        = radio_button_tag "addon_plans[#{addon.name}]", plan.id, addon_plan_is_selected?(site, plan), id: "addon_plans_#{addon.name}_#{plan.name}", data: { price: price, trial_ended: trial_ended }
+        = label_tag "addon_plans_#{addon.name}_#{plan.name}", addon_label_content(plan)
+    - else
+      - if plan.free? || addon_plan_is_sponsored
+        %h5.checked= addon_label_content(plan)
+      - else
+        .checkbox_wrap
+          - if free_addon_plan_id = addon.free_plan.try(:id)
+            = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id
+          - else
+            = hidden_field_tag "addon_plans[#{addon.name}]", '0'
+          = check_box_tag "addon_plans[#{addon.name}]", plan.id, addon_plan_is_selected?(site, plan), id: "addon_plans_#{addon.name}_#{plan.name}", data: { price: price, trial_ended: trial_ended }
+          = label_tag "addon_plans_#{addon.name}_#{plan.name}", addon_label_content(plan)
+
+  %td.trial_notice
+    - unless addon_plan_is_sponsored
+      .trial_days_remaining
+        = trial_days_remaining_text(trial_days_remaining, plan)
+
+  %td.price
+    - if addon_plan_is_sponsored
+      = 'sponsored'
+      - if site.plan_id? && %w[free sponsored].exclude?(site.plan.name)
+        %small= raw "(#{link_to('why?', '#', class: 'grandfather_plan_link hl')})"
+    - else
+      = billable_item_price(plan)
