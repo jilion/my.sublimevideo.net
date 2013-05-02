@@ -8,36 +8,4 @@
         %span.icon-arrow
 
   - addon_plans_available_for_subscription.each do |addon_plan|
-    - addon_plan_is_sponsored = site.sponsored_to?(addon_plan)
-    - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
-
-    %tr
-      %td
-        - if addon_plans_available_for_subscription.size > 1
-          .radio_wrap
-            = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, addon_plan_is_selected?(site, addon_plan), id: "addon_plans_#{addon.name}_#{addon_plan.name}", data: { price: price }
-            = label_tag "addon_plans_#{addon.name}_#{addon_plan.name}", addon_label_content(addon_plan)
-        - else
-          - if addon_plan.free? || addon_plan_is_sponsored
-            %h5.checked= addon_label_content(addon_plan)
-          - else
-            .checkbox_wrap
-              - if free_addon_plan_id = addon.free_plan.try(:id)
-                = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id
-              - else
-                = hidden_field_tag "addon_plans[#{addon.name}]", '0'
-              = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, addon_plan_is_selected?(site, addon_plan), id: "addon_plans_#{addon.name}_#{addon_plan.name}", data: { price: price }
-              = label_tag "addon_plans_#{addon.name}_#{addon_plan.name}", addon_label_content(addon_plan)
-
-      %td.trial_notice
-        - unless addon_plan_is_sponsored
-          .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }
-            = trial_days_remaining(site, addon_plan)
-
-      %td.price
-        - if addon_plan_is_sponsored
-          = 'sponsored'
-          - if site.plan_id? && %w[free sponsored].exclude?(site.plan.name)
-            %small= raw "(#{link_to('why?', '#', class: 'grandfather_plan_link hl')})"
-        - else
-          = billable_item_price(addon_plan)
+    = render 'addons/addon_plan', site: site, addon: addon, plan: addon_plan, addon_plans_available_for_subscription: addon_plans_available_for_subscription

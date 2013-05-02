@@ -18,6 +18,15 @@ feature 'Billing address update' do
         should_display_all_values_from_hash(fields)
       end
 
+      scenario 'Updates his billing address and credit card successfully with a return_to path' do
+        go 'my', 'account/billing/edit?return_to=/account/cancel'
+        current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
+        fields = fill_billing_address
+        fill_credit_card
+        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'billing_info_submit' }
+        current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
+      end
+
       scenario 'Update billing address and credit card unsuccessfully' do
         fill_billing_address(email: 'foo', name: '', zip: '1'*21, region: '')
         fill_credit_card(type: 'master')
@@ -200,7 +209,7 @@ feature 'Credit cards update' do
       page.should have_no_content I18n.t('flash.billings.update.notice')
     end
 
-    scenario 'update is unsuccessful with a failed attempt first' do
+    scenario 'update is successful with a failed attempt first' do
       fill_in 'Card number', with: '123123'
       click_button 'credit_card_submit'
 
@@ -213,6 +222,22 @@ feature 'Credit cards update' do
       VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'credit_card_submit' }
 
       should_save_billing_info_successfully
+    end
+
+    scenario 'update is successful with a failed attempt first with a return_to path' do
+      go 'my', 'account/billing/edit?return_to=/account/cancel'
+      current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
+      fill_in 'Card number', with: '123123'
+      click_button 'credit_card_submit'
+
+      current_url.should eq 'http://my.sublimevideo.dev/account/billing'
+      page.should have_content "Name on card can't be blank"
+      page.should have_content 'Card number is invalid'
+      page.should have_content 'CSC is required'
+
+      fill_credit_card
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'credit_card_submit' }
+      current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
     end
 
     scenario 'update does nothing if credit card number is not present' do
