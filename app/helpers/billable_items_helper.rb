@@ -25,18 +25,20 @@ module BillableItemsHelper
     if billable_item.price.zero?
       'free'
     elsif billable_item.beta?
-      "<em>free during beta</em> #{content_tag(:s, display_amount_with_sup(billable_item.price))}".html_safe
+      "#{content_tag(:em, 'free during beta')} #{content_tag(:s, display_amount_with_sup(billable_item.price))}".html_safe
     else
       display_amount_with_sup(billable_item.price)
     end
   end
 
-  def trial_days_remaining(site, billable_item)
-    trial_days_remaining = TrialHandler.new(site).trial_days_remaining(billable_item)
-
+  def trial_days_remaining_text(trial_days_remaining, billable_item)
     case trial_days_remaining
     when 0
-      'trial ended'
+      if current_user.cc? && !current_user.cc_expired?
+        'trial ended'
+      else
+        raw "Please #{link_to('provide a credit card', edit_billing_url(return_to: url_for), class: 'hl')} in order to subscribe to this add-on."
+      end
     when 1
       'last day of trial'
     else

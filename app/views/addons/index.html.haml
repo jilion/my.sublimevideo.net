@@ -7,9 +7,14 @@
 
 #addons
   #addons_table_wrap
-    = form_for @site, url: [:subscribe, @site, :addons], method: 'put', html: { id: 'edit_addons', class: 'disableable' } do |f|
+    = form_for @site, url: [:subscribe, @site, :addons], method: 'put', html: { id: 'edit_addons', class: 'disableable', data: { credit_card: current_user.cc? && !current_user.cc_expired? } } do |f|
       = render 'addons/designs_and_addons', site: @site, f: f
 
-      .actions.center= submit_tag 'Confirm selection', class: 'submit green_button'
+      .actions.center
+        = submit_tag 'Confirm selection', class: 'submit green_button'
+        .credit_card_needed{ style: 'display:none' }
+          Please
+          = link_to('provide valid credit card details', edit_billing_url(return_to: url_for), class: 'hl')
+          in order to subscribe to paid add-ons.
       .spacer
     = render 'addons/footnotes', site: @site
