@@ -3,7 +3,7 @@ enable:
   values:
     - true
     - false
-  default: true
+  default: false
 
 account:
   type: string
