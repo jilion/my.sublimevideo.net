@@ -8,7 +8,7 @@
 
 1. Update the Jilion Setup (including useful aliases): `$ jsau && mysv`;
 2. Update brew: `$ brew update`;
-3. [Optional but recommended] Install oh-my-zsh  and switch to ZSH by default: `$ curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh && chsh -s $(which zsh)`. Start / restart zsh (open a new terminal tab). [Additional help](https://github.com/robbyrussell/oh-my-zsh);
+3. [Optional but recommended] Install oh-my-zsh and switch to ZSH by default: `$ curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh && chsh -s $(which zsh)`. Start / restart zsh (open a new terminal tab). [Additional help](https://github.com/robbyrussell/oh-my-zsh); [Why ZSH is better than Bash](https://gist.github.com/wisq/1507733);
 4. [Optional but recommended] Install rbenv: `$ brew install rbenv` and add:
   ```bash
   # To use Homebrew's directories rather than ~/.rbenv add to your profile:
