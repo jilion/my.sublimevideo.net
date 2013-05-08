@@ -34,8 +34,8 @@ describe LoaderGenerator, :fog_mock do
     accessible_stage: 'beta',
     active?: true
   )}
-  let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false) }
-  let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true) }
+  let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false, clear_caches: true) }
+  let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true, clear_caches: true) }
   let(:loader) { described_class.new(site, 'stable') }
   before do
     Librato.stub(:increment)
@@ -151,6 +151,11 @@ describe LoaderGenerator, :fog_mock do
       described_class.stub(:_sites_non_important) { scoped_sites }
       scoped_sites.should_receive(:count) { 42 }
       scoped_sites.should_receive(:find_each).and_yield(site)
+    end
+
+    it "clears caches of component" do
+      app_component.should_receive(:clear_caches)
+      described_class.update_all_dependant_sites(app_component.id, 'beta')
     end
 
     it 'delays notification to Campfire' do

@@ -52,7 +52,7 @@ class TrialHandler
   end
 
   def out_of_trial?(design_or_addon_plan)
-    return true if site.billable_items.with_item(design_or_addon_plan).state('subscribed').exists?
+    return true if site.billable_item_activities.with_item(design_or_addon_plan).state('subscribed').exists?
 
     if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
       trial_end_date(subscription.item) <= Time.now.utc

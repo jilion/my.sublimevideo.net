@@ -7,4 +7,4 @@
 
 %p= raw "The #{@item.kind_for_email} has been disabled."
 
-%p= raw "You can <strong>#{link_to('activate it', site_addon_url(@site, @item.highlight_param_for_addons_page))}</strong> at any time via the #{link_to('Add-ons', site_addon_url(@site, @item.highlight_param_for_addons_page))} page."
+%p= raw "You can <strong>#{link_to('activate it', site_addon_url(@site, @item.billable_entity_name_for_addon_page, p: @item.p_param_for_addon_page))}</strong> at any time via the #{link_to('Add-ons', site_addon_url(@site, @item.billable_entity_name_for_addon_page, p: @item.p_param_for_addon_page))} page."

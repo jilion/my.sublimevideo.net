@@ -32,7 +32,7 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites/:id/edit
   def edit
-    @tags = Site.tag_counts.order{ tags.name }
+    @tags = Site.tag_counts.order { tags.name }
 
     respond_with(@site)
   end

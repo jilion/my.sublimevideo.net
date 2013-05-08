@@ -29,8 +29,8 @@ class Oauth2Verifier < OauthToken
   protected
 
   def generate_keys
-    self.token         = OAuth::Helper.generate_key(20)[0,20]
-    self.valid_to      = 10.minutes.from_now
+    self.token         = OAuth::Helper.generate_key(20)[0, 20]
+    self.expires_at    = 10.minutes.from_now
     self.authorized_at = Time.now.utc
   end
 
@@ -44,6 +44,7 @@ end
 #  callback_url          :string(255)
 #  client_application_id :integer
 #  created_at            :datetime         not null
+#  expires_at            :datetime
 #  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
 #  scope                 :string(255)
@@ -52,7 +53,6 @@ end
 #  type                  :string(20)
 #  updated_at            :datetime         not null
 #  user_id               :integer
-#  valid_to              :datetime
 #  verifier              :string(20)
 #
 # Indexes

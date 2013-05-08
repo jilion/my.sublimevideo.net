@@ -1,5 +1,5 @@
 module EarlyAccessControllerHelper
-  LIST = %w[video]
+  LIST = %w[video google_analytics_addon]
 
   def self.list
     LIST

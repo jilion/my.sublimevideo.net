@@ -116,14 +116,14 @@ private
     limit  = options[:period] == 'seconds' ? 40 : options[:limit].to_i
     videos = videos.take(limit)
 
-    [videos.map { |v| v["u"] }, total]
+    [videos.map { |v| v['u'] }, total]
   end
 
   def self.videos_with_tags_data(site, video_uids)
     video_tags = VideoTag.all(_site_token: site.token, with_uids: video_uids, select: VideoTag.backbone_attributes, per: 20)
     video_uids.map do |video_uid|
       # replace uid per id for Backbone
-      if video_tag = video_tags.detect { |v| v.uid == video_uid }
+      if video_tag = video_tags.find { |v| v.uid == video_uid }
         { id: video_uid }.merge(video_tag.backbone_data)
       else
         { id: video_uid }
@@ -133,7 +133,7 @@ private
 
   def self.add_video_stats_data!(videos, video_uids, conditions, options)
     # Research all stats for all videos
-    videos_stats = Hash.new { |h,k| h[k] = Hash.new }
+    videos_stats = Hash.new { |h, k| h[k] = Hash.new }
     conditions[:u] = { :$in => video_uids }
     conditions.delete('vlc') # remove group limit hack
     video_class(options[:period]).where(conditions).only(:u, :d, :vlc, :vvc).entries.each do |stat|
@@ -146,8 +146,8 @@ private
         video['vl_hash']  = {}
         video['vv_hash']  = {}
       else
-        video["vl_array"] = []
-        video["vv_array"] = []
+        video['vl_array'] = []
+        video['vv_array'] = []
       end
       video['vl_sum'] = 0
       video['vv_sum'] = 0
@@ -161,8 +161,8 @@ private
             video['vv_hash'][from_step] = video_stat[:vvc].to_i
           end
         else
-          video["vl_array"] << video_stat[:vlc].to_i
-          video["vv_array"] << video_stat[:vvc].to_i
+          video['vl_array'] << video_stat[:vlc].to_i
+          video['vv_array'] << video_stat[:vvc].to_i
         end
         video['vl_sum'] += video_stat[:vlc].to_i
         video['vv_sum'] += video_stat[:vvc].to_i

@@ -31,33 +31,6 @@ MySublimeVideo::Application.routes.draw do
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
-  namespace 'api' do
-    # Legacy routes
-    constraints SubdomainConstraint.new('my') do
-
-      get 'test_request' => 'apis#test_request'
-      resources :sites, only: [:index, :show] do
-        member do
-          get :usage
-        end
-      end
-
-    end
-  end
-
-  scope module: 'api', as: 'api' do
-    constraints SubdomainConstraint.new('api') do
-
-      get 'test_request' => 'apis#test_request'
-      resources :sites, only: [:index, :show] do
-        member do
-          get :usage
-        end
-      end
-
-    end
-  end # api.
-
   constraints SubdomainConstraint.new('admin') do
     # We put this block out of the following scope to avoid double admin_admin in url helpers...
     devise_for :admins, module: 'admin/admins', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
@@ -81,7 +54,6 @@ MySublimeVideo::Application.routes.draw do
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do
-          get :stats
           get :videos_infos
           get :invoices
           get :active_pages
@@ -161,7 +133,7 @@ MySublimeVideo::Application.routes.draw do
             get :preview
           end
         end
-        resources :mail_logs,      only: [:show],                         path: 'logs'
+        resources :mail_logs, only: [:show], path: 'logs'
       end
 
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'
@@ -174,6 +146,17 @@ MySublimeVideo::Application.routes.draw do
   end # admin.
 
   constraints SubdomainConstraint.new('my') do
+    namespace :private_api do
+      resources :users, only: [:show]
+      resources :sites, only: [:index, :show] do
+        member do
+          put :add_tag
+        end
+      end
+      resources :oauth2_tokens, only: [:show]
+      resources :referrers, only: [:index]
+    end
+
     devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
     devise_scope :user do
       resource :user, only: [], path: '' do
@@ -191,14 +174,14 @@ MySublimeVideo::Application.routes.draw do
       end
 
       scope 'account' do
-        get  'more-info' => "users#more_info", as: 'more_user_info'
-        get  'cancel' => "users/cancellations#new", as: 'account_cancellation'
-        post 'cancel' => "users/cancellations#create"
+        get  'more-info' => 'users#more_info', as: 'more_user_info'
+        get  'cancel' => 'users/cancellations#new', as: 'account_cancellation'
+        post 'cancel' => 'users/cancellations#create'
       end
 
       delete '/notice/:id' => 'users#hide_notice'
 
-      post '/password/validate' => "users/passwords#validate"
+      post '/password/validate' => 'users/passwords#validate'
     end
 
     %w[sign_up register].each         { |action| get action => redirect('/signup') }
@@ -291,8 +274,8 @@ MySublimeVideo::Application.routes.draw do
     resources :deals, only: [:show], path: 'd'
 
     scope 'feedback' do
-      get  '/' => "feedbacks#new", as: 'feedback'
-      post '/' => "feedbacks#create"
+      get  '/' => 'feedbacks#new', as: 'feedback'
+      post '/' => 'feedbacks#create'
     end
 
     resource :support_request, only: [:create], path: 'help'
@@ -309,6 +292,6 @@ MySublimeVideo::Application.routes.draw do
   end
 
   # Default url for specs, not reachable by the app because of the my subdomain
-  get '/' => "pages#show", page: 'terms' if Rails.env.test?
+  get '/' => 'pages#show', page: 'terms' if Rails.env.test?
 
 end

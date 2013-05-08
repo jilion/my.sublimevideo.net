@@ -7,7 +7,7 @@ def stub_class(full_name)
 end
 
 def stub_module_or_class(full_name, kind, &block)
-  full_name.to_s.split(/::/).inject(Object) do |context, name|
+  full_name.to_s.split(/::/).reduce(Object) do |context, name|
     begin
       # Give autoloading an opportunity to work
       context.const_get(name)

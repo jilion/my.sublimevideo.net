@@ -5,7 +5,7 @@
   %w[country].each do |c|
     countries = User.active.select("#{c}, COUNT(*) as total").group(c).order("total DESC").map! { |u| [u.send(c) || "Unknown", u.total.to_i] }
     other_countries = ["Other (less than #{minimum_users} users)", 0]
-    countries_with_others = countries.inject([]) do |memo, country|
+    countries_with_others = countries.reduce([]) do |memo, country|
       if country[1] < minimum_users
         other_countries[1] += country[1]
       else

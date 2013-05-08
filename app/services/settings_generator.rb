@@ -40,7 +40,7 @@ class SettingsGenerator
   end
 
   def app_settings
-    addon_plans_without_plugins.inject({}) do |hash, addon_plan|
+    addon_plans_without_plugins.reduce({}) do |hash, addon_plan|
       template = addon_plan.settings_templates.first.template
       hash[addon_plan.kind] = {}
       hash[addon_plan.kind][:settings] = addon_plan_settings(template)
@@ -50,7 +50,7 @@ class SettingsGenerator
   end
 
   def kits
-    site.kits.includes(:design).order(:identifier).inject({}) do |hash, kit|
+    site.kits.includes(:design).order(:identifier).reduce({}) do |hash, kit|
       hash[kit.identifier] = {}
       hash[kit.identifier][:skin] = { id: kit.skin_token }
       hash[kit.identifier][:plugins] = kits_plugins(kit, nil)
@@ -90,7 +90,7 @@ private
 
   def kits_plugins(kit, parent_addon_id)
     addon_plans = addon_plans_with_plugins(kit).select { |ap| ap.addon.parent_addon_id == parent_addon_id }
-    addon_plans.inject({}) do |hash, addon_plan|
+    addon_plans.reduce({}) do |hash, addon_plan|
       hash[addon_plan.kind] = {}
 
       unless (plugins = kits_plugins(kit, addon_plan.addon_id)).empty?
@@ -111,7 +111,7 @@ private
   end
 
   def addon_plan_settings(template, kit_settings = nil)
-    template.inject({}) do |hash, (key, value)|
+    template.reduce({}) do |hash, (key, value)|
       kit_value = kit_settings && kit_settings[key]
       hash[key] = kit_value.nil? ? value[:default] : kit_value
       hash
@@ -119,7 +119,7 @@ private
   end
 
   def addon_plan_allowed_settings(template)
-    template.inject({}) do |hash, (key, value)|
+    template.reduce({}) do |hash, (key, value)|
       hash[key] = value.slice(:values, :range)
       hash
     end

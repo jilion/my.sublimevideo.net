@@ -115,6 +115,10 @@
   "SVEmbed" : "ub",
   "cuezones" : "uc",
   "SVCueZones" : "ud",
+  // google analytics
+  "googleAnalytics": "ue",
+  "SVGoogleAnalytics": "uf",
+  "account": "ug",
 
   // since these properties aren't used too often (only in custom players),
   // we use 3-letter keys instead use 2-letter keys.

@@ -2,22 +2,22 @@ module Admin::SitesHelper
 
   PAGE_TITLES = {
     tagged_with: "tagged with '%s'",
-    with_min_billable_video_views: "with at least %s video plays in the last 30 days",
+    with_min_billable_video_views: 'with at least %s video plays in the last 30 days',
     search: "matching '%s'",
-    user_id: "for %s",
-    with_state: "%s",
+    user_id: 'for %s',
+    with_state: '%s',
     with_addon_plan: "with the '%s' add-on",
   }
 
   FILTER_TITLES = {
-    addon_plan: "%s (<strong>%s</strong>)"
+    addon_plan: '%s (<strong>%s</strong>)'
   }
 
   def admin_sites_page_title(sites)
     return unless selected_params = _select_param(:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path, :tagged_with, :with_min_billable_video_views, :search, :user_id, :with_state, :with_addon_plan)
 
-    filter_titles = selected_params.inject([]) do |memo, selected_param|
-      memo << _page_title_from_filter(*selected_param); memo
+    filter_titles = selected_params.reduce([]) do |a, e|
+      a << _page_title_from_filter(*e)
     end
 
     [formatted_pluralize(sites.total_count, 'site').titleize, filter_titles.to_sentence].join(' ')
@@ -26,7 +26,7 @@ module Admin::SitesHelper
   def addon_plans_filters
     capture_haml do
       haml_tag(:ul) do
-        Addon.public.visible.each do |addon|
+        Addon.not_custom.visible.each do |addon|
           haml_tag(:li, _addon_plans_filter(addon))
         end
       end
@@ -34,13 +34,13 @@ module Admin::SitesHelper
   end
 
   def admin_links_to_hostnames(site)
-    html = %w[hostname extra_hostnames dev_hostnames].inject([]) do |memo, hostname_field|
-      break memo if memo.any?
+    html = %w[hostname extra_hostnames dev_hostnames].reduce([]) do |a, e|
+      break a if a.any?
 
-      prefix = hostname_field == 'hostname' ? nil : "(#{hostname_field[0,3]}) "
-      memo << [prefix, _joined_hostname_links(site, site.send(hostname_field))].compact.join(' '); memo
+      prefix = e == 'hostname' ? nil : "(#{e[0, 3]}) "
+      a << [prefix, _joined_hostname_links(site, site.send(e))].compact.join(' ')
     end
-    html << "(#{link_to("details", [:edit, :admin, site], title: "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
+    html << "(#{link_to('details', [:edit, :admin, site], title: "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
 
     html.join(' ').html_safe
   end
@@ -49,16 +49,16 @@ module Admin::SitesHelper
   def admin_pretty_hostname(site, site_hostname, options = {})
     site_hostname ||= 'no hostname'
     length = options[:truncate] || 1000
-    hostname_trunc_length = length * 2/3
+    hostname_trunc_length = length * 2 / 3
     path_trunc_length = if site_hostname.size < hostname_trunc_length
-      hostname_trunc_length - site_hostname.size + (length * 1/3)
+      hostname_trunc_length - site_hostname.size + (length * 1 / 3)
     else
-      length * 1/3
+      length * 1 / 3
     end
     html = []
-    html << "<span class='wildcard'>(*.)</span>" if options[:wildcard] && site.wildcard?
+    html << '<span class="wildcard">(*.)</span>' if options[:wildcard] && site.wildcard?
     html << truncate_middle(site_hostname, length: hostname_trunc_length)
-    html << "<span class='path'>/#{site.path.truncate(path_trunc_length)}</span>" if options[:path] && site.path?
+    html << %(<span class="path">/#{site.path.truncate(path_trunc_length)}</span>) if options[:path] && site.path?
 
     html.join.html_safe
   end
@@ -91,10 +91,6 @@ module Admin::SitesHelper
     end
   end
 
-  def _admin_sites_page_title(underscored_name, value = nil)
-    ["#{underscored_name.to_s.gsub(/_/, ' ')}", value].compact.join(' ')
-  end
-
   def _select_param(*keys)
     params.select { |k, _| k.to_sym.in?(keys) }
   end
@@ -117,9 +113,13 @@ module Admin::SitesHelper
     end
   end
 
+  def _admin_sites_page_title(underscored_name, value = nil)
+    ["#{underscored_name.to_s.gsub(/_/, ' ')}", value].compact.join(' ')
+  end
+
   def _addon_plans_filter(addon)
-    addon.plans.includes(:addon).order(:price).inject([]) do |memo, addon_plan|
-      memo << _filter_title_for_addon_plan(addon_plan); memo
+    addon.plans.includes(:addon).order(:price).reduce([]) do |a, e|
+      a << _filter_title_for_addon_plan(e)
     end.join(' | ').html_safe
   end
 

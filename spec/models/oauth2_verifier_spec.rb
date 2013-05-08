@@ -9,7 +9,7 @@ describe Oauth2Verifier do
     its(:client_application) { should be_present }
     its(:code)               { should be_present }
     its(:token)              { should be_present }
-    its(:valid_to)           { should be_present }
+    its(:expires_at)         { should be_present }
 
     it { should be_valid }
     it { should be_authorized }
@@ -52,6 +52,7 @@ end
 #  callback_url          :string(255)
 #  client_application_id :integer
 #  created_at            :datetime         not null
+#  expires_at            :datetime
 #  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
 #  scope                 :string(255)
@@ -60,7 +61,6 @@ end
 #  type                  :string(20)
 #  updated_at            :datetime         not null
 #  user_id               :integer
-#  valid_to              :datetime
 #  verifier              :string(20)
 #
 # Indexes

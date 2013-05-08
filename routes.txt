@@ -1,12 +1,5 @@
+                                   teabag          /teabag                                                   Teabag::Engine
                                                    /docs(/*rest)(.:format)                                   :controller#:action
-                         api_test_request GET      /api/test_request(.:format)                               api/apis#test_request
-                           usage_api_site GET      /api/sites/:id/usage(.:format)                            api/sites#usage
-                                api_sites GET      /api/sites(.:format)                                      api/sites#index
-                                 api_site GET      /api/sites/:id(.:format)                                  api/sites#show
-                                          GET      /test_request(.:format)                                   api/apis#test_request
-                                          GET      /sites/:id/usage(.:format)                                api/sites#usage
-                                          GET      /sites(.:format)                                          api/sites#index
-                                          GET      /sites/:id(.:format)                                      api/sites#show
                         new_admin_session GET      /login(.:format)                                          admin/admins/sessions#new
                             admin_session POST     /login(.:format)                                          admin/admins/sessions#create
                     destroy_admin_session GET      /logout(.:format)                                         admin/admins/sessions#destroy
@@ -15,6 +8,7 @@
                       edit_admin_password GET      /password/edit(.:format)                                  admin/admins/passwords#edit
                                           PUT      /password(.:format)                                       admin/admins/passwords#update
                   accept_admin_invitation GET      /invitation/accept(.:format)                              admin/admins/invitations#edit
+                  remove_admin_invitation GET      /invitation/remove(.:format)                              admin/admins/invitations#destroy
                          admin_invitation POST     /invitation(.:format)                                     admin/admins/invitations#create
                      new_admin_invitation GET      /invitation/new(.:format)                                 admin/admins/invitations#new
                                           PUT      /invitation(.:format)                                     admin/admins/invitations#update
@@ -30,7 +24,6 @@
                                admin_exit GET      /exit(.:format)                                           :controller#exit
                                admin_root          /                                                         :controller#:action
                               admin_admin          /                                                         :controller#:action
-                         stats_admin_site GET      /sites/:id/stats(.:format)                                admin/sites#stats
                   videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
                       invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages
@@ -107,6 +100,12 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                       admin_app_component GET      /app/components/:id(.:format)                             admin/app/components#show
                                           PUT      /app/components/:id(.:format)                             admin/app/components#update
                                           DELETE   /app/components/:id(.:format)                             admin/app/components#destroy
+                         private_api_user GET      /private_api/users/:id(.:format)                          private_api/users#show
+                 add_tag_private_api_site PUT      /private_api/sites/:id/add_tag(.:format)                  private_api/sites#add_tag
+                        private_api_sites GET      /private_api/sites(.:format)                              private_api/sites#index
+                         private_api_site GET      /private_api/sites/:id(.:format)                          private_api/sites#show
+                 private_api_oauth2_token GET      /private_api/oauth2_tokens/:id(.:format)                  private_api/oauth2_tokens#show
+                    private_api_referrers GET      /private_api/referrers(.:format)                          private_api/referrers#index
                          new_user_session GET      /login(.:format)                                          users/sessions#new
                              user_session POST     /login(.:format)                                          users/sessions#create
                      destroy_user_session GET      /logout(.:format)                                         users/sessions#destroy
@@ -209,13 +208,11 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                      root          /                                                         :controller#:action
                              rails_routes          /rails/routes(.:format)                                   sextant/routes#index
                            sextant_engine          /sextant                                                  Sextant::Engine
-                              jasminerice          /jasmine                                                  Jasminerice::Engine
                               maintenance GET      /maintenance(.:format)                                    maintenance#show
 
-Routes for Sextant::Engine:
+Routes for Teabag::Engine:
+     GET /fixtures/*filename(.:format) teabag/spec#fixtures
+     GET /:suite(.:format)             teabag/spec#runner {:suite=>"default"}
+root     /                             teabag/spec#suites
 
-Routes for Jasminerice::Engine:
-           GET /spec/:spec_id/fixtures/*filename(.:format) jasminerice/spec#fixtures
-spec_index GET /spec(.:format)                             jasminerice/spec#index
-               /fixtures/*filename(.:format)               jasminerice/spec#fixtures
-      root     /                                           jasminerice/spec#index
+Routes for Sextant::Engine:

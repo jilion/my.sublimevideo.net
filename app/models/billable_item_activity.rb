@@ -24,3 +24,4 @@ end
 #  index_billable_item_activities_on_item_type_and_item_id  (item_type,item_id)
 #  index_billable_item_activities_on_site_id                (site_id)
 #
+

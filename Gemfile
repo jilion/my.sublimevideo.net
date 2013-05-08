@@ -23,8 +23,8 @@ gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
-gem 'premailer', github: 'jilion/premailer'
-gem 'premailer-rails'
+gem 'regru-premailer'
+gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'regru-premailer-dependency'
 gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
 gem 'google-analytics-turbolinks'
 
@@ -36,10 +36,10 @@ gem 'devise-async'
 # API
 gem 'oauth'
 gem 'oauth-plugin'
-gem 'acts_as_api'
 
 # Internals
 gem 'dalli'
+gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
 
@@ -69,7 +69,7 @@ gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast'
 
 gem 'activemerchant'
-gem 'public_suffix'
+gem 'public_suffix', '1.2.0'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 
@@ -82,11 +82,12 @@ gem 'twitter'
 gem 'array_stats'
 gem 'createsend', '~> 2.5' # Campaign Monitor
 
-gem 'airbrake'
+gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
 gem 'lograge'
+gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
@@ -153,8 +154,9 @@ group :development, :test do
   gem 'timecop'
 
   # Javascript test
-  gem 'jasminerice'
-  gem 'guard-jasmine'
+  gem 'teabag'
+  gem 'guard-teabag'
+
   # Rails routes view
   gem 'sextant'
 end
@@ -182,7 +184,6 @@ group :tools do
 
   # Guard
   gem 'ruby_gntp'
-  gem 'rb-fsevent'
 
   gem 'guard-pow'
   gem 'guard-livereload'

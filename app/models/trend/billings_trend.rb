@@ -4,8 +4,8 @@ class BillingsTrend
   include Mongoid::Timestamps
   include Trend
 
-  field :ne, type: Hash    # new sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
-  field :re, type: Hash    # renew sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+  field :ne, type: Hash # new sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+  field :re, type: Hash # renew sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
 
   def self.json_fields
     [:ne, :re]
@@ -23,8 +23,8 @@ class BillingsTrend
     invoices = Invoice.includes(:invoice_items).paid.between(paid_at: day.beginning_of_day..day.end_of_day)
     hash = {
       d: day.to_time,
-      ne: Hash.new { |h,k| h[k] = Hash.new(0) },
-      re: Hash.new { |h,k| h[k] = Hash.new(0) }
+      ne: Hash.new { |h, k| h[k] = Hash.new(0) },
+      re: Hash.new { |h, k| h[k] = Hash.new(0) }
     }
 
     invoices.each do |invoice|
@@ -42,7 +42,7 @@ class BillingsTrend
   end
 
   def self._first_invoice_day
-    (Invoice.paid.order{ paid_at.asc }.first.try(:paid_at) || 1.day.from_now).midnight
+    (Invoice.paid.order { paid_at.asc }.first.try(:paid_at) || 1.day.from_now).midnight
   end
 
   def self._nested_keys(invoice_item)

@@ -2,31 +2,15 @@ class MailTemplate < ActiveRecord::Base
 
   attr_accessible :title, :subject, :body, :archived_at
 
-  # ================
-  # = Associations =
-  # ================
-
-  has_many :logs, class_name: "MailLog", foreign_key: "template_id"
-
-  # ===============
-  # = Validations =
-  # ===============
+  has_many :logs, class_name: 'MailLog', foreign_key: 'template_id'
 
   validates :title,   presence: true, uniqueness: true
   validates :subject, :body, presence: true
 
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :archived,     -> { where{ archived_at != nil } }
+  scope :archived,     -> { where { archived_at != nil } }
   scope :not_archived, -> { where(archived_at: nil) }
-  scope :by_title,     ->(way = 'asc') { order{ title.send(way) } }
-  scope :by_date,      ->(way = 'desc') { order{ created_at.send(way) } }
-
-  # ====================
-  # = Instance Methods =
-  # ====================
+  scope :by_title,     ->(way = 'asc') { order { title.send(way) } }
+  scope :by_date,      ->(way = 'desc') { order { created_at.send(way) } }
 
   def snapshotize
     { title: title, subject: subject, body: body }

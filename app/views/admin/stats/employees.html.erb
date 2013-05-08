@@ -2,8 +2,8 @@
 <%
 employees = User.beta.select("company_employees, COUNT(*) as total").group(:company_employees).order("total DESC").map! { |u| [u.company_employees || "Not Available", u.total.to_i] }
 
-employee_with_wrong_label = employees.detect { |e| e[0] == "Company size" }
-employee_not_available    = employees.detect { |e| e[0] == "Not Available" }
+employee_with_wrong_label = employees.find { |e| e[0] == "Company size" }
+employee_not_available    = employees.find { |e| e[0] == "Not Available" }
 if employee_with_wrong_label
   employee_not_available[1] += employee_with_wrong_label[1]
   employees.delete(employee_with_wrong_label)

@@ -119,14 +119,14 @@ class Transaction < ActiveRecord::Base
     # STATUS == 9, Payment requested:
     #   The payment has been accepted.
     #   An authorization code is available in the field "ACCEPTANCE".
-    when "9"
+    when '9'
       Librato.increment 'payments.success', by: payment_params['amount'].to_i, source: payment_params['BRAND']
       self.succeed
 
     # STATUS == 51, Authorization waiting:
     #   The authorization will be processed offline.
     #   This is the standard response if the merchant has chosen offline processing in his account configuration
-    when "51"
+    when '51'
       Librato.increment 'payments.waiting', by: payment_params['amount'].to_i, source: payment_params['BRAND']
       self.wait # add a waiting state for invoice & transaction
 
@@ -146,7 +146,7 @@ class Transaction < ActiveRecord::Base
     #
     # STATUS == 46, Waiting for identification (3-D Secure):
     # THIS SHOULD NEVER HAPPEN...
-    when "0", "2", "46", "93"
+    when '0', '2', '46', '93'
       Librato.increment 'payments.fail', by: payment_params['amount'].to_i, source: payment_params['BRAND']
       self.fail
 
@@ -154,14 +154,14 @@ class Transaction < ActiveRecord::Base
     #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
     #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
-    when "52", "92"
+    when '52', '92'
       Librato.increment 'payments.uncertain', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-      Notifier.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+      Notifier.send("Transaction ##{self.id} (PAYID: #{payment_params['PAYID']}) has an uncertain state, please investigate quickly!")
 
       self.wait
 
     else
-      Notifier.send("Transaction unknown status: #{payment_params["STATUS"]}")
+      Notifier.send("Transaction unknown status: #{payment_params['STATUS']}")
 
       self.wait
     end
@@ -186,7 +186,7 @@ private
         city: user.billing_city,
         country: user.billing_country
       },
-      paramplus: "PAYMENT=TRUE"
+      paramplus: 'PAYMENT=TRUE'
     })
   end
 
@@ -214,9 +214,7 @@ private
 
   # validates
   def minimum_amount
-    if amount < 100
-      self.errors.add(:amount, :minimum_amount_not_reached)
-    end
+    self.errors.add(:amount, :minimum_amount_not_reached) if amount < 100
   end
 
   # before_create
@@ -230,27 +228,25 @@ private
   # before_transition on: [:succeed, :fail, :wait, :wait_d3d]
   def set_fields_from_ogone_response
     if @ogone_response_info.present?
-      self.pay_id    = @ogone_response_info["PAYID"]
-      self.nc_status = @ogone_response_info["NCSTATUS"].to_i
-      self.status    = @ogone_response_info["STATUS"].to_i
-      self.error     = @ogone_response_info["NCERRORPLUS"]
+      self.pay_id    = @ogone_response_info['PAYID']
+      self.nc_status = @ogone_response_info['NCSTATUS'].to_i
+      self.status    = @ogone_response_info['STATUS'].to_i
+      self.error     = @ogone_response_info['NCERRORPLUS']
     end
   end
 
   # after_transition on: [:succeed, :fail, :wait, :wait_d3d]
   def update_invoices
     action = case state
-             when "paid"
+             when 'paid'
                'succeed'
-             when "failed"
+             when 'failed'
                'fail'
-             when "waiting"
+             when 'waiting'
                'wait'
              end
 
-    if action
-      invoices.map(&:"#{action}!")
-    end
+    invoices.map(&:"#{action}!") if action
   end
 
   # after_transition on: :succeed

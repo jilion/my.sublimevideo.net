@@ -128,7 +128,7 @@ describe SitesTasks do
       described_class.exit_beta
       Sidekiq::Worker.drain_all
 
-      puts 'it moves beta addon plans out of beta'
+      # it moves beta addon plans out of beta
       design.reload.stable_at.should be_present
       custom_design.reload.stable_at.should be_present
       addon_plan_2.reload.stable_at.should be_present
@@ -146,28 +146,28 @@ describe SitesTasks do
       site3.reload.billable_items.with_item(design).state('subscribed').should be_empty
       site4.reload.billable_items.with_item(design).state('subscribed').should be_empty
 
-      puts 'updates free add-ons subscriptions to the "subscribed" state'
+      # updates free add-ons subscriptions to the "subscribed" state
       site1.billable_items.with_item(addon_plan_3).state('subscribed').should have(1).item
       site2.billable_items.with_item(addon_plan_3).state('subscribed').should have(1).item
       site3.billable_items.with_item(addon_plan_3).state('subscribed').should be_empty
       site4.billable_items.with_item(addon_plan_3).state('subscribed').should be_empty
 
-      puts 'updates subscriptions to the "trial" state for beta subscriptions subscribed less than 30 days ago'
+      # updates subscriptions to the "trial" state for beta subscriptions subscribed less than 30 days ago
       site1.billable_items.with_item(addon_plan_1).state('trial').should have(1).item
       site2.billable_items.with_item(addon_plan_2).state('trial').should have(1).item
       site3.billable_items.with_item(addon_plan_1).state('trial').should have(1).item
       site4.billable_items.with_item(addon_plan_2).state('trial').should have(1).item
 
-      puts 'updates subscriptions to free plan (or cancel plan) for beta subscriptions subscribed more than 30 days ago when user has no credit card'
+      # updates subscriptions to free plan (or cancel plan) for beta subscriptions subscribed more than 30 days ago when user has no credit card
       site1.billable_items.with_item(addon_plan_2).should be_empty
       site1.billable_items.with_item(addon_plan_2_free).state('subscribed').should have(1).item
       site2.billable_items.with_item(addon_plan_1).should be_empty
 
-      puts 'updates subscriptions to the "subscribed" state for beta subscriptions subscribed more than 30 days ago when user has a credit card'
+      # updates subscriptions to the "subscribed" state for beta subscriptions subscribed more than 30 days ago when user has a credit card
       site3.billable_items.with_item(addon_plan_2).state('subscribed').should have(1).item
       site4.billable_items.with_item(addon_plan_1).state('subscribed').should have(1).item
 
-      puts 'does not subscribe site to custom add-ons for which it was not subscribed before'
+      # does not subscribe site to custom add-ons for which it was not subscribed before
       site1.billable_items.with_item(custom_design).state('subscribed').should have(1).item
       site2.billable_items.with_item(custom_design).should be_empty
       site3.billable_items.with_item(custom_design).should be_empty

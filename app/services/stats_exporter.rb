@@ -31,8 +31,8 @@ class StatsExporter
   def with_tempfile_csv_export
     tempfile = Tempfile.new(['export', '.csv'])
     begin
-      CSV.open(tempfile, "wb") do |csv|
-        csv << ['uid', 'title', 'loads_count', 'views_count', 'embed_loads_count', 'embed_views_count']
+      CSV.open(tempfile, 'wb') do |csv|
+        csv << %w[uid title loads_count views_count embed_loads_count embed_views_count]
         VideoTag.find_each(_site_token: site.token, select: %w[uid title]) do |video_tag|
           stats = Stat::Video::Day.where(st: site.token, u: video_tag.uid).between(d: from..to).entries
           vl = hashes_values_sum(stats, :vl)
@@ -47,10 +47,10 @@ class StatsExporter
     end
   end
 
-private
+  private
 
   def hashes_values_sum(stats, attribute)
-    stats.map(&attribute).inject({}) do |memo, el|
+    stats.map(&attribute).reduce({}) do |memo, el|
       memo.merge(el) { |k, old_v, new_v| old_v + new_v }
     end
   end

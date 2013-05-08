@@ -7,7 +7,7 @@ class Mailer < ActionMailer::Base
   private
 
   def _subject(method_name, args = {})
-    keys = [method_name] + args.fetch(:keys) { [] }
+    keys = [method_name] + args.fetch(:keys, [])
     I18n.t("mailer.#{self.mailer_name}.#{keys.join('.')}", args)
   end
 

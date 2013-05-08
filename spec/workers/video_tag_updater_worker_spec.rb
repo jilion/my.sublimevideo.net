@@ -12,6 +12,6 @@ describe VideoTagUpdaterWorker do
   end
 
   it "delays job in low (mysv) queue" do
-    VideoTagUpdaterWorker.sidekiq_options['queue'].should eq 'videos'
+    VideoTagUpdaterWorker.get_sidekiq_options['queue'].should eq 'videos'
   end
 end

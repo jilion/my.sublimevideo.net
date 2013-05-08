@@ -31,19 +31,16 @@ class UsrAgent # fucking name conflict with UserAgent gem
   # =================
 
   def self.create_or_update_from_trackers!(log, trackers)
-    incs = incs_from_trackers(trackers)
-    incs.each do |token, inc|
-      self.collection
-        .find(token: token, month: log.month)
-        .update({ :$inc => inc }, upsert: true)
+    incs_from_trackers(trackers).each do |token, inc|
+      self.collection.find(token: token, month: log.month).update({ :$inc => inc }, upsert: true)
     end
   end
 
 private
 
   def self.incs_from_trackers(trackers)
-    trackers = trackers.detect { |t| t.options[:title] == :useragent }.categories
-    incs     = Hash.new { |h,k| h[k] = Hash.new(0) }
+    trackers = trackers.find { |t| t.options[:title] == :useragent }.categories
+    incs     = Hash.new { |h, k| h[k] = Hash.new(0) }
     trackers.each do |tracker, hits|
       useragent_string, token = tracker
       if useragent_hash = useragent_hash(useragent_string)
@@ -63,12 +60,12 @@ private
       Notifier.send("UserAgent (gem) parsing problem with: #{useragent_string}", exception: ex)
     end
     if useragent.present?
-      hash = %w[browser version platform os].inject({}) do |hash, attr|
-        hash[attr.to_sym] = useragent.send(attr).try(:gsub, /\./, '::') || "unknown"
+      hash = %w[browser version platform os].reduce({}) do |hash, attr|
+        hash[attr.to_sym] = useragent.send(attr).try(:gsub, /\./, '::') || 'unknown'
         hash
       end
-      if hash[:browser] == "unknown" || hash[:version] == "unknown"
-        unknowns = hash.select { |k, v| v == "unknown" }.keys
+      if hash[:browser] == 'unknown' || hash[:version] == 'unknown'
+        unknowns = hash.select { |k, v| v == 'unknown' }.keys
         unless UsrAgentUnknown.where(user_agent: useragent_string).exists?
           UsrAgentUnknown.create(user_agent: useragent_string, unknowns: unknowns)
         end

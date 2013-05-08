@@ -3,14 +3,13 @@
 # app. Use #url to create a signed FastPass URL, and #script to generate the JS-based integration.
 #
 module FastPassHelper
+
   # extend ERB::Util
   #
   # Generates a FastPass SCRIPT tag. The script will automatically rewrite all GetSatisfaction
   # URLs to include a 'fastpass' query parameter with a signed fastpass URL.
   #
-  def fastpass_script(key, secret, email, name, uid, secure=false, additional_fields={})
-    url = fastpass_url(key, secret, email, name, uid, secure, additional_fields)
-
+  def fastpass_script(args = {})
     <<-EOS
     <script type="text/javascript">
       var GSFN;
@@ -30,7 +29,7 @@ module FastPassHelper
         if(window.onload) { var old_load = window.onload; }
         window.onload = function() {
           if(old_load) old_load();
-          add_js("fastpass", #{url.to_json});
+          add_js("fastpass", #{fastpass_url(args).to_json});
         }
       })()
 
@@ -41,30 +40,30 @@ module FastPassHelper
   private
 
   def fastpass_domain
-    "getsatisfaction.com"
+    'getsatisfaction.com'
   end
 
   #
   # Generates a FastPass URL with the given +email+, +name+, and +uid+ signed with the provided
-  # consumer +key+ and +secret+. The +key+ and +secret+ should match those provided in the company
+  # consumer +key+ and +secret+ in the +args+ argument. The +key+ and +secret+ should match those provided in the company
   # admin interface.
   #
-  def fastpass_url(key, secret, email, name, uid, secure = false, additional_fields = {})
-    consumer = OAuth::Consumer.new(key, secret)
-    uri = URI.parse(secure ? "https://#{fastpass_domain}/fastpass" : "http://#{fastpass_domain}/fastpass")
-    params = additional_fields.merge(email: email, name: name, uid: uid)
+  def fastpass_url(args = {})
+    consumer = OAuth::Consumer.new(args.fetch(:key), args.fetch(:secret))
+    uri = URI.parse(args.fetch(:secure) ? "https://#{fastpass_domain}/fastpass" : "http://#{fastpass_domain}/fastpass")
+    params = args.slice(:email, :name, :uid)
 
     uri.query = params.to_query
 
-    http      = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.scheme == "https"
-    request   = Net::HTTP::Get.new(uri.request_uri)
+    http         = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme == 'https'
+    request      = Net::HTTP::Get.new(uri.request_uri)
     request.oauth!(http, consumer, nil, scheme: 'query_string')
 
-    signature = request.oauth_helper.signature
-    #re-apply params with signature to the uri
-    query = params.merge(request.oauth_helper.oauth_parameters).merge("oauth_signature" => signature)
+    # re-apply params with signature to the uri
+    query = params.merge(request.oauth_helper.oauth_parameters).merge('oauth_signature' => request.oauth_helper.signature)
     uri.query = query.to_query
-    return uri.to_s
+
+    uri.to_s
   end
 end

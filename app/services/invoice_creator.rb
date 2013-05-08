@@ -27,9 +27,7 @@ class InvoiceCreator
       _set_amount
       _set_renew
 
-      if invoice.save
-        Librato.increment 'invoices.events', source: 'create'
-      end
+      Librato.increment('invoices.events', source: 'create') if invoice.save
     end
   end
 
@@ -43,7 +41,7 @@ class InvoiceCreator
   private
 
   def self._create_for_month(date, site_id)
-    if site = Site.not_archived.find(site_id)
+    if site = Site.not_archived.find_by_id(site_id)
       build_for_month(date, site).save
     end
   end
@@ -54,7 +52,7 @@ class InvoiceCreator
 
   def _handle_items_subscribed_before_period(period, options)
     _subscribed_activities_before(period.first).each do |activity|
-      end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
+      end_activity_date = _end_activity_for_activity(activity, period)
 
       if period.cover?(end_activity_date)
         _build_invoice_item_unless_overlaping_items(activity.item, period.first, end_activity_date, period, options)
@@ -66,14 +64,14 @@ class InvoiceCreator
     _subscribed_activities_during(period).each do |activity|
       next if activity.item.beta? || activity.item.free?
 
-      end_activity_date = _end_activity_for_activity(activity, period).try(:created_at) || period.last
+      end_activity_date = _end_activity_for_activity(activity, period)
       _build_invoice_item_unless_overlaping_items(activity.item, activity.created_at, end_activity_date, period, options)
     end
   end
 
   def _build_invoice_item_unless_overlaping_items(item, started_at, ended_at, period, options)
     # Ensure we don't create 2 invoice items with the same item and overlapping periods
-    unless invoice.invoice_items.detect { |ii| ii.item == item && ii.started_at <= started_at && ii.ended_at >= ended_at }
+    unless invoice.invoice_items.find { |ii| ii.item == item && ii.started_at <= started_at && ii.ended_at >= ended_at }
       _build_invoice_item(item, started_at, ended_at, options)
     end
   end
@@ -95,7 +93,9 @@ class InvoiceCreator
   end
 
   def _end_activity_for_activity(activity, period)
-    _find_item_for_activity(activity).state(%w[canceled suspended sponsored]).during((activity.created_at..period.last)).order('created_at ASC').first
+    _find_item_for_activity(activity).state(%w[canceled suspended sponsored])
+    .during((activity.created_at..period.last)).order('created_at ASC').first
+    .try(:created_at) || period.last
   end
 
   def _find_item_for_activity(activity)

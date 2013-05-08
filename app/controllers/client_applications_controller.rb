@@ -1,6 +1,6 @@
 class ClientApplicationsController < ApplicationController
-  before_filter :team_accessible_only
-  before_filter :get_client_application, only: [:show, :edit, :update, :destroy]
+  before_filter :_team_accessible_only
+  before_filter :_find_client_application, only: [:show, :edit, :update, :destroy]
 
   # GET /account/applications
   def index
@@ -18,7 +18,7 @@ class ClientApplicationsController < ApplicationController
     @application = current_user.client_applications.build(params[:client_application])
     respond_with(@application) do |format|
       if @application.save
-        format.html { redirect_to client_application_url(@application), id: @application.id, notice: "Application registered successfully." }
+        format.html { redirect_to client_application_url(@application), id: @application.id, notice: 'Application registered successfully.' }
       else
         format.html { render :new }
       end
@@ -41,18 +41,18 @@ class ClientApplicationsController < ApplicationController
   # DELETE /account/applications/:id
   def destroy
     @application.destroy
-    respond_with(@application, notice: "The application has been successfully destroyed.")
+    respond_with(@application, notice: 'The application has been successfully destroyed.')
   end
 
   private
 
-  def team_accessible_only
+  def _team_accessible_only
     redirect_to [:edit, :user] unless current_user.email =~ /@jilion.com$/
   end
 
-  def get_client_application
+  def _find_client_application
     unless @application = current_user.client_applications.find(params[:id])
-      flash.now[:error] = "Wrong application id"
+      flash.now[:error] = 'Wrong application id'
       raise ActiveRecord::RecordNotFound
     end
   end

@@ -10,7 +10,7 @@ class OauthToken < ActiveRecord::Base
   validates :client_application, :token, presence: true
   validates :token, uniqueness: true
 
-  scope :valid, -> { where{ (invalidated_at == nil) & (authorized_at != nil) } }
+  scope :valid, -> { where { (invalidated_at == nil) & (authorized_at != nil) } }
 
   def invalidated?
     invalidated_at?
@@ -31,8 +31,8 @@ class OauthToken < ActiveRecord::Base
   protected
 
   def generate_keys
-    self.token  = OAuth::Helper.generate_key(40)[0,40]
-    self.secret = OAuth::Helper.generate_key(40)[0,40]
+    self.token  = OAuth::Helper.generate_key(40)[0, 40]
+    self.secret = OAuth::Helper.generate_key(40)[0, 40]
   end
 
 end
@@ -45,6 +45,7 @@ end
 #  callback_url          :string(255)
 #  client_application_id :integer
 #  created_at            :datetime         not null
+#  expires_at            :datetime
 #  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
 #  scope                 :string(255)
@@ -53,7 +54,6 @@ end
 #  type                  :string(20)
 #  updated_at            :datetime         not null
 #  user_id               :integer
-#  valid_to              :datetime
 #  verifier              :string(20)
 #
 # Indexes

@@ -2,7 +2,7 @@
 
 module ApplicationHelper
   def display_bool(boolean)
-    boolean == 0 || boolean.blank? || !boolean ? "–" : "✓"
+    boolean == 0 || boolean.blank? || !boolean ? '–' : '✓'
   end
 
   def display_date(date, options = { format: :d_b_Y })
@@ -10,7 +10,7 @@ module ApplicationHelper
   end
 
   def display_time(date, options = { format: :minutes_y })
-    date ? l(date, format: options[:format]) : "–"
+    date ? l(date, format: options[:format]) : '–'
   end
 
   def display_integer(number, options = { significant: false, precision: 2, delimiter: "'" })
@@ -37,8 +37,8 @@ module ApplicationHelper
   end
 
   def info_box(options = {}, &block)
-    content_tag(:div, class: "info_box" + (options[:class] ? " #{options[:class]}" : "")) do
-      capture_haml(&block).chomp.html_safe + content_tag(:span, nil, class: "arrow")
+    content_tag(:div, class: 'info_box' + (options[:class] ? " #{options[:class]}" : '')) do
+      capture_haml(&block).chomp.html_safe + content_tag(:span, nil, class: 'arrow')
     end
   end
 
@@ -47,10 +47,10 @@ module ApplicationHelper
   end
 
   def tooltip_box(options = {}, &block)
-    content_tag(:div, class: 'tooltip' + (options[:class] ? " #{options[:class]}" : "")) do
+    content_tag(:div, class: 'tooltip' + (options[:class] ? " #{options[:class]}" : '')) do
       content_tag(
         :a,
-        (options[:class] ? "<span>#{options[:class]}</span>".html_safe : "<span></span>".html_safe),
+        (options[:class] ? "<span>#{options[:class]}</span>".html_safe : '<span></span>'.html_safe),
         href: (options[:href] ? options[:href] : '#'),
         onclick: (options[:href] ? '' : 'return false'), class: 'icon') +
         content_tag(:span, class: 'content') do

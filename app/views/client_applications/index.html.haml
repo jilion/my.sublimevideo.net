@@ -1,4 +1,4 @@
-= title_and_content_header("API authorizations and applications")
+= title_and_content_header('API authorizations and applications')
 
 - unless @authorizations.empty?
   %p The following applications have been authorized to access your datas in your behalf
@@ -22,7 +22,7 @@
         %td= link_to 'Edit', edit_client_application_path(application)
         %td
           = form_for application, html: { method: :delete, data: { confirm: 'Are you sure?' } } do |f|
-            .entry.delete= f.submit "Delete", class: "submit link_looks delete"
+            .entry.delete= f.submit 'Delete', class: 'submit link_looks delete'
 %br
 %h3
-  = link_to "Register a new application", [:new, :client_application]
+  = link_to 'Register a new application', [:new, :client_application]

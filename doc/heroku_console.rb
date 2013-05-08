@@ -1,5 +1,5 @@
 # Sites ith active videos without Schooltube & Railscast
-sites = Site.where{(last_30_days_video_tags > 0) & (token.not_in ['2xrynuh2', '3s7oes9q'])}.scoped
+sites = Site.where {(last_30_days_video_tags > 0) & (token.not_in ['2xrynuh2', '3s7oes9q'])}.scoped
 
 sum = sites.count
 # => 3830
@@ -35,7 +35,7 @@ end
 
 # for old plans
 d = Time.utc(2012,1,1)
-a = SitesTrend.where(d: d).first[:plans_count].inject({}) do |hash, (plan_id, c)|
+a = SitesTrend.where(d: d).first[:plans_count].reduce({}) do |hash, (plan_id, c)|
   hash[Plan.find(plan_id).title] = c if plan_id.present?
   hash
 end

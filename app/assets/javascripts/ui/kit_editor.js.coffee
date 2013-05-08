@@ -75,17 +75,17 @@ class MySublimeVideo.UI.KitEditor
       this.refreshVideoTagFromSettings()
 
   setupSharingButtonsSelector: ->
-    sharingButtonsInputFieldId = 'kit_setting-sharing-buttons'
-    $('#sharing_active_buttons, #sharing_inactive_buttons').disableSelection().sortable
+    sharingButtons = $('#sharing_active_buttons, #sharing_inactive_buttons')
+    sharingButtons.disableSelection().sortable
       connectWith: '.drop_zone'
       over: (event, ui) =>
         this.toggleReceiveDropZoneHighlight(ui.item)
       receive: (event, ui) =>
         ui.item.toggleClass('enabled').toggleClass('disabled')
       stop: (event, ui) =>
-        $('#sharing_active_buttons, #sharing_inactive_buttons').removeClass('highlight')
+        sharingButtons.removeClass('highlight')
         buttons = $('#sharing_active_buttons').sortable('toArray', { attribute: 'data-value' })
-        $("##{sharingButtonsInputFieldId}").val(buttons)
+        $('#kit_setting-social_sharing-buttons').val(buttons)
         this.refreshVideoTagFromSettings()
 
   toggleReceiveDropZoneHighlight: ($item) ->

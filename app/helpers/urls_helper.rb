@@ -22,13 +22,13 @@ module UrlsHelper
 
   def cdn_url(path)
     protocol, host = case Rails.env
-    when 'development'
-      ['http://', "s3.amazonaws.com/#{S3Wrapper.buckets['sublimevideo']}"]
-    when 'staging'
-      ['http://', 'cdn.sublimevideo-staging.net']
-    else
-      ['//', 'cdn.sublimevideo.net']
-    end
+                     when 'development'
+                       ['http://', "s3.amazonaws.com/#{S3Wrapper.buckets['sublimevideo']}"]
+                     when 'staging'
+                       ['http://', 'cdn.sublimevideo-staging.net']
+                     else
+                       ['//', 'cdn.sublimevideo.net']
+                     end
 
     protocol + [host, path].join('/').squeeze('/')
   end
@@ -37,13 +37,13 @@ module UrlsHelper
     return '' if full_url.blank?
 
     host = case Rails.env
-    when 'development'
-      "s3.amazonaws.com/#{S3Wrapper.buckets['sublimevideo']}"
-    when 'staging'
-      'cdn.sublimevideo-staging.net'
-    else
-      'cdn.sublimevideo.net'
-    end
+           when 'development'
+             "s3.amazonaws.com/#{S3Wrapper.buckets['sublimevideo']}"
+           when 'staging'
+             'cdn.sublimevideo-staging.net'
+           else
+             'cdn.sublimevideo.net'
+           end
 
     full_url.sub(%r{(https?:)?//#{host}/}, '')
   end

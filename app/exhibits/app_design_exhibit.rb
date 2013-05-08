@@ -9,8 +9,12 @@ class AppDesignExhibit < DisplayCase::Exhibit
     'player design'
   end
 
-  def highlight_param_for_addons_page
+  def billable_entity_name_for_addon_page
     name
+  end
+
+  def p_param_for_addon_page
+    nil
   end
 
   def eql?(other)

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature "Mail templates index:" do
+feature "Mail templates" do
 
   background do
     sign_in_as :admin, roles: ['god']
     create(:user)
   end
 
-  scenario "should be possible to edit mail template" do
+  scenario "it is possible to edit a mail template" do
     mail_template = create(:mail_template)
     MailTemplate.all.should have(1).item
 

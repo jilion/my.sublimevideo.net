@@ -7,8 +7,8 @@ class Site < ActiveRecord::Base
   include SiteModules::Usage
   include Searchable
 
-  DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
-  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost' unless defined?(DEFAULT_DEV_DOMAINS)
+  DEFAULT_DOMAIN = 'please-edit.me'
+  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
 
   # Versioning
   has_paper_trail ignore: [
@@ -27,28 +27,6 @@ class Site < ActiveRecord::Base
   serialize :last_30_days_billable_video_views_array, Array
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
-
-  # =======
-  # = API =
-  # =======
-
-  acts_as_api
-
-  api_accessible :v1_self_private do |template|
-    template.add :token
-    template.add :hostname, as: :main_domain
-    template.add lambda { |site| site.extra_hostnames.try(:split, ', ') || [] }, as: :extra_domains
-    template.add lambda { |site| site.dev_hostnames.try(:split, ', ') || [] }, as: :dev_domains
-    template.add lambda { |site| site.staging_hostnames.try(:split, ', ') || [] }, as: :staging_domains
-    template.add lambda { |site| site.wildcard? }, as: :wildcard
-    template.add lambda { |site| site.path || '' }, as: :path
-    template.add :accessible_stage
-  end
-
-  api_accessible :v1_usage_private do |template|
-    template.add :token
-    template.add lambda { |site| site.usages.between(day: 60.days.ago.midnight..Time.now.utc.end_of_day) }, as: :usage, template: :v1_self_private
-  end
 
   # ================
   # = Associations =
@@ -80,8 +58,8 @@ class Site < ActiveRecord::Base
   def components
     # via_designs = app_designs_components.scoped
     # app_design_ids = [nil] + app_designs.map(&:id)
-    # via_addon_plans = addon_plans_components.where{app_plugins.app_design_id.in(app_design_ids)}
-    # App::Component.where{id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}
+    # via_addon_plans = addon_plans_components.where {app_plugins.app_design_id.in(app_design_ids)}
+    # App::Component.where {id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}
 
     # Query via addon_plans is too slow and useless for now
     app_designs_components
@@ -91,12 +69,15 @@ class Site < ActiveRecord::Base
   def usages
     SiteUsage.where(site_id: id)
   end
+
   def referrers
     Referrer.where(token: token)
   end
+
   def day_stats
     Stat::Site::Day.where(t: token)
   end
+
   def views
     @views ||= Stat::Site::Day.views_sum(token: token)
   end
@@ -135,23 +116,23 @@ class Site < ActiveRecord::Base
   state_machine initial: :active do
     event(:archive)   { transition all - [:archived] => :archived }
     event(:suspend)   { transition all - [:suspended] => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
+    event(:unsuspend) { transition suspended: :active }
 
     after_transition ->(site) do
       site.delay_update_loaders_and_settings
     end
 
-    before_transition :on => :suspend do |site, transition|
+    before_transition on: :suspend do |site, transition|
       SiteManager.new(site).suspend_billable_items
       Librato.increment 'sites.events', source: 'suspend'
     end
 
-    before_transition :on => :unsuspend do |site, transition|
+    before_transition on: :unsuspend do |site, transition|
       SiteManager.new(site).unsuspend_billable_items
       Librato.increment 'sites.events', source: 'unsuspend'
     end
 
-    before_transition :on => :archive do |site, transition|
+    before_transition on: :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
       SiteManager.new(site).cancel_billable_items
@@ -165,25 +146,44 @@ class Site < ActiveRecord::Base
   # ==========
 
   # state
-  scope :active,       -> { where{ state == 'active' } }
-  scope :inactive,     -> { where{ state != 'active' } }
-  scope :suspended,    -> { where{ state == 'suspended' } }
-  scope :archived,     -> { where{ state == 'archived' } }
-  scope :not_archived, -> { where{ state != 'archived' } }
+  scope :active,       -> { where { state == 'active' } }
+  scope :inactive,     -> { where { state != 'active' } }
+  scope :suspended,    -> { where { state == 'suspended' } }
+  scope :archived,     -> { where { state == 'archived' } }
+  scope :not_archived, -> { where { state != 'archived' } }
 
   # attributes queries
-  scope :with_wildcard,              -> { where{ wildcard == true } }
-  scope :with_path,                  -> { where{ (path != nil) & (path != '') & (path != ' ') } }
-  scope :with_extra_hostnames,       -> { where{ (extra_hostnames != nil) & (extra_hostnames != '') } }
+  scope :with_wildcard,              -> { where(wildcard: true) }
+  scope :with_path,                  -> { where { (path != nil) & (path != '') & (path != ' ') } }
+  scope :with_extra_hostnames,       -> { where { (extra_hostnames != nil) & (extra_hostnames != '') } }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+  scope :without_hostnames, ->(hostnames = []) do
+    where { (hostname != nil) & (hostname != '') }.
+    where { hostname << hostnames }
+  end
+  scope :created_on, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where(created_at: timestamp.all_day)
+  end
+  scope :created_after, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where { created_at > timestamp }
+  end
+  scope :not_tagged_with, ->(tag) do
+    tagged_with(tag, exclude: true)
+  end
+  scope :first_billable_plays_on_week, ->(timestamp) do
+    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+    where(first_billable_plays_at: timestamp.all_week)
+  end
 
   # addons
   scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
   scope :paying_ids, -> do
-    active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id")
+    active.select('DISTINCT(sites.id)').joins('INNER JOIN billable_items ON billable_items.site_id = sites.id')
     .merge(BillableItem.subscribed).merge(BillableItem.paid)
   end
-  scope :free, -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
+  scope :free, -> { active.includes(:billable_items).where { id << Site.paying_ids } }
   def self.with_addon_plan(full_addon_name)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
 
@@ -213,9 +213,8 @@ class Site < ActiveRecord::Base
   }
 
   def self.additional_or_conditions
-    %w[token hostname extra_hostnames staging_hostnames dev_hostnames].inject([]) do |memo, field|
-      memo << ("lower(#{field}) =~ " + 'lower("%#{q}%")')
-      memo
+    %w[token hostname extra_hostnames staging_hostnames dev_hostnames].reduce([]) do |a, e|
+      a << ("lower(#{e}) =~ " + 'lower("%#{q}%")')
     end
   end
 
@@ -225,9 +224,9 @@ class Site < ActiveRecord::Base
       { :$project => {
           _id: 0,
           t: 1,
-          pvmTot: { :$add => "$pv.m" },
-          pveTot: { :$add => "$pv.e" },
-          pvemTot: { :$add => "$pv.em" } } },
+          pvmTot: { :$add => '$pv.m' },
+          pveTot: { :$add => '$pv.e' },
+          pvemTot: { :$add => '$pv.em' } } },
       { :$group => {
         _id: '$t',
         pvmTotSum: { :$sum => '$pvmTot' },
@@ -243,6 +242,12 @@ class Site < ActiveRecord::Base
 
   def to_backbone_json(options = {})
     to_json(only: [:token, :hostname])
+  end
+
+  def as_json(options = nil)
+    json = super
+    json['tags'] = tag_list
+    json
   end
 
   %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|
