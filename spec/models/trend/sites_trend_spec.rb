@@ -44,7 +44,6 @@ describe SitesTrend do
         sites_stat["al"].should eq({ 'pv' => 4, 'vv' => 4 })
       end
     end
-  end
 
     describe '.update_alive_sites_trends' do
       before do
