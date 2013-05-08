@@ -30,8 +30,9 @@ class SitesTrend
     while trend_day <= Time.now.utc.midnight do
       if trend = self.where(d: trend_day).first
         trend.update_attribute(:al, {
-          pv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'pv'),
-          vv: _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'vv')
+          pv:  _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'pv', threshold: 1),
+          pv2: _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'pv', threshold: 2),
+          vv:  _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'vv', threshold: 1)
         })
       end
       trend_day += 1.day
@@ -46,8 +47,9 @@ class SitesTrend
       su: Site.suspended.count,
       ar: Site.archived.count,
       al: {
-        pv: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv'),
-        vv: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'vv')
+        pv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 1),
+        pv2: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 2),
+        vv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'vv', threshold: 1)
       }
     }
   end
@@ -56,13 +58,13 @@ class SitesTrend
     options.reverse_merge!(history: 30.days)
 
     Stat::Site::Day
-    .between(d: (day - options[:history]).midnight..day.yesterday.end_of_day)
-    .or(*_or_conditions_for_metric(options[:metric]))
+    .between(d: (day - options.delete(:history)).midnight..day.yesterday.end_of_day)
+    .or(*_or_conditions_for_metric(options))
     .distinct(:t).count
   end
 
-  def self._or_conditions_for_metric(metric)
-    %w[m e em].reduce([]) { |a, e| a << { "#{metric}.#{e}" => { :$gt => 0 } } }
+  def self._or_conditions_for_metric(options)
+    %w[m e em].reduce([]) { |a, e| a << { "#{options[:metric]}.#{e}" => { :$gte => options[:threshold] } } }
   end
 
 end

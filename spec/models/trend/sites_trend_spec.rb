@@ -25,9 +25,9 @@ describe SitesTrend do
       create(:site, user: user, state: 'suspended') # suspended
       create(:site, user: user, state: 'archived') # archived
 
-      create(:site_day_stat, t: s1.token, d: 31.days.ago.midnight, pv: { m: 1 }, vv: { m: 1 }) # not in the last 30 days
+      create(:site_day_stat, t: s1.token, d: 31.days.ago.midnight, pv: { m: 2 }, vv: { m: 1 }) # not in the last 30 days
       create(:site_day_stat, t: s2.token, d: 1.day.ago.midnight, pv: { m: 1 }, vv: { m: 1 }) # not taken in account (archived)
-      create(:site_day_stat, t: s3.token, d: 30.days.ago.midnight, pv: { m: 1 }, vv: { m: 1 }) # in the last 30 days
+      create(:site_day_stat, t: s3.token, d: 30.days.ago.midnight, pv: { m: 2 }, vv: { m: 1 }) # in the last 30 days
       create(:site_day_stat, t: s4.token, d: 1.days.ago.midnight, pv: { e: 1 }, vv: { e: 1 })
       create(:site_day_stat, t: s5.token, d: 1.day.ago.midnight, pv: { em: 1 }, vv: { em: 1 })
     end
@@ -41,7 +41,7 @@ describe SitesTrend do
         sites_stat["pa"].should eq({ 'addons' => 2 })
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 2
-        sites_stat["al"].should eq({ 'pv' => 4, 'vv' => 4 })
+        sites_stat["al"].should eq({ 'pv' => 4, 'pv2' => 1, 'vv' => 4 })
       end
     end
 
@@ -57,8 +57,8 @@ describe SitesTrend do
 
         described_class.update_alive_sites_trends
 
-        described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'pv' => 2, 'vv' => 2 })
-        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 4, 'vv' => 4 })
+        described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'pv' => 2, 'pv2' => 2, 'vv' => 2 })
+        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'pv' => 4, 'pv2' => 1, 'vv' => 4 })
       end
     end
   end
