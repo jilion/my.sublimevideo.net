@@ -29,11 +29,7 @@ class SitesTrend
 
     while trend_day <= Time.now.utc.midnight do
       if trend = self.where(d: trend_day).first
-        trend.update_attribute(:al, {
-          pv:  _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'pv', threshold: 1),
-          pv2: _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'pv', threshold: 2),
-          vv:  _number_of_sites_with_usage_in_the_last_30_days(trend_day, metric: 'vv', threshold: 1)
-        })
+        trend.update_attribute(:al, alive_sites_trend_hash(trend_day))
       end
       trend_day += 1.day
     end
@@ -46,11 +42,15 @@ class SitesTrend
       pa: { addons: Site.paying.count },
       su: Site.suspended.count,
       ar: Site.archived.count,
-      al: {
-        pv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 1),
-        pv2: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 2),
-        vv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'vv', threshold: 1)
-      }
+      al: alive_sites_trend_hash(day)
+    }
+  end
+
+  def self.alive_sites_trend_hash(day)
+    {
+      pv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 1),
+      pv2: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 2),
+      vv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'vv', threshold: 1)
     }
   end
 
