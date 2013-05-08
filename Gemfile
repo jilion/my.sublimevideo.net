@@ -66,6 +66,7 @@ gem 'cocaine'
 
 # CDN
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
+gem 'certified'
 gem 'edge_cast'
 
 gem 'activemerchant'
