@@ -284,6 +284,7 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('google_analytics', 'standard'), plugin: App::Plugin.get('google_analytics') },
 
       { addon_plan: AddonPlan.get('dmt_controls', 'standard'), plugin: App::Plugin.get('dmt_controls') },
+      { addon_plan: AddonPlan.get('dmt_quality', 'standard'),  plugin: App::Plugin.get('dmt_quality') },
       { addon_plan: AddonPlan.get('dmt_logo', 'standard'),     plugin: App::Plugin.get('dmt_logo') },
       { addon_plan: AddonPlan.get('dmt_sharing', 'standard'),  plugin: App::Plugin.get('dmt_sharing') }
     ]

@@ -3,7 +3,7 @@ enable:
   values:
     - true
     - false
-  default: false
+  default: true
 
 type:
   type: string
@@ -11,7 +11,7 @@ type:
     - sv
     - custom
     - orange
-  default: sv
+  default: custom
 
 visibility:
   type: string
