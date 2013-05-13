@@ -16,7 +16,7 @@ describe Admin::SitesController do
     end
 
     it "responds with success to GET :edit" do
-      Site.stub_chain(:includes, :find_by_token!).with('abc123') { mock_site }
+      Site.should_receive(:find_by_token!).with('abc123') { mock_site }
 
       get :edit, id: 'abc123'
       response.should render_template(:edit)
@@ -24,7 +24,7 @@ describe Admin::SitesController do
 
     describe "PUT :update" do
       before do
-        Site.stub(:find_by_token!).with('abc123') { mock_site }
+        Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       end
 
       it "responds with redirect to successful PUT :update" do
@@ -43,7 +43,7 @@ describe Admin::SitesController do
     end
 
     it "responds with redirect to successful PUT :update_app_design_subscription" do
-      Site.stub(:find_by_token!).with('abc123') { mock_site }
+      Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       App::Design.stub(:find).with('42') { mock_app_design(id: 42, name: 'foo_design', title: 'Foo Design') }
       mock_service = mock('SiteManager')
       SiteManager.stub(:new).with(mock_site) { mock_service }
@@ -60,7 +60,7 @@ describe Admin::SitesController do
 
     describe "PUT :update" do
       before do
-        Site.stub(:find_by_token!).with('abc123') { mock_site }
+        Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       end
 
       it "responds with redirect to successful PUT :update" do
