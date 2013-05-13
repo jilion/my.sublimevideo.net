@@ -19,6 +19,10 @@ en:
     action:           'Horizon Custom Actions'
     info:             'Info'
     end_actions:      'End Actions'
+    dmt_controls:     'DM Controls'
+    dmt_quality:      'DM Quality'
+    dmt_logo:         'DM Logo'
+    dmt_sharing:      'DM Sharing'
 
   addon_plans:
     video_player:
@@ -83,3 +87,12 @@ en:
 
     end_actions:
       standard: 'Standard End Actions'
+
+    dmt_controls:
+      standard: 'Standard DM Controls'
+    dmt_quality:
+      standard: 'Standard DM Quality'
+    dmt_logo:
+      standard: 'Standard DM Logo'
+    dmt_sharing:
+      standard: 'Standard DM Sharing'

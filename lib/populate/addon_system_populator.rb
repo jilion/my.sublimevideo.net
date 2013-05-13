@@ -32,7 +32,9 @@ class AddonSystemPopulator < Populator
       { name: 'anthony',  token: 'aaa' },
       { name: 'next15',   token: 'aba' },
       { name: 'df',       token: 'afa' },
-      { name: 'blizzard', token: 'aca' }
+      { name: 'blizzard', token: 'aca' },
+
+      { name: 'daily',    token: 'aha' }
     ]
   end
 
@@ -57,7 +59,9 @@ class AddonSystemPopulator < Populator
       { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('anthony')  },
       { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('next15')   },
       { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
-      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') }
+      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') },
+
+      { name: 'daily',    skin_token: 'aha.aha.aha', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('daily') }
     ]
   end
 
@@ -81,7 +85,12 @@ class AddonSystemPopulator < Populator
         -> { { name: 'end_actions',      kind: 'endActions',      design_dependent: true,  parent_addon: Addon.get('video_player') } },
         -> { { name: 'info',             kind: 'info',            design_dependent: true,  parent_addon: Addon.get('video_player') } },
         -> { { name: 'cuezones',         kind: 'cuezones',        design_dependent: false, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'google_analytics', kind: 'googleAnalytics', design_dependent: false, parent_addon: Addon.get('video_player') } }
+        -> { { name: 'google_analytics', kind: 'googleAnalytics', design_dependent: false, parent_addon: Addon.get('video_player') } },
+
+        -> { { name: 'dmt_controls', kind: 'controls',    design_dependent: true, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'dmt_quality',  kind: 'qualityPane', design_dependent: true, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'dmt_logo',     kind: 'logo',        design_dependent: true, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'dmt_sharing',  kind: 'sharing',     design_dependent: true, parent_addon: Addon.get('video_player') } }
     ]
   end
 
@@ -110,7 +119,12 @@ class AddonSystemPopulator < Populator
       { name: 'standard',  price: 0,    addon: Addon.get('info'),             availability: 'custom', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('action'),           availability: 'custom', stable_at: Time.now.utc },
       { name: 'standard',  price: 690,  addon: Addon.get('cuezones'),         availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 690,  addon: Addon.get('google_analytics'), availability: 'public', stable_at: Time.now.utc }
+      { name: 'standard',  price: 690,  addon: Addon.get('google_analytics'), availability: 'public', stable_at: Time.now.utc },
+
+      { name: 'standard',  price: 0,  addon: Addon.get('dmt_controls'), availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,  addon: Addon.get('dmt_quality'),  availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,  addon: Addon.get('dmt_logo'),     availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard',  price: 0,  addon: Addon.get('dmt_sharing'),  availability: 'custom', stable_at: Time.now.utc }
     ]
   end
 
@@ -182,7 +196,12 @@ class AddonSystemPopulator < Populator
 
       { name: 'cuezones',               token: 'sa.sh.ud',    addon: Addon.get('cuezones'),         design: nil,                         component: App::Component.get('app') },
 
-      { name: 'google_analytics',       token: 'sa.sh.uf',    addon: Addon.get('google_analytics'), design: nil,                         component: App::Component.get('app') }
+      { name: 'google_analytics',       token: 'sa.sh.uf',    addon: Addon.get('google_analytics'), design: nil,                         component: App::Component.get('app') },
+
+      { name: 'dmt_controls', token: 'aha.aha.ahb', addon: Addon.get('dmt_controls'), design: App::Design.get('daily'), component: App::Component.get('daily') },
+      { name: 'dmt_quality',  token: 'aha.aha.ahc', addon: Addon.get('dmt_quality'),  design: App::Design.get('daily'), component: App::Component.get('daily') },
+      { name: 'dmt_logo',     token: 'aha.aha.ahd', addon: Addon.get('dmt_logo'),     design: App::Design.get('daily'), component: App::Component.get('daily') },
+      { name: 'dmt_sharing',  token: 'aha.aha.ahe', addon: Addon.get('dmt_sharing'),  design: App::Design.get('daily'), component: App::Component.get('daily') }
     ]
   end
 
@@ -262,7 +281,12 @@ class AddonSystemPopulator < Populator
 
       { addon_plan: AddonPlan.get('cuezones', 'standard'),         plugin: App::Plugin.get('cuezones') },
 
-      { addon_plan: AddonPlan.get('google_analytics', 'standard'), plugin: App::Plugin.get('google_analytics') }
+      { addon_plan: AddonPlan.get('google_analytics', 'standard'), plugin: App::Plugin.get('google_analytics') },
+
+      { addon_plan: AddonPlan.get('dmt_controls', 'standard'), plugin: App::Plugin.get('dmt_controls') },
+      { addon_plan: AddonPlan.get('dmt_quality', 'standard'),  plugin: App::Plugin.get('dmt_quality') },
+      { addon_plan: AddonPlan.get('dmt_logo', 'standard'),     plugin: App::Plugin.get('dmt_logo') },
+      { addon_plan: AddonPlan.get('dmt_sharing', 'standard'),  plugin: App::Plugin.get('dmt_sharing') }
     ]
   end
 
