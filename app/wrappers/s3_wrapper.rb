@@ -1,3 +1,5 @@
+require 'configurator'
+
 module S3Wrapper
   include Configurator
 

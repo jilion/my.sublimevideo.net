@@ -45,6 +45,15 @@ module Admin::SitesHelper
     html.join(' ').html_safe
   end
 
+  def admin_links_to_loaders(site)
+    links = Stage.stages_equal_or_more_stable_than(site.accessible_stage).inject([]) do |memo, stage|
+      url = stage == 'stable' ? cdn_url("js/#{site.token}.js") : cdn_url("js/#{site.token}-#{stage}.js")
+      memo << link_to("View #{stage} loader", url, onclick: "window.open(this); return false")
+      memo
+    end
+    links.join(content_tag(:strong, ' | ')).html_safe
+  end
+
   # always with span here
   def admin_pretty_hostname(site, site_hostname, options = {})
     site_hostname ||= 'no hostname'

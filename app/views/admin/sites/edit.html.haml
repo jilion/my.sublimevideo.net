@@ -13,6 +13,9 @@
 
 = render 'settings', site: @site
 %br
+
+= render 'loader', site: @site
+%br
 %hr
 %br
 
@@ -56,15 +59,5 @@
 %br
 %hr
 %br
-
-- if has_role?('god')
-  %h3 Mode update
-
-  = form_for [:admin, @site] do |f|
-    = f.select :accessible_stage, Stage.stages
-    = f.submit "Update accessible stage", data: { confirm: "Are you sure?" }
-  %br
-  %hr
-  %br
 
 %p= link_to "Back to sites", [:admin, :sites]

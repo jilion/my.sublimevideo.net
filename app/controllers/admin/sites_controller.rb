@@ -49,10 +49,15 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id
   def generate_loader
-    LoaderGenerator.delay.update_all_stages!(@site.id)
-    CampfireWrapper.delay.post("Update all loaders for #{@site.hostname} (#{@site.token}).")
+    if params[:stage] == 'all'
+      LoaderGenerator.delay.update_all_stages!(@site.id)
+      CampfireWrapper.delay.post("Update all loaders for #{@site.hostname} (#{@site.token}).")
+    else
+      LoaderGenerator.delay.update_stage!(@site.id, params[:stage])
+      CampfireWrapper.delay.post("Update #{params[:stage]} loader for #{@site.hostname} (#{@site.token}).")
+    end
 
-    respond_with(@site, notice: 'Loaders will be regenerated.', location: [:edit, :admin, @site]) do |format|
+    respond_with(@site, notice: "#{params[:stage].titleize} loader(s) will be regenerated.", location: [:edit, :admin, @site]) do |format|
       format.js { render 'admin/shared/flash_update' }
     end
   end
@@ -110,7 +115,7 @@ class Admin::SitesController < Admin::AdminController
   end
 
   def find_site_by_token
-    @site = Site.includes(:user).find_by_token!(params[:id])
+    @site = Site.find_by_token!(params[:id])
   end
 
 end
