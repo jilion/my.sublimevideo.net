@@ -144,5 +144,11 @@
   "df": "afa",
   "DFBControls": "afb",
 
-  "TWTActionButtons": "agb"
+  "TWTActionButtons": "agb",
+  
+  "daily": "aha",
+  "DMTControls": "ahb",
+  "DMTQuality": "ahc",
+  "DMTLogo": "ahd",
+  "DMTSharingButtons": "ahe"
 }
