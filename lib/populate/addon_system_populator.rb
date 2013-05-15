@@ -189,6 +189,8 @@ class AddonSystemPopulator < Populator
       { name: 'sharing_next15',         token: 'aba.aba.abc', addon: Addon.get('sharing'),          design: App::Design.get('next15'),   component: App::Component.get('next15') },
       { name: 'sharing_blizzard',       token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: App::Design.get('blizzard'), component: App::Component.get('app') },
       { name: 'sharing_sony',           token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: App::Design.get('sony'),     component: App::Component.get('app') },
+      { name: 'sharing_psg',            token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: App::Design.get('psg'),      component: App::Component.get('app') },
+      { name: 'sharing_orange',         token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: App::Design.get('orange'),   component: App::Component.get('app') },
 
       { name: 'social_sharing_classic', token: 'sa.sh.ua',    addon: Addon.get('social_sharing'),   design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'social_sharing_flat',    token: 'sa.sh.ua',    addon: Addon.get('social_sharing'),   design: App::Design.get('flat'),     component: App::Component.get('app') },
@@ -201,7 +203,7 @@ class AddonSystemPopulator < Populator
       { name: 'info_sony',              token: 'tj.tj.aeb',   addon: Addon.get('info'),             design: App::Design.get('sony'),     component: App::Component.get('sony') },
 
       { name: 'buy_action_blizzard',    token: 'aca.aca.acb', addon: Addon.get('buy_action'),       design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
-      { name: 'buy_action_psg',         token: 'aja.aja.ajc', addon: Addon.get('buy_action'),       design: App::Design.get('psg'),      component: App::Component.get('psg') },
+      { name: 'buy_action_psg',         token: 'aja.aja.ajd', addon: Addon.get('buy_action'),       design: App::Design.get('psg'),      component: App::Component.get('psg') },
 
       { name: 'preview_tools_svnet',    token: 'sj.sj.sk',    addon: Addon.get('preview_tools'),    design: nil,                         component: App::Component.get('svnet') },
 
@@ -280,6 +282,8 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_next15')        },
       { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_blizzard')      },
       { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_sony')          },
+      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_psg')           },
+      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_orange')        },
 
       { addon_plan: AddonPlan.get('social_sharing', 'standard'),   plugin: App::Plugin.get('social_sharing_classic') },
       { addon_plan: AddonPlan.get('social_sharing', 'standard'),   plugin: App::Plugin.get('social_sharing_flat')   },
