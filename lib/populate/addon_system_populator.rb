@@ -223,7 +223,7 @@ class AddonSystemPopulator < Populator
       { name: 'psg_controls', token: 'aja.aja.ajb', addon: Addon.get('psg_controls'), design: App::Design.get('psg'), component: App::Component.get('psg') },
       { name: 'psg_logo',     token: 'aja.aja.ajc', addon: Addon.get('psg_logo'),     design: App::Design.get('psg'), component: App::Component.get('psg') },
 
-      { name: 'rng_controls', token: 'sa.sh.aib', addon: Addon.get('rng_controls'), design: App::Design.get('orange'), component: App::Component.get('orange') }
+      { name: 'rng_controls', token: 'aia.aia.aib', addon: Addon.get('rng_controls'), design: App::Design.get('orange'), component: App::Component.get('orange') }
     ]
   end
 

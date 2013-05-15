@@ -3,12 +3,12 @@ class Admin::SitesController < Admin::AdminController
   respond_to :js, only: [:index, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages]
 
   before_filter do |controller|
-    if action_name.in?(%w[update_app_design_subscription update_addon_plan_subscription])
+    if action_name.in?(%w[update_design_subscription update_addon_plan_subscription])
       require_role?('god')
     end
   end
-  before_filter :set_default_scopes, only: [:index]
-  before_filter :find_site_by_token!, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_app_design_subscription, :update_addon_plan_subscription]
+  before_filter :_set_default_scopes, only: [:index]
+  before_filter :_find_site_by_token!, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -42,9 +42,7 @@ class Admin::SitesController < Admin::AdminController
     params[:site].delete(:accessible_stage) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
-    respond_with(@site, notice: 'Site has been successfully updated.', location: [:edit, :admin, @site]) do |format|
-      format.js { render 'admin/shared/flash_update' }
-    end
+    _respond_for_site_with_notice('Site has been successfully updated.')
   end
 
   # PUT /sites/:id/generate_loader
@@ -57,9 +55,7 @@ class Admin::SitesController < Admin::AdminController
       CampfireWrapper.delay.post("Update #{params[:stage]} loader for #{@site.hostname} (#{@site.token}).")
     end
 
-    respond_with(@site, notice: "#{params[:stage].titleize} loader(s) will be regenerated.", location: [:edit, :admin, @site]) do |format|
-      format.js { render 'admin/shared/flash_update' }
-    end
+    _respond_for_site_with_notice("#{params[:stage].titleize} loader(s) will be regenerated.")
   end
 
   # PUT /sites/:id/generate_settings
@@ -67,9 +63,7 @@ class Admin::SitesController < Admin::AdminController
     SettingsGenerator.delay.update_all!(@site.id)
     CampfireWrapper.delay.post("Update settings for #{@site.hostname} (#{@site.token}).")
 
-    respond_with(@site, notice: "Settings will be regenerated.", location: [:edit, :admin, @site]) do |format|
-      format.js { render 'admin/shared/flash_update' }
-    end
+    _respond_for_site_with_notice('Settings will be regenerated.')
   end
 
   # GET /sites/:id/videos_infos
@@ -84,35 +78,25 @@ class Admin::SitesController < Admin::AdminController
   def active_pages
   end
 
-  # PUT /sites/:id/update_app_design_subscription
-  def update_app_design_subscription
+  # PUT /sites/:id/update_design_subscription
+  def update_design_subscription
     @app_design = App::Design.find(params[:app_design_id])
+    _update_design_subscription(@app_design)
 
-    options = { allow_custom: true }
-    options[:force] = params[:state] if params[:state].present?
-    design_subscriptions = { @app_design.name => (params[:state] == 'canceled' ? '0' : @app_design.id) }
-    SiteManager.new(@site).update_billable_items(design_subscriptions, {}, options)
-
-    notice = t('flash.sites.update_app_design_subscription.notice', app_design_title: @app_design.title, state: params[:state].presence || 'subscribed')
-    respond_with(@site, notice: notice, location: [:edit, :admin, @site])
+    _respond_for_site_with_notice(t('flash.sites.update_design_subscription.notice', app_design_title: @app_design.title, state: params[:state].presence || 'subscribed'))
   end
 
   # PUT /sites/:id/update_addon_plan_subscription
   def update_addon_plan_subscription
     @addon_plan = AddonPlan.find(params[:addon_plan_id])
+    _update_addon_plan_subscription(@addon_plan)
 
-    options = { allow_custom: true }
-    options[:force] = params[:state] if params[:state].present?
-    addon_plan_subscriptions = { @addon_plan.addon.name => (params[:state] == 'canceled' ? '0' : @addon_plan.id) }
-    SiteManager.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
-
-    notice = t('flash.sites.update_addon_plan_subscription.notice', addon_plan_title: @addon_plan.title, state: params[:state].presence || 'subscribed')
-    respond_with(@site, notice: notice, location: [:edit, :admin, @site])
+    _respond_for_site_with_notice(t('flash.sites.update_addon_plan_subscription.notice', addon_plan_title: @addon_plan.title, state: params[:state].presence || 'subscribed'))
   end
 
   private
 
-  def set_default_scopes
+  def _set_default_scopes
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
 
     unless params.keys.any? { |k| k =~ /^by_\w+$/ }
@@ -124,8 +108,26 @@ class Admin::SitesController < Admin::AdminController
     end
   end
 
-  def find_site_by_token!
+  def _find_site_by_token!
     @site = Site.find_by_token!(params[:id])
+  end
+
+  def _update_design_subscription(design)
+    options = { allow_custom: true, force: params[:state].presence || false }
+    design_subscriptions = { design.name => (params[:state] == 'canceled' ? '0' : design.id) }
+    SiteManager.new(@site).update_billable_items(design_subscriptions, {}, options)
+  end
+
+  def _update_addon_plan_subscription(addon_plan)
+    options = { allow_custom: true, force: params[:state].presence || false }
+    addon_plan_subscriptions = { addon_plan.addon.name => (params[:state] == 'canceled' ? '0' : addon_plan.id) }
+    SiteManager.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
+  end
+
+  def _respond_for_site_with_notice(text)
+    respond_with(@site, notice: text, location: [:edit, :admin, @site]) do |format|
+      format.js { render 'admin/shared/flash_update' }
+    end
   end
 
 end

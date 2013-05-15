@@ -42,7 +42,7 @@ describe Admin::SitesController do
       end
     end
 
-    it "responds with redirect to successful PUT :update_app_design_subscription" do
+    it "responds with redirect to successful PUT :update_design_subscription" do
       Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       App::Design.stub(:find).with('42') { mock_app_design(id: 42, name: 'foo_design', title: 'Foo Design') }
       mock_service = mock('SiteManager')
@@ -50,7 +50,7 @@ describe Admin::SitesController do
 
       mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true })
 
-      put :update_app_design_subscription, id: 'abc123', app_design_id: 42
+      put :update_design_subscription, id: 'abc123', app_design_id: 42
       response.should redirect_to(edit_admin_site_url(mock_site))
     end
   end
@@ -79,7 +79,7 @@ describe Admin::SitesController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :edit], put: [:update, :update_app_design_subscription, :update_addon_plan_subscription] }
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { put: [:update_app_design_subscription, :update_addon_plan_subscription] }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :edit], put: [:update, :update_design_subscription, :update_addon_plan_subscription] }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { put: [:update_design_subscription, :update_addon_plan_subscription] }
 
 end
