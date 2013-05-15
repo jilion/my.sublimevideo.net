@@ -153,12 +153,11 @@
   "DMTQuality": "ahc",
   "DMTLogo": "ahd",
   "DMTSharingButtons": "ahe",
-  
+
   "psg": "aja",
-  "PSGControls": "ajb",
-  "PSGLogo": "ajc",
-  
-  "orange": "aia",
+  "PSGControls": "ajb",
+  "PSGLogo": "ajc",
+
+  "orange": "aia",
   "RNGControls": "aib"
-  
 }
