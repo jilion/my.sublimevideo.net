@@ -1,6 +1,6 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :html, except: [:videos_infos, :invoices, :active_pages]
-  respond_to :js, only: [:index, :update, :generate_loader, :videos_infos, :invoices, :active_pages]
+  respond_to :js, only: [:index, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages]
 
   before_filter do |controller|
     if action_name.in?(%w[update_app_design_subscription update_addon_plan_subscription])
@@ -8,7 +8,7 @@ class Admin::SitesController < Admin::AdminController
     end
   end
   before_filter :set_default_scopes, only: [:index]
-  before_filter :find_site_by_token!, only: [:edit, :update, :generate_loader, :videos_infos, :invoices, :active_pages, :update_app_design_subscription, :update_addon_plan_subscription]
+  before_filter :find_site_by_token!, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_app_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -47,7 +47,7 @@ class Admin::SitesController < Admin::AdminController
     end
   end
 
-  # PUT /sites/:id
+  # PUT /sites/:id/generate_loader
   def generate_loader
     if params[:stage] == 'all'
       LoaderGenerator.delay.update_all_stages!(@site.id)
@@ -58,6 +58,16 @@ class Admin::SitesController < Admin::AdminController
     end
 
     respond_with(@site, notice: "#{params[:stage].titleize} loader(s) will be regenerated.", location: [:edit, :admin, @site]) do |format|
+      format.js { render 'admin/shared/flash_update' }
+    end
+  end
+
+  # PUT /sites/:id/generate_settings
+  def generate_settings
+    SettingsGenerator.delay.update_all!(@site.id)
+    CampfireWrapper.delay.post("Update settings for #{@site.hostname} (#{@site.token}).")
+
+    respond_with(@site, notice: "Settings will be regenerated.", location: [:edit, :admin, @site]) do |format|
       format.js { render 'admin/shared/flash_update' }
     end
   end

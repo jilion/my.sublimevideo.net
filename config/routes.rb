@@ -58,6 +58,7 @@ MySublimeVideo::Application.routes.draw do
           get :invoices
           get :active_pages
           put :generate_loader
+          put :generate_settings
           put :update_app_design_subscription
           put :update_addon_plan_subscription
         end

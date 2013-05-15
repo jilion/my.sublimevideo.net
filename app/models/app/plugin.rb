@@ -16,7 +16,6 @@ class App::Plugin < ActiveRecord::Base
 
   validates :addon, :component, presence: true
   validates :addon_id, uniqueness: { scope: :app_design_id }
-
 end
 
 # == Schema Information
