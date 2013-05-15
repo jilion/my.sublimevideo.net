@@ -33,10 +33,8 @@ class App::Component < ActiveRecord::Base
     token
   end
 
-  def cached_versions
-    Rails.cache.fetch [self, 'versions'] do
-      versions.all
-    end
+  def versions_for_stage(stage)
+    _cached_versions.select { |v| Stage.stages_equal_or_more_stable_than(stage).include?(v.stage) }
   end
 
   def sites
@@ -52,6 +50,12 @@ class App::Component < ActiveRecord::Base
   def clear_caches
     super
     Rails.cache.clear [self.class, 'app_component']
+  end
+
+  private
+
+  def _cached_versions
+    Rails.cache.fetch [self, 'versions'] { versions.all }
   end
 
 end

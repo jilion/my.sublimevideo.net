@@ -15,7 +15,7 @@ module App
 
       @components = [::App::Component.app_component]
       @components += @site.components
-      @components.compact.uniq.each { |component| add_component(component) }
+      @components.compact.uniq.each { |component| _add_component(component) }
     end
 
     def solve
@@ -24,15 +24,15 @@ module App
       self
     end
 
-  private
+    private
 
-    def add_component(component)
-      component.cached_versions.select { |v| v.stage >= @stage }.each do |version|
+    def _add_component(component)
+      component.versions_for_stage(@stage).each do |version|
         graph_component = @graph.artifacts(component.token, version.version)
         version.dependencies.each do |component_name, identifier|
-          dep_component = ::App::Component.find_cached_by_name(component_name)
+          dep_component = ::App::Component.get(component_name)
           if @graph.artifacts.none? { |a| a.name == dep_component.token }
-            add_component(dep_component)
+            _add_component(dep_component)
           end
           graph_component.depends(dep_component.token, identifier)
         end

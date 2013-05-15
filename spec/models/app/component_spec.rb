@@ -75,6 +75,31 @@ describe App::Component, :fog_mock do
     component.reload.versions.all.should eq [component_version2, component_version1]
   end
 
+  describe '#versions_for_stage' do
+   let!(:zip) { fixture_file('app/e.zip') }
+   let!(:component_version_alpha)  { App::ComponentVersion.create({ token: component.token, version: '1.0.0-alpha', zip: zip }, as: :admin) }
+   let!(:component_version_beta)   { App::ComponentVersion.create({ token: component.token, version: '1.0.0-beta', zip: zip }, as: :admin) }
+   let!(:component_version_stable) { App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin) }
+
+    context 'aplha stage given' do
+      it 'returns alpha version only' do
+        component.versions_for_stage('alpha').should =~ [component_version_stable, component_version_beta, component_version_alpha]
+      end
+    end
+
+    context 'beta stage given' do
+      it 'returns beta and stable versions' do
+        component.versions_for_stage('beta').should =~ [component_version_stable, component_version_beta]
+      end
+    end
+
+    context 'stable stage given' do
+      it 'returns alpha, beta and stable versions' do
+        component.versions_for_stage('stable').should =~ [component_version_stable]
+      end
+    end
+  end
+
 end
 
 # == Schema Information
