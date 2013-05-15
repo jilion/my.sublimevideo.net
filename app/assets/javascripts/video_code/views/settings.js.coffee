@@ -6,9 +6,6 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     this._initUIHelpers()
     this.render()
 
-  #
-  # EVENTS
-  #
   events: ->
     'change #poster_src':           'updatePosterSrc'
     'change #uid':                  'updateUid'
