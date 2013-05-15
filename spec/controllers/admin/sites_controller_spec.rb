@@ -64,7 +64,7 @@ describe Admin::SitesController do
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true, force: false }) { true }
+        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
 
         put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))

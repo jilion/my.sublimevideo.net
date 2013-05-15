@@ -3,14 +3,14 @@ include ActionView::Helpers::SanitizeHelper
 
 feature 'Deal activation' do
   background do
-    create(:deal, token: 'rts1', availability_scope: 'use_clients')
-    create(:deal, token: 'rts2', availability_scope: 'use_clients(false)')
+    create(:deal, token: 'rts1', availability_scope: 'vip')
+    create(:deal, token: 'rts2', availability_scope: 'vip(false)')
     create(:deal, token: 'rts3', availability_scope: 'newsletter(true)')
   end
 
   context 'user is not logged-in' do
     background do
-      @user = create(:user, use_clients: true)
+      @user = create(:user, vip: true)
       SiteManager.new(build(:site, user: @user)).create
     end
 
@@ -56,7 +56,7 @@ feature 'Deal activation' do
 
   context 'user is logged-in' do
     background do
-      sign_in_as :user, use_clients: true
+      sign_in_as :user, vip: true
       SiteManager.new(build(:site, user: @current_user)).create
     end
 

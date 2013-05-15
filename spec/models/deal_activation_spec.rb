@@ -64,7 +64,7 @@ describe DealActivation do
     end
 
     describe "ensures the user has the right to activate the deal" do
-      let(:deal) { create(:deal, availability_scope: 'use_clients') }
+      let(:deal) { create(:deal, availability_scope: 'vip') }
 
       context "user isn't included in the available_to scope of the deal record" do
         before { deal.should_receive(:available_to?) { false } }
