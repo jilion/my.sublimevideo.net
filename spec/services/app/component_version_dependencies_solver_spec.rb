@@ -88,6 +88,7 @@ describe App::ComponentVersionDependenciesSolver do
       context 'with 0 site components dependencies' do
         before { site.stub(:components) { [] } }
 
+        it 'depends on the app bigger component version' do
           described_class.components_dependencies(site, 'stable').should eq('a' => '2.0.0')
         end
       end
@@ -232,5 +233,28 @@ describe App::ComponentVersionDependenciesSolver do
         end
       end
     end
+
+    context 'with stage is alpha' do
+      before do
+        c_a.should_receive(:versions_for_stage).any_number_of_times.with('alpha') { [c_a_200, c_a_100, c_a_200beta1, c_a_200alpha1] }
+        c_c4.should_receive(:versions_for_stage).any_number_of_times.with('alpha') { [c_c4_100alpha1] }
+      end
+
+      context 'with one other site components dependency' do
+        before { site.stub(:components) { [c_c4] } }
+
+        context 'with app component dependency and another dependency with another dependency' do
+          before do
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            c_c4_100alpha1.stub(:dependencies) { { 'app' => '1.0.0' } }
+          end
+
+          it 'depends on all dependencies' do
+            described_class.components_dependencies(site, 'alpha').should eq('a' => '1.0.0', 'c4' => '1.0.0-alpha.1')
+          end
+        end
+      end
+    end
+
   end
 end
