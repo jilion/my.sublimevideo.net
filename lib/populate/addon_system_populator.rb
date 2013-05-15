@@ -34,7 +34,9 @@ class AddonSystemPopulator < Populator
       { name: 'df',       token: 'afa' },
       { name: 'blizzard', token: 'aca' },
 
-      { name: 'daily',    token: 'aha' }
+      { name: 'daily',  token: 'aha' },
+      { name: 'psg',    token: 'aja' },
+      { name: 'orange', token: 'aia' }
     ]
   end
 
@@ -61,7 +63,9 @@ class AddonSystemPopulator < Populator
       { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
       { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') },
 
-      { name: 'daily',    skin_token: 'aha.aha.aha', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('daily') }
+      { name: 'daily',  skin_token: 'aha.aha.aha', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('daily') },
+      { name: 'psg',    skin_token: 'aja.aja.aja', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('psg') },
+      { name: 'orange', skin_token: 'aia.aia.aia', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('orange') }
     ]
   end
 
@@ -90,7 +94,12 @@ class AddonSystemPopulator < Populator
         -> { { name: 'dmt_controls', kind: 'controls',    design_dependent: true, parent_addon: Addon.get('video_player') } },
         -> { { name: 'dmt_quality',  kind: 'qualityPane', design_dependent: true, parent_addon: Addon.get('video_player') } },
         -> { { name: 'dmt_logo',     kind: 'logo',        design_dependent: true, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'dmt_sharing',  kind: 'sharing',     design_dependent: true, parent_addon: Addon.get('video_player') } }
+        -> { { name: 'dmt_sharing',  kind: 'sharing',     design_dependent: true, parent_addon: Addon.get('video_player') } },
+
+        -> { { name: 'psg_controls', kind: 'controls', design_dependent: true, parent_addon: Addon.get('video_player') } },
+        -> { { name: 'psg_logo',     kind: 'logo',     design_dependent: true, parent_addon: Addon.get('video_player') } },
+
+        -> { { name: 'rng_controls', kind: 'controls', design_dependent: true, parent_addon: Addon.get('video_player') } }
     ]
   end
 
@@ -121,10 +130,15 @@ class AddonSystemPopulator < Populator
       { name: 'standard',  price: 690,  addon: Addon.get('cuezones'),         availability: 'public', stable_at: Time.now.utc },
       { name: 'standard',  price: 690,  addon: Addon.get('google_analytics'), availability: 'public', stable_at: Time.now.utc },
 
-      { name: 'standard',  price: 0,  addon: Addon.get('dmt_controls'), availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,  addon: Addon.get('dmt_quality'),  availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,  addon: Addon.get('dmt_logo'),     availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,  addon: Addon.get('dmt_sharing'),  availability: 'custom', stable_at: Time.now.utc }
+      { name: 'standard', price: 0, addon: Addon.get('dmt_controls'), availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard', price: 0, addon: Addon.get('dmt_quality'),  availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard', price: 0, addon: Addon.get('dmt_logo'),     availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard', price: 0, addon: Addon.get('dmt_sharing'),  availability: 'custom', stable_at: Time.now.utc },
+
+      { name: 'standard', price: 0, addon: Addon.get('psg_controls'), availability: 'custom', stable_at: Time.now.utc },
+      { name: 'standard', price: 0, addon: Addon.get('psg_logo'),     availability: 'custom', stable_at: Time.now.utc },
+
+      { name: 'standard', price: 0, addon: Addon.get('rng_controls'),  availability: 'custom', stable_at: Time.now.utc }
     ]
   end
 
@@ -201,7 +215,12 @@ class AddonSystemPopulator < Populator
       { name: 'dmt_controls', token: 'aha.aha.ahb', addon: Addon.get('dmt_controls'), design: App::Design.get('daily'), component: App::Component.get('daily') },
       { name: 'dmt_quality',  token: 'aha.aha.ahc', addon: Addon.get('dmt_quality'),  design: App::Design.get('daily'), component: App::Component.get('daily') },
       { name: 'dmt_logo',     token: 'aha.aha.ahd', addon: Addon.get('dmt_logo'),     design: App::Design.get('daily'), component: App::Component.get('daily') },
-      { name: 'dmt_sharing',  token: 'aha.aha.ahe', addon: Addon.get('dmt_sharing'),  design: App::Design.get('daily'), component: App::Component.get('daily') }
+      { name: 'dmt_sharing',  token: 'aha.aha.ahe', addon: Addon.get('dmt_sharing'),  design: App::Design.get('daily'), component: App::Component.get('daily') },
+
+      { name: 'psg_controls', token: 'aja.aja.ajb', addon: Addon.get('psg_controls'), design: App::Design.get('psg'), component: App::Component.get('psg') },
+      { name: 'psg_logo',     token: 'aja.aja.ajc', addon: Addon.get('psg_logo'),     design: App::Design.get('psg'), component: App::Component.get('psg') },
+
+      { name: 'rng_controls', token: 'sa.sh.aib', addon: Addon.get('rng_controls'), design: App::Design.get('orange'), component: App::Component.get('orange') }
     ]
   end
 
@@ -286,7 +305,12 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('dmt_controls', 'standard'), plugin: App::Plugin.get('dmt_controls') },
       { addon_plan: AddonPlan.get('dmt_quality', 'standard'),  plugin: App::Plugin.get('dmt_quality') },
       { addon_plan: AddonPlan.get('dmt_logo', 'standard'),     plugin: App::Plugin.get('dmt_logo') },
-      { addon_plan: AddonPlan.get('dmt_sharing', 'standard'),  plugin: App::Plugin.get('dmt_sharing') }
+      { addon_plan: AddonPlan.get('dmt_sharing', 'standard'),  plugin: App::Plugin.get('dmt_sharing') },
+
+      { addon_plan: AddonPlan.get('psg_controls', 'standard'), plugin: App::Plugin.get('psg_controls') },
+      { addon_plan: AddonPlan.get('psg_logo', 'standard'),     plugin: App::Plugin.get('psg_logo') },
+
+      { addon_plan: AddonPlan.get('rng_controls', 'standard'), plugin: App::Plugin.get('rng_controls') }
     ]
   end
 

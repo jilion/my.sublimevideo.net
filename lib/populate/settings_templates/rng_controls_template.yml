@@ -1,0 +1,13 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+visibility:
+  type: string
+  values:
+    - autohide
+    - visible
+  default: autohide
