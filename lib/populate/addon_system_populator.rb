@@ -201,6 +201,7 @@ class AddonSystemPopulator < Populator
       { name: 'info_sony',              token: 'tj.tj.aeb',   addon: Addon.get('info'),             design: App::Design.get('sony'),     component: App::Component.get('sony') },
 
       { name: 'buy_action_blizzard',    token: 'aca.aca.acb', addon: Addon.get('buy_action'),       design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
+      { name: 'buy_action_psg',         token: 'aja.aja.ajc', addon: Addon.get('buy_action'),       design: App::Design.get('psg'),      component: App::Component.get('psg') },
 
       { name: 'preview_tools_svnet',    token: 'sj.sj.sk',    addon: Addon.get('preview_tools'),    design: nil,                         component: App::Component.get('svnet') },
 
@@ -297,6 +298,7 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('end_actions', 'standard'),      plugin: App::Plugin.get('end_actions_twit')    },
 
       { addon_plan: AddonPlan.get('buy_action', 'standard'),       plugin: App::Plugin.get('buy_action_blizzard') },
+      { addon_plan: AddonPlan.get('buy_action', 'standard'),       plugin: App::Plugin.get('buy_action_psg') },
 
       { addon_plan: AddonPlan.get('cuezones', 'standard'),         plugin: App::Plugin.get('cuezones') },
 
