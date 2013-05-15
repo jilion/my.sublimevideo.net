@@ -1,5 +1,12 @@
 class AdminSublimeVideo.Views.GraphView extends Backbone.View
   initialize: ->
+    this._listenToModelsEvents()
+
+  #
+  # BINDINGS
+  #
+  _listenToModelsEvents: ->
+    this.listenTo(AdminSublimeVideo.period, 'change', this.render)
     _.each @collection, (trend) =>
       this.listenTo(trend, 'change', this.render)
 

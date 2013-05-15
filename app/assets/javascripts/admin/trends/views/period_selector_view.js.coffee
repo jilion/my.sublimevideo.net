@@ -1,8 +1,15 @@
 class AdminSublimeVideo.Views.PeriodSelectorView extends Backbone.View
   events: ->
-    'click a': 'applyPreset'
+    'click a': '_applyPreset'
 
-  applyPreset: (event) ->
+  day: -> 1000 * 3600 * 24
+  month: -> this.day() * 30
+  year: -> this.day() * 365
+
+  #
+  # PRIVATE
+  #
+  _applyPreset: (event) ->
     event.stopPropagation()
     preset = $(event.target).parent('li').attr('class').split('-')
 
@@ -25,7 +32,3 @@ class AdminSublimeVideo.Views.PeriodSelectorView extends Backbone.View
     AdminSublimeVideo.graphView.render()
 
     false
-
-  day: -> 1000 * 3600 * 24
-  month: -> this.day() * 30
-  year: -> this.day() * 365

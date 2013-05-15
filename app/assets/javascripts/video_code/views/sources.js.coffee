@@ -6,9 +6,6 @@ class MSVVideoCode.Views.Sources extends Backbone.View
     this._initUIHelpers()
     this.render()
 
-  #
-  # EVENTS
-  #
   events: ->
     'click input[name=video_origin]': 'updateVideoOrigin'
     'change .source':                 'updateSrc'

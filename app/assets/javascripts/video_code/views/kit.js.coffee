@@ -1,8 +1,4 @@
 class MSVVideoCode.Views.Kit extends Backbone.View
-
-  #
-  # EVENTS
-  #
   events: ->
     'change select#kit_id': 'updateSelectedKitIdentifier'
 
