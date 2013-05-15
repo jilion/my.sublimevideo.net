@@ -121,3 +121,4 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   _renderViews: ->
     this.render()
     MSVVideoCode.settingsView.render()
+    MSVVideoCode.lightboxView.render()
