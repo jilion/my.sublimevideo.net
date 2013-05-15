@@ -1,23 +1,33 @@
 require 'tempfile'
 
+# models
+require 'app'
+
+# wrappers
+require 's3_wrapper'
+require 'cdn_file'
+
+# services
+require 'player_mangler'
+
 class SettingsGenerator
   attr_reader :site, :options
 
-  delegate :upload!, :delete!, :present?, to: :cdn_file
-
-  def self.update_all!(site_id, options = {})
-    site = Site.find(site_id)
-    if site.state == 'active'
-      new(site, options).upload!
-      Librato.increment 'settings.update', source: 'settings'
-    else
-      new(site, options).delete!
-      Librato.increment 'settings.delete', source: 'settings'
-    end
-  end
+  delegate :present?, to: :cdn_file
 
   def initialize(site, options = {})
     @site, @options = site, options
+  end
+
+  def self.update_all!(site_id, options = {})
+    site = Site.find(site_id)
+    generator = new(site, options)
+
+    if site.active?
+      generator.upload!
+    else
+      generator.delete!
+    end
   end
 
   def cdn_file
@@ -64,6 +74,16 @@ class SettingsGenerator
 
   def mangle(hash)
     PlayerMangler.mangle(hash)
+  end
+
+  def upload!
+    cdn_file.upload!
+    _increment_librato('update')
+  end
+
+  def delete!
+    cdn_file.delete!
+    _increment_librato('delete')
   end
 
 private
@@ -149,4 +169,9 @@ private
       'x-amz-acl'     => 'public-read'
     }
   end
+
+  def _increment_librato(action)
+    Librato.increment "settings.#{action}", source: 'settings'
+  end
+
 end

@@ -1,14 +1,10 @@
 require 'fast_spec_helper'
-require 'configurator'
-require 'rails/railtie'
-require 'fog'
+require 'config/sidekiq'
+require 'support/matchers/sidekiq_matchers'
+require 'rails/railtie' # for Carrierwave
 require 'config/carrierwave' # for fog_mock
 
-require 'services/player_mangler'
 require 'services/settings_generator'
-require 'wrappers/s3_wrapper'
-require 'wrappers/cdn_file'
-require 'models/app'
 
 App::Design = Class.new unless defined?(App::Design)
 App::Plugin = Class.new unless defined?(App::Plugin)
@@ -45,7 +41,7 @@ describe SettingsGenerator, :fog_mock do
     before { Site.stub(:find) { site } }
 
     context "site active" do
-      before { site.stub(:state) { 'active' } }
+      before { site.stub(:active?) { true } }
 
       it "uploads all settings types when accessible_stage is 'beta'" do
         site.stub(:accessible_stage) { 'beta' }
@@ -65,7 +61,7 @@ describe SettingsGenerator, :fog_mock do
       end
 
       context "when suspended" do
-        before { site.stub(:state) { 'suspended' } }
+        before { site.stub(:active?) { false } }
 
         it "removes all settings types" do
           described_class.update_all!(site.id)
