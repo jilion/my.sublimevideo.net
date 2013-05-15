@@ -48,7 +48,7 @@ describe Admin::SitesController do
       mock_service = mock('SiteManager')
       SiteManager.stub(:new).with(mock_site) { mock_service }
 
-      mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true })
+      mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
 
       put :update_design_subscription, id: 'abc123', app_design_id: 42
       response.should redirect_to(edit_admin_site_url(mock_site))
@@ -64,7 +64,7 @@ describe Admin::SitesController do
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true, force: false }) { true }
 
         put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))

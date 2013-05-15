@@ -132,12 +132,9 @@ class User < ActiveRecord::Base
   }
 
   # attributes queries
-  scope :created_on,   ->(date) { where { created_at >> date.all_day } }
-  scope :use_personal, ->(bool = true) { where(use_personal: bool) }
-  scope :use_company,  ->(bool = true) { where(use_company: bool) }
-  scope :use_clients,  ->(bool = true) { where(use_clients: bool) }
-  scope :newsletter,   ->(bool = true) { where(newsletter: bool) }
-  scope :vip,          ->(bool = true) { where(vip: bool) }
+  scope :created_on, ->(date) { where { created_at >> date.all_day } }
+  scope :newsletter, ->(bool = true) { where(newsletter: bool) }
+  scope :vip,        ->(bool = true) { where(vip: bool) }
 
   scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
