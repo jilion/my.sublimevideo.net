@@ -17,12 +17,16 @@
   = render 'addons/addon', site: site, addon: Addon.get('social_sharing')
   = render 'addons/addon', site: site, addon: Addon.get('embed')
   = render 'addons/addon', site: site, addon: Addon.get('stats')
+  - if early_access?('google_analytics_addon')
+    = render 'addons/addon', site: site, addon: Addon.get('google_analytics')
   = render 'addons/addon', site: site, addon: Addon.get('support')
   %tr
     %td.break_box{ colspan: 3 }
   %tr
     %td
     %td.trial_notice
-      %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+      %small
+        Total per month
+        = link_to content_tag(:sup, '1'), '#footnote-1', class: 'hl'
     %td.price
       %strong#addons_total= display_amount_with_sup(site.total_billable_items_price)

@@ -29,7 +29,7 @@ class Kit < ActiveRecord::Base
 
   def as_json(options = nil)
     json = super
-    json['settings'] = settings.inject({}) do |hash, (addon_name, setting)|
+    json['settings'] = settings.reduce({}) do |hash, (addon_name, setting)|
       hash[Addon.get(addon_name).kind.underscore] = setting
       hash
     end

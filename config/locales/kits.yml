@@ -1,6 +1,7 @@
 en:
   kit:
     video_player:
+      title: 'Basic Player settings'
       settings:
         volume_enable: 'Volume control'
         fullmode_enable: 'Full-mode control'
@@ -32,6 +33,7 @@ en:
           visible: 'Always visible'
 
     lightbox:
+      title: 'Lightbox settings'
       settings:
         on_open: 'Once the lightbox is opened...'
         overlay_opacity: 'Background overlay opacity'
@@ -51,6 +53,7 @@ en:
           right: 'Top right'
 
     logo:
+      title: 'On-Video Logo settings'
       settings:
         enable: 'On-video logo'
         visibility: 'Visibility'
@@ -94,3 +97,9 @@ en:
         type: 'Embed type'
         url: 'Default embed URL'
         size: 'Default embed size'
+
+    google_analytics:
+      title: 'Google Analytics settings'
+      settings:
+        enable: 'Events tracking'
+        account: 'Account ID'

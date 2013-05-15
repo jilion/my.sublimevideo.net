@@ -19,14 +19,18 @@ class Addon < ActiveRecord::Base
 
   scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
   scope :visible,         -> { includes(:plans).merge(AddonPlan.visible) }
-  scope :public,          -> { includes(:plans).merge(AddonPlan.public) }
+  scope :not_custom,      -> { includes(:plans).merge(AddonPlan.not_custom) }
 
   def free_plan
-    plans.where(price: 0).first
+    plans.free.first
   end
 
   def title
     I18n.t("addons.#{name}")
+  end
+
+  def to_param
+    name
   end
 
 end

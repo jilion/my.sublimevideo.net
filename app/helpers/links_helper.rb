@@ -15,12 +15,17 @@ module LinksHelper
     class_active = 'active' if active
 
     # The 'up' class is applied when sort is reversed Z->A, opposite if the sort has the :reverse options
-    class_up = 'up' if active ? (way == (options[:reverse] ? 'asc' : 'desc')) : (options[:default_way] == (options[:reverse] ? 'desc' : 'asc'))
+    apply_up_class = if active
+      way == (options[:reverse] ? 'asc' : 'desc')
+    else
+      options[:default_way] == (options[:reverse] ? 'desc' : 'asc')
+    end
+    class_up = 'up' if apply_up_class
 
     url_params = params.reject { |k, v| k =~ /by_.*|page/ }
     link_to(url_for(url_params.merge("by_#{field}" => way)),
-              class: ['sort remote', field, class_active, class_up].join(" "),
-              remote: true) do
+            class: ['sort remote', field, class_active, class_up].join(' '),
+            remote: true) do
       content_tag(:span, options[:label], class: 'arrow', title: options[:title])
     end
   end

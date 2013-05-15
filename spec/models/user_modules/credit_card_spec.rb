@@ -402,6 +402,7 @@ describe UserModules::CreditCard do
 
     describe "#process_credit_card_authorization_response" do
       let(:d3d_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "?",
         "STATUS" => "46",
         "PAYID" => "1234",
@@ -409,35 +410,41 @@ describe UserModules::CreditCard do
         "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>")
       } }
       let(:authorized_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "0",
         "STATUS" => "5",
         "PAYID" => "1234"
       } }
       let(:waiting_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "0",
         "STATUS" => "51",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Waiting"
       } }
       let(:invalid_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "5",
         "STATUS" => "0",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Invalid credit card number"
       } }
       let(:refused_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "3",
         "STATUS" => "2",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Refused credit card number"
       } }
       let(:canceled_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "40001134",
         "STATUS" => "1",
         "PAYID" => "1234",
         "NCERRORPLUS" => "Authentication failed, please retry or cancel"
       } }
       let(:unknown_params) { {
+        "BRAND" => "American Express",
         "NCSTATUS" => "2",
         "STATUS" => "52",
         "PAYID" => "1234",

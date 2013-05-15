@@ -74,7 +74,7 @@ FactoryGirl.define do
 
   factory :referrer do
     url   "http://bob.com"
-    token { '123456' }
+    sequence(:token) { |n| n }
     hits  12
   end
 
@@ -273,6 +273,7 @@ FactoryGirl.define do
     client_application
     user
     callback_url "http://test.com/callback"
+    authorized_at { Time.now.utc }
   end
 
   factory :oauth2_verifier do

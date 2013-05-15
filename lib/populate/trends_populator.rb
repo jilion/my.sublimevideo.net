@@ -35,10 +35,10 @@ class TrendsPopulator < Populator
     PopulateHelpers.empty_tables(SitesTrend)
 
     day = start_at.midnight
-    hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0, al: { pv: 0, vv: 0 } }
+    hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0, al: { pv: 0, pv2: 0, vv: 0 } }
 
     while day <= Time.now.utc.midnight
-      hash[:d]   = day
+      hash[:d]          = day
       hash[:fr][:free] += rand(50)
 
       if day >= Time.utc(2012, 10, 23)
@@ -52,6 +52,7 @@ class TrendsPopulator < Populator
       hash[:su] += rand(3)
       hash[:ar] += rand(6)
       hash[:al][:pv] += rand(12)
+      hash[:al][:pv2] += rand(9)
       hash[:al][:vv] += rand(5)
 
       SitesTrend.create(hash)

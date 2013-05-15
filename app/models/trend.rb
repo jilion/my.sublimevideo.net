@@ -5,7 +5,7 @@ module Trend
   included do
     field :d, type: DateTime
 
-    index d: 1
+    index({ d: 1 }, { unique: true })
 
     default_scope order_by(d: 1)
   end

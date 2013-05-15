@@ -115,6 +115,12 @@
   "SVEmbed" : "ub",
   "cuezones" : "uc",
   "SVCueZones" : "ud",
+  // google analytics
+  "googleAnalytics": "ue",
+  "SVGoogleAnalytics": "uf",
+  "account": "ug",
+  "qualityPane": "uh",
+
 
   // since these properties aren't used too often (only in custom players),
   // we use 3-letter keys instead use 2-letter keys.
@@ -140,5 +146,19 @@
   "df": "afa",
   "DFBControls": "afb",
 
-  "TWTActionButtons": "agb"
+  "TWTActionButtons": "agb",
+
+  "daily": "aha",
+  "DMTControls": "ahb",
+  "DMTQuality": "ahc",
+  "DMTLogo": "ahd",
+  "DMTSharingButtons": "ahe",
+  
+  "psg": "aja",
+  "PSGControls": "ajb",
+  "PSGLogo": "ajc",
+  
+  "orange": "aia",
+  "RNGControls": "aib"
+  
 }

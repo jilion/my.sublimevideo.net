@@ -5,12 +5,9 @@ class Admin::InvoicesController < Admin::AdminController
   before_filter { |controller| require_role?('invoices') }
 
   # filter
-  has_scope :paid
+  has_scope :paid, type: :boolean
   has_scope :paid_between, using: [:started_at, :ended_at]
-  has_scope :open do |controller, scope|
-    scope.open
-  end
-  has_scope :waiting, :failed, :renew, :user_id, :site_id, :by_id, :by_date, :by_amount, :by_user, :search
+  has_scope :with_state, :renew, :user_id, :site_id, :by_id, :by_date, :by_amount, :by_user, :search
 
   # GET /invoices
   def index

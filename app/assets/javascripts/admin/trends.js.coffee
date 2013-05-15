@@ -1,7 +1,6 @@
 #= require backbone
 #= require hamlcoffee
 #= require jquery.spin
-#= require highstock/highstock
 #
 #= require_tree ../templates
 #= require_tree ./trends

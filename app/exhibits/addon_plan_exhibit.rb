@@ -9,8 +9,12 @@ class AddonPlanExhibit < DisplayCase::Exhibit
     'add-on'
   end
 
-  def highlight_param_for_addons_page
-    "#{addon.name}-#{name}"
+  def billable_entity_name_for_addon_page
+    addon.name
+  end
+
+  def p_param_for_addon_page
+    name
   end
 
   def eql?(other)

@@ -2,49 +2,26 @@ class Deal < ActiveRecord::Base
 
   attr_accessible :token, :name, :description, :kind, :value, :availability_scope, :started_at, :ended_at
 
-  # ================
-  # = Associations =
-  # ================
-
   has_many :deal_activations
   has_many :invoice_items
-
-  # ===============
-  # = Validations =
-  # ===============
 
   validates :token, presence: true, uniqueness: true
   validates :name, :kind, :availability_scope, :started_at, :ended_at, presence: true
 
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :active, lambda {
+  scope :active, -> {
     now = Time.now.utc.to_s(:db)
-
-    where{ (started_at <= now) & (ended_at >= now) }
+    where { (started_at <= now) & (ended_at >= now) }
   }
 
   # sort
-  scope :by_id,         lambda { |way='desc'| order{ id.send(way) } }
-  scope :by_started_at, lambda { |way='desc'| order{ started_at.send(way) } }
-  scope :by_ended_at,   lambda { |way='desc'| order{ ended_at.send(way) } }
-
-  # =============
-  # = Callbacks =
-  # =============
+  scope :by_id,         ->(way = 'desc') { order { id.send(way) } }
+  scope :by_started_at, ->(way = 'desc') { order { started_at.send(way) } }
+  scope :by_ended_at,   ->(way = 'desc') { order { ended_at.send(way) } }
 
   before_validation :ensure_availability_scope_is_valid
 
-  # ====================
-  # = Instance Methods =
-  # ====================
-
   def active?
-    now = Time.now.utc
-
-    now >= started_at && now <= ended_at
+    (started_at..ended_at).cover?(Time.now.utc)
   end
 
   def available_to?(user)
@@ -57,7 +34,7 @@ private
     User.class_eval(availability_scope)
     true
   rescue
-    self.errors.add(:base, "Scope is not valid.")
+    self.errors.add(:base, 'Scope is not valid.')
   end
 
 end

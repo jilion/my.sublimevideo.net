@@ -9,38 +9,39 @@ describe HostnameHandler do
   subject { HostnameHandler }
 
   describe "clean" do
-    it { subject.clean(nil).should == nil }
-    it { subject.clean("").should == "" }
-    it { subject.clean("éCOLE").should == "école" }
-    it { subject.clean("éCOLE.fr").should == "école.fr" }
-    it { subject.clean("http://www.école.fr").should == "école.fr" }
-    it { subject.clean("http://www.école.fr/super.html").should == "école.fr" }
-    it { subject.clean("http://www.école.fr?super=cool").should == "école.fr" }
-    it { subject.clean(".com").should == "com" }
-    it { subject.clean("co.uk").should == "co.uk" }
-    it { subject.clean("*.com").should == "*.com" }
-    it { subject.clean("www.*.com").should == "*.com" }
-    it { subject.clean("*").should == "*" }
-    it { subject.clean(".").should == "." }
-    it { subject.clean("ASDASD.COM").should == "asdasd.com" }
-    it { subject.clean("124.123.151.123").should == "124.123.151.123" }
-    it { subject.clean("124.123.151.123?super=cool").should == "124.123.151.123" }
-    it { subject.clean("広告掲載.jp").should == "広告掲載.jp" }
-    it { subject.clean("http://www.youtube.com?v=31231").should == "youtube.com" }
-    it { subject.clean("web.me.com/super.fun").should == "web.me.com" }
-    it { subject.clean("web.me.com/super.html").should == "web.me.com" }
-    it { subject.clean("http://www.www.com").should == "www.com" }
-    it { subject.clean("www.com").should == "www.com" }
-    it { subject.clean("ftp://www.www.com").should == "www.com" }
-    it { subject.clean("https://www.co.uk").should == "www.co.uk" }
-    it { subject.clean("localhost").should == "localhost" }
-    it { subject.clean("www").should == "www" }
-    it { subject.clean("test;ERR").should == "test;err" }
-    it { subject.clean("http://test;ERR").should == "test;err" }
-    it { subject.clean("http://www.localhost:3000").should == "localhost" }
-    it { subject.clean("ftp://127.]boo[:3000").should == "127.]boo[" }
-    it { subject.clean("www.joke;foo").should == "joke;foo" }
-    it { subject.clean("localhost:3000,,http://www.bob.com").should == "bob.com, localhost" }
+    it { subject.clean(nil).should eq nil }
+    it { subject.clean("").should eq "" }
+    it { subject.clean("éCOLE").should eq "école" }
+    it { subject.clean("éCOLE.fr").should eq "école.fr" }
+    it { subject.clean("http://www.école.fr").should eq "école.fr" }
+    it { subject.clean("http://www.école.fr/super.html").should eq "école.fr" }
+    it { subject.clean("http://www.école.fr?super=cool").should eq "école.fr" }
+    it { subject.clean(".com").should eq "com" }
+    it { subject.clean("co.uk").should eq "co.uk" }
+    it { subject.clean("*.com").should eq "*.com" }
+    it { subject.clean("www.*.com").should eq "*.com" }
+    it { subject.clean("*").should eq "*" }
+    it { subject.clean(".").should eq "." }
+    it { subject.clean("ASDASD.COM").should eq "asdasd.com" }
+    it { subject.clean("124.123.151.123").should eq "124.123.151.123" }
+    it { subject.clean("124.123.151.123?super=cool").should eq "124.123.151.123" }
+    it { subject.clean("広告掲載.jp").should eq "広告掲載.jp" }
+    it { subject.clean("http://www.youtube.com?v=31231").should eq "youtube.com" }
+    it { subject.clean("web.me.com/super.fun").should eq "web.me.com" }
+    it { subject.clean("web.me.com/super.html").should eq "web.me.com" }
+    it { subject.clean("http://www.www.com").should eq "www.com" }
+    it { subject.clean("www.com").should eq "www.com" }
+    it { subject.clean("ftp://www.www.com").should eq "www.com" }
+    it { subject.clean("https://www.co.uk").should eq "www.co.uk" }
+    it { subject.clean("localhost").should eq "localhost" }
+    it { subject.clean("www").should eq "www" }
+    it { subject.clean("test;ERR").should eq "test;err" }
+    it { subject.clean("http://test;ERR").should eq "test;err" }
+    it { subject.clean("http://www.localhost:3000").should eq "localhost" }
+    it { subject.clean("ftp://127.]boo[:3000").should eq "127.]boo[" }
+    it { subject.clean("www.joke;foo").should eq "joke;foo" }
+    it { subject.clean("localhost:3000,,http://www.bob.com").should eq "bob.com, localhost" }
+    it { subject.clean('<script type="text/javascript" src="//cdn.sublimevideo.net/js/abcd1234.js"></script>enontab.org').should eq '&lt;script type=&quot;text/javascript&quot; src=&quot;//cdn.sublimevideo.net/js/abcd1234.js&quot;&gt;&lt;/script&gt;enontab.org' }
   end
 
   describe "valid?" do
@@ -211,7 +212,6 @@ describe HostnameHandler do
     it { subject.include_hostname?('google.fr, jilion.com', stub(hostname: 'google.fr')).should be_true }
 
     it { subject.include_hostname?(nil, stub(hostname: 'jilion.com')).should be_false }
-    it { subject.include_hostname?('jilion.com', nil).should be_false }
     it { subject.include_hostname?('jilion.com', stub(hostname: nil)).should be_false }
     it { subject.include_hostname?('jilion.com', stub(hostname: '')).should be_false }
     it { subject.include_hostname?(nil, nil).should be_false }

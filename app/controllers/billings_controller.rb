@@ -1,41 +1,49 @@
 class BillingsController < ApplicationController
 
+  before_filter :_find_user, only: [:edit, :update]
+
   # GET /account/billing/edit
   def edit
-    @user = User.find(current_user.id)
+    _store_return_to
   end
 
-  # PUT /billing
+  # PUT /account/billing
   def update
-    @user = User.find(current_user.id)
     @user.assign_attributes(params[:user].merge(remote_ip: request.try(:remote_ip)))
 
     respond_with(@user, flash: false) do |format|
-      if @user.save
-        if @user.d3d_html # 3-d secure identification needed
-          format.html { render text: d3d_html_inject(@user.d3d_html), notice: "", alert: "" }
-        else # everything's all right
-          format.html { redirect_to [:edit, :user], notice_and_alert_from_user(@user) }
-        end
-      else
-        flash[:notice] = flash[:alert] = ""
-        format.html { render :edit }
-      end
+      format.html { @user.save ? success_response : render(:edit) }
     end
   end
 
   private
 
-  def notice_and_alert_from_user(user)
-    if user.i18n_notice_and_alert.present?
-      { notice: "", alert: "" }.merge(user.i18n_notice_and_alert)
+  def _find_user
+    @user = User.find(current_user.id)
+  end
+
+  def _store_return_to
+    session[:return_to] = params.delete(:return_to) if params[:return_to]
+  end
+
+  def success_response
+    if @user.d3d_html # 3-d secure identification needed
+      render text: _d3d_html_inject
     else
-      { notice: t('flash.billings.update.notice'), alert: nil }
+      redirect_to _redirect_route, _notice_and_alert
     end
   end
 
-  def d3d_html_inject(text)
-    "<!DOCTYPE html><html><head><title>3DS Redirection</title></head><body>#{text}</body></html>"
+  def _d3d_html_inject
+    "<!DOCTYPE html><html><head><title>3DS Redirection</title></head><body>#{@user.d3d_html}</body></html>"
+  end
+
+  def _notice_and_alert
+    @user.i18n_notice_and_alert || { notice: t('flash.billings.update.notice') }
+  end
+
+  def _redirect_route
+    session[:return_to] ? session.delete(:return_to) : [:edit, :user]
   end
 
 end

@@ -1,23 +1,31 @@
 en:
   addons:
-    video_player:   'Basic Player'
-    lightbox:       'Lightbox'
-    image_viewer:   'Image Viewer'
-    stats:          'Analytics'
-    logo:           'On-Video Logo'
-    cuezones:       'Cue Zones'
-    controls:       'Controls'
-    initial:        'Start View'
-    sharing:        'Sharing Buttons'
-    social_sharing: 'Sharing'
-    embed:          'Embed'
-    api:            'API'
-    support:        'Support'
-    preview_tools:  'Preview Tools'
-    buy_action:     'Buy Button'
-    action:         'Horizon Custom Actions'
-    info:           'Info'
-    end_actions:    'End Actions'
+    video_player:     'Basic Player'
+    controls:         'Controls'
+    initial:          'Start View'
+    lightbox:         'Lightbox'
+    image_viewer:     'Image Viewer'
+    stats:            'Analytics'
+    google_analytics: 'Google Analytics'
+    logo:             'On-Video Logo'
+    cuezones:         'Cue Zones'
+    sharing:          'Sharing Buttons'
+    social_sharing:   'Sharing'
+    embed:            'Embed'
+    api:              'API'
+    support:          'Support'
+    preview_tools:    'Preview Tools'
+    buy_action:       'Buy Button'
+    action:           'Horizon Custom Actions'
+    info:             'Info'
+    end_actions:      'End Actions'
+    dmt_controls:     'DM Controls'
+    dmt_quality:      'DM Quality'
+    dmt_logo:         'DM Logo'
+    dmt_sharing:      'DM Sharing'
+    psg_controls:     'PSG Controls'
+    psg_logo:         'PSG Logo'
+    rng_controls:     'Orange Controls'
 
   addon_plans:
     video_player:
@@ -33,6 +41,9 @@ en:
       invisible: 'Invisible stats'
       realtime:  'Real-time statistics'
       disabled:  'Disabled'
+
+    google_analytics:
+      standard: 'Events tracking'
 
     logo:
       sublime:  'SublimeVideo logo'
@@ -79,3 +90,20 @@ en:
 
     end_actions:
       standard: 'Standard End Actions'
+
+    dmt_controls:
+      standard: 'Standard DM Controls'
+    dmt_quality:
+      standard: 'Standard DM Quality'
+    dmt_logo:
+      standard: 'Standard DM Logo'
+    dmt_sharing:
+      standard: 'Standard DM Sharing'
+
+    psg_controls:
+      standard: 'Standard PSG Controls'
+    psg_logo:
+      standard: 'Standard PSG Logo'
+
+    rng_controls:
+      standard: 'Standard Orange Controls'

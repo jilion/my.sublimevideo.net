@@ -25,19 +25,21 @@ describe AddonPlan do
     it { should validate_numericality_of(:price) }
   end
 
-  describe 'Scopes' do
+  describe '.free_addon_plans' do
     before do
       create(:addon_plan, price: 999, stable_at: nil)
-      @addon_plan1 = create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 0)
-      @addon_plan2 = create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 999)
+      create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 999)
+      @addon_plan1 = create(:addon_plan, availability: 'public', price: 0)
+      @addon_plan2 = create(:addon_plan, availability: 'hidden', price: 0)
+      create(:addon_plan, availability: 'custom', price: 0)
     end
 
-    describe '.paid' do
-      it { described_class.paid.should =~ [@addon_plan2] }
+    it 'returns a subscriptions hash with all the free addon plans' do
+      described_class.free_addon_plans.should =~ [@addon_plan1, @addon_plan2]
     end
 
-    describe '.custom' do
-      it { described_class.custom.should =~ [@addon_plan1, @addon_plan2] }
+    it 'returns a subscriptions hash with all the free addon plans minus the one for which the add-on should be rejected' do
+      described_class.free_addon_plans(reject: [@addon_plan1.addon.name]).should =~ [@addon_plan2]
     end
   end
 

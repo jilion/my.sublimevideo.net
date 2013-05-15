@@ -43,43 +43,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: active_admin_comments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE active_admin_comments (
-    id integer NOT NULL,
-    resource_id character varying(255) NOT NULL,
-    resource_type character varying(255) NOT NULL,
-    author_id integer,
-    author_type character varying(255),
-    body text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    namespace character varying(255)
-);
-
-
---
--- Name: active_admin_comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE active_admin_comments_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: active_admin_comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE active_admin_comments_id_seq OWNED BY active_admin_comments.id;
-
-
---
--- Name: addon_plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: addon_plans; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE addon_plans (
@@ -115,7 +79,7 @@ ALTER SEQUENCE addon_plans_id_seq OWNED BY addon_plans.id;
 
 
 --
--- Name: addons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: addons; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE addons (
@@ -149,7 +113,7 @@ ALTER SEQUENCE addons_id_seq OWNED BY addons.id;
 
 
 --
--- Name: admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: admins; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE admins (
@@ -202,7 +166,7 @@ ALTER SEQUENCE admins_id_seq OWNED BY admins.id;
 
 
 --
--- Name: app_component_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: app_component_versions; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE app_component_versions (
@@ -237,7 +201,7 @@ ALTER SEQUENCE app_component_versions_id_seq OWNED BY app_component_versions.id;
 
 
 --
--- Name: app_components; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: app_components; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE app_components (
@@ -269,7 +233,7 @@ ALTER SEQUENCE app_components_id_seq OWNED BY app_components.id;
 
 
 --
--- Name: app_designs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: app_designs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE app_designs (
@@ -306,7 +270,7 @@ ALTER SEQUENCE app_designs_id_seq OWNED BY app_designs.id;
 
 
 --
--- Name: app_plugins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: app_plugins; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE app_plugins (
@@ -342,7 +306,7 @@ ALTER SEQUENCE app_plugins_id_seq OWNED BY app_plugins.id;
 
 
 --
--- Name: app_settings_templates; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: app_settings_templates; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE app_settings_templates (
@@ -375,7 +339,7 @@ ALTER SEQUENCE app_settings_templates_id_seq OWNED BY app_settings_templates.id;
 
 
 --
--- Name: billable_item_activities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: billable_item_activities; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE billable_item_activities (
@@ -409,7 +373,7 @@ ALTER SEQUENCE billable_item_activities_id_seq OWNED BY billable_item_activities
 
 
 --
--- Name: billable_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: billable_items; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE billable_items (
@@ -443,7 +407,7 @@ ALTER SEQUENCE billable_items_id_seq OWNED BY billable_items.id;
 
 
 --
--- Name: client_applications; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: client_applications; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE client_applications (
@@ -480,7 +444,7 @@ ALTER SEQUENCE client_applications_id_seq OWNED BY client_applications.id;
 
 
 --
--- Name: deal_activations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: deal_activations; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE deal_activations (
@@ -513,7 +477,7 @@ ALTER SEQUENCE deal_activations_id_seq OWNED BY deal_activations.id;
 
 
 --
--- Name: deals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: deals; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE deals (
@@ -551,7 +515,7 @@ ALTER SEQUENCE deals_id_seq OWNED BY deals.id;
 
 
 --
--- Name: enthusiast_sites; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: enthusiast_sites; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE enthusiast_sites (
@@ -583,7 +547,7 @@ ALTER SEQUENCE enthusiast_sites_id_seq OWNED BY enthusiast_sites.id;
 
 
 --
--- Name: enthusiasts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: enthusiasts; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE enthusiasts (
@@ -624,7 +588,7 @@ ALTER SEQUENCE enthusiasts_id_seq OWNED BY enthusiasts.id;
 
 
 --
--- Name: feedbacks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: feedbacks; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE feedbacks (
@@ -659,7 +623,7 @@ ALTER SEQUENCE feedbacks_id_seq OWNED BY feedbacks.id;
 
 
 --
--- Name: invoice_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: invoice_items; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE invoice_items (
@@ -699,7 +663,7 @@ ALTER SEQUENCE invoice_items_id_seq OWNED BY invoice_items.id;
 
 
 --
--- Name: invoices; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: invoices; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE invoices (
@@ -748,7 +712,7 @@ ALTER SEQUENCE invoices_id_seq OWNED BY invoices.id;
 
 
 --
--- Name: invoices_transactions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: invoices_transactions; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE invoices_transactions (
@@ -758,7 +722,7 @@ CREATE TABLE invoices_transactions (
 
 
 --
--- Name: kits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: kits; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE kits (
@@ -793,7 +757,7 @@ ALTER SEQUENCE kits_id_seq OWNED BY kits.id;
 
 
 --
--- Name: mail_logs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: mail_logs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE mail_logs (
@@ -828,7 +792,7 @@ ALTER SEQUENCE mail_logs_id_seq OWNED BY mail_logs.id;
 
 
 --
--- Name: mail_templates; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: mail_templates; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE mail_templates (
@@ -862,7 +826,7 @@ ALTER SEQUENCE mail_templates_id_seq OWNED BY mail_templates.id;
 
 
 --
--- Name: oauth_tokens; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: oauth_tokens; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE oauth_tokens (
@@ -877,7 +841,7 @@ CREATE TABLE oauth_tokens (
     scope character varying(255),
     authorized_at timestamp without time zone,
     invalidated_at timestamp without time zone,
-    valid_to timestamp without time zone,
+    expires_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -903,7 +867,7 @@ ALTER SEQUENCE oauth_tokens_id_seq OWNED BY oauth_tokens.id;
 
 
 --
--- Name: plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: plans; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE plans (
@@ -940,7 +904,7 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE schema_migrations (
@@ -949,7 +913,7 @@ CREATE TABLE schema_migrations (
 
 
 --
--- Name: sites; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: sites; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE sites (
@@ -1020,7 +984,7 @@ ALTER SEQUENCE sites_id_seq OWNED BY sites.id;
 
 
 --
--- Name: taggings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: taggings; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE taggings (
@@ -1055,7 +1019,7 @@ ALTER SEQUENCE taggings_id_seq OWNED BY taggings.id;
 
 
 --
--- Name: tags; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: tags; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE tags (
@@ -1084,7 +1048,7 @@ ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
 
 
 --
--- Name: transactions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: transactions; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE transactions (
@@ -1125,7 +1089,7 @@ ALTER SEQUENCE transactions_id_seq OWNED BY transactions.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE users (
@@ -1224,7 +1188,7 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: versions; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE versions (
@@ -1258,13 +1222,6 @@ CREATE SEQUENCE versions_id_seq
 --
 
 ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY active_admin_comments ALTER COLUMN id SET DEFAULT nextval('active_admin_comments_id_seq'::regclass);
 
 
 --
@@ -1471,7 +1428,7 @@ ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq':
 
 
 --
--- Name: addon_plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: addon_plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY addon_plans
@@ -1479,7 +1436,7 @@ ALTER TABLE ONLY addon_plans
 
 
 --
--- Name: addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY addons
@@ -1487,15 +1444,7 @@ ALTER TABLE ONLY addons
 
 
 --
--- Name: admin_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY active_admin_comments
-    ADD CONSTRAINT admin_notes_pkey PRIMARY KEY (id);
-
-
---
--- Name: admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY admins
@@ -1503,7 +1452,7 @@ ALTER TABLE ONLY admins
 
 
 --
--- Name: app_designs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: app_designs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY app_designs
@@ -1511,7 +1460,7 @@ ALTER TABLE ONLY app_designs
 
 
 --
--- Name: app_plugins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: app_plugins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY app_plugins
@@ -1519,7 +1468,7 @@ ALTER TABLE ONLY app_plugins
 
 
 --
--- Name: app_settings_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: app_settings_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY app_settings_templates
@@ -1527,7 +1476,7 @@ ALTER TABLE ONLY app_settings_templates
 
 
 --
--- Name: billable_item_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: billable_item_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY billable_item_activities
@@ -1535,7 +1484,7 @@ ALTER TABLE ONLY billable_item_activities
 
 
 --
--- Name: billable_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: billable_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY billable_items
@@ -1543,7 +1492,7 @@ ALTER TABLE ONLY billable_items
 
 
 --
--- Name: client_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: client_applications_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY client_applications
@@ -1551,7 +1500,7 @@ ALTER TABLE ONLY client_applications
 
 
 --
--- Name: deal_activations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: deal_activations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY deal_activations
@@ -1559,7 +1508,7 @@ ALTER TABLE ONLY deal_activations
 
 
 --
--- Name: deals_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: deals_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY deals
@@ -1567,7 +1516,7 @@ ALTER TABLE ONLY deals
 
 
 --
--- Name: enthusiast_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: enthusiast_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY enthusiast_sites
@@ -1575,7 +1524,7 @@ ALTER TABLE ONLY enthusiast_sites
 
 
 --
--- Name: enthusiasts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: enthusiasts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY enthusiasts
@@ -1583,7 +1532,7 @@ ALTER TABLE ONLY enthusiasts
 
 
 --
--- Name: goodbye_feedbacks_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: goodbye_feedbacks_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY feedbacks
@@ -1591,7 +1540,7 @@ ALTER TABLE ONLY feedbacks
 
 
 --
--- Name: invoice_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: invoice_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY invoice_items
@@ -1599,7 +1548,7 @@ ALTER TABLE ONLY invoice_items
 
 
 --
--- Name: invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: invoices_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY invoices
@@ -1607,7 +1556,7 @@ ALTER TABLE ONLY invoices
 
 
 --
--- Name: kits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: kits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY kits
@@ -1615,7 +1564,7 @@ ALTER TABLE ONLY kits
 
 
 --
--- Name: mail_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: mail_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mail_logs
@@ -1623,7 +1572,7 @@ ALTER TABLE ONLY mail_logs
 
 
 --
--- Name: mail_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: mail_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mail_templates
@@ -1631,7 +1580,7 @@ ALTER TABLE ONLY mail_templates
 
 
 --
--- Name: oauth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: oauth_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY oauth_tokens
@@ -1639,7 +1588,7 @@ ALTER TABLE ONLY oauth_tokens
 
 
 --
--- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY plans
@@ -1647,7 +1596,7 @@ ALTER TABLE ONLY plans
 
 
 --
--- Name: player_bundle_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: player_bundle_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY app_component_versions
@@ -1655,7 +1604,7 @@ ALTER TABLE ONLY app_component_versions
 
 
 --
--- Name: player_bundles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: player_bundles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY app_components
@@ -1663,7 +1612,7 @@ ALTER TABLE ONLY app_components
 
 
 --
--- Name: sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY sites
@@ -1671,7 +1620,7 @@ ALTER TABLE ONLY sites
 
 
 --
--- Name: taggings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: taggings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY taggings
@@ -1679,7 +1628,7 @@ ALTER TABLE ONLY taggings
 
 
 --
--- Name: tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY tags
@@ -1687,7 +1636,7 @@ ALTER TABLE ONLY tags
 
 
 --
--- Name: transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY transactions
@@ -1695,7 +1644,7 @@ ALTER TABLE ONLY transactions
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -1703,7 +1652,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY versions
@@ -1711,448 +1660,427 @@ ALTER TABLE ONLY versions
 
 
 --
--- Name: index_active_admin_comments_on_author_type_and_author_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_active_admin_comments_on_author_type_and_author_id ON active_admin_comments USING btree (author_type, author_id);
-
-
---
--- Name: index_active_admin_comments_on_namespace; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_active_admin_comments_on_namespace ON active_admin_comments USING btree (namespace);
-
-
---
--- Name: index_addon_plans_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_addon_plans_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_addon_plans_on_addon_id ON addon_plans USING btree (addon_id);
 
 
 --
--- Name: index_addon_plans_on_addon_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_addon_plans_on_addon_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_addon_plans_on_addon_id_and_name ON addon_plans USING btree (addon_id, name);
 
 
 --
--- Name: index_addons_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_addons_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_addons_on_name ON addons USING btree (name);
 
 
 --
--- Name: index_admin_notes_on_resource_type_and_resource_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_admin_notes_on_resource_type_and_resource_id ON active_admin_comments USING btree (resource_type, resource_id);
-
-
---
--- Name: index_admins_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_admins_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_admins_on_email ON admins USING btree (email);
 
 
 --
--- Name: index_admins_on_invitation_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_admins_on_invitation_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_admins_on_invitation_token ON admins USING btree (invitation_token);
 
 
 --
--- Name: index_admins_on_reset_password_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_admins_on_reset_password_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_admins_on_reset_password_token ON admins USING btree (reset_password_token);
 
 
 --
--- Name: index_app_designs_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_app_designs_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_app_designs_on_name ON app_designs USING btree (name);
 
 
 --
--- Name: index_app_designs_on_skin_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_app_designs_on_skin_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_app_designs_on_skin_token ON app_designs USING btree (skin_token);
 
 
 --
--- Name: index_app_plugins_on_app_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_app_plugins_on_app_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_app_plugins_on_app_design_id ON app_plugins USING btree (app_design_id);
 
 
 --
--- Name: index_app_plugins_on_app_design_id_and_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_app_plugins_on_app_design_id_and_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_app_plugins_on_app_design_id_and_addon_id ON app_plugins USING btree (app_design_id, addon_id);
 
 
 --
--- Name: index_app_settings_templates_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_app_settings_templates_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_app_settings_templates_on_addon_plan_id_and_app_plugin_id ON app_settings_templates USING btree (addon_plan_id, app_plugin_id);
 
 
 --
--- Name: index_billable_item_activities_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_billable_item_activities_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_billable_item_activities_on_item_type_and_item_id ON billable_item_activities USING btree (item_type, item_id);
 
 
 --
--- Name: index_billable_item_activities_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_billable_item_activities_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_billable_item_activities_on_site_id ON billable_item_activities USING btree (site_id);
 
 
 --
--- Name: index_billable_items_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_billable_items_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_billable_items_on_item_type_and_item_id ON billable_items USING btree (item_type, item_id);
 
 
 --
--- Name: index_billable_items_on_item_type_and_item_id_and_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_billable_items_on_item_type_and_item_id_and_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_billable_items_on_item_type_and_item_id_and_site_id ON billable_items USING btree (item_type, item_id, site_id);
 
 
 --
--- Name: index_billable_items_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_billable_items_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_billable_items_on_site_id ON billable_items USING btree (site_id);
 
 
 --
--- Name: index_client_applications_on_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_client_applications_on_key; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_client_applications_on_key ON client_applications USING btree (key);
 
 
 --
--- Name: index_component_versions_on_component_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_component_versions_on_component_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_component_versions_on_component_id_and_version ON app_component_versions USING btree (app_component_id, version);
 
 
 --
--- Name: index_deal_activations_on_deal_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_deal_activations_on_deal_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_deal_activations_on_deal_id_and_user_id ON deal_activations USING btree (deal_id, user_id);
 
 
 --
--- Name: index_deals_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_deals_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_deals_on_token ON deals USING btree (token);
 
 
 --
--- Name: index_enthusiast_sites_on_enthusiast_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_enthusiast_sites_on_enthusiast_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_enthusiast_sites_on_enthusiast_id ON enthusiast_sites USING btree (enthusiast_id);
 
 
 --
--- Name: index_enthusiasts_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_enthusiasts_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_enthusiasts_on_email ON enthusiasts USING btree (email);
 
 
 --
--- Name: index_invoice_items_on_deal_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_invoice_items_on_deal_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_invoice_items_on_deal_id ON invoice_items USING btree (deal_id);
 
 
 --
--- Name: index_invoice_items_on_invoice_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_invoice_items_on_invoice_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_invoice_items_on_invoice_id ON invoice_items USING btree (invoice_id);
 
 
 --
--- Name: index_invoice_items_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_invoice_items_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_invoice_items_on_item_type_and_item_id ON invoice_items USING btree (item_type, item_id);
 
 
 --
--- Name: index_invoices_on_reference; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_invoices_on_reference; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_invoices_on_reference ON invoices USING btree (reference);
 
 
 --
--- Name: index_invoices_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_invoices_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_invoices_on_site_id ON invoices USING btree (site_id);
 
 
 --
--- Name: index_kits_on_app_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_kits_on_app_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_kits_on_app_design_id ON kits USING btree (app_design_id);
 
 
 --
--- Name: index_kits_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_kits_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_kits_on_site_id ON kits USING btree (site_id);
 
 
 --
--- Name: index_kits_on_site_id_and_identifier; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_kits_on_site_id_and_identifier; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_kits_on_site_id_and_identifier ON kits USING btree (site_id, identifier);
 
 
 --
--- Name: index_kits_on_site_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_kits_on_site_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_kits_on_site_id_and_name ON kits USING btree (site_id, name);
 
 
 --
--- Name: index_mail_logs_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_mail_logs_on_template_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_mail_logs_on_template_id ON mail_logs USING btree (template_id);
 
 
 --
--- Name: index_oauth_tokens_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_oauth_tokens_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_oauth_tokens_on_token ON oauth_tokens USING btree (token);
 
 
 --
--- Name: index_plans_on_name_and_cycle; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_plans_on_name_and_cycle; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_plans_on_name_and_cycle ON plans USING btree (name, cycle);
 
 
 --
--- Name: index_plans_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_plans_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_plans_on_token ON plans USING btree (token);
 
 
 --
--- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_player_components_on_name ON app_components USING btree (name);
 
 
 --
--- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_player_components_on_token ON app_components USING btree (token);
 
 
 --
--- Name: index_sites_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_created_at ON sites USING btree (created_at);
 
 
 --
--- Name: index_sites_on_hostname; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_hostname; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_hostname ON sites USING btree (hostname);
 
 
 --
--- Name: index_sites_on_last_30_days_dev_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_last_30_days_dev_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_last_30_days_dev_video_views ON sites USING btree (last_30_days_dev_video_views);
 
 
 --
--- Name: index_sites_on_last_30_days_embed_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_last_30_days_embed_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_last_30_days_embed_video_views ON sites USING btree (last_30_days_embed_video_views);
 
 
 --
--- Name: index_sites_on_last_30_days_extra_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_last_30_days_extra_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_last_30_days_extra_video_views ON sites USING btree (last_30_days_extra_video_views);
 
 
 --
--- Name: index_sites_on_last_30_days_invalid_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_last_30_days_invalid_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_last_30_days_invalid_video_views ON sites USING btree (last_30_days_invalid_video_views);
 
 
 --
--- Name: index_sites_on_last_30_days_main_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_last_30_days_main_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_last_30_days_main_video_views ON sites USING btree (last_30_days_main_video_views);
 
 
 --
--- Name: index_sites_on_plan_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_plan_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_plan_id ON sites USING btree (plan_id);
 
 
 --
--- Name: index_sites_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_token ON sites USING btree (token);
 
 
 --
--- Name: index_sites_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_sites_on_user_id ON sites USING btree (user_id);
 
 
 --
--- Name: index_taggings_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_taggings_on_tag_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 
 
 --
--- Name: index_taggings_on_taggable_id_and_taggable_type_and_context; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_taggings_on_taggable_id_and_taggable_type_and_context; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);
 
 
 --
--- Name: index_transactions_on_order_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_transactions_on_order_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_transactions_on_order_id ON transactions USING btree (order_id);
 
 
 --
--- Name: index_users_on_cc_alias; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_cc_alias; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_users_on_cc_alias ON users USING btree (cc_alias);
 
 
 --
--- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_users_on_confirmation_token ON users USING btree (confirmation_token);
 
 
 --
--- Name: index_users_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_users_on_created_at ON users USING btree (created_at);
 
 
 --
--- Name: index_users_on_current_sign_in_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_current_sign_in_at; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_users_on_current_sign_in_at ON users USING btree (current_sign_in_at);
 
 
 --
--- Name: index_users_on_email_and_archived_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_email_and_archived_at; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_users_on_email_and_archived_at ON users USING btree (email, archived_at);
 
 
 --
--- Name: index_users_on_last_invoiced_amount; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_last_invoiced_amount; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_users_on_last_invoiced_amount ON users USING btree (last_invoiced_amount);
 
 
 --
--- Name: index_users_on_referrer_site_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_referrer_site_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_users_on_referrer_site_token ON users USING btree (referrer_site_token);
 
 
 --
--- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
 
 --
--- Name: index_users_on_total_invoiced_amount; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_total_invoiced_amount; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_users_on_total_invoiced_amount ON users USING btree (total_invoiced_amount);
 
 
 --
--- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX index_versions_on_item_type_and_item_id ON versions USING btree (item_type, item_id);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
@@ -2354,10 +2282,6 @@ INSERT INTO schema_migrations (version) VALUES ('20130206133628');
 
 INSERT INTO schema_migrations (version) VALUES ('20130206143947');
 
-INSERT INTO schema_migrations (version) VALUES ('20130206205343');
-
-INSERT INTO schema_migrations (version) VALUES ('20130206205344');
-
 INSERT INTO schema_migrations (version) VALUES ('20130219102331');
 
 INSERT INTO schema_migrations (version) VALUES ('20130225091913');
@@ -2365,3 +2289,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130225091913');
 INSERT INTO schema_migrations (version) VALUES ('20130314135911');
 
 INSERT INTO schema_migrations (version) VALUES ('20130321125702');
+
+INSERT INTO schema_migrations (version) VALUES ('20130422092535');

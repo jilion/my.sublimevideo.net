@@ -1,32 +1,30 @@
-- invoice ||= @invoice
-= title_and_content_header("SublimeVideo Invoice: #{invoice_dates(invoice)}")
+- title("Subscribe to the #{content_tag(:em, @addon.title)} add-on for #{hostname_or_token(@site)}")
+= content_header "Subscribe to the #{content_tag(:em, @addon.title)} add-on"
+.big_break
 
-%h3.title= "For #{invoice.site_hostname}"
+#addons
+  #addons_table_wrap
+    = form_for @site, url: [:subscribe, @site, :addons], method: 'put', html: { id: 'edit_addons', class: 'disableable', data: { credit_card: current_user.cc? && !current_user.cc_expired? } } do |f|
+      .site_chooser
+        %p.desc= "You're about to subscribe to this add-in for the following domain:"
+        %h2.hostname= hostname_or_token(@site, length: 30)
 
-%table#header
-  %tr
-    %td.our_info
-      = render "invoices/our_billing_info", invoice: invoice
+        - sites = @sites.select { |site| site.id != @site.id }
+        - unless sites.empty?
+          .site_select_wrap
+            = link_to '', class: 'site_select' do
+              %span Select the site to subscribe
+            %ul.actions{ id: ['site_actions', @site.id], style: 'display:none' }
+              - sites.each do |site|
+                %li{ class: cycle('', 'alt') }= link_to hostname_or_token(site, length: 30), site_addon_path(site, @addon, p: params[:p])
 
-      .invoice_info
-        %p
-          %strong= "Invoice ID:"
-          = invoice.reference.upcase
-        %p
-          %strong= "Status: "
-          = charging_status(invoice)
-        %p
-          %strong= "Site token: "
-          = invoice.site.token
-        %span.stamp{ class: stamp(invoice) }= stamp(invoice)
-        - if invoice.last_transaction.present?
-          %p
-            %strong= "Payment info:"
-          %p= "Card type: #{credit_card_type(invoice.last_transaction.cc_type)}"
-          %p= "Card no.: XXXXXXXXXXXX-#{invoice.last_transaction.cc_last_digits}"
+      = render 'addons/subscribe_to_addon_table', site: @site, addon: @addon
 
-    %td.user_info
-      %h4= "Bill To"
-      = render "invoices/customer_billing_info", invoice: invoice
-
-= render "invoices/details", invoice: invoice
+      .actions.center
+        = submit_tag 'Confirm subscription', class: 'submit green_button'
+        .credit_card_needed.notice{ style: 'display:none' }
+          Please
+          = link_to 'provide valid credit card details', edit_billing_url(return_to: url_for)
+          in order to subscribe to this add-on.
+      .spacer
+    = render 'addons/footnotes', site: @site

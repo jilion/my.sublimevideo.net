@@ -11,30 +11,35 @@ module Scheduler
   end
 
   def self.schedule_daily_tasks
-    options = {
-      at: Time.now.utc.tomorrow.midnight.to_i
-    }
+    schedule_daily_light_tasks
+    schedule_daily_heavy_tasks
+  end
 
-    InvoiceCreator.delay(options).create_invoices_for_month
+  def self.schedule_daily_light_tasks
+    options = { at: Time.now.utc.tomorrow.midnight.to_i }
+
     TrialHandler.delay(options).send_trial_will_expire_emails
     TrialHandler.delay(options).activate_billable_items_out_of_trial
     SiteCountersUpdater.delay(options).set_first_billable_plays_at_for_not_archived_sites
     SiteCountersUpdater.delay(options).update_last_30_days_counters_for_not_archived_sites
-    Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i).charge_invoices
-
-    options.merge!(queue: 'low')
-
     CreditCardExpirationNotifier.delay(options).send_emails
     NewInactiveUserNotifier.delay(options).send_emails
+
+    options.merge!(queue: 'low')
     UsersTrend.delay(options).create_trends
     SitesTrend.delay(options).create_trends
     BillingsTrend.delay(options).create_trends
-    RevenuesTrend.delay(options).create_trends
     BillableItemsTrend.delay(options).create_trends
     SiteStatsTrend.delay(options).create_trends
     SiteUsagesTrend.delay(options).create_trends
     TweetsTrend.delay(options).create_trends
     TailorMadePlayerRequestsTrend.delay(options).create_trends
+  end
+
+  def self.schedule_daily_heavy_tasks
+    InvoiceCreator.delay(at: (Time.now.utc.tomorrow.midnight + 30.minutes).to_i).create_invoices_for_month
+    RevenuesTrend.delay(at: (Time.now.utc.tomorrow.midnight + 3.hours).to_i, queue: 'low').create_trends
+    Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i).charge_invoices
   end
 
   def self.schedule_hourly_tasks

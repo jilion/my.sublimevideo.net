@@ -68,7 +68,9 @@ describe Admin do
     end
   end
 
-
+  it "activates remember_me checkbox by default" do
+    build(:admin).remember_me.should be_true
+  end
 end
 
 # == Schema Information

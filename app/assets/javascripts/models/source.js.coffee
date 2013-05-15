@@ -30,7 +30,7 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
       dataType: 'text'
       context: document.body
       success: (data, textStatus, jqXHR) =>
-        if data is "4"
+        if data is 'invalid'
           this.set(found: false)
           this.set(currentMimeType: '')
         else

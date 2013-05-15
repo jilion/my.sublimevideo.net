@@ -1,23 +1,14 @@
 require 'fast_spec_helper'
-require 'configurator'
-require 'rails/railtie'
-require 'sidekiq'
 require 'config/sidekiq'
-require 'support/sidekiq_custom_matchers'
+require 'support/matchers/sidekiq_matchers'
+require 'rails/railtie' # for Carrierwave
 require 'config/carrierwave' # for fog_mock
 
-require 'services/app/component_version_dependencies_solver'
 require 'services/loader_generator'
-require 'services/player_mangler'
-require 'wrappers/cdn_file'
-require 'wrappers/s3_wrapper'
-require 'models/app'
-require 'models/stage'
 
 Site = Class.new unless defined?(Site)
 App::Component = Class.new unless defined?(App::Component)
 App::ComponentVersion = Class.new unless defined?(App::ComponentVersion)
-CampfireWrapper = Class.new unless defined?(CampfireWrapper)
 
 unless defined?(SiteToken)
   module SiteToken
@@ -34,9 +25,9 @@ describe LoaderGenerator, :fog_mock do
     accessible_stage: 'beta',
     active?: true
   )}
-  let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false) }
-  let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true) }
-  let(:loader) { described_class.new(site, 'stable') }
+  let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false, clear_caches: true) }
+  let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true, clear_caches: true) }
+  let(:generator) { described_class.new(site, 'stable') }
   before do
     Librato.stub(:increment)
     App::Component.stub(:app_component) { app_component }
@@ -47,110 +38,169 @@ describe LoaderGenerator, :fog_mock do
     } }
   end
 
-  describe ".update_all_stages!" do
+  describe '.update_stage!' do
     before { Site.stub(:find) { site } }
 
-    context "site created with accessible_stage stable" do
+    context 'site created with accessible_stage stable' do
       before { site.stub(:accessible_stage) { 'stable' } }
 
-      it "uploads only stable loader" do
-        described_class.update_all_stages!(site.id)
+      it 'uploads stable loader' do
+        described_class.update_stage!(site.id, 'stable')
         described_class.new(site, 'stable').cdn_file.should be_present
+      end
+
+      it 'do not upload beta loader' do
+        described_class.update_stage!(site.id, 'beta')
         described_class.new(site, 'beta').cdn_file.should_not be_present
-        described_class.new(site, 'alpha').cdn_file.should_not be_present
       end
 
-      it "increments metrics" do
-        Librato.should_receive(:increment).with('loader.update', source: 'stable')
-        described_class.update_all_stages!(site.id)
-      end
-
-      context "deletable" do
-        it "increments also delete metrics" do
-          Librato.should_receive(:increment).with('loader.update', source: 'stable')
-          Librato.should_receive(:increment).with('loader.delete', source: 'beta')
-          Librato.should_receive(:increment).with('loader.delete', source: 'alpha')
-          described_class.update_all_stages!(site.id, deletable: true)
-        end
-      end
-    end
-
-    context "site created with accessible_stage beta" do
-      before do
-        site.stub(:accessible_stage) { 'beta' }
-        described_class.update_all_stages!(site.id)
-      end
-
-      it "uploads stable & beta loaders" do
-        described_class.new(site, 'stable').cdn_file.should be_present
-        described_class.new(site, 'beta').cdn_file.should be_present
+      it 'do not upload alpha loader' do
+        described_class.update_stage!(site.id, 'alpha')
         described_class.new(site, 'alpha').cdn_file.should_not be_present
       end
     end
 
-    context "site created with accessible_stage alpha" do
-      before do
-        site.stub(:accessible_stage) { 'alpha' }
-        described_class.update_all_stages!(site.id)
+    context 'site created with accessible_stage beta' do
+      before { site.stub(:accessible_stage) { 'beta' } }
+
+      it 'do not upload stable loader' do
+        described_class.update_stage!(site.id, 'stable')
+        described_class.new(site, 'stable').cdn_file.should be_present
       end
 
-      it "uploads all loaders" do
-        described_class.new(site, 'stable').cdn_file.should be_present
+      it 'uploads beta loader' do
+        described_class.update_stage!(site.id, 'beta')
         described_class.new(site, 'beta').cdn_file.should be_present
+      end
+
+      it 'do not upload alpha loader' do
+        described_class.update_stage!(site.id, 'alpha')
+        described_class.new(site, 'alpha').cdn_file.should_not be_present
+      end
+    end
+
+    context 'site created with accessible_stage alpha' do
+      before { site.stub(:accessible_stage) { 'alpha' } }
+
+      it 'do not upload stable loader' do
+        described_class.update_stage!(site.id, 'stable')
+        described_class.new(site, 'stable').cdn_file.should be_present
+      end
+
+      it 'uploads beta loader' do
+        described_class.update_stage!(site.id, 'beta')
+        described_class.new(site, 'beta').cdn_file.should be_present
+      end
+
+      it 'uploads alpha loader' do
+        described_class.update_stage!(site.id, 'alpha')
         described_class.new(site, 'alpha').cdn_file.should be_present
       end
     end
 
-    context "site.accessible_stage changed from 'beta' to 'stable'" do
+    context 'site.accessible_stage changed from beta to stable' do
       before do
-        site.stub(:accessible_stage) { 'beta' }
+        site.stub(:accessible_stage) { 'alpha' }
         described_class.update_all_stages!(site.id)
         site.stub(:accessible_stage) { 'stable' }
       end
 
-      it "keeps only stable loader" do
-        described_class.update_all_stages!(site.id, deletable: true)
-        described_class.new(site, 'stable').cdn_file.should be_present
-        described_class.new(site, 'beta').cdn_file.should_not be_present
-        described_class.new(site, 'alpha').cdn_file.should_not be_present
+      context 'loaders are deletable' do
+        it 'keeps the stable loader' do
+          described_class.update_stage!(site.id, 'stable', deletable: true)
+          described_class.new(site, 'stable').cdn_file.should be_present
+        end
+        it 'do not keep the beta loader' do
+          described_class.update_stage!(site.id, 'beta', deletable: true)
+          described_class.new(site, 'beta').cdn_file.should_not be_present
+        end
+        it 'do not keep the alpha loader' do
+          described_class.update_stage!(site.id, 'alpha', deletable: true)
+          described_class.new(site, 'alpha').cdn_file.should_not be_present
+        end
+      end
+
+      context 'loaders are not deletable' do
+        it 'keeps the stable loader' do
+          described_class.update_stage!(site.id, 'stable')
+          described_class.new(site, 'stable').cdn_file.should be_present
+        end
+        it 'keeps the beta loader' do
+          described_class.update_stage!(site.id, 'beta')
+          described_class.new(site, 'beta').cdn_file.should be_present
+        end
+        it 'keeps the alpha loader' do
+          described_class.update_stage!(site.id, 'alpha')
+          described_class.new(site, 'alpha').cdn_file.should be_present
+        end
       end
     end
 
-    context "site.accessible_stage not changed" do
+    context 'non-active site' do
       before do
-        site.stub(:accessible_stage) { 'alpha' }
-        described_class.update_all_stages!(site.id)
-      end
-
-      it "keeps all loaders" do
         described_class.update_all_stages!(site.id)
         described_class.new(site, 'stable').cdn_file.should be_present
         described_class.new(site, 'beta').cdn_file.should be_present
-        described_class.new(site, 'alpha').cdn_file.should be_present
-      end
-    end
-
-    context "non-active site" do
-      before do
-        site.stub(:active?) { false }
-        described_class.update_all_stages!(site.id)
-      end
-
-      it "removes all loaders" do
-        described_class.new(site, 'stable').cdn_file.should_not be_present
-        described_class.new(site, 'beta').cdn_file.should_not be_present
         described_class.new(site, 'alpha').cdn_file.should_not be_present
+        site.stub(:active?) { false }
+      end
+
+      context 'loaders are deletable' do
+        it 'removes the stable loader' do
+          described_class.update_stage!(site.id, 'stable', deletable: true)
+          described_class.new(site, 'stable').cdn_file.should_not be_present
+        end
+        it 'removes the beta loader' do
+          described_class.update_stage!(site.id, 'beta', deletable: true)
+          described_class.new(site, 'beta').cdn_file.should_not be_present
+        end
+        it 'removes the alpha loader' do
+          described_class.update_stage!(site.id, 'alpha', deletable: true)
+          described_class.new(site, 'alpha').cdn_file.should_not be_present
+        end
+      end
+
+      context 'loaders are not deletable' do
+        it 'removes the stable loader' do
+          described_class.update_stage!(site.id, 'stable')
+          described_class.new(site, 'stable').cdn_file.should be_present
+        end
+        it 'removes the beta loader' do
+          described_class.update_stage!(site.id, 'beta')
+          described_class.new(site, 'beta').cdn_file.should be_present
+        end
+        it 'removes the alpha loader' do
+          described_class.update_stage!(site.id, 'alpha')
+          described_class.new(site, 'alpha').cdn_file.should_not be_present
+        end
       end
     end
   end
 
-  describe ".update_all_dependant_sites" do
+  describe '.update_all_stages!' do
+    before { Site.stub(:find) { site } }
+
+    it 'calls .update_stage! 3 times' do
+      described_class.should_receive(:update_stage!).with(site.id, 'stable', deletable: true)
+      described_class.should_receive(:update_stage!).with(site.id, 'beta', deletable: true)
+      described_class.should_receive(:update_stage!).with(site.id, 'alpha', deletable: true)
+
+      described_class.update_all_stages!(site.id, deletable: true)
+    end
+  end
+
+  describe '.update_all_dependant_sites' do
     let(:scoped_sites) { stub }
     before do
       App::Component.stub(:find) { app_component }
       described_class.stub(:_sites_non_important) { scoped_sites }
       scoped_sites.should_receive(:count) { 42 }
       scoped_sites.should_receive(:find_each).and_yield(site)
+    end
+
+    it "clears caches of component" do
+      app_component.should_receive(:clear_caches)
+      described_class.update_all_dependant_sites(app_component.id, 'beta')
     end
 
     it 'delays notification to Campfire' do
@@ -197,17 +247,17 @@ describe LoaderGenerator, :fog_mock do
   end
 
   describe "Components dependencies" do
-    let(:loader) { described_class.new(site, 'beta') }
+    let(:generator) { described_class.new(site, 'beta') }
 
     describe "#app_component_version" do
       it "returns only app component version " do
-        loader.app_component_version.should eq('1.0.0')
+        generator.app_component_version.should eq('1.0.0')
       end
     end
 
     describe "#components_versions" do
       it "returns all components expecting the app component" do
-        loader.components_versions.should eq({
+        generator.components_versions.should eq({
           'c1' => '1.2.3',
           'c2' => '1.2.4'
         })
@@ -215,14 +265,14 @@ describe LoaderGenerator, :fog_mock do
     end
   end
 
-  describe "#upload!" do
+  describe '#upload!' do
     context "stable loader" do
       let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
       let(:path)   { "js/#{site.token}.js" }
 
       context "when site accessible_stage is beta" do
         describe "S3 object" do
-          before { loader.upload! }
+          before { generator.upload! }
 
           it "is public" do
             object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body
@@ -247,31 +297,35 @@ describe LoaderGenerator, :fog_mock do
         end
 
         describe "S3 object" do
-          before { loader.upload! }
+          before { generator.upload! }
 
           context "-alpha file" do
-            let(:loader) { described_class.new(site, 'alpha') }
-            let(:path) { "js/#{site.token}-alpha.js" }
+            let(:generator) { described_class.new(site, 'alpha') }
 
             it "has no-cache control" do
-              object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
+              object_headers = S3Wrapper.fog_connection.head_object(bucket, "js/#{site.token}-alpha.js").headers
               object_headers['Cache-Control'].should eq 'no-cache'
             end
           end
         end
       end
+
+      it 'increments delete metrics for loader' do
+        Librato.should_receive(:increment).with('loader.update', source: 'beta')
+
+        described_class.new(site, 'beta').upload!
+      end
     end
 
     context "beta loader" do
-      let(:loader) { described_class.new(site, 'beta') }
-      let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
-      let(:path)   { "js/#{site.token}-beta.js" }
+      let(:generator) { described_class.new(site, 'beta') }
+      let(:bucket)    { S3Wrapper.buckets['sublimevideo'] }
 
       describe "S3 object" do
         before do
-          loader.upload!
+          generator.upload!
         end
-        let(:s3_object) { S3Wrapper.fog_connection.get_object(bucket, path) }
+        let(:s3_object) { S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js") }
 
         it "includes app version" do
           s3_object.body.should include "version:'1.0.0'"
@@ -289,6 +343,14 @@ describe LoaderGenerator, :fog_mock do
           s3_object.body.should include "#{PlayerMangler.mangle_key(:components)}:{'c1':'1.2.3','c2':'1.2.4'}"
         end
       end
+    end
+  end
+
+  describe '#delete!' do
+    it 'increments delete metrics for loader' do
+      Librato.should_receive(:increment).with('loader.delete', source: 'beta')
+
+      described_class.new(site, 'beta').delete!
     end
   end
 end

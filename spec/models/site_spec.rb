@@ -23,66 +23,6 @@ describe Site, :addons do
     it { should be_valid }
   end
 
-  describe "API" do
-    describe "#to_api" do
-      context "normal site" do
-        let(:site)     { create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', staging_hostnames: 'rymai-staging.com', wildcard: true, path: 'test', accessible_stage: 'alpha') }
-        let(:response) { site.as_api_response(:v1_self_private) }
-
-        it "selects a subset of fields, as a hash" do
-          response.should be_a(Hash)
-          response[:token].should eq site.token
-          response[:main_domain].should eq 'rymai.me'
-          response[:extra_domains].should eq ['rymai.com']
-          response[:staging_domains].should eq ['rymai-staging.com']
-          response[:dev_domains].should eq ['rymai.local']
-          response[:wildcard].should eq true
-          response[:path].should eq 'test'
-          response[:accessible_stage].should eq 'alpha'
-        end
-      end
-
-      context "site without optional fields" do
-        let(:site) {
-          site = create(:site, hostname: 'rymai.me', extra_hostnames: nil, wildcard: false, path: nil)
-          site.update_attribute(:dev_hostnames, nil)
-          site
-        }
-        let(:response) { site.as_api_response(:v1_self_private) }
-
-        it "selects a subset of fields, as a hash" do
-          response.should be_a(Hash)
-          response[:token].should eq site.token
-          response[:main_domain].should eq 'rymai.me'
-          response[:extra_domains].should eq []
-          response[:staging_domains].should eq []
-          response[:extra_domains].should eq []
-          response[:wildcard].should eq false
-          response[:path].should eq ''
-        end
-      end
-    end
-
-    describe "#usage_to_api" do
-      context "with no usage" do
-        let(:site)     { create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test') }
-        let(:response) { site.as_api_response(:v1_usage_private) }
-
-        before do
-          create(:site_usage, site_id: site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-          create(:site_usage, site_id: site.id, day: 59.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-          create(:site_usage, site_id: site.id, day: Time.now.utc.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-        end
-
-        it "selects a subset of fields, as a hash" do
-          response.should be_a(Hash)
-          response[:token].should eq site.token
-          response[:usage].should eq site.usages.between(day: 60.days.ago.midnight..Time.now.utc.end_of_day).as_api_response(:v1_self_private)
-        end
-      end
-    end
-  end
-
   describe 'Associations' do
     let(:site) { create(:site) }
 
@@ -453,10 +393,14 @@ describe Site, :addons do
 
     describe "attributes queries" do
       before do
-        @site_wildcard        = create(:site, user: user, wildcard: true)
-        @site_path            = create(:site, user: user, path: "foo", path: 'foo')
+        @site_wildcard        = create(:site, hostname: 'google.com', user: user, wildcard: true)
+        @site_path            = create(:site, hostname: 'facebook.com', user: user, path: "foo", path: 'foo')
         @site_extra_hostnames = create(:site, user: user, extra_hostnames: "foo.com")
-        @site_next_cycle_plan = create(:site, user: user)
+        @site_next_cycle_plan = create(:site, user: user, created_at: 3.days.from_now)
+      end
+
+      describe ".without_hostnames" do
+        specify { Site.without_hostnames(%w[google.com facebook.com]).all.should =~ [@site_extra_hostnames, @site_next_cycle_plan] }
       end
 
       describe ".with_wildcard" do
@@ -469,6 +413,14 @@ describe Site, :addons do
 
       describe ".with_extra_hostnames" do
         specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
+      end
+
+      describe '.created_on' do
+        specify { Site.created_on(3.days.from_now).all.should =~ [@site_next_cycle_plan] }
+      end
+
+      describe '.created_after' do
+        specify { Site.created_after(2.days.from_now).all.should =~ [@site_next_cycle_plan] }
       end
     end
 
@@ -506,10 +458,6 @@ describe Site, :addons do
 
       describe '.free' do
         it { Site.free.all.should =~ [site2] }
-      end
-
-      describe '.in_beta_trial_ended_after' do
-        it { Site.in_beta_trial_ended_after('social_sharing-standard', Time.now.utc).all.should =~ [site1] }
       end
     end
 

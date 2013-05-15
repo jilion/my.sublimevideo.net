@@ -10,9 +10,9 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
 
   render: ->
     if @$el.is(":visible")
-      this.close()
+      _close()
     else
-      this.show()
+      _show()
 
     this
 
@@ -38,8 +38,8 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
           option  = "maxDate"
           endTime = datePickersView.convertPickerDate(selectedDate)
         dates.not(this).datepicker('option', option, selectedDate)
-    $('#start_time_picker').datepicker 'setDate', @options.period.get('start')
-    $('#end_time_picker').datepicker 'setDate', @options.period.get('end')
+    $('#start_time_picker').datepicker 'setDate', AdminSublimeVideo.period.get('start')
+    $('#end_time_picker').datepicker 'setDate', AdminSublimeVideo.period.get('end')
 
   destroyDatePickers: ->
     $('#start_time_picker, #end_time_picker').datepicker('destroy')

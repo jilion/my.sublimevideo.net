@@ -1,6 +1,6 @@
 #= require sublimevideo
 #= require underscore
-#= require highcharts/highcharts
+#= require highstock/highstock
 #= require mousetrap.min
 #= require chosen-jquery
 #

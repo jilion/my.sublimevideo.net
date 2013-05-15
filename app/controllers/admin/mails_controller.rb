@@ -27,6 +27,7 @@ class Admin::MailsController < Admin::AdminController
 
   # POST /mails/confirm
   def confirm
+    @user = User.first
     _find_mail_template(params[:mail][:template_id])
   end
 

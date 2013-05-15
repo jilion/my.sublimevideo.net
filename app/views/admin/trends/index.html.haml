@@ -11,7 +11,7 @@
       selectedSeries: selectedSeries
 
     $('a.selector').each () ->
-      if _.any(selectedSeriesString, (selectedSerieString) => selectedSerieString is $(this).data('value'))
+      if _.any(selectedSeriesString, (selectedSerieString) => selectedSerieString is $(this).prop('href').replace(/^.+\?/, ''))
         $(this).addClass('active')
 
 %h2#page_title SublimeVideo Trends
@@ -118,7 +118,7 @@
                 - App::Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.be.design.#{design.name}", title: "#{design.title} design in beta" }= "[Design] #{design.title}"
-                - Addon.public.visible.each do |addon|
+                - Addon.not_custom.visible.each do |addon|
                   %li
                     %a.selector{ href: "?billable_items.be.#{addon.name}", title: "#{addon.title} add-on in beta" }= addon.title
                     %ul
@@ -131,7 +131,7 @@
                 - App::Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.tr.design.#{design.name}", title: "#{design.title} design in trial" }= "[Design] #{design.title}"
-                - Addon.public.visible.each do |addon|
+                - Addon.not_custom.visible.each do |addon|
                   %li
                     %a.selector{ href: "?billable_items.tr.#{addon.name}", title: "#{addon.title} add-on in trial" }= addon.title
                     %ul
@@ -144,7 +144,7 @@
                 - App::Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.sb.design.#{design.name}", title: "#{design.title} design subscribed" }= "[Design] #{design.title}"
-                - Addon.public.visible.each do |addon|
+                - Addon.not_custom.visible.each do |addon|
                   %li
                     %a.selector{ href: "?billable_items.sb.#{addon.name}", title: "#{addon.title} add-on subscribed" }= addon.title
                     %ul
@@ -157,7 +157,7 @@
                 - App::Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.sp.design.#{design.name}", title: "#{design.title} design sponsored" }= "[Design] #{design.title}"
-                - Addon.public.visible.each do |addon|
+                - Addon.not_custom.visible.each do |addon|
                   %li
                     %a.selector{ href: "?billable_items.sp.#{addon.name}", title: "#{addon.title} add-on sponsored" }= addon.title
                     %ul
@@ -170,7 +170,7 @@
                 - App::Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.su.design.#{design.name}", title: "#{design.title} design suspended" }= "[Design] #{design.title}"
-                - Addon.public.visible.each do |addon|
+                - Addon.not_custom.visible.each do |addon|
                   %li
                     %a.selector{ href: "?billable_items.su.#{addon.name}", title: "#{addon.title} add-on suspended" }= addon.title
                     %ul
@@ -236,7 +236,9 @@
               %a.title.selector{ href: '#' } Alive
               %ul
                 %li
-                  %a.selector{ href: "?sites.al.pv", title: "Active sites with at least 1 page visit in the least 30 days" } Alive sites (page visits) in the least 30 days
+                  %a.selector{ href: "?sites.al.pv", title: "Active sites with at least 1 page visit in the least 30 days" } Sites with ≥ 1 page visit in the least 30 days
+                %li
+                  %a.selector{ href: "?sites.al.pv2", title: "Active sites with at least 2 page visits in the least 30 days" } Sites with ≥ 2 page visits in the least 30 days
                 %li
                   %a.selector{ href: "?sites.al.vv", title: "Active sites with at least 1 video view in the least 30 days" } Alive sites (video views) in the least 30 days
 

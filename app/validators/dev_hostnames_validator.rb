@@ -1,3 +1,6 @@
+require 'active_model'
+require 'hostname_handler'
+
 class DevHostnamesValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, hostnames)

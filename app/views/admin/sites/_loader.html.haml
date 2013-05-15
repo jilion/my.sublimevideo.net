@@ -1,0 +1,14 @@
+%h3 Loader
+
+%p= admin_links_to_loaders(site)
+
+- if has_role?('god')
+  %h4 Accessible stage update
+  = form_for [:admin, site] do |f|
+    = f.select :accessible_stage, Stage.stages.map { |s| [s.titleize, s] }
+    = f.submit 'Update accessible stage', data: { confirm: 'Are you sure?' }
+
+%h4 Refresh loader
+= form_for [:generate_loader, :admin, site], remote: true do |f|
+  = select_tag :stage, options_for_select([['All', 'all']] + Stage.stages_equal_or_more_stable_than(site.accessible_stage).map { |s| [s.titleize, s] }, selected: 'all')
+  = f.submit 'Refresh loader'

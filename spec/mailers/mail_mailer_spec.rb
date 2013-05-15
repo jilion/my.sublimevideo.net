@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MailMailer do
 
-  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: lambda { [FactoryGirl.create(:user).id, FactoryGirl.create(:mail_template).id] }
+  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: -> { [FactoryGirl.create(:user).id, FactoryGirl.create(:mail_template).id] }
 
   before do
     @template = create(:mail_template)
@@ -17,11 +17,11 @@ describe MailMailer do
     end
 
     it "should set subject to Liquidified template.subject" do
-      last_delivery.subject.should eq Liquid::Template.parse(@template.subject).render("user" => subject)
+      last_delivery.subject.should eq Liquid::Template.parse(@template.subject).render('user' => subject)
     end
 
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
-      last_delivery.body.encoded.gsub(/\r\n/, ' ').should include Liquid::Template.parse(@template.body).render("user" => subject)
+      last_delivery.body.encoded.gsub(/\r\n/, ' ').should include Liquid::Template.parse(@template.body).render('user' => subject)
     end
   end
 

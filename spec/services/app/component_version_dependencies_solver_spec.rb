@@ -30,186 +30,231 @@ end
 
 describe App::ComponentVersionDependenciesSolver do
   let(:site) { Site.new }
-  let(:c_a) { create_app_component('app', 'a') }
-  let(:c_a_100) { create_app_component_version("1.0.0", c_a) }
-  let(:c_a_200alpha1) { create_app_component_version("2.0.0-alpha.1", c_a) }
-  let(:c_a_200beta1) { create_app_component_version("2.0.0-beta.1", c_a) }
-  let(:c_a_200) { create_app_component_version("2.0.0", c_a) }
-  let(:c_c1) { create_app_component('c1', 'c1') }
-  let(:c_c1_100) { create_app_component_version("1.0.0", c_c1) }
-  let(:c_c1_110) { create_app_component_version("1.1.0", c_c1) }
-  let(:c_c1_200alpha1) { create_app_component_version("2.0.0-alpha.1", c_c1) }
-  let(:c_c1_200beta1) { create_app_component_version("2.0.0-beta.1", c_c1) }
-  let(:c_c2) { create_app_component('c2', 'c2') }
-  let(:c_c2_100) { create_app_component_version("1.0.0", c_c2) }
-  let(:c_c2_200) { create_app_component_version("2.0.0", c_c2) }
-  let(:c_c3) { create_app_component('c3', 'c3') }
-  let(:c_c3_100) { create_app_component_version("1.0.0", c_c3) }
-  let(:c_c3_200) { create_app_component_version("2.0.0", c_c3) }
 
-  describe ".components_dependencies" do
+  let(:c_a)           { create_app_component('app', 'a') }
+  let(:c_a_100)       { create_app_component_version('1.0.0', c_a) }
+  let(:c_a_200alpha1) { create_app_component_version('2.0.0-alpha.1', c_a) }
+  let(:c_a_200beta1)  { create_app_component_version('2.0.0-beta.1', c_a) }
+  let(:c_a_200)       { create_app_component_version('2.0.0', c_a) }
+
+  let(:c_c1)           { create_app_component('c1', 'c1') }
+  let(:c_c1_100)       { create_app_component_version('1.0.0', c_c1) }
+  let(:c_c1_110)       { create_app_component_version('1.1.0', c_c1) }
+  let(:c_c1_200alpha1) { create_app_component_version('2.0.0-alpha.1', c_c1) }
+  let(:c_c1_200beta1)  { create_app_component_version('2.0.0-beta.1', c_c1) }
+
+  let(:c_c2)     { create_app_component('c2', 'c2') }
+  let(:c_c2_100) { create_app_component_version('1.0.0', c_c2) }
+  let(:c_c2_200) { create_app_component_version('2.0.0', c_c2) }
+
+  let(:c_c3)     { create_app_component('c3', 'c3') }
+  let(:c_c3_100) { create_app_component_version('1.0.0', c_c3) }
+  let(:c_c3_200) { create_app_component_version('2.0.0', c_c3) }
+
+  let(:c_c4)           { create_app_component('c4', 'c4') }
+  let(:c_c4_100alpha1) { create_app_component_version('1.0.0-alpha.1', c_c4) }
+
+  describe '.components_dependencies' do
     before do
       App::Component.stub(:app_component) { c_a }
-      c_a.stub(:cached_versions) { [c_a_200, c_a_100, c_a_200alpha1, c_a_200beta1] }
       c_a_100.stub(:dependencies) { {} }
       c_a_200.stub(:dependencies) { {} }
       c_a_200beta1.stub(:dependencies) { {} }
       c_a_200alpha1.stub(:dependencies) { {} }
-      c_c1.stub(:cached_versions) { [c_c1_110, c_c1_100, c_c1_200alpha1, c_c1_200beta1] }
+
       c_c1_100.stub(:dependencies) { {} }
       c_c1_110.stub(:dependencies) { {} }
       c_c1_200alpha1.stub(:dependencies) { {} }
       c_c1_200beta1.stub(:dependencies) { {} }
-      c_c2.stub(:cached_versions) { [c_c2_100, c_c2_200] }
+
       c_c2_100.stub(:dependencies) { {} }
       c_c2_200.stub(:dependencies) { {} }
-      c_c3.stub(:cached_versions) { [c_c3_100, c_c3_200] }
+
       c_c3_100.stub(:dependencies) { {} }
       c_c3_200.stub(:dependencies) { {} }
+
+      c_c4_100alpha1.stub(:dependencies) { {} }
     end
 
-    context "with stage is stable" do
-      context "with 0 site components dependencies" do
+    context 'with stage is stable' do
+      before do
+        c_a.stub(:versions_for_stage).any_number_of_times.with('stable')  { [c_a_200, c_a_100] }
+        c_c1.stub(:versions_for_stage).any_number_of_times.with('stable') { [c_c1_110, c_c1_100] }
+        c_c2.stub(:versions_for_stage).any_number_of_times.with('stable') { [c_c2_100, c_c2_200] }
+        c_c3.stub(:versions_for_stage).any_number_of_times.with('stable') { [c_c3_100, c_c3_200] }
+        c_c4.stub(:versions_for_stage).any_number_of_times.with('stable') { [] }
+      end
+
+      context 'with 0 site components dependencies' do
         before { site.stub(:components) { [] } }
 
-        it "depends on the app bigger component version" do
-          described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0")
+        it 'depends on the app bigger component version' do
+          described_class.components_dependencies(site, 'stable').should eq('a' => '2.0.0')
         end
       end
 
-      context "with same site components dependency with no dependencies" do
+      context 'with same site components dependency with no dependencies' do
         before { site.stub(:components) { [c_a] } }
 
-        it "depends only once on app bigger component version" do
-          described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0")
+        it 'depends only once on app bigger component version' do
+          described_class.components_dependencies(site, 'stable').should eq('a' => '2.0.0')
         end
       end
 
-      context "with one other site components dependency" do
+      context 'with one other site components dependency' do
         before { site.stub(:components) { [c_c1] } }
 
-        context "with no dependencies" do
-          it "depends on the both bigger components versions" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0", 'c1' => "1.1.0")
+        context 'with no dependencies' do
+          it 'depends on the both bigger components versions' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '2.0.0', 'c1' => '1.1.0')
           end
         end
 
-        context "with app component dependency" do
+        context 'with app component dependency' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
           end
 
-          it "depends on the both bigger components versions" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0")
+          it 'depends on the both bigger components versions' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '1.0.0', 'c1' => '1.1.0')
           end
         end
 
-        context "with app component dependency with an unexistent dependencies" do
+        context 'with app component dependency with an unexistent dependencies' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '3.0.0' } } # unexistent
           end
 
-          it "depends on the both bigger components versions valid" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.0.0")
+          it 'depends on the both bigger components versions valid' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '1.0.0', 'c1' => '1.0.0')
           end
         end
 
-        context "with app component dependency and another dependency" do
+        context 'with app component dependency and another dependency' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
           end
 
-          it "depends on all dependencies" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '2.0.0')
+          it 'depends on all dependencies' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '1.0.0', 'c1' => '1.1.0', 'c2' => '2.0.0')
           end
         end
 
-        context "with app component dependency and another dependency with version with an impossible dependency" do
+        context 'with app component dependency and another dependency with version with an impossible dependency' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '2.0.0' } } # impossible
           end
 
-          it "doesn't dependence on the impossible dependency" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '1.0.0')
+          it 'do not depend on the impossible dependency' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '1.0.0', 'c1' => '1.1.0', 'c2' => '1.0.0')
           end
         end
 
-        context "with app component dependency and another dependency with another dependency" do
+        context 'with app component dependency and another dependency with another dependency' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
-            App::Component.should_receive(:find_cached_by_name).with('c3') { c_c3 }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).with('c2') { c_c2 }
+            App::Component.should_receive(:get).with('c3') { c_c3 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '1.0.0', 'c3' => '1.0.0' } }
           end
 
-          it "depends on all dependencies" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '2.0.0', 'c3' => '1.0.0')
+          it 'depends on all dependencies' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '1.0.0', 'c1' => '1.1.0', 'c2' => '2.0.0', 'c3' => '1.0.0')
           end
         end
 
-        context "with app component dependency with a new version impossible to solve" do
+        context 'with app component dependency with a new version impossible to solve' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c2_100.stub(:dependencies) { { 'app' => '2.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '2.0.0' } }
           end
 
-          it "doesn't depends on the new version" do
-            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.0.0")
+          it 'do not depend on the new version' do
+            described_class.components_dependencies(site, 'stable').should eq('a' => '1.0.0', 'c1' => '1.0.0')
           end
         end
 
-        context "with app component dependency impossible to solve" do
+        context 'with app component dependency impossible to solve' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('c2') { c_c2 }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).any_number_of_times.with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c2_100.stub(:dependencies) { { 'app' => '2.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '2.0.0' } }
           end
 
-          it "raise Solve::Errors::NoSolutionError" do
+          it 'raise Solve::Errors::NoSolutionError' do
             expect { described_class.components_dependencies(site, 'stable') }.to raise_error(Solve::Errors::NoSolutionError)
           end
         end
       end
     end
 
-    context "with stage is beta" do
-      context "with one other site components dependency" do
-        before { site.stub(:components) { [c_c1] } }
+    context 'with stage is beta' do
+      before do
+        c_a.should_receive(:versions_for_stage).any_number_of_times.with('beta') { [c_a_200, c_a_100, c_a_200beta1] }
+        c_c1.should_receive(:versions_for_stage).any_number_of_times.with('beta') { [c_c1_110, c_c1_100, c_c1_200beta1] }
+        c_c4.should_receive(:versions_for_stage).any_number_of_times.with('beta') { [] }
+      end
 
-        context "with app component dependency and another dependency" do
+      context 'with one other site components dependency' do
+        before { site.stub(:components) { [c_c1, c_c4] } }
+
+        context 'with app component dependency and another dependency' do
           before do
-            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_200alpha1.stub(:dependencies) { { 'app' => '2.0.0-alpha.1' } }
             c_c1_200beta1.stub(:dependencies) { { 'app' => '2.0.0-beta.1' } }
           end
 
-          it "depends on all beta dependencies" do
-            described_class.components_dependencies(site, 'beta').should eq('a' => "2.0.0-beta.1", 'c1' => "2.0.0-beta.1")
+          it 'depends on all beta dependencies' do
+            described_class.components_dependencies(site, 'beta').should eq('a' => '2.0.0-beta.1', 'c1' => '2.0.0-beta.1')
           end
         end
       end
     end
+
+    context 'with stage is alpha' do
+      before do
+        c_a.should_receive(:versions_for_stage).any_number_of_times.with('alpha') { [c_a_200, c_a_100, c_a_200beta1, c_a_200alpha1] }
+        c_c4.should_receive(:versions_for_stage).any_number_of_times.with('alpha') { [c_c4_100alpha1] }
+      end
+
+      context 'with one other site components dependency' do
+        before { site.stub(:components) { [c_c4] } }
+
+        context 'with app component dependency and another dependency with another dependency' do
+          before do
+            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            c_c4_100alpha1.stub(:dependencies) { { 'app' => '1.0.0' } }
+          end
+
+          it 'depends on all dependencies' do
+            described_class.components_dependencies(site, 'alpha').should eq('a' => '1.0.0', 'c4' => '1.0.0-alpha.1')
+          end
+        end
+      end
+    end
+
   end
 end

@@ -34,7 +34,7 @@ class SiteStatsTrend
   end
 
   def self.hashes_values_sum(site_stats, attribute)
-    site_stats.only(attribute).map(&attribute).inject({}) do |memo, el|
+    site_stats.only(attribute).map(&attribute).reduce({}) do |memo, el|
       memo.merge(el) { |k, old_v, new_v| old_v + new_v }
     end
   end
@@ -42,7 +42,7 @@ class SiteStatsTrend
   def self.player_mode_hashes_values_sum(site_stats)
     modes_and_devices = site_stats.map(&:md) # { Player Mode => { Device => N } }
 
-    [:h, :f].inject({}) do |hash, key|
+    [:h, :f].reduce({}) do |hash, key|
       mapped_mode_and_devices = modes_and_devices.map { |mode_and_devices| mode_and_devices[key.to_s] || {} }
       hash[key] = player_mode_hash_values_sum(mapped_mode_and_devices)
       hash
@@ -50,7 +50,7 @@ class SiteStatsTrend
   end
 
   def self.player_mode_hash_values_sum(modes_and_devices)
-    modes_and_devices.inject do |hash, mode_and_devices|
+    modes_and_devices.reduce do |hash, mode_and_devices|
       hash.merge(mode_and_devices) { |k, old_v, new_v| old_v + new_v }
     end
   end

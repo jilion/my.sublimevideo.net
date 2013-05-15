@@ -10,7 +10,7 @@
   @include box-shadow((inset rgba(255,255,255,0.9) 0 1px 0, rgba(0,32,79,0.5) 0 1px 4px));
 }
 
-#addons table th, #addons table th a {
+#addons table th {
   background:#20355a;
   padding:14px 20px;
   color:#c5dbff;
@@ -18,6 +18,14 @@
   font-weight:600;
   text-align:left;
   text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
+}
+
+#addons table th a {
+  color:#c5dbff;
+}
+
+#addons table th a .icon-arrow {
+  margin-left:3px;
 }
 
 #addons table tr:first-child th {
@@ -52,6 +60,11 @@
   text-align:right;
 }
 
+#addons table td.trial_notice a.hl {
+  border-bottom:none;
+  text-decoration:underline;
+}
+
 #addons table td.price {
   width:130px;
   text-align:center;
@@ -80,4 +93,19 @@
 #addons_total {
   font-size:25px;
   font-weight:600;
+}
+
+#addons .site_chooser {
+  padding-top:10px;
+}
+
+#addons .site_chooser h2.hostname {
+  padding-top:10px;
+  font-size:23px;
+  font-weight:600;
+}
+
+#addons .site_select_wrap {
+  margin-top:12px;
+  margin-left:15px;
 }

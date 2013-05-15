@@ -19,21 +19,22 @@ module SitesHelper
 
   def hostname_or_token(site, options = {})
     options.reverse_merge!(length: 22, prefix: '#')
+    host_or_token = site.hostname.presence || "#{options[:prefix]}#{site.token}"
 
-    truncate_middle (site.hostname.presence || "#{options[:prefix]}#{site.token}"), length: options[:length]
+    truncate_middle(host_or_token, length: options[:length])
   end
 
   def hostname_with_path_needed(site)
     unless site.path?
       list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
-      list.detect { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
+      list.find { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
     end
   end
 
   def hostname_with_subdomain_needed(site)
     if site.wildcard?
       list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
-      list.detect { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
+      list.find { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
     end
   end
 
@@ -51,6 +52,18 @@ module SitesHelper
 
   def cdn_updated_at(site)
     [site.loaders_updated_at.to_i, site.settings_updated_at.to_i].max
+  end
+
+  def options_for_sites(sites)
+    options_for_select(_sites_for_select(sites), disabled: '')
+  end
+
+  private
+
+  def _sites_for_select(sites)
+    sites.by_hostname.map do |site|
+      [hostname_or_token(site, length: 20), site.token]
+    end
   end
 
 end

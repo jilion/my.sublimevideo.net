@@ -19,7 +19,11 @@ class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collec
     if selected.length > 1 # attribute is something like: ["pa", "premium"] or ["pa", "premium", "y"]
       if selected[0] is 'al'
         text = 'Alive sites (with '
-        text += if selected[1] is 'pv' then 'page visits) ' else 'video views) '
+        text += switch selected[1]
+                  when 'pv' then '≥ 1 page visit'
+                  when 'pv2' then '≥ 2 page visits'
+                  when 'vv' then '≥ 1 video views'
+        text += ') '
       else
         text = 'Sites '
         if selected[1] is 'addons'

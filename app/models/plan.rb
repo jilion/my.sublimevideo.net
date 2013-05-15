@@ -29,25 +29,7 @@ class Plan < ActiveRecord::Base
     errors.add(:price, 'must be present.') if read_attribute(:price).nil?
   end
 
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :unpaid_plans,   where{ name >> UNPAID_NAMES }
-  scope :paid_plans,     where{ name << UNPAID_NAMES }
-  scope :standard_plans, where{ name >> STANDARD_NAMES }
-  scope :custom_plans,   where{ name =~ 'custom%' }
-  scope :yearly_plans,   where{ cycle == 'year' }
-
-  # =================
-  # = Class Methods =
-  # =================
-
   class << self
-    def create_custom(attributes)
-      create(attributes.merge(name: "custom - #{attributes[:name]}"))
-    end
-
     UNPAID_NAMES.each do |plan_name|
       method_name = "#{plan_name}_plan"
       define_method(method_name) do
@@ -60,11 +42,6 @@ class Plan < ActiveRecord::Base
       define_method(method_name) do
         where(name: plan_name).first.video_views
       end
-
-      method_name = "#{plan_name}_daily_video_views"
-      define_method(method_name) do
-        where(name: plan_name).first.daily_video_views
-      end
     end
   end
 
@@ -72,54 +49,11 @@ class Plan < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  def upgrade?(new_plan)
-    if new_plan.nil? || (yearly? && new_plan.monthly?)
-      false
-    elsif self == new_plan
-      nil
-    else
-      month_price(10) <= new_plan.month_price(10)
-    end
-  end
-
-  def next_plan
-    Plan.where{ price > my{price} }.order{ price.asc }.first
-  end
-
-  def month_price(months = 12)
-    case cycle
-    when "month"
-      price
-    when "year"
-      price / months
-    else
-      0
-    end
-  end
-
   # unpaid plan
   UNPAID_NAMES.each do |plan_name|
     define_method "#{plan_name}_plan?" do
       name == plan_name
     end
-  end
-
-  # paid plan
-  def standard_plan?
-    STANDARD_NAMES.include?(name.gsub(/\d/, ''))
-  end
-
-  # paid plan
-  def custom_plan?
-    name =~ /^custom.*/
-  end
-
-  def unpaid_plan?
-    price.zero?
-  end
-
-  def paid_plan?
-    !unpaid_plan?
   end
 
   CYCLES.each do |cycle_name|
@@ -130,30 +64,6 @@ class Plan < ActiveRecord::Base
 
   def title(options = {})
     "#{name.gsub(/\d/, '').titleize.strip} Plan" + (cycle == 'year' ? ' (yearly)' : '')
-  end
-
-  def daily_video_views
-    video_views / 30
-  end
-
-  def support
-    SUPPORT_LEVELS[support_level]
-  end
-
-  def discounted_percentage(site=nil)
-    0
-  end
-
-  def price(site = nil)
-    read_attribute(:price) * (1 - discounted_percentage(site))
-  end
-
-  def free?
-    price.zero?
-  end
-
-  def beta?
-    false
   end
 
 end

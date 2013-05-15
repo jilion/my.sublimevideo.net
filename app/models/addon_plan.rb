@@ -1,6 +1,6 @@
 class AddonPlan < BillableEntity
 
-  attr_accessible :addon, :name, :price, :availability, :required_stage, :stable_at, as: :admin
+  attr_accessible :addon, as: :admin
 
   belongs_to :addon
   has_many :components, through: :addon
@@ -13,23 +13,19 @@ class AddonPlan < BillableEntity
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
 
-  def self.free_addon_plans(options = {})
-    options = { reject: [] }.merge(options)
-
-    Addon.all.inject({}) do |hash, addon|
-      if free_addon_plan = addon.free_plan
-        if free_addon_plan.not_custom? && options[:reject].exclude?(free_addon_plan.addon.name)
-          hash[addon.name.to_sym] = addon.free_plan.id
-        end
-      end
-      hash
-    end
-  end
-
   def self.find_cached_by_addon_name_and_name(addon_name, addon_plan_name)
     Rails.cache.fetch [self, 'find_cached_by_addon_name_and_name', addon_name.to_s.dup, addon_plan_name.to_s.dup] do
       joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
     end
+  end
+  class << self
+    alias_method :get, :find_cached_by_addon_name_and_name
+  end
+
+  def self.free_addon_plans(options = {})
+    options.reverse_merge!(reject: [])
+
+    AddonPlan.includes(:addon).where { addon.name << options.fetch(:reject) }.not_custom.where(price: 0)
   end
 
   def available_for_subscription?(site)
@@ -38,7 +34,7 @@ class AddonPlan < BillableEntity
       false
     when 'public'
       addon_plan_ids_except_myself = addon.plans.pluck(:id) - [id]
-      !site.billable_items.addon_plans.where{ item_id >> addon_plan_ids_except_myself }.state('sponsored').exists?
+      !site.billable_items.addon_plans.where { item_id >> addon_plan_ids_except_myself }.state('sponsored').exists?
     when 'custom'
       site.addon_plans.where(id: id).exists?
     end
@@ -53,10 +49,6 @@ class AddonPlan < BillableEntity
     plugin_id = App::Plugin.where(addon_id: addon.id, app_design_id: dependant_design_id).first.try(:id)
 
     settings_templates.where(app_plugin_id: plugin_id).first
-  end
-
-  class << self
-    alias_method :get, :find_cached_by_addon_name_and_name
   end
 
   private

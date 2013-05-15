@@ -12,7 +12,7 @@ class MSVVideoCode.Views.Sharing extends Backbone.View
 
   updateSetting: (event) ->
     $field = $(event.target)
-    this._updateSettingAndRender($field.data('setting'), $inputField.val())
+    this._updateSettingAndRender($field.data('setting'), $field.val())
 
   updateSettingsAndToggleImageUrlField: (event) ->
     $field = $(event.target)
