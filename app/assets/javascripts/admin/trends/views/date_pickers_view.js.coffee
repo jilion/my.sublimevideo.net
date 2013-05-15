@@ -5,20 +5,24 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
 
   events: ->
     'click':               '_stopPropagation'
-    'click button.cancel': '_close'
     'click button.apply':  '_apply'
+    'click button.cancel': 'close'
 
   render: ->
-    if @$el.is(":visible")
-      _close()
+    if @$el.is(':visible')
+      this.close()
     else
-      _show()
+      this.show()
 
     this
 
   show: ->
     @$el.show()
     this.showDatePickers()
+
+  close: =>
+    @$el.hide()
+    this.destroyDatePickers()
 
   showDatePickers: ->
     datePickersView = this
@@ -58,14 +62,10 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
   _stopPropagation: (event) ->
     event.stopPropagation()
 
-  _close: =>
-    @$el.hide()
-    this.destroyDatePickers()
-
   _apply: ->
     newStart = this.convertDateToUTC('#start_time_picker')
     newEnd   = this.convertDateToUTC('#end_time_picker')
-    @options.period.set(start: new Date(newStart), end: new Date(newEnd))
+    AdminSublimeVideo.period.set(start: new Date(newStart), end: new Date(newEnd))
     AdminSublimeVideo.trendsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
     this.close()
     AdminSublimeVideo.graphView.render()

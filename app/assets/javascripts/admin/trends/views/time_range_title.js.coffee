@@ -12,7 +12,7 @@ class AdminSublimeVideo.Views.TimeRangeTitleView extends Backbone.View
   # BINDINGS
   #
   _listenToModelsEvents: ->
-    this.listenTo(@options.period, 'change', this.render)
+    this.listenTo(AdminSublimeVideo.period, 'change', this.render)
 
   render: =>
     $('#time_range_title').removeClass('editable')
