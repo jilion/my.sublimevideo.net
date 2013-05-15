@@ -23,6 +23,9 @@ en:
     dmt_quality:      'DM Quality'
     dmt_logo:         'DM Logo'
     dmt_sharing:      'DM Sharing'
+    psg_controls:     'PSG Controls'
+    psg_logo:         'PSG Logo'
+    rng_controls:     'Orange Controls'
 
   addon_plans:
     video_player:
@@ -96,3 +99,11 @@ en:
       standard: 'Standard DM Logo'
     dmt_sharing:
       standard: 'Standard DM Sharing'
+
+    psg_controls:
+      standard: 'Standard PSG Controls'
+    psg_logo:
+      standard: 'Standard PSG Logo'
+
+    rng_controls:
+      standard: 'Standard Orange Controls'
