@@ -115,11 +115,11 @@ group :assets do
   gem 'asset_sync'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
   gem 'backbone-rails'
 end
+gem 'haml_coffee_assets'
 gem 'sass-rails'
 
 group :production do
