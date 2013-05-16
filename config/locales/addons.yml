@@ -43,7 +43,7 @@ en:
       disabled:  'Disabled'
 
     google_analytics:
-      standard: 'Events tracking'
+      standard: 'Google Analytics integration'
 
     logo:
       sublime:  'SublimeVideo logo'
