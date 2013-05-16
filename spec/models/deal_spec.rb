@@ -47,7 +47,7 @@ describe Deal do
       end
 
       it "doesn't add an error if availability_scope is valid" do
-        deal = build(:deal, availability_scope: 'use_clients')
+        deal = build(:deal, availability_scope: 'vip')
         deal.should be_valid
       end
     end
@@ -108,9 +108,9 @@ describe Deal do
     end
 
     describe "#available_to?" do
-      let(:user_dont_use_for_clients) { create(:user, use_clients: false) }
-      let(:user_use_for_clients)      { create(:user, use_clients: true) }
-      let(:deal)                      { create(:deal, availability_scope: 'use_clients') }
+      let(:user_dont_use_for_clients) { create(:user, vip: false) }
+      let(:user_use_for_clients)      { create(:user, vip: true) }
+      let(:deal)                      { create(:deal, availability_scope: 'vip') }
 
       it "return false if user is nil" do
         deal.available_to?(nil).should be_false
