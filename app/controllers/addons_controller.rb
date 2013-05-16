@@ -35,7 +35,13 @@ class AddonsController < ApplicationController
   private
 
   def redirect_to_features_page_if_user_not_signed_in!
-    redirect_to layout_url("modular-player##{params[:id]}") unless user_signed_in?
+    unless user_signed_in?
+      if params.has_key?(:public)
+        redirect_to(layout_url("modular-player##{params[:id]}"))
+      else
+        authenticate_user!
+      end
+    end
   end
 
   def find_sites
