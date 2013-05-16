@@ -102,4 +102,4 @@ en:
       title: 'Google Analytics settings'
       settings:
         enable: 'Events tracking'
-        account: 'Account ID'
+        account: 'Alternative Account ID'
