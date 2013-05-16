@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_logged_in_cookie
 
   protect_from_forgery
-
 end
 
 module DeviseInvitable::Controllers::Helpers

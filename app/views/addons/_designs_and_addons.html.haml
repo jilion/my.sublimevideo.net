@@ -4,14 +4,6 @@
   %col
   %col.odd
   %col
-  -#%tr
-  -#  %th{ colspan: 3 } Player designs
-  -#= render 'addons/design', site: site, design: App::Design.get('classic')
-  -#= render 'addons/design', site: site, design: App::Design.get('light')
-  -#= render 'addons/design', site: site, design: App::Design.get('flat')
-  -#- App::Design.custom.select { |design| design.available_for_subscription?(site) }.each do |custom_design|
-  -#  = render 'addons/design', site: site, design: custom_design
-
   = render 'addons/addon', site: site, addon: Addon.get('logo')
   = render 'addons/addon', site: site, addon: Addon.get('cuezones')
   = render 'addons/addon', site: site, addon: Addon.get('social_sharing')
