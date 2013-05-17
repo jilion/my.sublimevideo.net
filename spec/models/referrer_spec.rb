@@ -58,32 +58,4 @@ describe Referrer do
       end
     end
   end
-
-  describe ".create_or_update_from_type" do
-    let(:site) { create(:site) }
-
-    it "should create referrer and set contextual_hits to 1 if url/token doesn't exist" do
-      expect { Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'c') }.to change(Referrer, :count).by(1)
-      Referrer.last.contextual_hits.should eq 1
-    end
-
-    it "should increment contextual_hits if referrer url/token already exsits" do
-      Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'c')
-      Referrer.last.contextual_hits.should eq 1
-      expect { Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'c') }.to change(Referrer, :count).by(0)
-      Referrer.last.contextual_hits.should eq 2
-    end
-
-    it "should create referrer and set badge_hits to 1 if url/token doesn't exist" do
-      expect { Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'b') }.to change(Referrer, :count).by(1)
-      Referrer.last.badge_hits.should eq 1
-    end
-
-    it "should increment badge_hits if referrer url/token already exsits" do
-      Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'b')
-      Referrer.last.badge_hits.should eq 1
-      expect { Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'b') }.to change(Referrer, :count).by(0)
-      Referrer.last.badge_hits.should eq 2
-    end
-  end
 end
