@@ -26,6 +26,15 @@ en:
     psg_controls:     'PSG Controls'
     psg_logo:         'PSG Logo'
     rng_controls:     'Orange Controls'
+  
+  addon_docs_permalink:
+    stats:            'stats'
+    google_analytics: 'google-analytics'
+    logo:             'on-video-logo'
+    cuezones:         'cue-zones'
+    social_sharing:   'sharing'
+    embed:            'embed'
+    support:          'support'
 
   addon_plans:
     video_player:
@@ -73,8 +82,9 @@ en:
       standard: 'SublimeVideo player basic JavaScript API'
 
     support:
-      standard: 'Forum & email support'
-      vip:      'VIP email support'
+      standard:   'Forum & email support'
+      vip:        'VIP email support'
+      enterprise: 'Enterprise email support'
 
     preview_tools:
       standard: 'Standard Preview Tools'
