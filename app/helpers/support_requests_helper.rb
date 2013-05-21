@@ -19,13 +19,14 @@ module SupportRequestsHelper
     options_for_select([[t('support_request.site_token.choose-site_token'), ''], ['', '', { disabled: true }]] + current_user.sites.active.map { |s| [hostname_or_token(s), s.token] }, selected: params[:support_request] ? params[:support_request][:site_token] : nil, disabled: ['-'])
   end
 
-  def business_days
-    days = _user_support_manager.max_reply_business_days
-    case days
-    when 1
+  def email_support_response_time
+    case _user_support_manager.guaranteed_response_time
+    when 5.days
+      '5 business days'
+    when 1.day
       'business day'
-    else
-      "#{days} business days"
+    when 1.hour
+      'hour (during business hours)'
     end
   end
 
@@ -35,6 +36,10 @@ module SupportRequestsHelper
 
   def vip_email_support?
     _user_support_manager.vip_email_support?
+  end
+
+  def enterprise_email_support?
+    _user_support_manager.enterprise_email_support?
   end
 
   def _user_support_manager

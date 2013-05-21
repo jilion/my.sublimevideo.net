@@ -1,6 +1,5 @@
 require 'fast_spec_helper'
 
-require 'wrappers/zendesk_wrapper'
 require 'services/support_request_manager'
 
 SupportRequest = Struct.new(:params) unless defined?(SupportRequest)
@@ -13,6 +12,8 @@ describe SupportRequestManager do
   let(:ticket)                  { mock('ticket', requester_id: 12, params: {}) }
   let(:manager1)                { described_class.new(support_request1) }
   let(:manager2)                { described_class.new(support_request2) }
+  let(:user_support_manager1)   { UserSupportManager.new(user_without_zendesk_id) }
+  let(:user_support_manager2)   { UserSupportManager.new(user_with_zendesk_id) }
 
   describe '.create_zendesk_user' do
     context 'user has a zendesk id' do
@@ -38,47 +39,69 @@ describe SupportRequestManager do
     end
   end
 
-  describe '#send' do
+  describe '#deliver' do
     context 'support request is valid' do
       before do
         support_request1.stub(valid?: true)
+        ZendeskWrapper.should_receive(:create_ticket).with(support_request1.to_params).and_return(ticket)
+        manager1.stub(:_set_user_zendesk_id)
+        manager1.stub(:_notify_of_new_enterprise_support_ticket)
       end
 
-      it 'calls #set_user_zendesk_id if user has no zendesk_id' do
-        ZendeskWrapper.should_receive(:create_ticket).with(support_request1.to_params).and_return(ticket)
-        manager1.should_receive(:set_user_zendesk_id).with(ticket)
+      it 'calls #_set_user_zendesk_id' do
+        manager1.should_receive(:_set_user_zendesk_id).with(ticket)
 
-        manager1.send.should be_true
+        manager1.deliver
+      end
+
+      it 'calls #_notify_of_new_enterprise_support_ticket' do
+        manager1.should_receive(:_notify_of_new_enterprise_support_ticket)
+
+        manager1.deliver
+      end
+
+      it 'returns true' do
+        manager1.deliver.should be_true
       end
     end
 
     context 'support request is not valid' do
       before do
         support_request1.stub(valid?: false)
+        ZendeskWrapper.should_not_receive(:create_ticket)
+      end
+
+      it 'do not call #_set_user_zendesk_id' do
+        manager1.should_not_receive(:_set_user_zendesk_id)
+
+        manager1.deliver
+      end
+
+      it 'do not call #_notify_of_new_enterprise_support_ticket' do
+        manager1.should_not_receive(:_notify_of_new_enterprise_support_ticket)
+
+        manager1.deliver
       end
 
       it 'returns false' do
-        ZendeskWrapper.should_not_receive(:create_ticket)
-        manager1.should_not_receive(:set_user_zendesk_id)
-
-        manager1.send.should be_false
+        manager1.deliver.should be_false
       end
     end
   end
 
-  describe '#set_user_zendesk_id' do
+  describe '#_set_user_zendesk_id' do
     it 'sets the zendesk_id of the user' do
       ZendeskWrapper.should_receive(:verify_user)
       support_request1.user.should_receive(:update_attribute).with(:zendesk_id, 12)
 
-      manager1.__send__(:set_user_zendesk_id, ticket)
+      manager1.send(:_set_user_zendesk_id, ticket)
     end
 
     it "calls #verify_user on the given ticket" do
       support_request1.user.stub(:update_attribute)
       ZendeskWrapper.should_receive(:verify_user)
 
-      manager1.__send__(:set_user_zendesk_id, ticket)
+      manager1.send(:_set_user_zendesk_id, ticket)
     end
   end
 

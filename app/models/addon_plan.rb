@@ -1,3 +1,5 @@
+require 'billable_entity'
+
 class AddonPlan < BillableEntity
 
   attr_accessible :addon, as: :admin

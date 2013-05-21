@@ -1,10 +1,26 @@
 %p
-  Use the form below to submit your issue or question and we will personally get back to you within the next
-  = business_days + '.'
-  - unless vip_email_support?
-    = raw "If you need extra support and enhanced reactivity, we also offer a #{link_to 'VIP email support add-on', addons_path(h: 'support-vip'), class: 'hl'} with a guaranteed response time of 1 business day."
+  = succeed '.' do
+    Use the form below to submit your issue or question and we will personally get back to you within the next
+    = email_support_response_time
 
-%p= raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
+  - if !vip_email_support? && !enterprise_email_support?
+    If you need extra support and enhanced reactivity, we also offer a
+    = link_to 'VIP email support add-on', addon_path('support', p: 'vip'), class: 'hl'
+    with a guaranteed response time of 1 business day.
+
+  - unless enterprise_email_support?
+    - if vip_email_support?
+      For our enterprise customers we offer an
+    - else
+      Last but not least, for our enterprise customers we offer an
+    = link_to 'Enterprise email support add-on', addon_path('support', p: 'enterprise'), class: 'hl'
+    with a guaranteed 1-hour response time during business hours and a 7/7 availability.
+
+%br
+%p
+  = succeed '.' do
+    Our support team is available during central Europe business hours: 9am - 6pm
+    = link_to 'CET', 'http://en.wikipedia.org/wiki/Central_European_Time', class: 'hl'
 
 .support_team_status{ class: support_availability_class }= support_availability_sentence
 
