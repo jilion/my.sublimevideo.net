@@ -10,7 +10,11 @@ module BillableItemsHelper
   end
 
   def addon_plan_is_selected?(site, addon_plan)
-    (action_name == 'show' && params[:p] == addon_plan.name) || site.addon_plans.include?(addon_plan)
+    if action_name == 'show' && params[:p] && picked_addon_plan = AddonPlan.get(params[:id], params[:p])
+      picked_addon_plan.name == addon_plan.name
+    else
+      site.addon_plans.include?(addon_plan)
+    end
   end
 
   def beta_loader_required_notice(addon_plan)
