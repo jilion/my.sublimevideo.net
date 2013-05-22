@@ -7,7 +7,7 @@ class SupportRequestsController < ApplicationController
     manager = SupportRequestManager.new(@support_request)
 
     respond_with(@support_request) do |format|
-      if manager.send
+      if manager.deliver
         format.html { redirect_to page_path('help'), notice: I18n.t('flash.support_requests.create.notice') }
       else
         format.html { render 'pages/help' }

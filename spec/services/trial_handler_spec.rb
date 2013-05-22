@@ -11,9 +11,11 @@ describe TrialHandler do
   let(:design_paid2)     { create(:app_design, price: 995) }
   let(:addon)            { create(:addon) }
   let(:addon2)           { create(:addon) }
+  let(:support_addon)    { create(:addon, name: 'support') }
   let!(:free_addon_plan) { create(:addon_plan, addon: addon, price: 0) }
   let(:addon_plan_paid1) { create(:addon_plan, addon: addon, price: 995) }
   let(:addon_plan_paid2) { create(:addon_plan, addon: addon2, price: 1995) }
+  let(:support_addon_plan) { create(:addon_plan, addon: support_addon, price: 9990) }
 
   describe '.send_trial_will_expire_emails' do
     let!(:beta_subscription)       { create(:billable_item, site: site, state: 'beta') }
@@ -173,9 +175,32 @@ describe TrialHandler do
     let!(:subscription_history2) { create(:billable_item_activity, site: site, state: 'beta', created_at: (BusinessModel.days_for_trial + 1).days.ago) }
     let!(:subscription)          { create(:billable_item, site: site, state: 'subscribed') }
 
-    it { described_class.new(site).out_of_trial?(subscription_history1.item).should be_false }
-    it { described_class.new(site).out_of_trial?(subscription_history2.item).should be_true }
-    it { described_class.new(site).out_of_trial?(subscription.item).should be_true }
+    it 'works' do
+      described_class.new(site).out_of_trial?(subscription_history1.item).should be_false
+      described_class.new(site).out_of_trial?(subscription_history2.item).should be_true
+      described_class.new(site).out_of_trial?(subscription.item).should be_true
+      described_class.new(site).out_of_trial?(support_addon_plan).should be_true
+    end
+  end
+
+  describe '#trial_end_date' do
+    let(:addon_plan1) { create(:addon_plan, created_at: (BusinessModel.days_for_trial + 1).days.from_now) }
+    let(:addon_plan2) { create(:addon_plan) }
+    let(:billable_item_activity1) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: (BusinessModel.days_for_trial + 1).days.ago.midnight) }
+    let(:billable_item_activity2) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: BusinessModel.days_for_trial.days.ago.midnight) }
+    let(:billable_item_activity3) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: (BusinessModel.days_for_trial - 1).days.ago.midnight) }
+    let(:billable_item_activity4) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: (BusinessModel.days_for_trial - 2).days.ago.midnight) }
+    let(:billable_item_activity5) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: Time.now.utc) }
+
+    it 'works' do
+      described_class.new(billable_item_activity1.site).trial_end_date(addon_plan1).should eq 1.day.ago.midnight
+      described_class.new(billable_item_activity2.site).trial_end_date(addon_plan1).should eq Time.now.utc.midnight
+      described_class.new(billable_item_activity3.site).trial_end_date(addon_plan1).should eq 1.day.from_now.midnight
+      described_class.new(billable_item_activity4.site).trial_end_date(addon_plan1).should eq 2.days.from_now.midnight
+      described_class.new(billable_item_activity5.site).trial_end_date(addon_plan1).midnight.should eq BusinessModel.days_for_trial.days.from_now.midnight
+      described_class.new(create(:site)).trial_end_date(addon_plan1).should be_nil
+      described_class.new(site).trial_end_date(support_addon_plan).should be_nil
+    end
   end
 
   describe '#trial_days_remaining' do
@@ -199,25 +224,7 @@ describe TrialHandler do
       described_class.new(site).trial_days_remaining(subscription.item).should eq 0
       described_class.new(site).trial_days_remaining(addon_plan2).should be_nil
       described_class.new(create(:site)).trial_days_remaining(addon_plan1).should be_nil
-    end
-  end
-
-  describe '#trial_end_date' do
-    let(:addon_plan1) { create(:addon_plan, created_at: (BusinessModel.days_for_trial + 1).days.from_now) }
-    let(:addon_plan2) { create(:addon_plan) }
-    let(:billable_item_activity1) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: (BusinessModel.days_for_trial + 1).days.ago.midnight) }
-    let(:billable_item_activity2) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: BusinessModel.days_for_trial.days.ago.midnight) }
-    let(:billable_item_activity3) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: (BusinessModel.days_for_trial - 1).days.ago.midnight) }
-    let(:billable_item_activity4) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: (BusinessModel.days_for_trial - 2).days.ago.midnight) }
-    let(:billable_item_activity5) { create(:billable_item_activity, item: addon_plan1, state: 'trial', created_at: Time.now.utc) }
-
-    it 'works' do
-      described_class.new(billable_item_activity1.site).trial_end_date(addon_plan1).should eq 1.day.ago.midnight
-      described_class.new(billable_item_activity2.site).trial_end_date(addon_plan1).should eq Time.now.utc.midnight
-      described_class.new(billable_item_activity3.site).trial_end_date(addon_plan1).should eq 1.day.from_now.midnight
-      described_class.new(billable_item_activity4.site).trial_end_date(addon_plan1).should eq 2.days.from_now.midnight
-      described_class.new(billable_item_activity5.site).trial_end_date(addon_plan1).midnight.should eq BusinessModel.days_for_trial.days.from_now.midnight
-      described_class.new(create(:site)).trial_days_remaining(addon_plan1).should be_nil
+      described_class.new(site).trial_days_remaining(support_addon_plan).should eq -1
     end
   end
 

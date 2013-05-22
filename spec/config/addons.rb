@@ -75,4 +75,5 @@ def instantiate_variables
   @support_addon        = Addon.get('support')
   @support_addon_plan_1 = AddonPlan.get('support', 'standard')
   @support_addon_plan_2 = AddonPlan.get('support', 'vip')
+  @support_addon_plan_3 = AddonPlan.get('support', 'enterprise')
 end

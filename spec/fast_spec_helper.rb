@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift("#{Dir.pwd}/app")
-Dir['app/**/'].each do |dir|
+Dir['app/*/'].each do |dir|
   path = "#{Dir.pwd}/#{dir}"
   $LOAD_PATH.unshift(path) unless path =~ %r{^app/(assets|views)}
 end

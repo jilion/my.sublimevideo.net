@@ -54,6 +54,9 @@ class TrialHandler
   def out_of_trial?(design_or_addon_plan)
     return true if site.billable_item_activities.with_item(design_or_addon_plan).state('subscribed').exists?
 
+    # No trial for the support add-on
+    return true if _support_addon?(design_or_addon_plan)
+
     if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
       trial_end_date(subscription.item) <= Time.now.utc
     else
@@ -62,6 +65,8 @@ class TrialHandler
   end
 
   def trial_end_date(design_or_addon_plan)
+    return nil if _support_addon?(design_or_addon_plan)
+
     if subscription = site.billable_item_activities.with_item(design_or_addon_plan).state(%w[beta trial]).first
       subscription.created_at + BusinessModel.days_for_trial.days
     else
@@ -70,7 +75,12 @@ class TrialHandler
   end
 
   def trial_days_remaining(design_or_addon_plan)
+    # Trial not started
     return nil if design_or_addon_plan.beta? || design_or_addon_plan.free?
+
+    # No trial for the support add-on
+    return -1 if _support_addon?(design_or_addon_plan)
+
     return 0 if out_of_trial?(design_or_addon_plan)
 
     if trial_end_date = trial_end_date(design_or_addon_plan)
@@ -126,6 +136,10 @@ class TrialHandler
 
   def _subscriptions_exiting_trial_on(date)
     site.billable_items.select { |subscription| trial_ends_on?(subscription.item, date) }
+  end
+
+  def _support_addon?(design_or_addon_plan)
+    design_or_addon_plan.is_a?(AddonPlan) && design_or_addon_plan.addon.name == 'support'
   end
 
 end

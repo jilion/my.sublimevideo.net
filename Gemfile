@@ -151,7 +151,6 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'debugger'
   gem 'timecop'
 
   # Javascript test

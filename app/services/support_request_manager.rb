@@ -1,9 +1,12 @@
+# wrappers
+require 'prowl_wrapper'
+require 'zendesk_wrapper'
+
+# services
+require 'user_support_manager'
+
 class SupportRequestManager
   attr_reader :support_request
-
-  def initialize(support_request)
-    @support_request = support_request
-  end
 
   def self.create_zendesk_user(user)
     return if user.zendesk_id?
@@ -12,10 +15,15 @@ class SupportRequestManager
     user.update_attribute(:zendesk_id, zendesk_user.id)
   end
 
-  def send
+  def initialize(support_request)
+    @support_request = support_request
+  end
+
+  def deliver
     if support_request.valid?
       ticket = ZendeskWrapper.create_ticket(support_request.to_params)
-      set_user_zendesk_id(ticket) unless support_request.user.zendesk_id?
+      _set_user_zendesk_id(ticket)
+      _notify_of_new_enterprise_support_ticket
       true
     else
       false
@@ -24,8 +32,16 @@ class SupportRequestManager
 
   private
 
-  def set_user_zendesk_id(ticket)
-    support_request.user.update_attribute(:zendesk_id, ticket.requester_id)
-    ZendeskWrapper.verify_user(ticket.requester_id)
+  def _set_user_zendesk_id(ticket)
+    unless support_request.user.zendesk_id?
+      support_request.user.update_attribute(:zendesk_id, ticket.requester_id)
+      ZendeskWrapper.verify_user(ticket.requester_id)
+    end
+  end
+
+  def _notify_of_new_enterprise_support_ticket
+    if UserSupportManager.new(support_request.user).enterprise_email_support?
+      ProwlWrapper.notify('New enterprise-level ticket received!')
+    end
   end
 end

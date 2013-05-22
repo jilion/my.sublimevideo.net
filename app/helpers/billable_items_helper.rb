@@ -37,6 +37,8 @@ module BillableItemsHelper
 
   def trial_days_remaining_text(trial_days_remaining, billable_item)
     case trial_days_remaining
+    when -1 # no trial!
+      ''
     when 0
       t = 'Trial ended.'
       if !current_user.cc? || current_user.cc_expired?

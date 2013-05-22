@@ -180,7 +180,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
-    columnize (0.3.6)
     connection_pool (1.0.0)
     cookiejar (0.3.0)
     countries (0.9.2)
@@ -629,7 +628,6 @@ DEPENDENCIES
   createsend (~> 2.5)
   dalli
   database_cleaner
-  debugger
   devise (~> 2.1.2)
   devise-async
   devise_invitable

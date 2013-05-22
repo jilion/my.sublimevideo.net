@@ -127,7 +127,8 @@ feature 'Choose add-ons' do
 
   scenario 'select radio button add-on' do
     choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
-    expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(2)
+    choose "addon_plans_support_#{@support_addon_plan_2.name}"
+    expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(4)
 
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
     page.should have_content 'Your add-ons selection has been confirmed.'
@@ -144,10 +145,10 @@ feature 'Choose add-ons' do
     @site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
     @site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
     @site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
+    @site.billable_items.with_item(@support_addon_plan_2)     .state('subscribed').should have(1).item
     @site.billable_items.with_item(@logo_addon_plan_2)        .state('trial').should have(1).item
 
-    @site.billable_item_activities.should have(13 + 2).items
+    @site.billable_item_activities.should have(13 + 4).items
     @site.billable_item_activities.with_item(@classic_design)           .state('subscribed').should have(1).item
     @site.billable_item_activities.with_item(@flat_design)              .state('subscribed').should have(1).item
     @site.billable_item_activities.with_item(@light_design)             .state('subscribed').should have(1).item
@@ -160,7 +161,8 @@ feature 'Choose add-ons' do
     @site.billable_item_activities.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
     @site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('subscribed').should have(1).item
     @site.billable_item_activities.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
+    @site.billable_item_activities.with_item(@support_addon_plan_1)     .state('canceled').should have(1).item
+    @site.billable_item_activities.with_item(@support_addon_plan_2)     .state('subscribed').should have(1).item
     @site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('canceled').should have(1).item
     @site.billable_item_activities.with_item(@logo_addon_plan_2)        .state('trial').should have(1).item
   end

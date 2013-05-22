@@ -3,7 +3,7 @@
 - unless addon_plans_available_for_subscription.empty?
   %tr
     %th{ colspan: 3 }
-      = link_to layout_url("modular-player##{addon.name}"), onclick: 'window.open(this); return false' do
+      = link_to docs_url("addons/#{t("addon_docs_permalink.#{addon.name}")}"), onclick: 'window.open(this); return false' do
         = t("addons.#{addon.name}")
         %span.icon-arrow
 
