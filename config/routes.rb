@@ -64,7 +64,7 @@ MySublimeVideo::Application.routes.draw do
         end
       end
       resources :plans, only: [:index]
-      resources :referrers, only: [:index] do
+      resources :referrers, only: [] do
         collection do
           get :pages
         end
