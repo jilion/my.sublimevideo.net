@@ -37,7 +37,6 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                           PUT      /sites/:id(.:format)                                      admin/sites#update
                               admin_plans GET      /plans(.:format)                                          admin/plans#index
                     pages_admin_referrers GET      /referrers/pages(.:format)                                admin/referrers#pages
-                          admin_referrers GET      /referrers(.:format)                                      admin/referrers#index
                         become_admin_user GET      /users/:id/become(.:format)                               admin/users#become
                          stats_admin_user GET      /users/:id/stats(.:format)                                admin/users#stats
                       invoices_admin_user GET      /users/:id/invoices(.:format)                             admin/users#invoices
