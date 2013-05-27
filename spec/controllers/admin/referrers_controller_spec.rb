@@ -8,12 +8,12 @@ describe Admin::ReferrersController do
     end
 
     it "responds with success to GET :index" do
-      get :index
+      get :pages
       response.should be_success
-      response.should render_template(:index)
+      response.should render_template(:pages)
     end
   end
 
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: :index }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: :pages }
 
 end

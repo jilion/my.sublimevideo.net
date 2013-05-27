@@ -2,7 +2,7 @@
   %tr
     %th URL
     %th= link_to_sort :hits, label: 'Loads', default_way: 'desc'
-    %th= link_to_sort :created_at, label: 'First activity', default_way: 'desc'
+    %th= 'First activity'
     %th= link_to_sort :updated_at, label: 'Latest activity', default_way: 'desc', default: true
   = render @referrers
 

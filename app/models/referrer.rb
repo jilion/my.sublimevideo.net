@@ -5,17 +5,12 @@ class Referrer
   field :token
   field :url
   field :hits,            type: Integer, default: 0
-  field :badge_hits,      type: Integer, default: 0
-  field :contextual_hits, type: Integer, default: 0
 
   index token: 1, url: 1
   index hits: 1
-  index badge_hits: 1
-  index contextual_hits: 1
-  index created_at: 1
   index updated_at: 1
 
-  attr_accessible :token, :url, :hits, :contextual_hits, :badge_hits
+  attr_accessible :token, :url, :hits
 
   cattr_accessor :per_page
   self.per_page = 100
@@ -40,12 +35,8 @@ class Referrer
   # ==========
 
   scope :with_tokens,        ->(tokens) { where(:token.in => tokens.map(&:to_i)) }
-  scope :by_url,             ->(way = 'desc') { order_by([:url, way.to_sym]) }
   scope :by_hits,            ->(way = 'desc') { order_by([:hits, way.to_sym]) }
-  scope :by_badge_hits,      ->(way = 'desc') { order_by([:badge_hits, way.to_sym]) }
-  scope :by_contextual_hits, ->(way = 'desc') { order_by([:contextual_hits, way.to_sym]) }
   scope :by_updated_at,      ->(way = 'desc') { order_by([:updated_at, way.to_sym]) }
-  scope :by_created_at,      ->(way = 'desc') { order_by([:created_at, way.to_sym]) }
 
   # =================
   # = Class Methods =
