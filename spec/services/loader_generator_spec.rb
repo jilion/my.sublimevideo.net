@@ -28,9 +28,19 @@ describe LoaderGenerator, :fog_mock do
   let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false, clear_caches: true) }
   let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true, clear_caches: true) }
   let(:generator) { described_class.new(site, 'stable') }
+  let(:v2_4_0_alpha) { stub(version: '2.4.0-alpha', solve_version: Solve::Version.new('2.4.0-alpha')) }
+  let(:v2_5_0_alpha) { stub(version: '2.5.0-alpha', solve_version: Solve::Version.new('2.5.0-alpha')) }
+  let(:v2_5_1_alpha) { stub(version: '2.5.1-alpha', solve_version: Solve::Version.new('2.5.1-alpha')) }
+  let(:v2_4_0_beta) { stub(version: '2.4.0-beta', solve_version: Solve::Version.new('2.4.0-beta')) }
+  let(:v2_5_0_beta) { stub(version: '2.5.0-beta', solve_version: Solve::Version.new('2.5.0-beta')) }
+  let(:v2_5_1_beta) { stub(version: '2.5.1-beta', solve_version: Solve::Version.new('2.5.1-beta')) }
+  let(:v2_4_0) { stub(version: '2.4.0', solve_version: Solve::Version.new('2.4.0')) }
+  let(:v2_5_0) { stub(version: '2.5.0', solve_version: Solve::Version.new('2.5.0')) }
+  let(:v2_5_1) { stub(version: '2.5.1', solve_version: Solve::Version.new('2.5.1')) }
   before do
     Librato.stub(:increment)
     App::Component.stub(:app_component) { app_component }
+    app_component.stub(:versions_for_stage) { [v2_4_0, v2_5_0, v2_5_1] }
     App::ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
       'e' => '1.0.0',
       'c1' => '1.2.3',
@@ -351,6 +361,107 @@ describe LoaderGenerator, :fog_mock do
       Librato.should_receive(:increment).with('loader.delete', source: 'beta')
 
       described_class.new(site, 'beta').delete!
+    end
+  end
+
+  describe '#template_file' do
+    context 'alpha stage' do
+      let(:generator) { described_class.new(site, 'alpha') }
+      context 'versions for stage < 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_4_0_alpha] }
+        end
+
+        it 'returns the old loader' do
+          generator.template_file.should eq 'loader-alpha.js.erb'
+        end
+      end
+
+      context 'versions for stage == 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_4_0, v2_4_0_beta, v2_5_0_alpha, v2_4_0_alpha] }
+        end
+
+        it 'returns the new loader' do
+          generator.template_file.should eq 'new-loader-alpha.js.erb'
+        end
+      end
+
+      context 'versions for stage > 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
+        end
+
+        it 'returns the new loader' do
+          generator.template_file.should eq 'new-loader-alpha.js.erb'
+        end
+      end
+    end
+
+    context 'beta stage' do
+      let(:generator) { described_class.new(site, 'beta') }
+      context 'versions for stage < 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_4_0_beta, v2_4_0_alpha] }
+        end
+
+        it 'returns the old loader' do
+          generator.template_file.should eq 'loader-beta.js.erb'
+        end
+      end
+
+      context 'versions for stage == 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_0_alpha, v2_4_0_alpha] }
+        end
+
+        it 'returns the new loader' do
+          generator.template_file.should eq 'new-loader-beta.js.erb'
+        end
+      end
+
+      context 'versions for stage > 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
+        end
+
+        it 'returns the new loader' do
+          generator.template_file.should eq 'new-loader-beta.js.erb'
+        end
+      end
+    end
+
+    context 'stable stage' do
+      let(:generator) { described_class.new(site, 'stable') }
+      context 'versions for stage < 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_4_0, v2_4_0_beta, v2_4_0_alpha] }
+        end
+
+        it 'returns the old loader' do
+          generator.template_file.should eq 'loader-stable.js.erb'
+        end
+      end
+
+      context 'versions for stage == 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_0_alpha, v2_4_0_alpha] }
+        end
+
+        it 'returns the new loader' do
+          generator.template_file.should eq 'new-loader-stable.js.erb'
+        end
+      end
+
+      context 'versions for stage > 2.5' do
+        before do
+          app_component.stub(:versions_for_stage) { [v2_5_1, v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
+        end
+
+        it 'returns the new loader' do
+          generator.template_file.should eq 'new-loader-stable.js.erb'
+        end
+      end
     end
   end
 end
