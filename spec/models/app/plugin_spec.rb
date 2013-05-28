@@ -36,6 +36,7 @@ end
 #  condition        :text
 #  created_at       :datetime         not null
 #  id               :integer          not null, primary key
+#  mod              :string(255)
 #  name             :string(255)      not null
 #  token            :string(255)      not null
 #  updated_at       :datetime         not null
