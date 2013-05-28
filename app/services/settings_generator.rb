@@ -121,6 +121,7 @@ private
         hash[addon_plan.kind][:settings] = addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
         hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template.template)
         hash[addon_plan.kind][:id] = template.plugin.token
+        hash[addon_plan.kind][:module] = template.plugin.mod
         unless (condition = template.plugin.condition).empty?
           hash[addon_plan.kind][:condition] = condition
         end
