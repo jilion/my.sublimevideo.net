@@ -47,12 +47,12 @@ describe SettingsGenerator, :fog_mock do
         site.stub(:accessible_stage) { 'beta' }
         site.stub(:player_mode) { 'beta' }
         described_class.update_all!(site.id)
-        described_class.new(site).cdn_file.should be_present
+        described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should be_present }
       end
 
       it "uploads all settings types when accessible_stage is 'stable'" do
         described_class.update_all!(site.id)
-        described_class.new(site).should be_present
+        described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should be_present }
       end
 
       it "increments metrics" do
@@ -65,7 +65,7 @@ describe SettingsGenerator, :fog_mock do
 
         it "removes all settings types" do
           described_class.update_all!(site.id)
-          described_class.new(site).should_not be_present
+          described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should_not be_present }
         end
 
         it "increments metrics" do
@@ -76,12 +76,33 @@ describe SettingsGenerator, :fog_mock do
     end
   end
 
-  describe "file" do
-    let(:file) { described_class.new(site).file }
+  describe "cdn_files" do
 
-    it "has good content" do
-      File.open(file) do |f|
-        f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
+    describe 'old settings' do
+      let(:cdn_file) { described_class.new(site).cdn_files[0] }
+
+      it 'has old path' do
+        cdn_file.path.should eq "s/abcd1234.js"
+      end
+
+      it 'has mangled content' do
+        File.open(cdn_file.file) do |f|
+          f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
+        end
+      end
+    end
+
+    describe 'new settings' do
+      let(:cdn_file) { described_class.new(site).cdn_files[1] }
+
+      it 'has new path' do
+        cdn_file.path.should eq "s2/abcd1234.js"
+      end
+
+      it 'new settings have non-mangled content' do
+        File.open(cdn_file.file) do |f|
+          f.read.should eq "/*! SublimeVideo settings | (c) 2013 Jilion SA | http://sublimevideo.net */(function(){ sublime_.define(\"settings\",[],function(){var e,n,t;return n={},e={},t={license:{\"hosts\":[\"test.com\",\"test.net\"],\"staging_hosts\":[\"test-staging.net\"],\"dev_hosts\":[\"test.dev\"],\"path\":\"path\",\"wildcard\":true,\"stage\":\"stable\"},app:{},kits:{},defaultKit:'1'},n.exports=t,n.exports||e});;sublime._component('settings');})();\n"
+        end
       end
     end
   end
