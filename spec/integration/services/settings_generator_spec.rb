@@ -393,7 +393,7 @@ describe SettingsGenerator, :addons do
               },
               "link_url": {
               }},
-              "id":"sa.sh.sp"},
+              "id":"sa.sh.sp","module":"sublime/video/plugins/logo/logo"},
               "controls": {
               "settings": {
               "enable":true,"visibility":"autohide"},
@@ -402,7 +402,7 @@ describe SettingsGenerator, :addons do
               "values":[true,false]},
               "visibility": {
               "values":["autohide","visible"]}},
-              "id":"sa.sh.sq"},
+              "id":"sa.sh.sq","module":"sublime/video/plugins/controls/controls"},
               "initial": {
               "settings": {
               "overlay_enable":true,"overlay_visibility":"autofade","overlay_color":"#000"},
@@ -413,7 +413,7 @@ describe SettingsGenerator, :addons do
               "values":["autofade","visible"]},
               "overlay_color": {
               "values":["#000"]}},
-              "id":"sa.sh.sv"},
+              "id":"sa.sh.sv","module":"sublime/video/plugins/poster/start_controller"},
               "embed": {
               "settings": {
               "enable":true,"type":"manual","size":"640"},
@@ -424,7 +424,7 @@ describe SettingsGenerator, :addons do
               "values":["manual"]},
               "size": {
               }},
-              "id":"sa.sh.ub"}},
+              "id":"sa.sh.ub","module":"sublime/video/plugins/embed/embed"}},
               "settings": {
               "volume_enable":true,"fullmode_enable":true,"fullmode_priority":"screen","on_end":"nothing"},
               "allowed_settings": {
@@ -436,7 +436,7 @@ describe SettingsGenerator, :addons do
               "values":["screen","window"]},
               "on_end": {
               "values":["nothing","replay","stop"]}},
-              "id":"sa.sh.si"},
+              "id":"sa.sh.si","module":"sublime/video/video_app_plugin"},
               "lightbox": {
               "settings": {
               "on_open":"play","overlay_color":"#000","overlay_opacity":0.7,"close_button_enable":true,"close_button_visibility":"autohide","close_button_position":"left"},
@@ -453,13 +453,13 @@ describe SettingsGenerator, :addons do
               "values":["autohide","visible"]},
               "close_button_position": {
               "values":["left","right"]}},
-              "id":"sa.sl.sm"},
+              "id":"sa.sl.sm","module":"sublime/lightbox/lightbox_app_plugin"},
               "imageViewer": {
               "settings": {
               },
               "allowed_settings": {
               },
-              "id":"sa.sn.so"}}}},
+              "id":"sa.sn.so","module":"sublime/image/image_app_plugin"}}}},
               defaultKit:'1'},
               n.exports=t,n.exports||e});;sublime._component('settings');})();
             CONTENT

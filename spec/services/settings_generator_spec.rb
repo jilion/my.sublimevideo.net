@@ -76,8 +76,7 @@ describe SettingsGenerator, :fog_mock do
     end
   end
 
-  describe "cdn_files" do
-
+  describe 'cdn_files' do
     describe 'old settings' do
       let(:cdn_file) { described_class.new(site).cdn_files[0] }
 
@@ -193,10 +192,10 @@ describe SettingsGenerator, :fog_mock do
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
-      let(:plugin1) { mock(App::Plugin, id: 1, app_design_id: nil, token: 'plugin1', condition: {}) }
-      let(:plugin2_1) { mock(App::Plugin, id: 2, app_design_id: 1, token: 'plugin2_1', condition: {}) }
-      let(:plugin2_2) { mock(App::Plugin, id: 3, app_design_id: 2, token: 'plugin2_2', condition: {}) }
-      let(:plugin3) { mock(App::Plugin, id: 4, app_design_id: 3, token: 'plugin3', condition: {}) }
+      let(:plugin1) { mock(App::Plugin, id: 1, app_design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
+      let(:plugin2_1) { mock(App::Plugin, id: 2, app_design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
+      let(:plugin2_2) { mock(App::Plugin, id: 3, app_design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
+      let(:plugin3) { mock(App::Plugin, id: 4, app_design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
       let(:settings_template1) { mock(App::SettingsTemplate, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
       let(:settings_template2_1) { mock(App::SettingsTemplate, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
       let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
@@ -212,8 +211,8 @@ describe SettingsGenerator, :fog_mock do
         addon_plan2.stub(:settings_template_for).with(design2) { settings_template2_2 }
       end
 
-      it "includes template of this addon_plan settings_template" do
-        settings.kits.should eq({
+      it "includes template of this addon_plan settings_template without the plugin's modules" do
+        settings.kits(false).should eq({
           "1" => {
             skin: { id: "skin_token1" },
             plugins: {
@@ -269,6 +268,69 @@ describe SettingsGenerator, :fog_mock do
                   }
                 },
                 id: "plugin1",
+              }
+            }
+          }
+        })
+      end
+
+      it "includes template of this addon_plan settings_template with the plugin's modules" do
+        settings.kits(true).should eq({
+          "1" => {
+            skin: { id: "skin_token1" },
+            plugins: {
+              "addon_kind1" => {
+                plugins: {
+                  "addon_kind2" => {
+                    settings: {
+                      close_button_position: "right"
+                    },
+                    allowed_settings: {
+                      close_button_position: {
+                        values: ["left", "right"]
+                      }
+                    },
+                    id: "plugin2_1", :module => "foo/bar2"
+                  }
+                },
+                settings: {
+                  autoplay: false
+                },
+                allowed_settings: {
+                  autoplay: {
+                    values: [true, false]
+                  }
+                },
+                id: "plugin1", :module => "foo/bar"
+              }
+            }
+          },
+          "2" => {
+            skin: { id: "skin_token2" },
+            plugins: {
+              "addon_kind1" => {
+                plugins: {
+                  "addon_kind2" => {
+                    settings: {
+                      close_button_position: "left"
+                    },
+                    allowed_settings: {
+                      close_button_position: {
+                        values: ["left", "right"]
+                      }
+                    },
+                    id: "plugin2_2", :module => "foo/bar3"
+                  }
+                },
+                settings: {
+                  autoplay: true
+                },
+                allowed_settings: {
+                  autoplay: {
+                    values: [true, false]
+                  }
+                },
+                id: "plugin1", :module => "foo/bar"
               }
             }
           }
