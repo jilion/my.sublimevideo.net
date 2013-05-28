@@ -47,12 +47,12 @@ describe SettingsGenerator, :fog_mock do
         site.stub(:accessible_stage) { 'beta' }
         site.stub(:player_mode) { 'beta' }
         described_class.update_all!(site.id)
-        described_class.new(site).cdn_file.should be_present
+        described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should be_present }
       end
 
       it "uploads all settings types when accessible_stage is 'stable'" do
         described_class.update_all!(site.id)
-        described_class.new(site).should be_present
+        described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should be_present }
       end
 
       it "increments metrics" do
@@ -65,7 +65,7 @@ describe SettingsGenerator, :fog_mock do
 
         it "removes all settings types" do
           described_class.update_all!(site.id)
-          described_class.new(site).should_not be_present
+          described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should_not be_present }
         end
 
         it "increments metrics" do
@@ -76,12 +76,32 @@ describe SettingsGenerator, :fog_mock do
     end
   end
 
-  describe "file" do
-    let(:file) { described_class.new(site).file }
+  describe 'cdn_files' do
+    describe 'old settings' do
+      let(:cdn_file) { described_class.new(site).cdn_files[0] }
 
-    it "has good content" do
-      File.open(file) do |f|
-        f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
+      it 'has old path' do
+        cdn_file.path.should eq "s/abcd1234.js"
+      end
+
+      it 'has mangled content' do
+        File.open(cdn_file.file) do |f|
+          f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
+        end
+      end
+    end
+
+    describe 'new settings' do
+      let(:cdn_file) { described_class.new(site).cdn_files[1] }
+
+      it 'has new path' do
+        cdn_file.path.should eq "s2/abcd1234.js"
+      end
+
+      it 'new settings have non-mangled content' do
+        File.open(cdn_file.file) do |f|
+          f.read.should eq "/*! SublimeVideo settings | (c) 2013 Jilion SA | http://sublimevideo.net */(function(){ sublime_.define(\"settings\",[],function(){var e,n,t;return n={},e={},t={license:{\"hosts\":[\"test.com\",\"test.net\"],\"staging_hosts\":[\"test-staging.net\"],\"dev_hosts\":[\"test.dev\"],\"path\":\"path\",\"wildcard\":true,\"stage\":\"stable\"},app:{},kits:{},defaultKit:'1'},n.exports=t,n.exports||e});;sublime._component('settings');})();\n"
+        end
       end
     end
   end
@@ -172,10 +192,10 @@ describe SettingsGenerator, :fog_mock do
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
-      let(:plugin1) { mock(App::Plugin, id: 1, app_design_id: nil, token: 'plugin1', condition: {}) }
-      let(:plugin2_1) { mock(App::Plugin, id: 2, app_design_id: 1, token: 'plugin2_1', condition: {}) }
-      let(:plugin2_2) { mock(App::Plugin, id: 3, app_design_id: 2, token: 'plugin2_2', condition: {}) }
-      let(:plugin3) { mock(App::Plugin, id: 4, app_design_id: 3, token: 'plugin3', condition: {}) }
+      let(:plugin1) { mock(App::Plugin, id: 1, app_design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
+      let(:plugin2_1) { mock(App::Plugin, id: 2, app_design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
+      let(:plugin2_2) { mock(App::Plugin, id: 3, app_design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
+      let(:plugin3) { mock(App::Plugin, id: 4, app_design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
       let(:settings_template1) { mock(App::SettingsTemplate, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
       let(:settings_template2_1) { mock(App::SettingsTemplate, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
       let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
@@ -191,8 +211,8 @@ describe SettingsGenerator, :fog_mock do
         addon_plan2.stub(:settings_template_for).with(design2) { settings_template2_2 }
       end
 
-      it "includes template of this addon_plan settings_template" do
-        settings.kits.should eq({
+      it "includes template of this addon_plan settings_template without the plugin's modules" do
+        settings.kits(false).should eq({
           "1" => {
             skin: { id: "skin_token1" },
             plugins: {
@@ -248,6 +268,69 @@ describe SettingsGenerator, :fog_mock do
                   }
                 },
                 id: "plugin1",
+              }
+            }
+          }
+        })
+      end
+
+      it "includes template of this addon_plan settings_template with the plugin's modules" do
+        settings.kits(true).should eq({
+          "1" => {
+            skin: { id: "skin_token1" },
+            plugins: {
+              "addon_kind1" => {
+                plugins: {
+                  "addon_kind2" => {
+                    settings: {
+                      close_button_position: "right"
+                    },
+                    allowed_settings: {
+                      close_button_position: {
+                        values: ["left", "right"]
+                      }
+                    },
+                    id: "plugin2_1", :module => "foo/bar2"
+                  }
+                },
+                settings: {
+                  autoplay: false
+                },
+                allowed_settings: {
+                  autoplay: {
+                    values: [true, false]
+                  }
+                },
+                id: "plugin1", :module => "foo/bar"
+              }
+            }
+          },
+          "2" => {
+            skin: { id: "skin_token2" },
+            plugins: {
+              "addon_kind1" => {
+                plugins: {
+                  "addon_kind2" => {
+                    settings: {
+                      close_button_position: "left"
+                    },
+                    allowed_settings: {
+                      close_button_position: {
+                        values: ["left", "right"]
+                      }
+                    },
+                    id: "plugin2_2", :module => "foo/bar3"
+                  }
+                },
+                settings: {
+                  autoplay: true
+                },
+                allowed_settings: {
+                  autoplay: {
+                    values: [true, false]
+                  }
+                },
+                id: "plugin1", :module => "foo/bar"
               }
             }
           }

@@ -13,8 +13,6 @@ require 'player_mangler'
 class SettingsGenerator
   attr_reader :site, :options
 
-  delegate :present?, to: :cdn_file
-
   def initialize(site, options = {})
     @site, @options = site, options
   end
@@ -30,12 +28,11 @@ class SettingsGenerator
     end
   end
 
-  def cdn_file
-    @cdn_file ||= CDNFile.new(file, path, s3_headers)
-  end
-
-  def file
-    @file ||= generate_file
+  def cdn_files
+    @cdn_files ||= [
+      CDNFile.new(_generate_file, _path('s'), _s3_headers),
+      CDNFile.new(_generate_file('new-'), _path('s2'), _s3_headers)
+    ]
   end
 
   def license
@@ -50,20 +47,20 @@ class SettingsGenerator
   end
 
   def app_settings
-    addon_plans_without_plugins.reduce({}) do |hash, addon_plan|
+    _addon_plans_without_plugins.reduce({}) do |hash, addon_plan|
       template = addon_plan.settings_templates.first.template
       hash[addon_plan.kind] = {}
-      hash[addon_plan.kind][:settings] = addon_plan_settings(template)
-      hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template)
+      hash[addon_plan.kind][:settings] = _addon_plan_settings(template)
+      hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template)
       hash
     end
   end
 
-  def kits
+  def kits(with_modules = false)
     site.kits.includes(:design).order(:identifier).reduce({}) do |hash, kit|
       hash[kit.identifier] = {}
       hash[kit.identifier][:skin] = { id: kit.skin_token }
-      hash[kit.identifier][:plugins] = kits_plugins(kit, nil)
+      hash[kit.identifier][:plugins] = _kits_plugins(kit, nil, with_modules)
       hash
     end
   end
@@ -77,50 +74,51 @@ class SettingsGenerator
   end
 
   def upload!
-    cdn_file.upload!
+    cdn_files.map(&:upload!)
     _increment_librato('update')
   end
 
   def delete!
-    cdn_file.delete!
+    cdn_files.map(&:delete!)
     _increment_librato('delete')
   end
 
 private
 
-  def addon_plans
-    @addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin).order(:id)
+  def _addon_plans
+    @_addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin).order(:id)
   end
 
-  def addon_plans_without_plugins
-    @addon_plans_without_plugins ||= addon_plans.select do |addon_plan|
+  def _addon_plans_without_plugins
+    @_addon_plans_without_plugins ||= _addon_plans.select do |addon_plan|
       addon_plan.settings_templates.present? &&
       addon_plan.settings_templates.none? { |st| st.app_plugin_id.present? }
     end
   end
 
-  def addon_plans_with_plugins(kit)
-    @addon_plans_with_plugins ||= {}
-    @addon_plans_with_plugins[kit.id] ||= addon_plans.select do |addon_plan|
+  def _addon_plans_with_plugins(kit)
+    @_addon_plans_with_plugins ||= {}
+    @_addon_plans_with_plugins[kit.id] ||= _addon_plans.select do |addon_plan|
       addon_plan.settings_templates.present? &&
       addon_plan.settings_templates.any? { |st| st.app_plugin_id.present? } &&
       addon_plan.settings_template_for(kit.design).present?
     end
   end
 
-  def kits_plugins(kit, parent_addon_id)
-    addon_plans = addon_plans_with_plugins(kit).select { |ap| ap.addon.parent_addon_id == parent_addon_id }
+  def _kits_plugins(kit, parent_addon_id, with_modules)
+    addon_plans = _addon_plans_with_plugins(kit).select { |ap| ap.addon.parent_addon_id == parent_addon_id }
     addon_plans.reduce({}) do |hash, addon_plan|
       hash[addon_plan.kind] = {}
 
-      unless (plugins = kits_plugins(kit, addon_plan.addon_id)).empty?
+      unless (plugins = _kits_plugins(kit, addon_plan.addon_id, with_modules)).empty?
         hash[addon_plan.kind][:plugins] = plugins
       end
 
       if template = addon_plan.settings_template_for(kit.design)
-        hash[addon_plan.kind][:settings] = addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
-        hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template.template)
+        hash[addon_plan.kind][:settings] = _addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
+        hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template.template)
         hash[addon_plan.kind][:id] = template.plugin.token
+        hash[addon_plan.kind][:module] = template.plugin.mod if with_modules
         unless (condition = template.plugin.condition).empty?
           hash[addon_plan.kind][:condition] = condition
         end
@@ -130,7 +128,7 @@ private
     end
   end
 
-  def addon_plan_settings(template, kit_settings = nil)
+  def _addon_plan_settings(template, kit_settings = nil)
     template.reduce({}) do |hash, (key, value)|
       kit_value = kit_settings && kit_settings[key]
       hash[key] = kit_value.nil? ? value[:default] : kit_value
@@ -138,15 +136,15 @@ private
     end
   end
 
-  def addon_plan_allowed_settings(template)
+  def _addon_plan_allowed_settings(template)
     template.reduce({}) do |hash, (key, value)|
       hash[key] = value.slice(:values, :range)
       hash
     end
   end
 
-  def generate_file
-    template_path = Rails.root.join('app', 'templates', template_file)
+  def _generate_file(prefix = '')
+    template_path = Rails.root.join('app', 'templates', "#{prefix}settings.js.erb")
     template = ERB.new(File.new(template_path).read)
     file = Tempfile.new("s-#{@site.token}.js", Rails.root.join('tmp'))
     file.print template.result(binding)
@@ -154,15 +152,11 @@ private
     file
   end
 
-  def template_file
-    'settings.js.erb'
+  def _path(folder)
+    "#{folder}/#{site.token}.js"
   end
 
-  def path
-    "s/#{site.token}.js"
-  end
-
-  def s3_headers
+  def _s3_headers
     {
       'Cache-Control' => 's-maxage=300, max-age=120, public', # 5 minutes / 2 minutes
       'Content-Type'  => 'text/javascript',
