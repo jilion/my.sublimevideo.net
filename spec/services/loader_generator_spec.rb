@@ -342,15 +342,15 @@ describe LoaderGenerator, :fog_mock do
         end
 
         it "includes site token" do
-          s3_object.body.should include "#{PlayerMangler.mangle_key(:token)}:'#{site.token}'"
+          s3_object.body.should include "token:'#{site.token}'"
         end
 
         it "includes sublinevideo host" do
-          s3_object.body.should include "#{PlayerMangler.mangle_key(:host)}:'//cdn.sublimevideo.net'"
+          s3_object.body.should include "host:'//cdn.sublimevideo.net'"
         end
 
         it "includes components versions" do
-          s3_object.body.should include "#{PlayerMangler.mangle_key(:components)}:{'c1':'1.2.3','c2':'1.2.4'}"
+          s3_object.body.should include "components:{'c1':'1.2.3','c2':'1.2.4'}"
         end
       end
     end
