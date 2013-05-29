@@ -33,7 +33,7 @@ module ApplicationHelper
   def display_amount_with_sup(amount_in_cents)
     units    = amount_in_cents.to_i / 100
     decimals = amount_in_cents.to_i - (units * 100)
-    "#{number_to_currency(units, precision: 0)}#{content_tag(:sup, ".#{decimals}") unless decimals.zero?}".html_safe
+    "#{number_to_currency(units, precision: 0)}#{content_tag(:sup, ".#{decimals}") unless decimals.zero?}#{content_tag(:small, '/mo')}".html_safe
   end
 
   def info_box(options = {}, &block)

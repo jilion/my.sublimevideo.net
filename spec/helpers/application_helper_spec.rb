@@ -43,10 +43,10 @@ describe ApplicationHelper do
   end
 
   describe "#display_amount_with_sup" do
-    it { helper.display_amount_with_sup(1990).should eq "$19<sup>.90</sup>" }
-    it { helper.display_amount_with_sup(1990.0).should eq "$19<sup>.90</sup>" }
-    it { helper.display_amount_with_sup(7920).should eq "$79<sup>.20</sup>" }
-    it { helper.display_amount_with_sup(1900).should eq "$19" }
+    it { helper.display_amount_with_sup(1990).should eq "$19<sup>.90</sup><small>/mo</small>" }
+    it { helper.display_amount_with_sup(1990.0).should eq "$19<sup>.90</sup><small>/mo</small>" }
+    it { helper.display_amount_with_sup(7920).should eq "$79<sup>.20</sup><small>/mo</small>" }
+    it { helper.display_amount_with_sup(1900).should eq "$19<small>/mo</small>" }
   end
 
   # describe "#info_box" do
