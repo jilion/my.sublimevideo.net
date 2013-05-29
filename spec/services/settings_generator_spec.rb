@@ -6,7 +6,7 @@ require 'config/carrierwave' # for fog_mock
 
 require 'services/settings_generator'
 
-App::Design = Class.new unless defined?(App::Design)
+Design = Class.new unless defined?(Design)
 App::Plugin = Class.new unless defined?(App::Plugin)
 App::SettingsTemplate = Class.new unless defined?(App::SettingsTemplate)
 Site = Class.new unless defined?(Site)
@@ -185,17 +185,17 @@ describe SettingsGenerator, :fog_mock do
       let(:kit_settings2) { {
         'addon2' => { close_button_position: 'left' }
       } }
-      let(:design1) { mock(App::Design) }
-      let(:design2) { mock(App::Design) }
-      let(:kit1) { mock(Kit, id: 1, identifier: '1', app_design_id: 1, design: design1, skin_token: 'skin_token1', settings: kit_settings1) }
-      let(:kit2) { mock(Kit, id: 2, identifier: '2', app_design_id: 2, design: design2, skin_token: 'skin_token2', settings: kit_settings2) }
+      let(:design1) { mock(Design) }
+      let(:design2) { mock(Design) }
+      let(:kit1) { mock(Kit, id: 1, identifier: '1', design_id: 1, design: design1, skin_token: 'skin_token1', settings: kit_settings1) }
+      let(:kit2) { mock(Kit, id: 2, identifier: '2', design_id: 2, design: design2, skin_token: 'skin_token2', settings: kit_settings2) }
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
-      let(:plugin1) { mock(App::Plugin, id: 1, app_design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
-      let(:plugin2_1) { mock(App::Plugin, id: 2, app_design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
-      let(:plugin2_2) { mock(App::Plugin, id: 3, app_design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
-      let(:plugin3) { mock(App::Plugin, id: 4, app_design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
+      let(:plugin1) { mock(App::Plugin, id: 1, design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
+      let(:plugin2_1) { mock(App::Plugin, id: 2, design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
+      let(:plugin2_2) { mock(App::Plugin, id: 3, design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
+      let(:plugin3) { mock(App::Plugin, id: 4, design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
       let(:settings_template1) { mock(App::SettingsTemplate, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
       let(:settings_template2_1) { mock(App::SettingsTemplate, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
       let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }

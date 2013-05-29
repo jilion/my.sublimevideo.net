@@ -73,7 +73,7 @@ module Admin::SitesHelper
   end
 
   def admin_designs_options(site)
-    options_for_select(_items_for_select(site, App::Design.order(:price)))
+    options_for_select(_items_for_select(site, Design.order(:price)))
   end
 
   def admin_addon_plans_options(site)

@@ -42,8 +42,8 @@ describe SitesTasks do
     let!(:site2) { create(:site, user: user2) }
     let!(:site3) { create(:site, user: user3) }
     let!(:site4) { create(:site, user: user4) }
-    let!(:design) { create(:app_design, required_stage: 'beta', stable_at: nil, price: 0) }
-    let!(:custom_design) { create(:app_design, availability: 'custom', required_stage: 'beta', stable_at: nil, price: 0) }
+    let!(:design) { create(:design, required_stage: 'beta', stable_at: nil, price: 0) }
+    let!(:custom_design) { create(:design, availability: 'custom', required_stage: 'beta', stable_at: nil, price: 0) }
     let!(:addon_plan_1) { create(:addon_plan, required_stage: 'beta', stable_at: nil) }
     let!(:addon_plan_2) { create(:addon_plan, required_stage: 'beta', stable_at: nil) }
     let!(:addon_plan_2_free) { create(:addon_plan, addon: addon_plan_2.addon, required_stage: 'beta', stable_at: nil, price: 0) }

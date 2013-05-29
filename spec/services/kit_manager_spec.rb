@@ -20,12 +20,12 @@ describe KitManager do
   let(:settings_sanitizer) { stub(sanitize: sanitized_settings) }
 
   describe "#save" do
-    let(:params) { { name: 'My Kit', app_design_id: 42, settings: { "logo" => { "settings" => "value" } } } }
+    let(:params) { { name: 'My Kit', design_id: 42, settings: { "logo" => { "settings" => "value" } } } }
     before do
       Kit.stub(:transaction).and_yield
       SettingsSanitizer.stub(:new) { settings_sanitizer }
       kit.stub(:name=)
-      kit.stub(:app_design_id=)
+      kit.stub(:design_id=)
       kit.stub(:settings=)
       kit.stub(:save!)
       Librato.stub(:increment)
@@ -37,8 +37,8 @@ describe KitManager do
       service.save(params)
     end
 
-    it 'set app_design_id' do
-      kit.should_receive(:app_design_id=).with(42)
+    it 'set design_id' do
+      kit.should_receive(:design_id=).with(42)
 
       service.save(params)
     end

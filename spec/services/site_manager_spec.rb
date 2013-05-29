@@ -40,7 +40,7 @@ describe SiteManager do
     before do
       Site.stub(:transaction).and_yield
       service.stub(:create_default_kit!)
-      service.stub(:set_default_app_designs)
+      service.stub(:set_default_designs)
       service.stub(:set_default_addon_plans)
       site.stub(:loaders_updated_at=)
       site.stub(:settings_updated_at=)
@@ -59,7 +59,7 @@ describe SiteManager do
     end
 
     it 'sets default app designs and add-ons to site after creation' do
-      service.should_receive(:set_default_app_designs)
+      service.should_receive(:set_default_designs)
       service.should_receive(:set_default_addon_plans)
       service.create
     end

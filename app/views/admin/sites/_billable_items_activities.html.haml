@@ -3,8 +3,8 @@
   - site.billable_item_activities.includes(:item).reorder('created_at DESC').each do |billable_item_activity|
     %li
       %strong= "[#{billable_item_activity.state.titleize}]"
-      - if billable_item_activity.item.is_a?(App::Design)
-        = 'Design: ' + t("app_designs.#{billable_item_activity.item.name}")
+      - if billable_item_activity.item.is_a?(Design)
+        = 'Design: ' + t("designs.#{billable_item_activity.item.name}")
       - elsif billable_item_activity.item.is_a?(AddonPlan)
         = 'Add-on: ' + t("addon_plans.#{billable_item_activity.item.addon.name}.#{billable_item_activity.item.name}")
       = "(#{display_time(billable_item_activity.created_at)})"

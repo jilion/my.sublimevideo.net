@@ -46,7 +46,7 @@ class AddonPlan < BillableEntity
 
   def settings_template_for(design)
     dependant_design_id = addon.design_dependent? ? design.id : nil
-    plugin_id = App::Plugin.where(addon_id: addon.id, app_design_id: dependant_design_id).first.try(:id)
+    plugin_id = App::Plugin.where(addon_id: addon.id, design_id: dependant_design_id).first.try(:id)
 
     settings_templates.where(app_plugin_id: plugin_id).first
   end

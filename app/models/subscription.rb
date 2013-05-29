@@ -13,8 +13,8 @@ class Subscription < ActiveRecord::Base
   validates :item, :site, :state, presence: true
 
   # scopes defined on abstract class simply don't work when called from a subclass...
-  def self.app_designs
-    where(item_type: 'App::Design')
+  def self.designs
+    where(item_type: 'Design')
   end
 
   def self.addon_plans
@@ -35,7 +35,7 @@ class Subscription < ActiveRecord::Base
 
   def self.paid
     where {
-      ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |
+      ((item_type == 'Design') & (item_id >> Design.paid.pluck(:id))) |
       ((item_type == 'AddonPlan') & (item_id >> AddonPlan.paid.pluck('addon_plans.id')))
     }
   end
@@ -59,6 +59,6 @@ class Subscription < ActiveRecord::Base
   private
 
   def item_parent_kind
-    item.is_a?(App::Design) ? 'design' : item.addon.name
+    item.is_a?(Design) ? 'design' : item.addon.name
   end
 end

@@ -11,12 +11,11 @@ describe App::Component, :fog_mock do
     it { should have_many(:versions).dependent(:destroy) }
 
     describe "sites" do
-      it "returns sites from App::Design" do
-      # it "returns sites from AddonPlan && App::Design" do
-        site_with_app_design = create(:site)
-        app_design = create(:app_design, component: component)
-        create(:billable_item, site: site_with_app_design, item: app_design)
-        app_custom_design = create(:app_design)
+      it "returns sites from Design" do
+        site_with_design = create(:site)
+        design = create(:design, component: component)
+        create(:billable_item, site: site_with_design, item: design)
+        app_custom_design = create(:design)
 
         # site_with_app_plugin = create(:site)
         # addon = create(:addon)
@@ -31,7 +30,7 @@ describe App::Component, :fog_mock do
         # create(:billable_item, site: site_with_app_plugin_with_custom_design, item: addon_plan_with_custom_design)
 
         component.sites.should eq([
-          site_with_app_design,
+          site_with_design,
           # site_with_app_plugin
         ])
       end

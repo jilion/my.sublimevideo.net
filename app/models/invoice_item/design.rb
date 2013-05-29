@@ -1,4 +1,4 @@
-class InvoiceItem::AppDesign < InvoiceItem
+class InvoiceItem::Design < InvoiceItem
 end
 
 # == Schema Information

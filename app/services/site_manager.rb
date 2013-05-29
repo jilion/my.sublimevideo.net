@@ -6,8 +6,8 @@ class SiteManager
     new(::Site.find(site_id)).update_billable_items({}, { addon_name => addon_plan_id })
   end
 
-  def self.update_billable_items(site_id, app_designs, addon_plans, options = {})
-    new(::Site.find(site_id)).update_billable_items(app_designs, addon_plans, options)
+  def self.update_billable_items(site_id, designs, addon_plans, options = {})
+    new(::Site.find(site_id)).update_billable_items(designs, addon_plans, options)
   end
 
   def initialize(site)
@@ -19,7 +19,7 @@ class SiteManager
       site.save!
       create_default_kit!
 
-      set_default_app_designs
+      set_default_designs
       set_default_addon_plans
       site.loaders_updated_at  = Time.now.utc
       site.settings_updated_at = Time.now.utc
@@ -47,11 +47,11 @@ class SiteManager
     false
   end
 
-  # app_designs => { "classic"=>"0", "light"=>"42" }
+  # designs => { "classic"=>"0", "light"=>"42" }
   # addon_plans => { "logo"=>"0", "support"=>"88" }
-  def update_billable_items(app_designs, addon_plans, options = {})
+  def update_billable_items(designs, addon_plans, options = {})
     Site.transaction do
-      update_design_subscriptions(app_designs || {}, options)
+      update_design_subscriptions(designs || {}, options)
       update_addon_subscriptions(addon_plans || {}, options)
       site.loaders_updated_at  = Time.now.utc
       site.settings_updated_at = Time.now.utc
@@ -69,7 +69,7 @@ class SiteManager
 
   # called from app/models/site.rb
   def unsuspend_billable_items
-    set_default_app_designs
+    set_default_designs
     if site.plan_id?
       update_addon_subscriptions(_free_addon_plans_subscriptions_hash(reject: %w[logo stats support]))
       case site.plan.name
@@ -113,11 +113,11 @@ class SiteManager
     site.default_kit = site.kits.first
   end
 
-  def set_default_app_designs(options = {})
+  def set_default_designs(options = {})
     update_design_subscriptions({
-      classic: App::Design.get('classic').id,
-      light: App::Design.get('light').id,
-      flat: App::Design.get('flat').id
+      classic: Design.get('classic').id,
+      light: Design.get('light').id,
+      flat: Design.get('flat').id
     }, options)
   end
 
@@ -138,7 +138,7 @@ class SiteManager
   end
 
   def update_design_subscription(design_name, design_id, options)
-    design = App::Design.get(design_name)
+    design = Design.get(design_name)
 
     case design_id
     when '0'

@@ -2,7 +2,7 @@
 module BillableItemsHelper
 
   def design_label_content(design)
-    raw t("app_designs.#{design.name}") + beta_loader_required_notice(design).to_s
+    raw t("designs.#{design.name}") + beta_loader_required_notice(design).to_s
   end
 
   def addon_label_content(addon_plan)

@@ -154,8 +154,8 @@ FactoryGirl.define do
       item { FactoryGirl.create(:addon_plan) }
     end
 
-    factory :app_design_invoice_item, class: InvoiceItem::AppDesign do
-      item { FactoryGirl.create(:app_design) }
+    factory :design_invoice_item, class: InvoiceItem::Design do
+      item { FactoryGirl.create(:design) }
     end
   end
 

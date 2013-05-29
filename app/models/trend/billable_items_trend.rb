@@ -30,7 +30,7 @@ class BillableItemsTrend
       billable_items = BillableItem.select('item_type, item_id, COUNT(item_id) as count').where(state: state).group(:item_type, :item_id)
       billable_items.each do |billable_item|
         second_key = case billable_item.item
-                     when App::Design
+                     when Design
                        'design'
                      when AddonPlan
                        billable_item.item.addon.name

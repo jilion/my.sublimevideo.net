@@ -71,7 +71,7 @@ class TrendsPopulator < Populator
 
     while day <= Time.now.utc.midnight
       hash[:d] = day
-      App::Design.all.each do |design|
+      Design.all.each do |design|
         hash[:be]['design'][design.name] += rand(300)
         hash[:tr]['design'][design.name] += rand(400)
         hash[:sb]['design'][design.name] += rand(200)

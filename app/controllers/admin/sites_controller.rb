@@ -80,10 +80,10 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/update_design_subscription
   def update_design_subscription
-    @app_design = App::Design.find(params[:app_design_id])
-    _update_design_subscription(@app_design)
+    @design = Design.find(params[:design_id])
+    _update_design_subscription(@design)
 
-    _respond_for_site_with_notice(t('flash.sites.update_design_subscription.notice', app_design_title: @app_design.title, state: params[:state].presence || 'subscribed'))
+    _respond_for_site_with_notice(t('flash.sites.update_design_subscription.notice', design_title: @design.title, state: params[:state].presence || 'subscribed'))
   end
 
   # PUT /sites/:id/update_addon_plan_subscription

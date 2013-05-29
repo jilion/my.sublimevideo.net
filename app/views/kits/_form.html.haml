@@ -13,8 +13,8 @@
   %h4.title Edit player settings
 
   .entry.design.select
-    = f.label :app_design_id, 'Player design:'
-    = f.select :app_design_id, app_designs_for_select(site, kit), {}, data: { addon: 'player', setting: 'kit' }
+    = f.label :design_id, 'Player design:'
+    = f.select :design_id, designs_for_select(site, kit), {}, data: { addon: 'player', setting: 'kit' }
 
   %p.note
     = "Following are the default settings for your player but each setting can always be modified on a per-video basis."
