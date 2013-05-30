@@ -205,27 +205,6 @@ describe Log::Voxcast do
         @log.parse_and_create_user_agents!
       end
     end
-    describe "#parse_and_create_video_tags!" do
-      let(:video_tags_data) { { ['site_token', 'uid'] => { 'video' => 'data' } } }
-
-      it "analyzes logs" do
-        video_tags_trackers = stub
-        @log.should_receive(:trackers).with('VoxcastVideoTagsLogFileFormat', title: :video_tags) { video_tags_trackers }
-        VideoTagTrackersParser.should_receive(:extract_video_tags_data).with(video_tags_trackers) { video_tags_data }
-        VideoTagOldDataUpdaterBridge.should_receive(:new).with('site_token', 'uid', { 'video' => 'data' }) { |mock|
-          mock.should_receive(:update)
-          mock
-        }
-        @log.parse_and_create_video_tags!
-      end
-
-      context "with utf-8 complex logs" do
-        let(:log_file) { fixture_file('logs/voxcast/4076.voxcdn.com.log.1355880780-1355880840.gz') }
-
-        it "analyzes logs" do
-          @log.parse_and_create_video_tags!
-        end
-      end
     end
 
     describe "minute / hour / day / month" do
