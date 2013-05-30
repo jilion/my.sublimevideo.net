@@ -84,14 +84,6 @@ class Log::Voxcast < ::Log
     UsrAgent.create_or_update_from_trackers!(self, trackers)
   end
 
-  def parse_and_create_video_tags!
-    video_tags_trackers  = trackers('VoxcastVideoTagsLogFileFormat', title: :video_tags)
-    video_tags_data = VideoTagTrackersParser.extract_video_tags_data(video_tags_trackers)
-    video_tags_data.each do |(site_token, uid), data|
-      VideoTagOldDataUpdaterBridge.new(site_token, uid, data).update
-    end
-  end
-
   def minute
     @minute ||= started_at.change(sec: 0, usec: 0).to_time
   end
@@ -105,7 +97,6 @@ private
   # after_create on log model
   def delay_parse
     self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_stats(id)
-    self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
   end
