@@ -16,13 +16,6 @@ class MSVStats.Models.Video extends Backbone.Model
 
   initialize: ->
     @addTime = MSVStats.period.endTime() + (2 * 1000)
-    this.fetchData() unless this.dataPresent()
-
-  dataPresent: -> this.get('uid_origin')?
-
-  fetchData: =>
-    $.get this.dataUrl(), (data) =>
-      this.set(data, silent: true) if data?
 
   dataUrl: =>
     "/sites/#{MSVStats.site.get('token')}/video_tags/#{this.id}.json"
