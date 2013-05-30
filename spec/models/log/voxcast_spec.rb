@@ -205,7 +205,6 @@ describe Log::Voxcast do
         @log.parse_and_create_user_agents!
       end
     end
-    end
 
     describe "minute / hour / day / month" do
       subject { build(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
