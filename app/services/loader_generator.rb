@@ -1,4 +1,5 @@
 require 'tempfile'
+require 'solve'
 
 # models
 require 'app'
@@ -63,20 +64,42 @@ class LoaderGenerator
     end
   end
 
-  def cdn_file
-    @cdn_file ||= CDNFile.new(file, path, s3_headers)
+  def self.notify_when_loader_queue_is_empty
+    if Sidekiq::Queue.new(:loader).size.zero?
+      CampfireWrapper.delay.post('All loaders updated!')
+    else
+      delay(at: 1.minute.from_now.change(min: 0).to_i, queue: 'low').notify_when_loader_queue_is_empty
+    end
   end
 
-  def file
-    @file ||= generate_file
+  def host
+    case Rails.env
+    when 'staging'
+      '//cdn.sublimevideo-staging.net'
+    else
+      '//cdn.sublimevideo.net'
+    end
   end
 
   def app_component_version
-    components_dependencies[App::Component.app_component.token]
+    _components_dependencies[App::Component.app_component.token]
   end
 
   def components_versions
-    components_dependencies.select { |token, version| token != App::Component.app_component.token }
+    _components_dependencies.select { |token, version| token != App::Component.app_component.token }
+  end
+
+  def template_file
+    app_component_versions_for_stage = App::Component.app_component.versions_for_stage(stage)
+    if app_component_versions_for_stage.detect { |v| v.solve_version >= self.class._new_loader_threshold_version }
+      "new-loader-#{stage}.js.erb"
+    else
+      "loader-#{stage}.js.erb"
+    end
+  end
+
+  def cdn_file
+    @cdn_file ||= CDNFile.new(_file, _path, _s3_headers)
   end
 
   def upload!
@@ -89,15 +112,11 @@ class LoaderGenerator
     _increment_librato('delete')
   end
 
-  def self.notify_when_loader_queue_is_empty
-    if Sidekiq::Queue.new(:loader).size.zero?
-      CampfireWrapper.delay.post('All loaders updated!')
-    else
-      delay(at: 1.minute.from_now.change(min: 0).to_i, queue: 'low').notify_when_loader_queue_is_empty
-    end
-  end
-
   private
+
+  def self._new_loader_threshold_version
+    @@_new_loader_threshold_version ||= Solve::Version.new('2.5.0-alpha')
+  end
 
   def self._sites_non_important(args = {})
     initial_scope = args[:component].app_component? ? Site : args[:component].sites
@@ -107,19 +126,15 @@ class LoaderGenerator
     .order { last_30_days_main_video_views.desc }.order { created_at.desc }
   end
 
+  def _file
+    @_file ||= _generate_file
+  end
+
   def _increment_librato(action)
     Librato.increment "loader.#{action}", source: stage
   end
 
-  def host
-    if Rails.env == 'staging'
-      '//cdn.sublimevideo-staging.net'
-    else
-      '//cdn.sublimevideo.net'
-    end
-  end
-
-  def generate_file
+  def _generate_file
     template_path = Rails.root.join('app', 'templates', template_file)
     template = ERB.new(File.new(template_path).read)
     file = Tempfile.new("l-#{token}.js", Rails.root.join('tmp'))
@@ -128,23 +143,20 @@ class LoaderGenerator
     file
   end
 
-  def components_dependencies
-    @components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
+  def _components_dependencies
+    @_components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
   end
 
-  def template_file
-    "loader-#{stage}.js.erb"
-  end
-
-  def path
-    if stage == 'stable'
+  def _path
+    case stage
+    when 'stable'
       "js/#{token}.js"
     else
       "js/#{token}-#{stage}.js"
     end
   end
 
-  def s3_headers
+  def _s3_headers
     {
       'Cache-Control' => cache_control,
       'Content-Type'  => 'text/javascript',
