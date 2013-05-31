@@ -11,8 +11,8 @@ describe TrialHandler do
   let(:design_paid2)     { create(:design, price: 995) }
   let(:addon)            { create(:addon) }
   let(:addon2)           { create(:addon) }
-  let!(:free_addon_plan) { create(:addon_plan, addon: addon, price: 0) }
-  let(:addon_plan_paid1) { create(:addon_plan, addon: addon, price: 995) }
+  let!(:free_addon_plan) { create(:addon_plan, addon: addon,  price: 0) }
+  let(:addon_plan_paid1) { create(:addon_plan, addon: addon,  price: 995) }
   let(:addon_plan_paid2) { create(:addon_plan, addon: addon2, price: 1995) }
 
   describe '.send_trial_will_expire_emails' do

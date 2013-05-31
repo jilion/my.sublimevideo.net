@@ -6,5 +6,5 @@
       - if billable_item_activity.item.is_a?(Design)
         = 'Design: ' + t("designs.#{billable_item_activity.item.name}")
       - elsif billable_item_activity.item.is_a?(AddonPlan)
-        = 'Add-on: ' + t("addon_plans.#{billable_item_activity.item.addon.name}.#{billable_item_activity.item.name}")
+        = 'Add-on: ' + t("addon_plans.#{billable_item_activity.item.addon_name}.#{billable_item_activity.item.name}")
       = "(#{display_time(billable_item_activity.created_at)})"

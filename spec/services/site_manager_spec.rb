@@ -39,9 +39,9 @@ describe SiteManager do
   describe '#create' do
     before do
       Site.stub(:transaction).and_yield
-      service.stub(:create_default_kit!)
-      service.stub(:set_default_designs)
-      service.stub(:set_default_addon_plans)
+      service.stub(:_create_default_kit!)
+      service.stub(:_set_default_designs)
+      service.stub(:_set_default_addon_plans)
       site.stub(:loaders_updated_at=)
       site.stub(:settings_updated_at=)
       site.stub(:addons_updated_at=)
@@ -54,13 +54,13 @@ describe SiteManager do
     end
 
     it 'creates a default kit' do
-      service.should_receive(:create_default_kit!)
+      service.should_receive(:_create_default_kit!)
       service.create
     end
 
     it 'sets default app designs and add-ons to site after creation' do
-      service.should_receive(:set_default_designs)
-      service.should_receive(:set_default_addon_plans)
+      service.should_receive(:_set_default_designs)
+      service.should_receive(:_set_default_addon_plans)
       service.create
     end
 
@@ -129,8 +129,8 @@ describe SiteManager do
   describe '#update_billable_items' do
     before do
       Site.stub(:transaction).and_yield
-      service.stub(:update_design_subscriptions)
-      service.stub(:update_addon_subscriptions)
+      service.stub(:_update_design_subscriptions)
+      service.stub(:_update_addon_subscriptions)
       site.stub(:loaders_updated_at=)
       site.stub(:settings_updated_at=)
       site.stub(:addons_updated_at=)
@@ -138,12 +138,12 @@ describe SiteManager do
     end
 
     it 'sets designs billable items' do
-      service.should_receive(:update_design_subscriptions).with({ foo: '0' }, {})
+      service.should_receive(:_update_design_subscriptions).with({ foo: '0' }, {})
       service.update_billable_items({ foo: '0' }, {})
     end
 
     it 'sets addon plans billable items' do
-      service.should_receive(:update_addon_subscriptions).with({ foo: '42' }, {})
+      service.should_receive(:_update_addon_subscriptions).with({ foo: '42' }, {})
       service.update_billable_items({}, { foo: '42' })
     end
 

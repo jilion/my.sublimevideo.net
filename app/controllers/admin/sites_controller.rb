@@ -120,7 +120,7 @@ class Admin::SitesController < Admin::AdminController
 
   def _update_addon_plan_subscription(addon_plan)
     options = { allow_custom: true, force: params[:state].presence || false }
-    addon_plan_subscriptions = { addon_plan.addon.name => (params[:state] == 'canceled' ? '0' : addon_plan.id) }
+    addon_plan_subscriptions = { addon_plan.addon_name => (params[:state] == 'canceled' ? '0' : addon_plan.id) }
     SiteManager.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
   end
 

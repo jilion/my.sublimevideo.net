@@ -27,9 +27,9 @@ describe SitesTasks do
     end
 
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      SiteManager.should delay(:subscribe_site_to_addon).with(site2.id, beta_addon_plan.addon.name, beta_addon_plan.id)
+      SiteManager.should delay(:subscribe_site_to_addon).with(site2.id, beta_addon_plan.addon_name, beta_addon_plan.id)
 
-      described_class.subscribe_all_sites_to_free_addon(beta_addon_plan.addon.name, beta_addon_plan.name)
+      described_class.subscribe_all_sites_to_free_addon(beta_addon_plan.addon_name, beta_addon_plan.name)
     end
   end
 

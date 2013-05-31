@@ -133,7 +133,7 @@ module Admin::SitesHelper
   end
 
   def _filter_title_for_addon_plan(addon_plan)
-    full_addon_plan_key = "#{addon_plan.addon.name}-#{addon_plan.name}"
+    full_addon_plan_key = "#{addon_plan.addon_name}-#{addon_plan.name}"
     text = FILTER_TITLES[:addon_plan] % [addon_plan.title, display_integer(Site.with_addon_plan(full_addon_plan_key).size)]
     href = admin_sites_path(with_addon_plan: full_addon_plan_key)
 

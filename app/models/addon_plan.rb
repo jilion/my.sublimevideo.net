@@ -1,5 +1,4 @@
 class AddonPlan < BillableEntity
-
   attr_accessible :addon, as: :admin
 
   belongs_to :addon
@@ -7,6 +6,7 @@ class AddonPlan < BillableEntity
   has_many :settings_templates, class_name: 'App::SettingsTemplate'
 
   delegate :kind, :free_plan, to: :addon
+  delegate :name, to: :addon, prefix: true
 
   after_save :clear_caches
 
@@ -41,7 +41,7 @@ class AddonPlan < BillableEntity
   end
 
   def title
-    I18n.t("addon_plans.#{addon.name}.#{name}")
+    I18n.t("addon_plans.#{addon_name}.#{name}")
   end
 
   def settings_template_for(design)
@@ -54,7 +54,7 @@ class AddonPlan < BillableEntity
   private
 
   def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_addon_name_and_name', addon.name, name]
+    Rails.cache.clear [self.class, 'find_cached_by_addon_name_and_name', addon_name, name]
   end
 end
 

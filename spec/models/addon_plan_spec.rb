@@ -39,7 +39,7 @@ describe AddonPlan do
     end
 
     it 'returns a subscriptions hash with all the free addon plans minus the one for which the add-on should be rejected' do
-      described_class.free_addon_plans(reject: [@addon_plan1.addon.name]).should =~ [@addon_plan2]
+      described_class.free_addon_plans(reject: [@addon_plan1.addon_name]).should =~ [@addon_plan2]
     end
   end
 
@@ -49,6 +49,11 @@ describe AddonPlan do
     end
 
     it { described_class.get('foo', 'bar').should eq @addon_plan }
+  end
+
+  describe '#addon_name' do
+    subject { addon_plan1 }
+    its(:addon_name) { should eq addon_plan1.addon.name }
   end
 
   describe '#available_for_subscription?' do

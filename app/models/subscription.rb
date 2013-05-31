@@ -49,7 +49,7 @@ class Subscription < ActiveRecord::Base
   end
 
   def item_parent_name
-    item.respond_to?(:addon) ? item.addon.name : item.name
+    item.respond_to?(:addon_name) ? item.addon_name : item.name
   end
 
   def free?
@@ -59,6 +59,6 @@ class Subscription < ActiveRecord::Base
   private
 
   def item_parent_kind
-    item.is_a?(Design) ? 'design' : item.addon.name
+    item.respond_to?(:addon_name) ? item.addon_name : 'design'
   end
 end

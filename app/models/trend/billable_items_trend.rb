@@ -33,7 +33,7 @@ class BillableItemsTrend
                      when Design
                        'design'
                      when AddonPlan
-                       billable_item.item.addon.name
+                       billable_item.item.addon_name
                      end
         hash[first_key][second_key][billable_item.item.name] += billable_item.count.to_i
       end

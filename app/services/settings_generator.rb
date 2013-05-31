@@ -115,7 +115,7 @@ private
       end
 
       if template = addon_plan.settings_template_for(kit.design)
-        hash[addon_plan.kind][:settings] = _addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
+        hash[addon_plan.kind][:settings] = _addon_plan_settings(template.template, kit.settings[addon_plan.addon_name])
         hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template.template)
         hash[addon_plan.kind][:id] = template.plugin.token
         hash[addon_plan.kind][:module] = template.plugin.mod if with_modules
