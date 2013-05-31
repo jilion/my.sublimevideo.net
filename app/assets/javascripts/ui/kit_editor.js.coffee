@@ -21,7 +21,7 @@ class MySublimeVideo.UI.KitEditor
       lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@lightbox, forceSettings: true)
 
   setupInputsObservers: ->
-    $designSelector = $("select#kit_app_design_id")
+    $designSelector = $("select#kit_design_id")
 
     $designSelector.one 'change', =>
       siteToken = document.location.pathname.match(/(assistant|sites)\/([\w]{8})/)[2]

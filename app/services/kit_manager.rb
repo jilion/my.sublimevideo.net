@@ -7,9 +7,9 @@ class KitManager
 
   def save(params)
     Kit.transaction do
-      kit.name          = params[:name]
-      kit.app_design_id = params[:app_design_id]
-      kit.settings      = SettingsSanitizer.new(kit, params[:settings]).sanitize
+      kit.name      = params[:name]
+      kit.design_id = params[:design_id]
+      kit.settings  = SettingsSanitizer.new(kit, params[:settings]).sanitize
       kit.save!
       kit.site.touch(:settings_updated_at)
     end

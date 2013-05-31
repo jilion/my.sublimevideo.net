@@ -20,7 +20,7 @@ class AssistantController < ApplicationController
   # PUT /assistant/:site_id/addons
   def addons
     if request.put?
-      SiteManager.new(@site).update_billable_items(params[:app_designs], params[:addon_plans])
+      SiteManager.new(@site).update_billable_items(params[:designs], params[:addon_plans])
 
       redirect_to assistant_player_path(@site), notice: t('flash.addons.subscribe.notice')
     end

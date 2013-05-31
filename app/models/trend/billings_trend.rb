@@ -47,12 +47,12 @@ class BillingsTrend
 
   def self._nested_keys(invoice_item)
     third_key = invoice_item.item.name
-    second_key = case invoice_item.type
-                 when 'InvoiceItem::AppDesign'
+    second_key = case invoice_item.item
+                 when Design
                    'design'
-                 when 'InvoiceItem::AddonPlan'
-                   invoice_item.item.addon.name
-                 when 'InvoiceItem::Plan'
+                 when AddonPlan
+                   invoice_item.item.addon_name
+                 when Plan
                    third_key = invoice_item.item.cycle[0]
                    invoice_item.item.name
                  end

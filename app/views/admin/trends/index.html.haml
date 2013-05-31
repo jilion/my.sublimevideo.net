@@ -62,7 +62,7 @@
                       - addon.plans.paid.each do |addon_plan|
                         %li
                           %a.selector{ href: "?revenues.r.#{addon.name}.#{addon_plan.name}", title: "Revenue from #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
-                - App::Design.paid.each do |design|
+                - Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?revenues.r.design.#{design.name}", title: "Revenue from #{design.title} design subscriptions" }= addon.title
 
@@ -115,7 +115,7 @@
             %li
               %a.selector{ href: "?billable_items.be", title: "Beta billable items" } Beta
               %ul
-                - App::Design.paid.each do |design|
+                - Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.be.design.#{design.name}", title: "#{design.title} design in beta" }= "[Design] #{design.title}"
                 - Addon.not_custom.visible.each do |addon|
@@ -128,7 +128,7 @@
             %li
               %a.selector{ href: "?billable_items.tr", title: "Trial billable items" } Trial
               %ul
-                - App::Design.paid.each do |design|
+                - Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.tr.design.#{design.name}", title: "#{design.title} design in trial" }= "[Design] #{design.title}"
                 - Addon.not_custom.visible.each do |addon|
@@ -141,7 +141,7 @@
             %li
               %a.selector{ href: "?billable_items.sb", title: "Subscribed billable items" } Subscribed
               %ul
-                - App::Design.paid.each do |design|
+                - Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.sb.design.#{design.name}", title: "#{design.title} design subscribed" }= "[Design] #{design.title}"
                 - Addon.not_custom.visible.each do |addon|
@@ -154,7 +154,7 @@
             %li
               %a.selector{ href: "?billable_items.sp", title: "Sponsored billable items" } Sponsored
               %ul
-                - App::Design.paid.each do |design|
+                - Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.sp.design.#{design.name}", title: "#{design.title} design sponsored" }= "[Design] #{design.title}"
                 - Addon.not_custom.visible.each do |addon|
@@ -167,7 +167,7 @@
             %li
               %a.selector{ href: "?billable_items.su", title: "Suspended billable items" } Suspended
               %ul
-                - App::Design.paid.each do |design|
+                - Design.paid.each do |design|
                   %li
                     %a.selector{ href: "?billable_items.su.design.#{design.name}", title: "#{design.title} design suspended" }= "[Design] #{design.title}"
                 - Addon.not_custom.visible.each do |addon|

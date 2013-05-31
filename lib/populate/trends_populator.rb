@@ -71,7 +71,7 @@ class TrendsPopulator < Populator
 
     while day <= Time.now.utc.midnight
       hash[:d] = day
-      App::Design.all.each do |design|
+      Design.all.each do |design|
         hash[:be]['design'][design.name] += rand(300)
         hash[:tr]['design'][design.name] += rand(400)
         hash[:sb]['design'][design.name] += rand(200)
@@ -80,17 +80,16 @@ class TrendsPopulator < Populator
       end
 
       AddonPlan.all.each do |addon_plan|
-        hash[:be][addon_plan.addon.name] ||= Hash.new(0)
-        hash[:tr][addon_plan.addon.name] ||= Hash.new(0)
-        hash[:sb][addon_plan.addon.name] ||= Hash.new(0)
-        hash[:sp][addon_plan.addon.name] ||= Hash.new(0)
-        hash[:su][addon_plan.addon.name] ||= Hash.new(0)
-
-        hash[:be][addon_plan.addon.name][addon_plan.name] += rand(300)
-        hash[:tr][addon_plan.addon.name][addon_plan.name] += rand(400)
-        hash[:sb][addon_plan.addon.name][addon_plan.name] += rand(200)
-        hash[:sp][addon_plan.addon.name][addon_plan.name] += rand(50)
-        hash[:su][addon_plan.addon.name][addon_plan.name] += rand(20)
+        hash[:be][addon_plan.addon_name] ||= Hash.new(0)
+        hash[:tr][addon_plan.addon_name] ||= Hash.new(0)
+        hash[:sb][addon_plan.addon_name] ||= Hash.new(0)
+        hash[:sp][addon_plan.addon_name] ||= Hash.new(0)
+        hash[:su][addon_plan.addon_name] ||= Hash.new(0)
+        hash[:be][addon_plan.addon_name][addon_plan.name] += rand(300)
+        hash[:tr][addon_plan.addon_name][addon_plan.name] += rand(400)
+        hash[:sb][addon_plan.addon_name][addon_plan.name] += rand(200)
+        hash[:sp][addon_plan.addon_name][addon_plan.name] += rand(50)
+        hash[:su][addon_plan.addon_name][addon_plan.name] += rand(20)
       end
 
       BillableItemsTrend.create(hash)

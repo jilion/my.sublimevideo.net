@@ -34,7 +34,7 @@ module SitesTasks
 
   def self.exit_beta
     # 1. Exit beta for all designs & addon plans by setting required_stage to 'stable' and settings stable_at.
-    beta_designs = App::Design.where(stable_at: nil)
+    beta_designs = Design.where(stable_at: nil)
     beta_addon_plans = AddonPlan.where(stable_at: nil)
     beta_designs.update_all(stable_at: Time.now.utc, required_stage: 'stable')
     beta_addon_plans.update_all(stable_at: Time.now.utc, required_stage: 'stable')

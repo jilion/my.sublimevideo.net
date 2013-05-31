@@ -8,7 +8,7 @@ class App::Component < ActiveRecord::Base
   attr_accessible :name, :token, as: :admin
 
   has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
-  has_many :designs, class_name: 'App::Design', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
+  has_many :designs, class_name: 'Design', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
   has_many :plugins, class_name: 'App::Plugin', foreign_key: 'app_component_id'
 
   has_many :designs_sites, through: :designs, source: :sites
@@ -39,8 +39,8 @@ class App::Component < ActiveRecord::Base
 
   def sites
     # via_designs = designs_sites.scoped
-    # site_designs = BillableItem.app_designs.where {site_id == sites.id}
-    # via_plugins = plugins_sites.where {app_plugins.app_design_id.in(site_designs.select{item_id}) | app_plugins.app_design_id.eq(nil)}
+    # site_designs = BillableItem.designs.where {site_id == sites.id}
+    # via_plugins = plugins_sites.where {app_plugins.design_id.in(site_designs.select{item_id}) | app_plugins.design_id.eq(nil)}
     # Site.where { id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
 
     # Query via plugins is too slow and useless for now

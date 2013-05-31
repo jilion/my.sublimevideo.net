@@ -2,11 +2,11 @@
 module BillableItemsHelper
 
   def design_label_content(design)
-    raw t("app_designs.#{design.name}") + beta_loader_required_notice(design).to_s
+    raw t("designs.#{design.name}") + beta_loader_required_notice(design).to_s
   end
 
   def addon_label_content(addon_plan)
-    raw t("addon_plans.#{addon_plan.addon.name}.#{addon_plan.name}") + beta_loader_required_notice(addon_plan).to_s
+    raw t("addon_plans.#{addon_plan.addon_name}.#{addon_plan.name}") + beta_loader_required_notice(addon_plan).to_s
   end
 
   def addon_plan_is_selected?(site, addon_plan)

@@ -44,7 +44,7 @@ describe BillableItem do
         end
 
         it "increments metrics with #{new_state}" do
-          Librato.should_receive(:increment).with("addons.#{new_state}", source: "free.#{@logo_addon_plan_1.addon.name}-#{@logo_addon_plan_1.name}")
+          Librato.should_receive(:increment).with("addons.#{new_state}", source: "free.#{@logo_addon_plan_1.addon_name}-#{@logo_addon_plan_1.name}")
 
           create(:billable_item, site: site, item: @logo_addon_plan_1, state: new_state)
         end
@@ -67,7 +67,7 @@ describe BillableItem do
         end
 
         it "increments metrics with #{new_state}" do
-          Librato.should_receive(:increment).with("addons.#{new_state}", source: "paid.#{@logo_addon_plan_2.addon.name}-#{@logo_addon_plan_2.name}")
+          Librato.should_receive(:increment).with("addons.#{new_state}", source: "paid.#{@logo_addon_plan_2.addon_name}-#{@logo_addon_plan_2.name}")
 
           create(:billable_item, site: site, item: @logo_addon_plan_2, state: new_state)
         end
@@ -90,7 +90,7 @@ describe BillableItem do
 
       it "increments metrics with canceled" do
         billable_item # eager load!
-        Librato.should_receive(:increment).with('addons.canceled', source: "paid.#{@logo_addon_plan_3.addon.name}-#{@logo_addon_plan_3.name}")
+        Librato.should_receive(:increment).with('addons.canceled', source: "paid.#{@logo_addon_plan_3.addon_name}-#{@logo_addon_plan_3.name}")
 
         billable_item.destroy
       end

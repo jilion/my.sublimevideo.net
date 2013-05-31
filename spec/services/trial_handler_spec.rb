@@ -7,12 +7,12 @@ describe TrialHandler do
   let(:site2)            { create(:site, user: user) }
   let(:site3)            { create(:site, user: user) }
   let(:archived_site)    { create(:site, user: user, state: 'archived') }
-  let(:design_paid1)     { create(:app_design, price: 995) }
-  let(:design_paid2)     { create(:app_design, price: 995) }
+  let(:design_paid1)     { create(:design, price: 995) }
+  let(:design_paid2)     { create(:design, price: 995) }
   let(:addon)            { create(:addon) }
   let(:addon2)           { create(:addon) }
-  let!(:free_addon_plan) { create(:addon_plan, addon: addon, price: 0) }
-  let(:addon_plan_paid1) { create(:addon_plan, addon: addon, price: 995) }
+  let!(:free_addon_plan) { create(:addon_plan, addon: addon,  price: 0) }
+  let(:addon_plan_paid1) { create(:addon_plan, addon: addon,  price: 995) }
   let(:addon_plan_paid2) { create(:addon_plan, addon: addon2, price: 1995) }
 
   describe '.send_trial_will_expire_emails' do
@@ -116,7 +116,7 @@ describe TrialHandler do
         BillingMailer.should delay(:trial_has_expired).several_times_with(
           [site1.id, 'AddonPlan', addon_plan_paid2.id],
           [site1.id, 'AddonPlan', addon_plan_paid1.id],
-          [site1.id, 'App::Design', design_paid2.id]
+          [site1.id, 'Design', design_paid2.id]
         )
 
         described_class.new(site1).activate_billable_items_out_of_trial

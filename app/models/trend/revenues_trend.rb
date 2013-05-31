@@ -36,11 +36,11 @@ class RevenuesTrend
   end
 
   def self._second_key_for_hash(invoice_item)
-    case invoice_item.type
-    when 'InvoiceItem::AppDesign'
+    case invoice_item.item
+    when Design
       'design'
-    when 'InvoiceItem::AddonPlan'
-      invoice_item.item.addon.name
+    when AddonPlan
+      invoice_item.item.addon_name
     end
   end
 

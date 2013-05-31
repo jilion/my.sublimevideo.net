@@ -15,7 +15,7 @@ class SettingsTemplatePopulator < Populator
 
   def set_template
     @attributes[:template] ||= begin
-      path_parts = [@attributes[:addon_plan].addon.name, @attributes[:addon_plan].name]
+      path_parts = [@attributes[:addon_plan].addon_name, @attributes[:addon_plan].name]
       template = begin
         YAML.load_file(full_yml_path(path_parts, @attributes.delete(:suffix)))
       rescue TypeError

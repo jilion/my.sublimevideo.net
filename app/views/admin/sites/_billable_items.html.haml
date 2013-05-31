@@ -3,8 +3,8 @@
   - site.billable_items.reorder('state ASC').each do |billable_item|
     %li
       %strong= "[#{billable_item.state.titleize}]"
-      - if billable_item.item.is_a?(App::Design)
-        = 'Design: ' + t("app_designs.#{billable_item.item.name}")
+      - if billable_item.item.is_a?(Design)
+        = 'Design: ' + t("designs.#{billable_item.item.name}")
       - elsif billable_item.item.is_a?(AddonPlan)
-        = 'Add-on: ' + t("addon_plans.#{billable_item.item.addon.name}.#{billable_item.item.name}")
+        = 'Add-on: ' + t("addon_plans.#{billable_item.item.addon_name}.#{billable_item.item.name}")
       = "(#{display_time(billable_item.updated_at)})"
