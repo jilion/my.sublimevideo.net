@@ -9,14 +9,14 @@ App::SettingsTemplate = Class.new unless defined?(App::SettingsTemplate)
 
 describe SettingsTemplatePopulator do
 
-  let(:base_attrs) { { addon_plan: stub(addon: stub(name: 'lightbox'), name: 'standard'), plugin: stub } }
+  let(:base_attrs) { { addon_plan: stub(addon_name: 'lightbox', name: 'standard'), plugin: stub } }
   let(:attrs) { base_attrs.dup }
   let(:populator) { described_class.new(attrs) }
 
   describe '#execute' do
     context 'template for an addon' do
       context 'without a :suffix' do
-        let(:base_attrs) { { addon_plan: stub(addon: stub(name: 'video_player'), name: 'standard'), plugin: stub } }
+        let(:base_attrs) { { addon_plan: stub(addon_name: 'video_player', name: 'standard'), plugin: stub } }
 
         it 'creates the record in DB' do
           template = YAML.load_file(described_class::SETTINGS_TEMPLATES_DIR.join("video_player_template.yml")).symbolize_keys
@@ -39,7 +39,7 @@ describe SettingsTemplatePopulator do
     end
 
     context 'template for an addon plan without a template file' do
-      let(:base_attrs) { { addon_plan: stub(addon: stub(name: 'foo'), name: 'bar'), plugin: stub } }
+      let(:base_attrs) { { addon_plan: stub(addon_name: 'foo', name: 'bar'), plugin: stub } }
 
       it 'creates the record in DB and set the templat to {}' do
         App::SettingsTemplate.should_receive(:create).with(base_attrs.merge(template: {}), without_protection: true)
