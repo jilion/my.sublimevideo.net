@@ -3,7 +3,7 @@ require 'ffaker' if Rails.env.development?
 require 'populate/populator'
 require 'populate/populate_helpers'
 require 'populate/stats_populator'
-require 'populate/settings_template_populator'
+require 'populate/addon_plan_settings_populator'
 require 'populate/addon_system_populator'
 require 'populate/emails_populator'
 require 'populate/people_populator'
