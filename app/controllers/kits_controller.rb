@@ -73,7 +73,7 @@ class KitsController < ApplicationController
   def find_or_build_kit
     @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
   rescue ActiveRecord::RecordNotFound
-    @kit = exhibit(@site.kits.build(app_design_id: @design.id))
+    @kit = exhibit(@site.kits.build(design_id: @design.id))
   end
 
   def find_kit
@@ -84,7 +84,7 @@ class KitsController < ApplicationController
   end
 
   def find_design
-    @design = params[:design_id] ? App::Design.find(params[:design_id]) : App::Design.get('classic')
+    @design = params[:design_id] ? Design.find(params[:design_id]) : Design.get('classic')
   end
 
 end

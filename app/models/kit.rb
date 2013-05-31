@@ -1,11 +1,11 @@
 class Kit < ActiveRecord::Base
   serialize :settings, Hash
 
-  attr_accessible :site, :identifier, :name, :app_design_id, as: :admin
-  attr_accessible :name, :app_design_id
+  attr_accessible :site, :identifier, :name, :design_id, as: :admin
+  attr_accessible :name, :design_id
 
   belongs_to :site
-  belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
+  belongs_to :design
 
   delegate :skin_token, to: :design
   delegate :kind, to: :addon
@@ -15,7 +15,7 @@ class Kit < ActiveRecord::Base
 
   def initialize(*args)
     super
-    self.app_design_id ||= App::Design.get('classic').try(:id)
+    self.design_id ||= Design.get('classic').try(:id)
     self.identifier = (site.kits.size + 1).to_s if site
   end
 
@@ -42,18 +42,18 @@ end
 #
 # Table name: kits
 #
-#  app_design_id :integer          not null
-#  created_at    :datetime         not null
-#  id            :integer          not null, primary key
-#  identifier    :string(255)
-#  name          :string(255)      not null
-#  settings      :text
-#  site_id       :integer          not null
-#  updated_at    :datetime         not null
+#  created_at :datetime         not null
+#  design_id  :integer          not null
+#  id         :integer          not null, primary key
+#  identifier :string(255)
+#  name       :string(255)      not null
+#  settings   :text
+#  site_id    :integer          not null
+#  updated_at :datetime         not null
 #
 # Indexes
 #
-#  index_kits_on_app_design_id           (app_design_id)
+#  index_kits_on_design_id               (design_id)
 #  index_kits_on_site_id                 (site_id)
 #  index_kits_on_site_id_and_identifier  (site_id,identifier) UNIQUE
 #  index_kits_on_site_id_and_name        (site_id,name) UNIQUE

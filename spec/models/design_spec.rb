@@ -1,14 +1,13 @@
 require 'spec_helper'
 
-describe App::Design do
+describe Design do
   describe 'Associations' do
-    it { should belong_to(:component).class_name('App::Component') }
     it { should have_many(:billable_items) }
     it { should have_many(:sites).through(:billable_items) }
   end
 
   describe 'Validations' do
-    [:component, :skin_token, :name, :price, :availability, :required_stage, :stable_at].each do |attr|
+    [:name, :price, :availability, :required_stage, :stable_at].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
@@ -20,8 +19,8 @@ describe App::Design do
 
   describe '.custom' do
     before do
-      @public = create(:app_design, availability: 'public')
-      @custom = create(:app_design, availability: 'custom')
+      @public = create(:design, availability: 'public')
+      @custom = create(:design, availability: 'custom')
     end
 
     it { described_class.custom.all.should eq [@custom] }
@@ -29,8 +28,8 @@ describe App::Design do
 
   describe '.paid' do
     before do
-      @free = create(:app_design, price: 0)
-      @paid = create(:app_design, price: 99)
+      @free = create(:design, price: 0)
+      @paid = create(:design, price: 99)
     end
 
     it { described_class.paid.all.should eq [@paid] }
@@ -38,22 +37,22 @@ describe App::Design do
 
   describe '#available_for_subscription?' do
     let(:site) { create(:site) }
-    let(:custom_app_design) { create(:app_design, availability: 'custom') }
+    let(:custom_design) { create(:design, availability: 'custom') }
 
-    it { create(:app_design, availability: 'public').available_for_subscription?(site).should be_true }
-    it { custom_app_design.available_for_subscription?(site).should be_false }
+    it { create(:design, availability: 'public').available_for_subscription?(site).should be_true }
+    it { custom_design.available_for_subscription?(site).should be_false }
 
     context 'site has a billable item for this design' do
-      before { create(:billable_item, item: custom_app_design, site: site) }
+      before { create(:billable_item, item: custom_design, site: site) }
 
-      it { custom_app_design.available_for_subscription?(site).should be_true }
+      it { custom_design.available_for_subscription?(site).should be_true }
     end
   end
 end
 
 # == Schema Information
 #
-# Table name: app_designs
+# Table name: designs
 #
 #  app_component_id :integer          not null
 #  availability     :string(255)      not null
@@ -68,7 +67,6 @@ end
 #
 # Indexes
 #
-#  index_app_designs_on_name        (name) UNIQUE
-#  index_app_designs_on_skin_token  (skin_token) UNIQUE
+#  index_designs_on_name  (name) UNIQUE
 #
 

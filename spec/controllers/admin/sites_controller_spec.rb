@@ -44,13 +44,13 @@ describe Admin::SitesController do
 
     it "responds with redirect to successful PUT :update_design_subscription" do
       Site.should_receive(:find_by_token!).with('abc123') { mock_site }
-      App::Design.stub(:find).with('42') { mock_app_design(id: 42, name: 'foo_design', title: 'Foo Design') }
+      Design.stub(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
       mock_service = mock('SiteManager')
       SiteManager.stub(:new).with(mock_site) { mock_service }
 
       mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
 
-      put :update_design_subscription, id: 'abc123', app_design_id: 42
+      put :update_design_subscription, id: 'abc123', design_id: 42
       response.should redirect_to(edit_admin_site_url(mock_site))
     end
   end

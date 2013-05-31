@@ -12,12 +12,12 @@ module KitsHelper
     @kits_settings ||= SettingsGenerator.new(site).kits
   end
 
-  def app_designs_for_select(site, kit)
-    items = site.app_designs.order(:id).reduce([]) do |a, e|
+  def designs_for_select(site, kit)
+    items = site.designs.order(:id).reduce([]) do |a, e|
       a << [e.title, e.id, { 'data-preview-kit-id' => PreviewKit.kit_identifer(e.name) }]
     end
 
-    options_for_select(items, kit.app_design_id)
+    options_for_select(items, kit.design_id)
   end
 
   def kit_settings_expanding_handler(name)

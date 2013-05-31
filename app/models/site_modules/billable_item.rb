@@ -14,7 +14,7 @@ module SiteModules::BillableItem
   end
 
   def total_billable_items_price
-    app_designs.where { (billable_items.state >> %w[trial subscribed]) }.sum(:price) +
+    designs.where { (billable_items.state >> %w[trial subscribed]) }.sum(:price) +
     addon_plans.where { (billable_items.state >> %w[trial subscribed]) }.sum(:price)
   end
 

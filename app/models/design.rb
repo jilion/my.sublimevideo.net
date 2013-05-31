@@ -1,6 +1,6 @@
 require 'findable_and_cached'
 
-class App::Design < BillableEntity
+class Design < BillableEntity
   include FindableAndCached
 
   attr_accessible :component, :skin_token, as: :admin
@@ -17,12 +17,12 @@ class App::Design < BillableEntity
     when 'public'
       true
     when 'custom'
-      site.app_designs.where(id: id).exists?
+      site.designs.where(id: id).exists?
     end
   end
 
   def title
-    I18n.t("app_designs.#{name}")
+    I18n.t("designs.#{name}")
   end
 
   def free_plan
@@ -33,7 +33,7 @@ end
 
 # == Schema Information
 #
-# Table name: app_designs
+# Table name: designs
 #
 #  app_component_id :integer          not null
 #  availability     :string(255)      not null
@@ -48,7 +48,6 @@ end
 #
 # Indexes
 #
-#  index_app_designs_on_name        (name) UNIQUE
-#  index_app_designs_on_skin_token  (skin_token) UNIQUE
+#  index_designs_on_name  (name) UNIQUE
 #
 

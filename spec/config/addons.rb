@@ -24,7 +24,7 @@ end
 def clear_default_addons
   App::Component.delete_all
   App::ComponentVersion.delete_all
-  App::Design.delete_all
+  Design.delete_all
   Addon.delete_all
   AddonPlan.delete_all
   App::Plugin.delete_all
@@ -32,11 +32,11 @@ def clear_default_addons
 end
 
 def instantiate_variables
-  @classic_design = App::Design.get('classic')
-  @flat_design    = App::Design.get('flat')
-  @light_design   = App::Design.get('light')
-  @twit_design    = App::Design.get('twit')
-  @html5_design   = App::Design.get('html5')
+  @classic_design = Design.get('classic')
+  @flat_design    = Design.get('flat')
+  @light_design   = Design.get('light')
+  @twit_design    = Design.get('twit')
+  @html5_design   = Design.get('html5')
 
   @video_player_addon = Addon.get('video_player')
   @video_player_addon_plan_1 = AddonPlan.get('video_player', 'standard')

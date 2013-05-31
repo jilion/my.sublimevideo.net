@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SitesTrend do
   describe "with a bunch of different sites" do
-    let!(:design)     { create(:app_design, price: 0) }
+    let!(:design)     { create(:design, price: 0) }
     let!(:addon_plan) { create(:addon_plan, price: 990) }
     before do
       user = create(:user)

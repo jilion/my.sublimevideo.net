@@ -11,7 +11,7 @@
       = link_to 'Edit', [:edit, site, kit], class: 'edit_kit'
       - unless kit.default?
         |
-        = form_for [:set_as_default, site, kit], style: 'display:inline' do |f|
+        = form_for [:set_as_default, site, kit], method: :put, style: 'display:inline' do |f|
           = f.submit 'Set as default', class: 'button_link'
 
     - if kit.default?

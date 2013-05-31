@@ -6,9 +6,9 @@ require 'services/settings_sanitizer'
 describe SettingsSanitizer do
   let(:site)        { stub(touch: true) }
   let(:kit)         { stub(design: stub, site: site, site_id: 1) }
-  let(:addon_plan1) { stub(addon: stub(name: 'addonName1')) }
-  let(:addon_plan2) { stub(addon: stub(name: 'addonName2')) }
-  let(:addon_plan3) { stub(addon: stub(name: 'addonName3')) }
+  let(:addon_plan1) { stub(addon_name: 'addonName1') }
+  let(:addon_plan2) { stub(addon_name: 'addonName2') }
+  let(:addon_plan3) { stub(addon_name: 'addonName3') }
   let(:settings_template) {
     {
       booleanSetting: {

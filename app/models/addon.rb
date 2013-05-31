@@ -32,7 +32,6 @@ class Addon < ActiveRecord::Base
   def to_param
     name
   end
-
 end
 
 # == Schema Information

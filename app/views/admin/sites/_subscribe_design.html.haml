@@ -3,7 +3,7 @@
 = form_for [:update_design_subscription, :admin, site] do |f|
   .entry
     = label_tag :force, 'Design:'
-    = select_tag 'app_design_id', admin_designs_options(site)
+    = select_tag 'design_id', admin_designs_options(site)
 
   .entry
     = label_tag :state, 'Action:'

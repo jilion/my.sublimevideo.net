@@ -39,7 +39,7 @@ class SettingsSanitizer
   end
 
   def sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings_template, setting_key, setting_value)
-    addon_name = addon_plan.addon.name
+    addon_name = addon_plan.addon_name
     setting_key = setting_key.to_sym
     return unless addon_plan_setting_template = addon_plan_settings_template[setting_key]
 

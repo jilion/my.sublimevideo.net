@@ -10,7 +10,7 @@ class AddonPlanExhibit < DisplayCase::Exhibit
   end
 
   def billable_entity_name_for_addon_page
-    addon.name
+    addon_name
   end
 
   def p_param_for_addon_page

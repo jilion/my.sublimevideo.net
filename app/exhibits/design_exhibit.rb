@@ -1,8 +1,8 @@
 # coding: utf-8
-class AppDesignExhibit < DisplayCase::Exhibit
+class DesignExhibit < DisplayCase::Exhibit
 
   def self.applicable_to?(object, context)
-    object.class.name == 'App::Design'
+    object.class.name == 'Design'
   end
 
   def kind_for_email

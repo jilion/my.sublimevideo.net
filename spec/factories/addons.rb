@@ -17,7 +17,7 @@ FactoryGirl.define do
   # ===========
   # = Designs =
   # ===========
-  factory :app_design, class: App::Design do
+  factory :design do
     component { FactoryGirl.create(:app_component) }
     sequence(:name)       { |n| "design#{n}" }
     sequence(:skin_token) { |n| "skin.token#{n}" }
@@ -48,7 +48,7 @@ FactoryGirl.define do
 
   factory :app_plugin, class: App::Plugin do
     addon
-    design    { FactoryGirl.create(:app_design) }
+    design    { FactoryGirl.create(:design) }
     component { FactoryGirl.create(:app_component) }
     sequence(:token) { |n| "token#{n}" }
     sequence(:name) { |n| "name #{n}" }
@@ -65,7 +65,7 @@ FactoryGirl.define do
     item { FactoryGirl.create(:addon_plan) }
 
     factory :design_billable_item do
-      item { FactoryGirl.create(:app_design) }
+      item { FactoryGirl.create(:design) }
     end
 
     factory :addon_plan_billable_item do
@@ -79,7 +79,7 @@ FactoryGirl.define do
     item { FactoryGirl.create(:addon_plan) }
 
     factory :design_billable_item_activity do
-      item { FactoryGirl.create(:app_design) }
+      item { FactoryGirl.create(:design) }
     end
 
     factory :addon_plan_billable_item_activity do

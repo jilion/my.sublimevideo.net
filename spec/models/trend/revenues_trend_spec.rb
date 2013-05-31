@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RevenuesTrend do
 
   context "with a bunch of different billable item activities", :addons do
-    let(:paid_design) { create(:app_design, price: 999, name: 'foo') }
+    let(:paid_design) { create(:design, price: 999, name: 'foo') }
     before do
       site = create(:site)
 

@@ -42,7 +42,7 @@ class Site < ActiveRecord::Base
 
   # Addons
   has_many :billable_items
-  has_many :app_designs, through: :billable_items, source: :item, source_type: 'App::Design'
+  has_many :designs, through: :billable_items, source: :item, source_type: 'Design'
   has_many :addon_plans, through: :billable_items, source: :item, source_type: 'AddonPlan'
   has_many :addons, through: :addon_plans
   has_many :plugins, through: :addons
@@ -52,17 +52,12 @@ class Site < ActiveRecord::Base
   has_many :kits
 
   # App::Components
-  has_many :app_designs_components, through: :app_designs, source: :component
+  has_many :designs_components, through: :designs, source: :component
   has_many :addon_plans_components, through: :addon_plans, source: :components
 
   def components
-    # via_designs = app_designs_components.scoped
-    # app_design_ids = [nil] + app_designs.map(&:id)
-    # via_addon_plans = addon_plans_components.where {app_plugins.app_design_id.in(app_design_ids)}
-    # App::Component.where {id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}
-
     # Query via addon_plans is too slow and useless for now
-    app_designs_components
+    designs_components
   end
 
   # Mongoid associations

@@ -8,7 +8,7 @@ module InvoicesHelper
     case invoice_item.class.to_s
     when 'InvoiceItem::Plan'
       invoice_item.item.title
-    when 'InvoiceItem::AppDesign'
+    when 'InvoiceItem::Design'
       'Design: ' + invoice_item.item.title
     when 'InvoiceItem::AddonPlan'
       'Add-on: ' + invoice_item.item.title

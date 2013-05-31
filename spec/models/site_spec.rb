@@ -33,7 +33,7 @@ describe Site, :addons do
     it { should have_one(:last_invoice) }
 
     it { should have_many(:billable_items) }
-    it { should have_many(:app_designs).through(:billable_items) }
+    it { should have_many(:designs).through(:billable_items) }
     it { should have_many(:addon_plans).through(:billable_items) }
     it { should have_many(:addons).through(:addon_plans) }
     it { should have_many(:plugins).through(:addons) }
@@ -46,29 +46,6 @@ describe Site, :addons do
 
         site.last_invoice.should eq site.invoices.last
         site.last_invoice.should eq invoice
-      end
-    end
-
-    describe "components" do
-      # it "returns components from AddonPlan && App::Design" do
-      it "returns components from App::Design" do
-        site = create(:site)
-        app_design = create(:app_design)
-        create(:billable_item, site: site, item: app_design)
-        app_custom_design = create(:app_design)
-
-        # addon = create(:addon)
-        # addon_plan = create(:addon_plan, addon: addon)
-        # app_plugin_with_design = create(:app_plugin, addon: addon, design: app_design)
-        # app_plugin_without_design = create(:app_plugin, addon: addon, design: nil)
-        # app_plugin_without_custom_design = create(:app_plugin, addon: addon, design: app_custom_design)
-        # create(:billable_item, site: site, item: addon_plan)
-
-        site.components.should match_array([
-          app_design.component,
-          # app_plugin_with_design.component,
-          # app_plugin_without_design.component
-        ])
       end
     end
   end
