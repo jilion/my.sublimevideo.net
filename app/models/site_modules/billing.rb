@@ -3,7 +3,7 @@ module SiteModules::Billing
 
   %w[open failed waiting].each do |invoice_state|
     define_method :"invoices_#{invoice_state}?" do
-      invoices.any? { |i| i.send("#{invoice_state}?") }
+      invoices.with_state(invoice_state).any?
     end
   end
 

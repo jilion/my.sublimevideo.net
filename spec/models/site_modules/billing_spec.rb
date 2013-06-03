@@ -1,59 +1,58 @@
 require 'spec_helper'
 
-describe SiteModules::Billing do
+shared_context 'site with a paid invoice' do
+  before { create(:paid_invoice, site: @site) }
+end
 
-  describe 'Instance Methods', :addons do
+describe SiteModules::Billing, :addons do
+  let(:site) { create(:site) }
+  before do
+    @site = site
+  end
+  subject { @site }
 
-    describe '#invoices_open?' do
-      let(:site) { create(:site) }
+  describe '#invoices_open?' do
+    include_context 'site with a paid invoice'
+    context 'with only paid invoices' do
+      its(:invoices_open?) { should be_false }
+    end
+    context 'with a failed invoice' do
+      before { create(:invoice, site: site) }
+      its(:invoices_open?) { should be_true }
+    end
+  end
 
-      context "with no options" do
-        it "should be true if invoice have the renew flag == false" do
-          invoice = create(:invoice, site: site, renew: false)
-          invoice.renew.should be_false
-          site.invoices_open?.should be_true
-        end
-
-        it "should be true if invoice have the renew flag == true" do
-          invoice = create(:invoice, site: site, renew: true)
-          invoice.renew.should be_true
-          site.invoices_open?.should be_true
-        end
-      end
-    end # #invoices_open?
-
-    describe '#invoices_failed?' do
-      subject do
-        site = create(:site)
-        create(:failed_invoice, site: site)
-        site
-      end
-
+  describe '#invoices_failed?' do
+    include_context 'site with a paid invoice'
+    context 'with only paid invoices' do
+      its(:invoices_failed?) { should be_false }
+    end
+    context 'with a failed invoice' do
+      before { create(:failed_invoice, site: site) }
       its(:invoices_failed?) { should be_true }
-    end # #invoices_failed?
+    end
+  end
 
-    describe '#invoices_waiting?' do
-      subject do
-        site = create(:site)
-        create(:waiting_invoice, site: site)
-        site
-      end
-
+  describe '#invoices_waiting?' do
+    include_context 'site with a paid invoice'
+    context 'with only paid invoices' do
+      its(:invoices_waiting?) { should be_false }
+    end
+    context 'with a failed invoice' do
+      before { create(:waiting_invoice, site: site) }
       its(:invoices_waiting?) { should be_true }
-    end # #invoices_waiting?
+    end
+  end
 
-    describe '#refunded?' do
-      before do
-        @site_refunded1     = create(:site, refunded_at: Time.now.utc).tap { |s| s.archive! }
-        @site_not_refunded1 = create(:site, refunded_at: Time.now.utc)
-        @site_not_refunded2 = create(:site, refunded_at: nil).tap { |s| s.archive! }
-      end
+  describe '#refunded?' do
+    before do
+      @site_refunded1     = create(:site, refunded_at: Time.now.utc).tap { |s| s.archive! }
+      @site_not_refunded1 = create(:site, refunded_at: Time.now.utc)
+      @site_not_refunded2 = create(:site, refunded_at: nil).tap { |s| s.archive! }
+    end
 
-      specify { @site_refunded1.should be_refunded }
-      specify { @site_not_refunded1.should_not be_refunded }
-      specify { @site_not_refunded2.should_not be_refunded }
-    end # #refunded?
-
-  end # Instance Methods
-
+    specify { @site_refunded1.should be_refunded }
+    specify { @site_not_refunded1.should_not be_refunded }
+    specify { @site_not_refunded2.should_not be_refunded }
+  end
 end
