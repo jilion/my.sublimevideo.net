@@ -54,7 +54,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "name #{n}" }
   end
 
-  factory :app_settings_template, class: App::SettingsTemplate do
+  factory :addon_plan_settings, class: AddonPlanSettings do
     addon_plan
     plugin { FactoryGirl.create(:app_plugin) }
   end

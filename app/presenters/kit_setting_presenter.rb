@@ -24,11 +24,11 @@ class KitSettingPresenter
   end
 
   def any_settings?
-    !_settings_template_record.nil?
+    !_addon_plan_settings_record.nil?
   end
 
-  def settings_template_has_key?(key)
-    settings_template.key?(key.to_sym)
+  def addon_plan_settings_has_key?(key)
+    addon_plan_settings.key?(key.to_sym)
   end
 
   def render_master_input_field(params = {}, &block)
@@ -66,8 +66,8 @@ class KitSettingPresenter
     end
   end
 
-  def settings_template
-    _settings_template_record.template
+  def addon_plan_settings
+    _addon_plan_settings_record.template
   end
 
   private
@@ -93,8 +93,8 @@ class KitSettingPresenter
   def populate_params!(params)
     params[:data]              ||= {}
     params[:addon]             ||= @addon_plan.addon
-    params[:settings_template] ||= settings_template.symbolize_keys
-    params[:setting_template]    = params[:settings_template][params[:setting_key].to_sym]
+    params[:addon_plan_settings] ||= addon_plan_settings.symbolize_keys
+    params[:setting_template]    = params[:addon_plan_settings][params[:setting_key].to_sym]
     params[:settings]            = @settings
     params[:setting]             = @settings[addon_name.to_sym][params[:setting_key].to_sym] rescue nil
     params[:value]               = get_value_from_params(params)
@@ -108,8 +108,8 @@ class KitSettingPresenter
     @addon_name_from_view ||= @view.view_renderer.instance_variable_get('@_partial_renderer').instance_values['path'].sub(%r{.+/(\w+)_settings}, '\1')
   end
 
-  def _settings_template_record
-    @addon_plan.settings_template_for(@design)
+  def _addon_plan_settings_record
+    @addon_plan.settings_for(@design)
   end
 
 end

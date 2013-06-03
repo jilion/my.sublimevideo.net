@@ -8,7 +8,7 @@ require 'services/settings_generator'
 
 Design = Class.new unless defined?(Design)
 App::Plugin = Class.new unless defined?(App::Plugin)
-App::SettingsTemplate = Class.new unless defined?(App::SettingsTemplate)
+AddonPlanSettings = Class.new unless defined?(AddonPlanSettings)
 Site = Class.new unless defined?(Site)
 Kit = Class.new unless defined?(Kit)
 Addon = Class.new unless defined?(Addon)
@@ -107,7 +107,7 @@ describe SettingsGenerator, :fog_mock do
   end
 
   describe "#app_settings" do
-    context "with a addon_plan with a settings_template not linked to a plugin" do
+    context "with a addon_plan with a addon_plan_settings not linked to a plugin" do
       let(:template) { {
         enabled: {
           type: 'boolean',
@@ -121,14 +121,14 @@ describe SettingsGenerator, :fog_mock do
         }
       } }
       let(:addon) { mock(Addon) }
-      let(:settings_template) { mock(App::SettingsTemplate, template: template, app_plugin_id: nil) }
-      let(:addon_plan) { mock(AddonPlan, addon: addon, settings_templates: [settings_template], kind: 'stats') }
+      let(:addon_plan_settings) { mock(AddonPlanSettings, template: template, app_plugin_id: nil) }
+      let(:addon_plan) { mock(AddonPlan, addon: addon, settings: [addon_plan_settings], kind: 'stats') }
 
       before do
         site.stub_chain(:addon_plans, :includes, :order) { [addon_plan] }
       end
 
-      it "includes template of this addon_plan settings_template" do
+      it "includes template of this addon_plan addon_plan_settings" do
         settings.app_settings.should eq({
           'stats' => {
             settings: {
@@ -156,7 +156,7 @@ describe SettingsGenerator, :fog_mock do
   end
 
   describe "#kits" do
-    context "with a addon_plan with a settings_template not linked to a plugin" do
+    context "with a addon_plan with a addon_plan_settings not linked to a plugin" do
       let(:template1) { {
         autoplay: {
           type: 'boolean',
@@ -196,22 +196,22 @@ describe SettingsGenerator, :fog_mock do
       let(:plugin2_1) { mock(App::Plugin, id: 2, design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
       let(:plugin2_2) { mock(App::Plugin, id: 3, design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
       let(:plugin3) { mock(App::Plugin, id: 4, design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
-      let(:settings_template1) { mock(App::SettingsTemplate, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
-      let(:settings_template2_1) { mock(App::SettingsTemplate, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
-      let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
-      let(:settings_template3) { mock(App::SettingsTemplate, template: {}, app_plugin_id: plugin3.id, plugin: plugin3) }
-      let(:addon_plan1) { mock(AddonPlan, addon: addon1, addon_id: addon1.id, addon_name: 'addon1', kind: 'addon_kind1', settings_templates: [settings_template1], settings_template_for: settings_template1) }
-      let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, addon_name: 'addon2', kind: 'addon_kind2', settings_templates: [settings_template2_1, settings_template2_2]) }
-      let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, addon_name: 'addon3', kind: 'addon_kind3', settings_templates: [settings_template3], settings_template_for: nil) }
+      let(:addon_plan_settings1) { mock(AddonPlanSettings, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
+      let(:addon_plan_settings2_1) { mock(AddonPlanSettings, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
+      let(:addon_plan_settings2_2) { mock(AddonPlanSettings, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
+      let(:addon_plan_settings3) { mock(AddonPlanSettings, template: {}, app_plugin_id: plugin3.id, plugin: plugin3) }
+      let(:addon_plan1) { mock(AddonPlan, addon: addon1, addon_id: addon1.id, addon_name: 'addon1', kind: 'addon_kind1', settings: [addon_plan_settings1], settings_for: addon_plan_settings1) }
+      let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, addon_name: 'addon2', kind: 'addon_kind2', settings: [addon_plan_settings2_1, addon_plan_settings2_2]) }
+      let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, addon_name: 'addon3', kind: 'addon_kind3', settings: [addon_plan_settings3], settings_for: nil) }
 
       before do
         site.stub_chain(:addon_plans, :includes, :order) { [addon_plan1, addon_plan2, addon_plan3] }
         site.stub_chain(:kits, :includes, :order) { [kit1, kit2] }
-        addon_plan2.stub(:settings_template_for).with(design1) { settings_template2_1 }
-        addon_plan2.stub(:settings_template_for).with(design2) { settings_template2_2 }
+        addon_plan2.stub(:settings_for).with(design1) { addon_plan_settings2_1 }
+        addon_plan2.stub(:settings_for).with(design2) { addon_plan_settings2_2 }
       end
 
-      it "includes template of this addon_plan settings_template without the plugin's modules" do
+      it "includes template of this addon_plan addon_plan_settings without the plugin's modules" do
         settings.kits(false).should eq({
           "1" => {
             skin: { id: "skin_token1" },
@@ -274,7 +274,7 @@ describe SettingsGenerator, :fog_mock do
         })
       end
 
-      it "includes template of this addon_plan settings_template with the plugin's modules" do
+      it "includes template of this addon_plan addon_plan_settings with the plugin's modules" do
         settings.kits(true).should eq({
           "1" => {
             skin: { id: "skin_token1" },
