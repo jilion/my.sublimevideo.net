@@ -21,7 +21,7 @@
         - if presenter.addon_plan.name == 'auto'
           = presenter.render_input_field(setting_key: 'type', show_title: true)
         - else
-          = hidden_field_tag "kit[settings][embed][type]", presenter.settings_template[:type][:default], class: 'previewable', data: { addon: 'embed', setting: 'type' }
+          = hidden_field_tag "kit[settings][embed][type]", presenter.addon_plan_settings[:type][:default], class: 'previewable', data: { addon: 'embed', setting: 'type' }
 
         = presenter.render_input_field(setting_key: 'size')
         %p.info{ style: "padding-bottom:20px" }

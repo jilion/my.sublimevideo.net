@@ -9,7 +9,7 @@ describe SettingsSanitizer do
   let(:addon_plan1) { stub(addon_name: 'addonName1') }
   let(:addon_plan2) { stub(addon_name: 'addonName2') }
   let(:addon_plan3) { stub(addon_name: 'addonName3') }
-  let(:settings_template) {
+  let(:addon_plan_settings) {
     {
       booleanSetting: {
         type: 'boolean',
@@ -85,9 +85,9 @@ describe SettingsSanitizer do
       kit.stub_chain(:site, :addon_plan_for_addon_name).with(:addonName1) { addon_plan1 }
       kit.stub_chain(:site, :addon_plan_for_addon_name).with(:addonName2) { addon_plan2 }
       kit.stub_chain(:site, :addon_plan_for_addon_name).with(:addonName3) { addon_plan3 }
-      addon_plan1.stub_chain(:settings_template_for, :try) { settings_template }
-      addon_plan2.stub_chain(:settings_template_for, :try) { settings_template }
-      addon_plan3.stub_chain(:settings_template_for, :try) { settings_template }
+      addon_plan1.stub_chain(:settings_for, :try) { addon_plan_settings }
+      addon_plan2.stub_chain(:settings_for, :try) { addon_plan_settings }
+      addon_plan3.stub_chain(:settings_for, :try) { addon_plan_settings }
     end
 
     it 'returns sanitize settings' do

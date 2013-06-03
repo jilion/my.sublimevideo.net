@@ -1,4 +1,4 @@
-class App::SettingsTemplate < ActiveRecord::Base
+class AddonPlanSettings < ActiveRecord::Base
   serialize :template, Hash
 
   attr_accessible :addon_plan, :plugin, :template, as: :admin
@@ -13,11 +13,11 @@ class App::SettingsTemplate < ActiveRecord::Base
   def self.find_cached_by_addon_plan_and_plugin_name(addon_plan, plugin_name = nil)
     if plugin_name.blank?
       Rails.cache.fetch [self, 'find_cached_by_addon_plan', addon_plan.name.dup] do
-        addon_plan.settings_templates.first
+        addon_plan.settings.first
       end
     else
       Rails.cache.fetch [self, 'find_cached_by_addon_plan_and_plugin_name', addon_plan.name.dup, plugin_name.to_s.dup] do
-        addon_plan.settings_templates.includes(:plugin).where { plugin.name == plugin_name.to_s }.first
+        addon_plan.settings.includes(:plugin).where { plugin.name == plugin_name.to_s }.first
       end
     end
   end
@@ -37,7 +37,7 @@ end
 
 # == Schema Information
 #
-# Table name: app_settings_templates
+# Table name: addon_plan_settings
 #
 #  addon_plan_id :integer          not null
 #  app_plugin_id :integer

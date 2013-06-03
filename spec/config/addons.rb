@@ -28,7 +28,7 @@ def clear_default_addons
   Addon.delete_all
   AddonPlan.delete_all
   App::Plugin.delete_all
-  App::SettingsTemplate.delete_all
+  AddonPlanSettings.delete_all
 end
 
 def instantiate_variables

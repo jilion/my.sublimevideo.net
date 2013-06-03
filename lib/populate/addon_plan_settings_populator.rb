@@ -1,6 +1,6 @@
-class SettingsTemplatePopulator < Populator
+class AddonPlanSettingsPopulator < Populator
 
-  SETTINGS_TEMPLATES_DIR = Rails.root.join('lib/populate/settings_templates')
+  SETTINGS_DIR = Rails.root.join('lib/populate/addon_plans_settings')
 
   attr_reader :attributes
 
@@ -10,7 +10,7 @@ class SettingsTemplatePopulator < Populator
   end
 
   def execute
-    @settings_template_record = App::SettingsTemplate.create(@attributes, without_protection: true)
+    @addon_plan_settings_record = AddonPlanSettings.create(@attributes, without_protection: true)
   end
 
   def set_template
@@ -32,7 +32,7 @@ class SettingsTemplatePopulator < Populator
   private
 
   def full_yml_path(path_parts, suffix = nil)
-    yml_template_path = SETTINGS_TEMPLATES_DIR.join(yml_path(path_parts, suffix))
+    yml_template_path = SETTINGS_DIR.join(yml_path(path_parts, suffix))
 
     if File.exists?(yml_template_path)
       yml_template_path

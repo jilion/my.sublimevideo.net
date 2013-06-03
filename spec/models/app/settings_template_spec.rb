@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe App::SettingsTemplate do
+describe AddonPlanSettings do
   describe "Associations" do
     it { should belong_to(:addon_plan) }
     it { should belong_to(:plugin).class_name('App::Plugin') }
@@ -17,17 +17,16 @@ describe App::SettingsTemplate do
       @addon = create(:addon, name: 'foo')
       @addon_plan = create(:addon_plan, name: 'bar', addon: @addon)
       @app_plugin = create(:app_plugin, addon: @addon, name: 'foo_bar')
-      @app_settings_template = create(:app_settings_template, addon_plan: @addon_plan, plugin: @app_plugin)
+      @addon_plan_settings = create(:addon_plan_settings, addon_plan: @addon_plan, plugin: @app_plugin)
     end
 
-    it { described_class.get(@addon_plan, 'foo_bar').should eq @app_settings_template }
+    it { described_class.get(@addon_plan, 'foo_bar').should eq @addon_plan_settings }
   end
-
 end
 
 # == Schema Information
 #
-# Table name: app_settings_templates
+# Table name: addon_plan_settings
 #
 #  addon_plan_id :integer          not null
 #  app_plugin_id :integer
@@ -38,6 +37,6 @@ end
 #
 # Indexes
 #
-#  index_app_settings_templates_on_addon_plan_id_and_app_plugin_id  (addon_plan_id,app_plugin_id) UNIQUE
+#  indexaddon_plan_settings_on_addon_plan_id_and_app_plugin_id  (addon_plan_id,app_plugin_id) UNIQUE
 #
 

@@ -6,7 +6,7 @@
       = presenter.render_input_field(setting_key: 'on_open', show_title: true)
       = presenter.render_input_field(setting_key: 'overlay_opacity')
 
-      - if presenter.settings_template_has_key?('close_button_enable')
+      - if presenter.addon_plan_settings_has_key?('close_button_enable')
         = presenter.render_master_input_field(setting_key: 'close_button_enable') do
           = presenter.render_input_field(setting_key: 'close_button_visibility', show_title: true)
           = presenter.render_input_field(setting_key: 'close_button_position', show_title: true)

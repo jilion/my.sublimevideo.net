@@ -3,7 +3,7 @@ class AddonPlan < BillableEntity
 
   belongs_to :addon
   has_many :components, through: :addon
-  has_many :settings_templates, class_name: 'App::SettingsTemplate'
+  has_many :settings, class_name: 'AddonPlanSettings'
 
   delegate :kind, :free_plan, to: :addon
   delegate :name, to: :addon, prefix: true
@@ -44,11 +44,11 @@ class AddonPlan < BillableEntity
     I18n.t("addon_plans.#{addon_name}.#{name}")
   end
 
-  def settings_template_for(design)
+  def settings_for(design)
     dependant_design_id = addon.design_dependent? ? design.id : nil
     plugin_id = App::Plugin.where(addon_id: addon.id, design_id: dependant_design_id).first.try(:id)
 
-    settings_templates.where(app_plugin_id: plugin_id).first
+    settings.where(app_plugin_id: plugin_id).first
   end
 
   private
@@ -68,8 +68,8 @@ end
 #  id             :integer          not null, primary key
 #  name           :string(255)      not null
 #  price          :integer          not null
-#  stable_at      :datetime
 #  required_stage :string(255)      default("stable"), not null
+#  stable_at      :datetime
 #  updated_at     :datetime         not null
 #
 # Indexes

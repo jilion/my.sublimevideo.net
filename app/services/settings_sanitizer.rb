@@ -31,38 +31,38 @@ class SettingsSanitizer
   private
 
   def sanitize_new_addon_plan_settings(addon_plan, new_addon_plan_settings)
-    return unless addon_plan_settings_template = addon_plan.settings_template_for(kit.design).try(:template)
+    return unless addon_plan_settings = addon_plan.settings_for(kit.design).try(:template)
 
     new_addon_plan_settings.each do |new_addon_setting_key, new_addon_setting_value|
-      sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings_template, new_addon_setting_key, new_addon_setting_value)
+      sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings, new_addon_setting_key, new_addon_setting_value)
     end
   end
 
-  def sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings_template, setting_key, setting_value)
+  def sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings, setting_key, setting_value)
     addon_name = addon_plan.addon_name
     setting_key = setting_key.to_sym
-    return unless addon_plan_setting_template = addon_plan_settings_template[setting_key]
+    return unless setting_template = addon_plan_settings[setting_key]
 
-    case addon_plan_setting_template[:type]
+    case setting_template[:type]
     when 'image', 'url'
       if sanitized_url = sanitize_url(setting_value)
         @sanitized_settings[addon_name][setting_key] = sanitized_url
       end
 
     when 'float'
-      range = (addon_plan_setting_template[:range][0]..addon_plan_setting_template[:range][1])
+      range = (setting_template[:range][0]..setting_template[:range][1])
       @sanitized_settings[addon_name][setting_key] = sanitize_number(setting_value, range)
 
     when 'boolean'
       setting_value = self.class.cast_boolean(setting_value)
 
-      unless value_is_allowed?(setting_value, addon_plan_setting_template[:values])
-        setting_value = addon_plan_setting_template[:default]
+      unless value_is_allowed?(setting_value, setting_template[:values])
+        setting_value = setting_template[:default]
       end
       @sanitized_settings[addon_name][setting_key] = setting_value
 
     when 'string'
-      if addon_plan_setting_template[:values].nil? || value_is_allowed?(setting_value, addon_plan_setting_template[:values])
+      if setting_template[:values].nil? || value_is_allowed?(setting_value, setting_template[:values])
         @sanitized_settings[addon_name][setting_key] = setting_value
       end
 
@@ -70,7 +70,7 @@ class SettingsSanitizer
       @sanitized_settings[addon_name][setting_key] = compute_size(setting_value)
 
     when 'array'
-      @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:item][:values])
+      @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, setting_template[:item][:values])
     end
   end
 

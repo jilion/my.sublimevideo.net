@@ -48,7 +48,7 @@ class SettingsGenerator
 
   def app_settings
     _addon_plans_without_plugins.reduce({}) do |hash, addon_plan|
-      template = addon_plan.settings_templates.first.template
+      template = addon_plan.settings.first.template
       hash[addon_plan.kind] = {}
       hash[addon_plan.kind][:settings] = _addon_plan_settings(template)
       hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template)
@@ -86,22 +86,22 @@ class SettingsGenerator
 private
 
   def _addon_plans
-    @_addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin).order(:id)
+    @_addon_plans ||= site.addon_plans.includes(:addon, settings: :plugin).order(:id)
   end
 
   def _addon_plans_without_plugins
     @_addon_plans_without_plugins ||= _addon_plans.select do |addon_plan|
-      addon_plan.settings_templates.present? &&
-      addon_plan.settings_templates.none? { |st| st.app_plugin_id.present? }
+      addon_plan.settings.present? &&
+      addon_plan.settings.none? { |st| st.app_plugin_id.present? }
     end
   end
 
   def _addon_plans_with_plugins(kit)
     @_addon_plans_with_plugins ||= {}
     @_addon_plans_with_plugins[kit.id] ||= _addon_plans.select do |addon_plan|
-      addon_plan.settings_templates.present? &&
-      addon_plan.settings_templates.any? { |st| st.app_plugin_id.present? } &&
-      addon_plan.settings_template_for(kit.design).present?
+      addon_plan.settings.present? &&
+      addon_plan.settings.any? { |st| st.app_plugin_id.present? } &&
+      addon_plan.settings_for(kit.design).present?
     end
   end
 
@@ -114,7 +114,7 @@ private
         hash[addon_plan.kind][:plugins] = plugins
       end
 
-      if template = addon_plan.settings_template_for(kit.design)
+      if template = addon_plan.settings_for(kit.design)
         hash[addon_plan.kind][:settings] = _addon_plan_settings(template.template, kit.settings[addon_plan.addon_name])
         hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template.template)
         hash[addon_plan.kind][:id] = template.plugin.token

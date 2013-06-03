@@ -43,6 +43,39 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: addon_plan_settings; Type: TABLE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE TABLE addon_plan_settings (
+    id integer NOT NULL,
+    addon_plan_id integer NOT NULL,
+    app_plugin_id integer,
+    template text,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: addon_plan_settings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE addon_plan_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: addon_plan_settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE addon_plan_settings_id_seq OWNED BY addon_plan_settings.id;
+
+
+--
 -- Name: addon_plans; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
@@ -267,39 +300,6 @@ CREATE SEQUENCE app_plugins_id_seq
 --
 
 ALTER SEQUENCE app_plugins_id_seq OWNED BY app_plugins.id;
-
-
---
--- Name: app_settings_templates; Type: TABLE; Schema: public; Owner: -; Tablespace:
---
-
-CREATE TABLE app_settings_templates (
-    id integer NOT NULL,
-    addon_plan_id integer NOT NULL,
-    app_plugin_id integer,
-    template text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: app_settings_templates_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE app_settings_templates_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: app_settings_templates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE app_settings_templates_id_seq OWNED BY app_settings_templates.id;
 
 
 --
@@ -1229,6 +1229,13 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY addon_plan_settings ALTER COLUMN id SET DEFAULT nextval('addon_plan_settings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY addon_plans ALTER COLUMN id SET DEFAULT nextval('addon_plans_id_seq'::regclass);
 
 
@@ -1265,13 +1272,6 @@ ALTER TABLE ONLY app_components ALTER COLUMN id SET DEFAULT nextval('app_compone
 --
 
 ALTER TABLE ONLY app_plugins ALTER COLUMN id SET DEFAULT nextval('app_plugins_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY app_settings_templates ALTER COLUMN id SET DEFAULT nextval('app_settings_templates_id_seq'::regclass);
 
 
 --
@@ -1472,7 +1472,7 @@ ALTER TABLE ONLY app_plugins
 -- Name: app_settings_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
-ALTER TABLE ONLY app_settings_templates
+ALTER TABLE ONLY addon_plan_settings
     ADD CONSTRAINT app_settings_templates_pkey PRIMARY KEY (id);
 
 
@@ -1720,7 +1720,7 @@ CREATE INDEX index_app_plugins_on_design_id_and_addon_id ON app_plugins USING bt
 -- Name: index_app_settings_templates_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
-CREATE UNIQUE INDEX index_app_settings_templates_on_addon_plan_id_and_app_plugin_id ON app_settings_templates USING btree (addon_plan_id, app_plugin_id);
+CREATE UNIQUE INDEX index_app_settings_templates_on_addon_plan_id_and_app_plugin_id ON addon_plan_settings USING btree (addon_plan_id, app_plugin_id);
 
 
 --
@@ -2289,3 +2289,7 @@ INSERT INTO schema_migrations (version) VALUES ('20130422092535');
 INSERT INTO schema_migrations (version) VALUES ('20130528132850');
 
 INSERT INTO schema_migrations (version) VALUES ('20130528145752');
+
+INSERT INTO schema_migrations (version) VALUES ('20130529150013');
+
+INSERT INTO schema_migrations (version) VALUES ('20130531141047');

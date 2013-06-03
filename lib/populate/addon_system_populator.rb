@@ -1,9 +1,9 @@
 class AddonSystemPopulator < Populator
 
   def execute
-    PopulateHelpers.empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
+    PopulateHelpers.empty_tables(App::Component, App::ComponentVersion, App::Plugin, AddonPlanSettings, Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
-    [App::Component, App::ComponentVersion, Design, Addon, App::Plugin, AddonPlan, App::SettingsTemplate].each do |klass, new_records|
+    [App::Component, App::ComponentVersion, Design, Addon, App::Plugin, AddonPlan, AddonPlanSettings].each do |klass, new_records|
       seeds_method = klass.to_s.underscore.gsub('/', '_') + '_seeds'
       send(seeds_method).each do |attributes|
         attributes = attributes.call if attributes.respond_to?(:call)
@@ -227,7 +227,7 @@ class AddonSystemPopulator < Populator
     ]
   end
 
-  def app_settings_template_seeds
+  def addon_plan_settings_seeds
     [
       { addon_plan: AddonPlan.get('video_player', 'standard'),     plugin: App::Plugin.get('video_player')          },
 
