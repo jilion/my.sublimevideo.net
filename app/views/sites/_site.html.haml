@@ -5,29 +5,4 @@
     = render 'sites/td_hostname', site: site
     = render 'sites/td_usage', site: site
     = render 'sites/td_videos', site: site, assistant: assistant
-
-    %td.status{ data: { cdn_updated_at: cdn_updated_at(site) } }
-      .wrap
-        - if site.invoices_failed?
-          = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
-            %span.p= t 'site.status.payment_issue'
-        - elsif site.invoices_open?
-          = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
-            %span.p= t 'site.status.payment_open'
-        - elsif site.invoices_waiting?
-          = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
-            %span.p= t 'site.status.payment_waiting'
-        - elsif assistant.setup_done?
-          - if cdn_up_to_date?(site)
-            = tooltip_box class: "ok" do
-              %span.p= t 'site.status.ok'
-          - else
-            = tooltip_box class: "in_progress" do
-              %span.p= t 'site.status.in_progress'
-            .completed{ style: "display:none;" }
-              = tooltip_box class: "ok" do
-                %span.p= t 'site.status.ok'
-        - else
-          .finish
-            = link_to 'Finish setup', send(:"assistant_#{assistant.current_step}_url", site), class: 'finish_button'
-            %span.steps= "step #{assistant.current_step_number} of 5"
+    = render 'sites/td_status', site: site, assistant: assistant
