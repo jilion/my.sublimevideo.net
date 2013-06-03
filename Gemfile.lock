@@ -215,6 +215,9 @@ GEM
       railties (~> 3.0)
     diff-lcs (1.2.4)
     display_case (0.0.6)
+    dotenv (0.7.0)
+    dotenv-rails (0.7.0)
+      dotenv (= 0.7.0)
     eco (1.0.0)
       coffee-script
       eco-source
@@ -636,6 +639,7 @@ DEPENDENCIES
   devise-async
   devise_invitable
   display_case
+  dotenv-rails
   eco
   edge_cast
   em-http-request

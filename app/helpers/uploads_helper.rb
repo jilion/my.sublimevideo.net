@@ -49,14 +49,15 @@ module UploadsHelper
     Base64.encode64(
       OpenSSL::HMAC.digest(
       OpenSSL::Digest::Digest.new('sha1'),
-      S3Wrapper.send(:secret_access_key), s3_policy(options))).gsub("\n", '')
+      ENV['S3_SECRET_ACCESS_KEY'], s3_policy(options))
+    ).gsub("\n", '')
   end
 
   def upload_params(options = {})
     params = {}
     params[:key]                   = options[:s3_key]
     params[:Filename]              = options[:s3_key]
-    params[:AWSAccessKeyId]        = S3Wrapper.send(:access_key_id)
+    params[:AWSAccessKeyId]        = ENV['S3_ACCESS_KEY_ID']
     params[:acl]                   = options[:acl] || 'private'
     params[:success_action_status] = '201'
     params[:policy]                = s3_policy(options)

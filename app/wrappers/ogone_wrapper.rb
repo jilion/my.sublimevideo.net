@@ -1,15 +1,30 @@
 module OgoneWrapper
-  include Configurator
 
-  config_file 'ogone.yml'
-  config_accessor :login, :user, :password, :signature, :signature_out, :signature_encryptor, :created_after_10_may_2010, :currency, :status
+  STATUS = {
+    '46' => :waiting_3d_secure,
+    '5'  => :authorized,
+    '51' => :waiting,
+    '0'  => :invalid,
+    '2'  => :refused,
+    '1'  => :canceled,
+    '52' => :uncertain
+  }
 
   class << self
 
     %w[store void purchase refund].each do |method_name|
       define_method method_name do |*args|
-        Librato.increment "payment_gateway.#{method_name}", source: 'ogone'
-        gateway.send(method_name, *args)
+        begin
+          success = gateway.send(method_name, *args)
+          Librato.increment "payment_gateway.#{method_name}", source: 'ogone'
+          success
+        rescue ArgumentError => ex
+          Honeybadger.context(
+            method: method_name,
+            args: args
+          )
+          raise ex
+        end
       end
     end
 
@@ -21,19 +36,22 @@ module OgoneWrapper
         TRXDATE VC]
     end
 
+    def status
+      STATUS
+    end
+
   private
 
     def gateway
-      ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? ? :production : :test
       gateway_config = {
-        signature_encryptor: signature_encryptor,
-        created_after_10_may_2010: created_after_10_may_2010,
-        currency: currency,
-        login: login,
-        user: user,
-        password: password,
-        signature: signature,
-        signature_out: signature_out
+        signature_encryptor:       'sha512',
+        created_after_10_may_2010: true,
+        currency:                  'USD',
+        login:                     "#{ENV['OGONE_LOGIN']}",
+        user:                      "#{ENV['OGONE_USER']}",
+        password:                  "#{ENV['OGONE_PASSWORD']}",
+        signature:                 "#{ENV['OGONE_SIGNATURE']}",
+        signature_out:             "#{ENV['OGONE_SIGNATURE_OUT']}"
       }
       @gateway ||= ActiveMerchant::Billing::OgoneGateway.new(gateway_config)
     end
