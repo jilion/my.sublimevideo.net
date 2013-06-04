@@ -67,6 +67,7 @@ end
 #
 # Indexes
 #
-#  index_designs_on_name  (name) UNIQUE
+#  index_designs_on_name        (name) UNIQUE
+#  index_designs_on_skin_token  (skin_token) UNIQUE
 #
 
