@@ -57,7 +57,10 @@ FactoryGirl.define do
 
 
   factory :kit do
+    sequence(:identifier) { |n| n.to_s }
+    name                  { "Kit #{identifier}" }
     site
+    design
   end
 
 
@@ -73,9 +76,9 @@ FactoryGirl.define do
   end
 
   factory :referrer do
-    url   "http://bob.com"
+    url              "http://bob.com"
     sequence(:token) { |n| n }
-    hits  12
+    hits             12
   end
 
   # ===============

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Private API Users requests' do
   let!(:user1) { create(:user, updated_at: Time.utc(2013, 4, 25)) }
   let!(:user2) { create(:user, state: 'archived') }
+
   before do
     set_api_credentials
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'
