@@ -1,6 +1,6 @@
 # This example the following variables to be defined in its context:
 #  - url => the url to GET
-#  - expected_last_modified => the first expected 'Last-Modified'
+#  - expected_last_modified => the first expected 'Last-Modified' (unless the :cache_validation option is set to false)
 #  - update_record => a proc that when called should update a resource and
 #    thus, stale the next response
 #

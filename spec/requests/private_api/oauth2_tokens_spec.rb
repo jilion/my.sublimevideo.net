@@ -4,6 +4,7 @@ describe 'Private API Oauth2 tokens requests' do
   let!(:token1) { create(:oauth2_token) }
   let!(:token2) { create(:oauth2_token, invalidated_at: Time.now) }
   let!(:token3) { create(:oauth2_token).tap { |t| t.update_column(:authorized_at, nil) } }
+
   before do
     set_api_credentials
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'

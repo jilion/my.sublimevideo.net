@@ -102,6 +102,8 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                           DELETE   /app/components/:id(.:format)                             admin/app/components#destroy
                          private_api_user GET      /private_api/users/:id(.:format)                          private_api/users#show
                  add_tag_private_api_site PUT      /private_api/sites/:id/add_tag(.:format)                  private_api/sites#add_tag
+                  private_api_site_addons GET      /private_api/sites/:site_id/addons(.:format)              private_api/addons#index
+                    private_api_site_kits GET      /private_api/sites/:site_id/kits(.:format)                private_api/kits#index
                         private_api_sites GET      /private_api/sites(.:format)                              private_api/sites#index
                          private_api_site GET      /private_api/sites/:id(.:format)                          private_api/sites#show
                  private_api_oauth2_token GET      /private_api/oauth2_tokens/:id(.:format)                  private_api/oauth2_tokens#show

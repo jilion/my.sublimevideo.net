@@ -153,6 +153,9 @@ MySublimeVideo::Application.routes.draw do
         member do
           put :add_tag
         end
+
+        resources :addons, only: [:index]
+        resources :kits, only: [:index]
       end
       resources :oauth2_tokens, only: [:show]
       resources :referrers, only: [:index]
