@@ -9,7 +9,7 @@
     = "since #{display_time(user.confirmed_at)}"
   - unless user.confirmed?
     = "| Confirmation sent at: #{display_time(user.confirmation_sent_at)}"
-  = "| Zendesk ID: #{user.zendesk_id? ? link_to(user.zendesk_id, ZendeskWrapper.base_url + "/users/#{user.zendesk_id}") : "-"}".html_safe
+  = "| Zendesk ID: #{user.zendesk_id? ? link_to(user.zendesk_id, "#{ENV['ZENDESK_BASE_URL']}/users/#{user.zendesk_id}") : "-"}".html_safe
   = "| Newsletter: #{display_bool(user.newsletter)}"
   = "| Hidden notices: #{user.hidden_notice_ids.inspect}"
 

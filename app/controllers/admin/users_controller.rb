@@ -84,7 +84,7 @@ class Admin::UsersController < Admin::AdminController
   def new_support_request
     SupportRequestManager.create_zendesk_user(@user)
 
-    redirect_to ZendeskWrapper.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
+    redirect_to ENV['ZENDESK_BASE_URL'] + "/tickets/new?requester_id=#{@user.zendesk_id}"
   end
 
   # DELETE /users/:id/oauth_revoke

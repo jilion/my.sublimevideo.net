@@ -1,8 +1,4 @@
 module ZendeskWrapper
-  include Configurator
-
-  config_file 'zendesk.yml'
-  config_accessor :base_url, :api_url, :username, :api_token
 
   class << self
 
@@ -60,9 +56,9 @@ module ZendeskWrapper
 
     def client
       @client ||= ZendeskAPI::Client.new do |config|
-        config.url      = self.api_url
-        config.username = "#{self.username}/token"
-        config.password = self.api_token
+        config.url      = ENV['ZENDESK_API_URL']
+        config.username = "#{ENV['ZENDESK_USERNAME']}/token"
+        config.password = ENV['ZENDESK_API_TOKEN']
 
         # Retry uses middleware to notify the user
         # when hitting the rate limit, sleep automatically,

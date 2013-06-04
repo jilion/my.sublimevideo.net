@@ -325,10 +325,7 @@ class User < ActiveRecord::Base
     return unless newsletter?
 
     if email_changed? || name_changed?
-      NewsletterSubscriptionManager.delay.update(self.id, {
-        email: email_was || email,
-        user: { email: email, name: name, newsletter: newsletter? }
-      })
+      NewsletterSubscriptionManager.delay.update(self.id, email_was || email)
     end
   end
 
