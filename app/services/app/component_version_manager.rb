@@ -8,7 +8,7 @@ module App
 
     def create
       component_version.save!
-      if component_version.name == 'app'
+      if ['app', 'main'].include? component_version.name
         LoaderGenerator.delay(queue: 'high').update_all_dependant_sites(component_version.component_id, component_version.stage)
         CampfireWrapper.delay.post("#{campfire_message} released")
       end
