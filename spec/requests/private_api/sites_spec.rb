@@ -4,6 +4,7 @@ describe 'Private API Sites requests' do
   let!(:site1) { create(:site, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)).tap { |s| s.tag_list << 'adult'; s.save! } }
   let!(:site2) { create(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)) }
   let!(:site3) { create(:site, created_at: 2.days.ago, state: 'archived') }
+
   before do
     set_api_credentials
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'

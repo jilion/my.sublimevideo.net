@@ -17,6 +17,7 @@ gem 'mongoid'
 
 # Views
 gem 'haml'
+gem 'rabl'
 gem 'coffee-rails'
 gem 'kaminari'
 gem 'liquid'

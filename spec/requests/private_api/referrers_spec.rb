@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Private API Referrers requests' do
   let!(:referrer1) { create(:referrer) }
   let!(:referrer2) { create(:referrer) }
+
   before do
     set_api_credentials
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'
