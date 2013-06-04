@@ -338,15 +338,15 @@ describe LoaderGenerator, :fog_mock do
         let(:s3_object) { S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js") }
 
         it "includes app version" do
-          s3_object.body.should include "version:'1.0.0'"
+          s3_object.body.should include "version:\"1.0.0\""
         end
 
         it "includes site token" do
-          s3_object.body.should include "token:'#{site.token}'"
+          s3_object.body.should include "token:\"#{site.token}\""
         end
 
         it "includes sublinevideo host" do
-          s3_object.body.should include "host:'//cdn.sublimevideo.net'"
+          s3_object.body.should include "host:\"//cdn.sublimevideo.net\""
         end
 
         it "includes components versions" do
