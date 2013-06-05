@@ -8,14 +8,6 @@ require 'wrappers/campfire_wrapper'
 
 describe CampfireWrapper do
 
-  describe "Class methods" do
-    subject { CampfireWrapper }
-
-    its(:subdomain) { should eq 'jilion' }
-    its(:api_token) { should eq '902e80d1986be4138f3092d10ee67d468c96d9bf' }
-    its(:default_room) { should eq 'SV Dev' }
-  end
-
   describe "#room" do
     use_vcr_cassette "campfire/room"
 

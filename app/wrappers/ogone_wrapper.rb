@@ -40,7 +40,7 @@ module OgoneWrapper
       STATUS
     end
 
-  private
+    private
 
     def gateway
       gateway_config = {
