@@ -20,10 +20,10 @@ describe 'Private API Add-ons requests' do
     end
 
     context 'non existing site' do
-      it 'raise an ActiveRecord::RecordNotFound' do
+      it 'returns 404' do
         get 'private_api/sites/42/addons.json', {}, @env
         response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Site with token 42 could not be found.' })
+        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
       end
     end
 

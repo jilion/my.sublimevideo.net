@@ -47,9 +47,6 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   def _find_site_by_token!
     @site = apply_scopes(_base_scopes).find_by_token!(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    body = { error: "Site with token #{params[:id]} could not be found." }
-    render request.format.ref => body, status: 404
   end
 
   def _base_scopes

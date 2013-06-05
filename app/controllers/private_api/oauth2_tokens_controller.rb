@@ -11,8 +11,5 @@ class PrivateApi::Oauth2TokensController < SublimeVideoPrivateApiController
 
   def _find_oauth2_token_by_token!
     @oauth2_token = Oauth2Token.valid.find_by_token!(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    body = { error: "OAuth token #{params[:id]} could not be found." }
-    render request.format.ref => body, status: 404
   end
 end
