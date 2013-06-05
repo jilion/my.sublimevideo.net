@@ -13,7 +13,7 @@ module UploadsHelper
   #                     _signature: s3_signature(path: options[:uploaded_files_path]) }.to_query
 
   #   content_tag :iframe, '',
-  #               src: "https://s3.amazonaws.com/#{S3Wrapper.buckets['videos_upload']}/#{options[:uploader_path]}?#{upload_params}",
+  #               src: "https://s3.amazonaws.com/#{S3Wrapper.buckets[:videos_upload]}/#{options[:uploader_path]}?#{upload_params}",
   #               frameborder: 0,
   #               height: options[:iframe_height] || 60,
   #               width: options[:iframe_width] || 500,

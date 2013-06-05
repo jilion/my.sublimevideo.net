@@ -22,16 +22,16 @@ class App::ComponentVersionZipContentUploader
 
   def remove_zip_content
     S3Wrapper.fog_connection.directories.get(
-      S3Wrapper.buckets['sublimevideo'],
+      S3Wrapper.buckets[:sublimevideo],
       prefix: upload_path.to_s
     ).files.each { |file| file.destroy }
   end
 
-private
+  private
 
   def put_object(object_name, data, options = {})
     S3Wrapper.fog_connection.put_object(
-      S3Wrapper.buckets['sublimevideo'],
+      S3Wrapper.buckets[:sublimevideo],
       object_name,
       data,
       options

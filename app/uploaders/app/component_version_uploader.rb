@@ -7,7 +7,7 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   before :remove, :remove_zip_content
 
   def fog_directory
-    S3Wrapper.buckets['player']
+    S3Wrapper.buckets[:player]
   end
 
   def fog_public

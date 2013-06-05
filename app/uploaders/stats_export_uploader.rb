@@ -5,7 +5,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
   process :compress
 
   def fog_directory
-    S3Wrapper.buckets['stats_exports']
+    S3Wrapper.buckets[:stats_exports]
   end
 
   def secure_url(*args)

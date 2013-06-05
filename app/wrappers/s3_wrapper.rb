@@ -1,3 +1,5 @@
+require 'active_support/core_ext'
+
 module S3Wrapper
 
   BUCKETS = {
@@ -30,15 +32,12 @@ module S3Wrapper
   class << self
 
     def buckets
-      @@buckets ||= begin
-        h = case Rails.env
-            when 'development', 'test'
-              BUCKETS['development']
-            else
-              BUCKETS[Rails.env]
-            end
-        HashWithIndifferentAccess.new(h)
-      end
+      @@_buckets ||= case Rails.env
+                     when 'development', 'test'
+                       BUCKETS['development']
+                     else
+                       BUCKETS[Rails.env]
+                     end
     end
 
     def bucket_url(bucket)
