@@ -42,7 +42,7 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
 
   expectedMimeType: ->
     switch this.extension()
-      when 'mp4', 'm4v'
+      when 'mp4', 'm4v', 'mov'
         'video/mp4'
       when 'webm'
         'video/webm'

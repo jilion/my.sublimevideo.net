@@ -65,8 +65,8 @@ describe 'Source, Sources', ->
 
       it 'returns the current mime type for unknown file', ->
         @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.mov')
-        @source.set(currentMimeType: 'video/quicktime')
-        expect(@source.expectedMimeType()).toEqual('video/quicktime')
+        @source.set(currentMimeType: 'video/mp4')
+        expect(@source.expectedMimeType()).toEqual('video/mp4')
 
     describe 'validMimeType()', ->
       it 'returns true if currentMimeType is empty', ->
