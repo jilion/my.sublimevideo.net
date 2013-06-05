@@ -56,11 +56,15 @@ class SettingsGenerator
     end
   end
 
-  def kits(with_modules = false)
+  def kits(with_module = false)
     site.kits.includes(:design).order(:identifier).reduce({}) do |hash, kit|
       hash[kit.identifier] = {}
-      hash[kit.identifier][:skin] = { id: kit.skin_token }
-      hash[kit.identifier][:plugins] = _kits_plugins(kit, nil, with_modules)
+      hash[kit.identifier][:skin] = if with_module
+        { module: kit.skin_mod }
+      else
+        { id: kit.skin_token }
+      end
+      hash[kit.identifier][:plugins] = _kits_plugins(kit, nil, with_module)
       hash
     end
   end
@@ -105,12 +109,12 @@ private
     end
   end
 
-  def _kits_plugins(kit, parent_addon_id, with_modules)
+  def _kits_plugins(kit, parent_addon_id, with_module)
     addon_plans = _addon_plans_with_plugins(kit).select { |ap| ap.addon.parent_addon_id == parent_addon_id }
     addon_plans.reduce({}) do |hash, addon_plan|
       hash[addon_plan.kind] = {}
 
-      unless (plugins = _kits_plugins(kit, addon_plan.addon_id, with_modules)).empty?
+      unless (plugins = _kits_plugins(kit, addon_plan.addon_id, with_module)).empty?
         hash[addon_plan.kind][:plugins] = plugins
       end
 
@@ -118,7 +122,7 @@ private
         hash[addon_plan.kind][:settings] = _addon_plan_settings(template.template, kit.settings[addon_plan.addon_name])
         hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template.template)
         hash[addon_plan.kind][:id] = template.plugin.token
-        hash[addon_plan.kind][:module] = template.plugin.mod if with_modules
+        hash[addon_plan.kind][:module] = template.plugin.mod if with_module
         unless (condition = template.plugin.condition).empty?
           hash[addon_plan.kind][:condition] = condition
         end
