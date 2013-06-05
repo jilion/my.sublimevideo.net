@@ -187,8 +187,8 @@ describe SettingsGenerator, :fog_mock do
       } }
       let(:design1) { mock(Design) }
       let(:design2) { mock(Design) }
-      let(:kit1) { mock(Kit, id: 1, identifier: '1', design_id: 1, design: design1, skin_token: 'skin_token1', settings: kit_settings1) }
-      let(:kit2) { mock(Kit, id: 2, identifier: '2', design_id: 2, design: design2, skin_token: 'skin_token2', settings: kit_settings2) }
+      let(:kit1) { mock(Kit, id: 1, identifier: '1', design_id: 1, design: design1, skin_token: 'skin_token1', skin_mod: 'foo/bar', settings: kit_settings1) }
+      let(:kit2) { mock(Kit, id: 2, identifier: '2', design_id: 2, design: design2, skin_token: 'skin_token2', skin_mod: 'foo/bar2', settings: kit_settings2) }
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
@@ -277,7 +277,7 @@ describe SettingsGenerator, :fog_mock do
       it "includes template of this addon_plan addon_plan_settings with the plugin's modules" do
         settings.kits(true).should eq({
           "1" => {
-            skin: { id: "skin_token1" },
+            skin: { module: 'foo/bar' },
             plugins: {
               "addon_kind1" => {
                 plugins: {
@@ -306,7 +306,7 @@ describe SettingsGenerator, :fog_mock do
             }
           },
           "2" => {
-            skin: { id: "skin_token2" },
+            skin: { module: 'foo/bar2' },
             plugins: {
               "addon_kind1" => {
                 plugins: {

@@ -42,6 +42,7 @@ end
 #  name             :string(255)      not null
 #  price            :integer          not null
 #  required_stage   :string(255)      default("stable"), not null
+#  skin_mod         :string(255)
 #  skin_token       :string(255)      not null
 #  stable_at        :datetime
 #  updated_at       :datetime         not null

@@ -7,7 +7,7 @@ class Kit < ActiveRecord::Base
   belongs_to :site
   belongs_to :design
 
-  delegate :skin_token, to: :design
+  delegate :skin_token, :skin_mod, to: :design
   delegate :kind, to: :addon
 
   validates :site, :design, :name, :identifier, presence: true

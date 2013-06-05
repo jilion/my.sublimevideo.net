@@ -374,7 +374,7 @@ describe SettingsGenerator, :addons do
               kits: {
               "1": {
               "skin": {
-              "id":"sa.sb.sc"},
+              "module":"sublime/sublime_skin"},
               "plugins": {
               "videoPlayer": {
               "plugins": {

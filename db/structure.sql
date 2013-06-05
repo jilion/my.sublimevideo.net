@@ -492,7 +492,8 @@ CREATE TABLE designs (
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     stable_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    skin_mod character varying(255)
 );
 
 
@@ -2300,3 +2301,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130528145752');
 INSERT INTO schema_migrations (version) VALUES ('20130531141047');
 
 INSERT INTO schema_migrations (version) VALUES ('20130603122845');
+
+INSERT INTO schema_migrations (version) VALUES ('20130605081105');
