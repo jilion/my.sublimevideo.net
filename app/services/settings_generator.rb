@@ -9,6 +9,7 @@ require 'cdn_file'
 
 # services
 require 'player_mangler'
+require 'settings_formatter'
 
 class SettingsGenerator
   attr_reader :site, :options
@@ -73,8 +74,14 @@ class SettingsGenerator
     site.default_kit.identifier
   end
 
+  # @deprecated
+  #
   def mangle(hash)
     PlayerMangler.mangle(hash)
+  end
+
+  def format(hash)
+    SettingsFormatter.format(hash)
   end
 
   def upload!

@@ -1,3 +1,4 @@
+require 'active_support/core_ext'
 require 'multi_json'
 
 class PlayerMangler

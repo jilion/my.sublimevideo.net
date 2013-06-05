@@ -1,11 +1,10 @@
 require 'fast_spec_helper'
-require 'active_support/core_ext'
 
 require 'services/player_mangler'
 
 describe PlayerMangler do
 
-  describe ".mangle" do
+  describe '.mangle' do
     it "mangles hash symbol key" do
       PlayerMangler.mangle(plugins: 'foo').should eq({
         "ka" => "foo"
@@ -44,9 +43,9 @@ describe PlayerMangler do
     end
   end
 
-  describe ".mangle_key" do
-    it "mangles key" do
-      PlayerMangler.mangle_key(:plugins).should eq('ka')
+  describe '#mangle_key' do
+    it 'mangles key' do
+      PlayerMangler.new.mangle_key(:plugins).should eq('ka')
     end
   end
 
