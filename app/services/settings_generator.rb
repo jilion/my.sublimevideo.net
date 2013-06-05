@@ -59,7 +59,11 @@ class SettingsGenerator
   def kits(with_modules = false)
     site.kits.includes(:design).order(:identifier).reduce({}) do |hash, kit|
       hash[kit.identifier] = {}
-      hash[kit.identifier][:skin] = { id: kit.skin_token }
+      hash[kit.identifier][:skin] = {}
+      hash[kit.identifier][:skin][:id] = kit.skin_token
+      if with_modules
+        hash[kit.identifier][:skin][:module] = kit.skin_mod
+      end
       hash[kit.identifier][:plugins] = _kits_plugins(kit, nil, with_modules)
       hash
     end

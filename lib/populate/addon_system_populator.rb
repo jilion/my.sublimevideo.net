@@ -51,21 +51,21 @@ class AddonSystemPopulator < Populator
 
   def design_seeds
     [
-      { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
-      { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
-      { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
-      { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('twit')     },
-      { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('html5')    },
-      { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('sony')     },
-      { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('svnet')    },
-      { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('anthony')  },
-      { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('next15')   },
-      { name: 'df',       skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
-      { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') },
+      { name: 'classic',  skin_mod: 'sublime/sublime_skin', skin_token: 'sa.sb.sc',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'flat',     skin_mod: 'players/flat/flat_skin', skin_token: 'sa.sd.sd',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'light',    skin_mod: 'players/light/light_skin', skin_token: 'sa.se.se',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
+      { name: 'twit',     skin_mod: 'players/twit/twit_skin', skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('twit')     },
+      { name: 'html5',    skin_mod: 'players/html5/html5_skin', skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('html5')    },
+      { name: 'sony',     skin_mod: 'players/sony/sony_skin', skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('sony')     },
+      { name: 'svnet',    skin_mod: 'sublime/sublime_skin', skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('svnet')    },
+      { name: 'anthony',  skin_mod: 'players/anthony/anthony_skin', skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('anthony')  },
+      { name: 'next15',   skin_mod: 'players/next15/next15_skin', skin_token: 'aba.aba.aba', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('next15')   },
+      { name: 'df',       skin_mod: 'players/df/df_skin', skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
+      { name: 'blizzard', skin_mod: 'players/blizzard/blizzard_skin', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') },
 
-      { name: 'daily',  skin_token: 'aha.aha.aha', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('daily') },
-      { name: 'psg',    skin_token: 'aja.aja.aja', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('psg') },
-      { name: 'orange', skin_token: 'aia.aia.aia', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('orange') }
+      { name: 'daily',    skin_mod: 'players/daily/daily_skin', skin_token: 'aha.aha.aha', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('daily') },
+      { name: 'psg',      skin_mod: 'players/psg/psg_skin', skin_token: 'aja.aja.aja', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('psg') },
+      { name: 'orange',   skin_mod: 'players/orange/orange_skin', skin_token: 'aia.aia.aia', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('orange') }
     ]
   end
 
