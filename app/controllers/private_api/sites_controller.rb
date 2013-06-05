@@ -18,9 +18,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   # GET /private_api/sites/:id
   def show
     expires_in 2.minutes
-    if stale?(@site)
-      respond_with(@site)
-    end
+    respond_with(@site) if stale?(@site)
   end
 
   # PUT /private_api/sites/:id/add_tag
@@ -37,7 +35,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
     unless present_params_keys.size == param_keys.size
       body = { error: "Missing #{_list_of_params_as_string(param_keys - present_params_keys)} parameters." }
-      render(json: body, status: 400) and return
+      render request.format.ref => body, status: 400
     end
   end
 
@@ -49,6 +47,9 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   def _find_site_by_token!
     @site = apply_scopes(_base_scopes).find_by_token!(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    body = { error: "Site with token #{params[:id]} could not be found." }
+    render request.format.ref => body, status: 404
   end
 
   def _base_scopes

@@ -19,6 +19,14 @@ describe 'Private API Kits requests' do
       end
     end
 
+    context 'non existing site' do
+      it 'raise an ActiveRecord::RecordNotFound' do
+        get 'private_api/sites/42/addons.json', {}, @env
+        response.status.should eq 404
+        MultiJson.load(response.body).should eq({ 'error' => 'Site with token 42 could not be found.' })
+      end
+    end
+
     it 'supports :per scope' do
       get "private_api/sites/#{site.to_param}/kits.json", { per: 2 }, @env
       body = MultiJson.load(response.body)

@@ -93,7 +93,9 @@ describe 'Private API Sites requests' do
 
     context 'non existing site' do
       it 'raise an ActiveRecord::RecordNotFound' do
-        expect { get 'private_api/sites/42.json', {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
+        get 'private_api/sites/42.json', {}, @env
+        response.status.should eq 404
+        MultiJson.load(response.body).should eq({ 'error' => 'Site with token 42 could not be found.' })
       end
     end
 
@@ -116,7 +118,9 @@ describe 'Private API Sites requests' do
 
     context 'site do not belong to given user' do
       it 'supports :user_id scope' do
-        expect { get "private_api/sites/#{site1.token}.json", { user_id: site2.user_id }, @env }.to raise_error(ActiveRecord::RecordNotFound)
+        get "private_api/sites/#{site1.token}.json", { user_id: site2.user_id }, @env
+        response.status.should eq 404
+        MultiJson.load(response.body).should eq({ 'error' => "Site with token #{site1.token} could not be found." })
       end
     end
   end

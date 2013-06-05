@@ -21,17 +21,25 @@ describe 'Private API Oauth2 tokens requests' do
 
     context 'non existing Oauth2 token' do
       it 'raises an ActiveRecord::RecordNotFound' do
-        expect { get 'private_api/oauth2_tokens/42.json', {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
+        get 'private_api/oauth2_tokens/42.json', {}, @env
+        response.status.should eq 404
+        MultiJson.load(response.body).should eq({ 'error' => 'OAuth token 42 could not be found.' })
       end
     end
 
-    context 'invalid token' do
+    context 'invalidated token' do
       it 'raises an ActiveRecord::RecordNotFound' do
-        expect { get "private_api/oauth2_tokens/#{token2.token}.json", {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
+        get "private_api/oauth2_tokens/#{token2.token}.json", {}, @env
+        response.status.should eq 404
+        MultiJson.load(response.body).should eq({ 'error' => "OAuth token #{token2.token} could not be found." })
       end
+    end
 
+    context 'unauthorized token' do
       it 'raises an ActiveRecord::RecordNotFound' do
-        expect { get "private_api/oauth2_tokens/#{token3.token}.json", {}, @env }.to raise_error(ActiveRecord::RecordNotFound)
+        get "private_api/oauth2_tokens/#{token3.token}.json", {}, @env
+        response.status.should eq 404
+        MultiJson.load(response.body).should eq({ 'error' => "OAuth token #{token3.token} could not be found." })
       end
     end
 
