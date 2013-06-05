@@ -359,14 +359,14 @@ describe SettingsGenerator, :addons do
               i= {
               license: {
               "hosts":["test.com"],
-              "staging_hosts":[],
-              "dev_hosts":["127.0.0.1","localhost"],
+              "stagingHosts":[],
+              "devHosts":["127.0.0.1","localhost"],
               "path":null,"wildcard":null,"stage":"beta"},
               app: {
               "stats": {
               "settings": {
               "enable":true,"realtime":false},
-              "allowed_settings": {
+              "allowedSettings": {
               "enable": {
               "values":[true]},
               "realtime": {
@@ -380,8 +380,8 @@ describe SettingsGenerator, :addons do
               "plugins": {
               "logo": {
               "settings": {
-              "enable":true,"type":"sv","visibility":"autohide","position":"bottom-right","image_url":"","link_url":null},
-              "allowed_settings": {
+              "enable":true,"type":"sv","visibility":"autohide","position":"bottom-right","imageUrl":"","linkUrl":null},
+              "allowedSettings": {
               "enable": {
               "values":[true]},
               "type": {
@@ -390,15 +390,15 @@ describe SettingsGenerator, :addons do
               "values":["autohide","visible"]},
               "position": {
               "values":["bottom-right"]},
-              "image_url": {
+              "imageUrl": {
               },
-              "link_url": {
+              "linkUrl": {
               }},
               "id":"sa.sh.sp","module":"sublime/video/plugins/logo/logo"},
               "controls": {
               "settings": {
               "enable":true,"visibility":"autohide"},
-              "allowed_settings": {
+              "allowedSettings": {
               "enable": {
               "values":[true,false]},
               "visibility": {
@@ -406,19 +406,19 @@ describe SettingsGenerator, :addons do
               "id":"sa.sh.sq","module":"sublime/video/plugins/controls/controls"},
               "initial": {
               "settings": {
-              "overlay_enable":true,"overlay_visibility":"autofade","overlay_color":"#000"},
-              "allowed_settings": {
-              "overlay_enable": {
+              "overlayEnable":true,"overlayVisibility":"autofade","overlayColor":"#000"},
+              "allowedSettings": {
+              "overlayEnable": {
               "values":[true,false]},
-              "overlay_visibility": {
+              "overlayVisibility": {
               "values":["autofade","visible"]},
-              "overlay_color": {
+              "overlayColor": {
               "values":["#000"]}},
               "id":"sa.sh.sv","module":"sublime/video/plugins/poster/start_controller"},
               "embed": {
               "settings": {
               "enable":true,"type":"manual","size":"640"},
-              "allowed_settings": {
+              "allowedSettings": {
               "enable": {
               "values":[true,false]},
               "type": {
@@ -427,38 +427,38 @@ describe SettingsGenerator, :addons do
               }},
               "id":"sa.sh.ub","module":"sublime/video/plugins/embed/embed"}},
               "settings": {
-              "volume_enable":true,"fullmode_enable":true,"fullmode_priority":"screen","on_end":"nothing"},
-              "allowed_settings": {
-              "volume_enable": {
+              "volumeEnable":true,"fullmodeEnable":true,"fullmodePriority":"screen","onEnd":"nothing"},
+              "allowedSettings": {
+              "volumeEnable": {
               "values":[true,false]},
-              "fullmode_enable": {
+              "fullmodeEnable": {
               "values":[true,false]},
-              "fullmode_priority": {
+              "fullmodePriority": {
               "values":["screen","window"]},
-              "on_end": {
+              "onEnd": {
               "values":["nothing","replay","stop"]}},
               "id":"sa.sh.si","module":"sublime/video/video_app_plugin"},
               "lightbox": {
               "settings": {
-              "on_open":"play","overlay_color":"#000","overlay_opacity":0.7,"close_button_enable":true,"close_button_visibility":"autohide","close_button_position":"left"},
-              "allowed_settings": {
-              "on_open": {
+              "onOpen":"play","overlayColor":"#000","overlayOpacity":0.7,"closeButtonEnable":true,"closeButtonVisibility":"autohide","closeButtonPosition":"left"},
+              "allowedSettings": {
+              "onOpen": {
               "values":["nothing","play"]},
-              "overlay_color": {
+              "overlayColor": {
               "values":["#000"]},
-              "overlay_opacity": {
+              "overlayOpacity": {
               "range":[0.1,1]},
-              "close_button_enable": {
+              "closeButtonEnable": {
               "values":[true,false]},
-              "close_button_visibility": {
+              "closeButtonVisibility": {
               "values":["autohide","visible"]},
-              "close_button_position": {
+              "closeButtonPosition": {
               "values":["left","right"]}},
               "id":"sa.sl.sm","module":"sublime/lightbox/lightbox_app_plugin"},
               "imageViewer": {
               "settings": {
               },
-              "allowed_settings": {
+              "allowedSettings": {
               },
               "id":"sa.sn.so","module":"sublime/image/image_app_plugin"}}}},
               defaultKit:"1"},
