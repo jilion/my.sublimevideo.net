@@ -1,57 +1,74 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
     body: Operation=SAL&CN=John+Doe&orderID=4ac1422ef5518f7d1bde6b74ccd647&amount=10000&CVC=111&USERID=sublime&CARDNO=5399999999999999&PSWD=WWQMNC89&currency=USD&ED=1011&PSPID=jilion
-    headers: 
-      accept: 
-      - "*/*"
-      content-type: 
+    headers:
+      accept:
+      - ! '*/*'
+      content-type:
       - application/x-www-form-urlencoded
-      connection: 
+      connection:
       - close
-      content-length: 
-      - "172"
-      host: 
+      content-length:
+      - '172'
+      host:
       - secure.ogone.com
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      x-powered-by: 
+    headers:
+      x-powered-by:
       - ASP.NET
-      connection: 
+      connection:
       - close
-      content-type: 
+      content-type:
       - text/html
-      date: 
+      date:
       - Mon, 14 Jun 2010 08:31:13 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      content-length: 
-      - "324"
-      cache-control: 
+      content-length:
+      - '324'
+      cache-control:
       - private
-    body: |-
-      <?xml version="1.0"?><ncresponse
+    body: ! '<?xml version="1.0"?><ncresponse
+
       orderID="4ac1422ef5518f7d1bde6b74ccd647"
+
       PAYID="7495629"
+
       NCSTATUS="0"
+
       NCERROR="0"
+
       NCERRORPLUS="!"
+
       ACCEPTANCE="test123"
+
       STATUS="9"
+
       IPCTY="99"
+
       CCCTY="US"
+
       ECI="7"
+
       CVCCheck="NO"
+
       AAVCheck="NO"
+
       VC="NO"
+
       amount="100"
+
       currency="USD"
+
       PM="CreditCard"
+
       BRAND="MasterCard">
-      </ncresponse>
-    http_version: "1.1"
+
+      </ncresponse>'
+    http_version: '1.1'

@@ -1,3 +1,5 @@
+require 'tinder'
+
 class CampfireWrapper
 
   attr_reader :room
@@ -11,7 +13,7 @@ class CampfireWrapper
   end
 
   def self.post(message, options = {})
-    return unless Rails.env.in?(%w[staging production])
+    return unless %w[staging production].include?(Rails.env)
 
     wrapper = new(options[:room])
     message = "[STAGING] #{message}" if Rails.env == 'staging'

@@ -1,3 +1,5 @@
+require 'edge_cast'
+
 class EdgeCastWrapper
 
   attr_reader :path

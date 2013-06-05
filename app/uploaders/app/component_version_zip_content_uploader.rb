@@ -1,3 +1,7 @@
+require 'app'
+require 's3_wrapper'
+require 'file_header_analyzer'
+
 class App::ComponentVersionZipContentUploader
   attr_reader :upload_path
 

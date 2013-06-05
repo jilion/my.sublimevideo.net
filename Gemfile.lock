@@ -7,13 +7,6 @@ GIT
       thor (~> 0.14)
 
 GIT
-  remote: git://github.com/jilion/configurator.git
-  revision: 3a8df3f51dea0e414bc9cd86fea1f85b1a30745a
-  specs:
-    configurator (1.0.0)
-      activesupport (>= 3.2.12)
-
-GIT
   remote: git://github.com/jilion/premailer-rails.git
   revision: 2903e08143415b09eedbd15002382ffd4fdfaf57
   branch: regru-premailer-dependency
@@ -628,7 +621,6 @@ DEPENDENCIES
   chosen-rails!
   cocaine
   coffee-rails
-  configurator!
   countries
   crack
   createsend (~> 2.5)

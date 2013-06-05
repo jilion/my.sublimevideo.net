@@ -1,3 +1,5 @@
+require 'createsend'
+
 class CampaignMonitorWrapper
 
   LIST = {
@@ -28,35 +30,35 @@ class CampaignMonitorWrapper
   end
 
   def subscribe(params = {})
-    custom_params = self.class._build_custom_params(segment: CampaignMonitorWrapper.list[:segment], user_id: params[:id], beta: params[:beta], billable: params[:billable])
+    custom_params = self.class._build_custom_params(segment: self.class.list[:segment], user_id: params[:id], beta: params[:beta], billable: params[:billable])
 
     _request('subscribe') do
-      CreateSend::Subscriber.add(CampaignMonitorWrapper.list[:list_id], params[:email], params[:name], custom_params, true)
+      CreateSend::Subscriber.add(self.class.list[:list_id], params[:email], params[:name], custom_params, true)
     end
   end
 
   def import(users = {})
     subscribers = users.reduce([]) do |memo, user|
-      custom_params = self.class._build_custom_params(segment: CampaignMonitorWrapper.list[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
+      custom_params = self.class._build_custom_params(segment: self.class.list[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
 
       memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
     end
 
     _request('import') do
-      CreateSend::Subscriber.import(CampaignMonitorWrapper.list[:list_id], subscribers, false)
+      CreateSend::Subscriber.import(self.class.list[:list_id], subscribers, false)
     end
   end
 
   def unsubscribe(email)
     _request('unsubscribe') do
-      CreateSend::Subscriber.new(CampaignMonitorWrapper.list[:list_id], email).unsubscribe
+      CreateSend::Subscriber.new(self.class.list[:list_id], email).unsubscribe
       true
     end
   end
 
   def update(params = {})
     _request('update') do
-      if subscriber = CreateSend::Subscriber.new(CampaignMonitorWrapper.list[:list_id], params.delete(:old_email))
+      if subscriber = CreateSend::Subscriber.new(self.class.list[:list_id], params.delete(:old_email))
         subscriber.update(params[:email], params[:name], [], params[:newsletter])
       end
     end
@@ -64,7 +66,7 @@ class CampaignMonitorWrapper
 
   def subscriber(email)
     _request('subscriber_lookup') do
-      CreateSend::Subscriber.get(CampaignMonitorWrapper.list[:list_id], email)
+      CreateSend::Subscriber.get(self.class.list[:list_id], email)
     end
   end
 

@@ -1,6 +1,4 @@
 require 'fast_spec_helper'
-require 'configurator'
-require 'createsend'
 require 'config/vcr'
 require 'ostruct'
 
@@ -8,14 +6,14 @@ require 'wrappers/campaign_monitor_wrapper'
 
 describe CampaignMonitorWrapper do
 
-  specify { ENV['CAMPAIGN_MONITOR_API_KEY'].should eq "8844ec1803ffbe6501c3d7e9cfa23bf3" }
-  specify { CampaignMonitorWrapper.list[:list_id].should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
-  specify { CampaignMonitorWrapper.list[:segment].should eq "test" }
+  specify { ENV['CAMPAIGN_MONITOR_API_KEY'].should eq '8844ec1803ffbe6501c3d7e9cfa23bf3' }
+  specify { described_class.list[:list_id].should eq 'a064dfc4b8ccd774252a2e9c9deb9244' }
+  specify { described_class.list[:segment].should eq 'test' }
 
-  before {
+  before do
     described_class.stub(_log_bad_request: true)
     Librato.stub(:increment)
-  }
+  end
 
   let(:subscribe_user) { OpenStruct.new(id: 12, beta: true, newsletter?: true, email: 'user_subscribe3@example.org', name: 'User Subscribe') }
 
@@ -24,8 +22,8 @@ describe CampaignMonitorWrapper do
     it 'subscribes a user' do
       subscriber = VCR.use_cassette 'campaign_monitor_wrapper/subscribe' do
         described_class.subscribe(
-          list_id: CampaignMonitorWrapper.list[:list_id],
-          segment: CampaignMonitorWrapper.list[:segment],
+          list_id: described_class.list[:list_id],
+          segment: described_class.list[:segment],
           user: { id: subscribe_user.id, email: subscribe_user.email, name: subscribe_user.name, beta: subscribe_user.beta }
         ).should be_true
       end
@@ -45,20 +43,20 @@ describe CampaignMonitorWrapper do
       ]).should be_true
 
       # user 1
-      subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.list[:list_id], user1.email)
+      subscriber = CreateSend::Subscriber.get(described_class.list[:list_id], user1.email)
       subscriber['EmailAddress'].should eq user1.email
       subscriber['Name'].should         eq user1.name
       subscriber['State'].should        eq 'Active'
-      subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.list[:segment]
+      subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq described_class.list[:segment]
       subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq '13'
       subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq 'true'
       subscriber['CustomFields'].find { |h| h.values.include?('billable') }['Value'].should eq 'false'
       # user 2
-      subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.list[:list_id], user2.email)
+      subscriber = CreateSend::Subscriber.get(described_class.list[:list_id], user2.email)
       subscriber['EmailAddress'].should eq user2.email
       subscriber['Name'].should         eq user2.name
       subscriber['State'].should        eq 'Active'
-      subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.list[:segment]
+      subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq described_class.list[:segment]
       subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq '14'
       subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq 'false'
       subscriber['CustomFields'].find { |h| h.values.include?('billable') }['Value'].should eq 'true'
@@ -72,15 +70,15 @@ describe CampaignMonitorWrapper do
 
     before do
       described_class.subscribe(
-        list_id: CampaignMonitorWrapper.list[:list_id],
-        segment: CampaignMonitorWrapper.list[:segment],
+        list_id: described_class.list[:list_id],
+        segment: described_class.list[:segment],
         user: { id: user.id, email: user.email, name: user.name }
       ).should be_true
     end
 
     it 'should unsubscribe an existing subscribed user' do
       described_class.unsubscribe(
-        list_id: CampaignMonitorWrapper.list[:list_id],
+        list_id: described_class.list[:list_id],
         email: user.email
       ).should be_true
 
@@ -94,12 +92,12 @@ describe CampaignMonitorWrapper do
     before do
       VCR.use_cassette 'campaign_monitor_wrapper/update_1' do
         described_class.subscribe(
-          list_id: CampaignMonitorWrapper.list[:list_id],
-          segment: CampaignMonitorWrapper.list[:segment],
+          list_id: described_class.list[:list_id],
+          segment: described_class.list[:segment],
           user: { id: user.id, email: user.email, name: user.name }
         ).should be_true
         described_class.unsubscribe(
-          list_id: CampaignMonitorWrapper.list[:list_id],
+          list_id: described_class.list[:list_id],
           email: user.email
         ).should be_true
         subscriber = described_class.subscriber(user.email)
@@ -130,7 +128,7 @@ describe CampaignMonitorWrapper do
         subscriber['EmailAddress'].should eq subscribe_user.email
         subscriber['Name'].should         eq subscribe_user.name
         subscriber['State'].should        eq 'Active'
-        subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.list[:segment]
+        subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq described_class.list[:segment]
         subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq subscribe_user.id.to_s
         subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq subscribe_user.beta.to_s
       end
