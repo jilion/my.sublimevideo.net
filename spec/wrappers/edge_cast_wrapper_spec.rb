@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'configurator'
 require 'edge_cast'
 
 require 'wrappers/edge_cast_wrapper'
@@ -13,8 +12,8 @@ describe EdgeCastWrapper do
     it "inits EdgeCast client" do
       described_class.instance_variable_set(:@client, nil) # avoid memoization
       EdgeCast.should_receive(:new).with(
-        account_number: described_class.account_number,
-        api_token: described_class.api_token
+        account_number: ENV['EDGECAST_ACCOUNT_NUMBER'],
+        api_token: ENV['EDGECAST_API_TOKEN']
       ) { edgecast }
       described_class.send(:client)
     end
@@ -28,7 +27,7 @@ describe EdgeCastWrapper do
 
     describe "purge" do
       it "calls purge on http_small_object" do
-        edgecast.should_receive(:purge).with(:http_small_object, "http://#{described_class.cname}/filepath.js")
+        edgecast.should_receive(:purge).with(:http_small_object, "http://#{ENV['EDGECAST_CNAME']}/filepath.js")
         described_class.purge("/filepath.js")
       end
 
