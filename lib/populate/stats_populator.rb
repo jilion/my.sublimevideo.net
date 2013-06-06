@@ -106,7 +106,7 @@ class StatsPopulator < Populator
       "md.f.d" => i * rand(6),
       "md.f.m" => 0, #i * rand(2),
       "md.f.t" => 0, #i * rand(2),
-      # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
+      # field :bp, :type => Hash # Browser + Platform hash { "saf-win" => 2, "saf-osx" => 4, ...}
       "bp.iex-win" => i * rand(35), # 35% in total
       "bp.fir-win" => i * rand(18), # 26% in total
       "bp.fir-osx" => i * rand(8),
@@ -144,7 +144,7 @@ class StatsPopulator < Populator
       "md.f.d" => i * rand(6),
       "md.f.m" => 0, #i * rand(2),
       "md.f.t" => 0, #i * rand(2),
-      # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
+      # field :bp, :type => Hash # Browser + Platform hash { "saf-win" => 2, "saf-osx" => 4, ...}
       "bp.iex-win" => i * rand(35), # 35% in total
       "bp.fir-win" => i * rand(18), # 26% in total
       "bp.fir-osx" => i * rand(8),

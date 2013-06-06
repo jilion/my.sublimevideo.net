@@ -5,7 +5,7 @@ class AdminSublimeVideo.Models.SiteStatsTrend extends AdminSublimeVideo.Models.T
     pv: {} # Page Visit
     vv: {} # Video views
     md: {} # Player Mode + Device hash
-    bp: {} # Browser + Plateform hash
+    bp: {} # Browser + Platform hash
 
   customGet: (selected) ->
     this.get(selected[0])[selected[1]] or 0
