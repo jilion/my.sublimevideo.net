@@ -35,7 +35,7 @@ describe StatsMigrator do
         vv: 'video_views',
         vl: 'video_loads',
         md: 'player_mode_and_device',
-        bp: 'brower_and_platform') }
+        bp: 'browser_and_platform') }
 
       it "delays to StatsMigratorWorker" do
         StatsMigratorWorker.should_receive(:perform_async).with(
@@ -46,7 +46,7 @@ describe StatsMigrator do
           loads: 'video_loads',
           starts: 'video_views',
           player_mode_and_device: 'player_mode_and_device',
-          brower_and_platform: 'brower_and_platform')
+          browser_and_platform: 'browser_and_platform')
         migrator.migrate
       end
     end

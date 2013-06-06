@@ -38,7 +38,7 @@ class StatsMigrator
         loads: stat.vl,
         starts: stat.vv,
         player_mode_and_device: stat.md,
-        brower_and_platform: stat.bp }
+        browser_and_platform: stat.bp }
     end
   end
 end
