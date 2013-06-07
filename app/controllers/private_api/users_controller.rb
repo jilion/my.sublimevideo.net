@@ -3,7 +3,7 @@ class PrivateApi::UsersController < SublimeVideoPrivateApiController
 
   # GET /private_api/users/:id
   def show
-    expires_in 2.minutes
+    expires_in 2.minutes, public: true
     respond_with(@user) if stale?(@user)
   end
 

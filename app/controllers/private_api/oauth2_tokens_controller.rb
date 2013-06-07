@@ -3,7 +3,7 @@ class PrivateApi::Oauth2TokensController < SublimeVideoPrivateApiController
 
   # GET /private_api/oauth2_tokens/:id
   def show
-    expires_in 2.minutes
+    expires_in 2.minutes, public: true
     respond_with(@oauth2_token) if stale?(@oauth2_token)
   end
 

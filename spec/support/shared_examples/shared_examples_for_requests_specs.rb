@@ -9,7 +9,7 @@
 #
 shared_examples 'valid caching headers' do |opts = {}|
   it 'responds with the right caching headers depending on the request headers' do
-    options = { cache_control: 'max-age=120, private', cache_validation: true }.merge(opts)
+    options = { cache_control: 'max-age=120, public', cache_validation: true }.merge(opts)
     get url, {}, @env
 
     response.status.should eq 200

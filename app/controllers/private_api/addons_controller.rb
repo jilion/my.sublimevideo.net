@@ -8,7 +8,7 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites/:id/addons
   def index
-    expires_in 2.minutes
+    expires_in 2.minutes, public: true
     respond_with(@addon_plans)
   end
 
