@@ -33,7 +33,8 @@ module OgoneWrapper
         user: user,
         password: password,
         signature: signature,
-        signature_out: signature_out
+        signature_out: signature_out,
+        store_amount: 100
       }
       @gateway ||= ActiveMerchant::Billing::OgoneGateway.new(gateway_config)
     end

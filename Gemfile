@@ -70,7 +70,9 @@ gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'certified'
 gem 'edge_cast'
 
-gem 'activemerchant'
+# until github.com/Shopify/active_merchant/pull/724 is merged
+gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
+
 gem 'public_suffix', '1.2.0'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury

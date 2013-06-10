@@ -54,6 +54,20 @@ GIT
       rails (>= 3.0)
 
 GIT
+  remote: git://github.com/rymai/active_merchant.git
+  revision: 4dc159611a3ab12cb41dd6a4a5ae4e28962a1354
+  branch: ogone-store-amount-option
+  specs:
+    activemerchant (1.33.0)
+      active_utils (>= 1.0.2)
+      activesupport (>= 2.3.14)
+      builder (>= 2.0.0)
+      i18n
+      json (>= 1.5.1)
+      money
+      nokogiri
+
+GIT
   remote: git://github.com/softa/activerecord-postgres-hstore.git
   revision: 396f5af9af5eb70b7d9721a5bb14e14afee5cc38
   specs:
@@ -98,14 +112,6 @@ GEM
     active_utils (1.0.5)
       activesupport (>= 2.3.11)
       i18n
-    activemerchant (1.32.1)
-      active_utils (>= 1.0.2)
-      activesupport (>= 2.3.14)
-      builder (>= 2.0.0)
-      i18n
-      json (>= 1.5.1)
-      money
-      nokogiri
     activemodel (3.2.13)
       activesupport (= 3.2.13)
       builder (~> 3.0.0)
@@ -604,7 +610,7 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr
-  activemerchant
+  activemerchant!
   activerecord-postgres-hstore!
   acts-as-taggable-on
   addressable (= 2.2.8)
