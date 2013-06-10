@@ -12,9 +12,10 @@ class StatsMigrator
     StatsMigratorWorker.perform_async(_stat_class, _stat_data)
   end
 
-  def self.migrate_site(token)
-    Stat::Site::Day.where(t: token).each { |stat| new(stat).migrate }
-    Stat::Video::Day.where(st: token).each { |stat| new(stat).migrate }
+  def self.migrate_site(token, until_day = 1.day.ago.utc.beginning_of_day)
+    date_criteria = { d: { :$lte => until_day } }
+    Stat::Site::Day.where(date_criteria).where(t: token).each { |stat| new(stat).migrate }
+    Stat::Video::Day.where(date_criteria).where(st: token).each { |stat| new(stat).migrate }
   end
 
   private
