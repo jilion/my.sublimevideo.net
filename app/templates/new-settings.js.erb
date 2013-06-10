@@ -1,2 +1,2 @@
 /*! SublimeVideo settings  | (c) 2013 Jilion SA | http://sublimevideo.net
-*/(function(){sublime_.define("settings",[],'(function(){var e,t,i;return t={},e={},i={license:<%= format(license).to_json %>,app:<%= format(app_settings).to_json %>,kits:<%= format(kits(true)).to_json %>,defaultKit:"<%= default_kit %>"},t.exports=i,t.exports||e})');;sublime_.component('settings');})();
+*/(function(){sublime_.define("settings",[],'this.body=(function(){var e,t,i;return t={},e={},i={license:<%= format(license).to_json %>,app:<%= format(app_settings).to_json %>,kits:<%= format(kits(true)).to_json %>,defaultKit:"<%= default_kit %>"},t.exports=i,t.exports||e})');;sublime_.component('settings');})();
