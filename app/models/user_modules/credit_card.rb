@@ -116,7 +116,7 @@ module UserModules::CreditCard
 
       if OgoneWrapper.status.keys.include?(auth['STATUS'])
         send("_handle_auth_#{OgoneWrapper.status[auth['STATUS']]}", auth)
-        _increment_librato(OgoneWrapper.status[auth['STATUS']], auth['BRAND'].underscore)
+        _increment_librato(OgoneWrapper.status[auth['STATUS']], auth['BRAND'].gsub(/\s/, '_'))
       else
         _set_notice('unknown', :alert)
         Notifier.send("Credit card authorization unknown status: #{auth["STATUS"]}")

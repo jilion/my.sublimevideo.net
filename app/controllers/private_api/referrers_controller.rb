@@ -6,7 +6,9 @@ class PrivateApi::ReferrersController < SublimeVideoPrivateApiController
 
   # GET /private_api/referrers
   def index
-    respond_with(apply_scopes(Referrer.page(params[:page])))
+    @referrers = apply_scopes(Referrer.page(params[:page]))
+    expires_in 2.minutes, public: true
+    respond_with(@referrers)
   end
 
 end

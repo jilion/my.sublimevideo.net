@@ -19,10 +19,10 @@ describe 'Private API Users requests' do
     end
 
     context 'non existing user' do
-      it 'raises an ActiveRecord::RecordNotFound' do
+      it 'returns 404' do
         get 'private_api/users/42.json', {}, @env
         response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'User with id 42 could not be found.' })
+        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
@@ -35,10 +35,10 @@ describe 'Private API Users requests' do
     end
 
     context 'archived user' do
-      it 'raises an ActiveRecord::RecordNotFound' do
+      it 'returns 404' do
         get "private_api/users/#{user2.id}.json", {}, @env
         response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => "User with id #{user2.id} could not be found." })
+        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
       end
     end
   end

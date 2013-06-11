@@ -11,13 +11,13 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites
   def index
-    expires_in 2.minutes
+    expires_in 2.minutes, public: true
     respond_with(@sites)
   end
 
   # GET /private_api/sites/:id
   def show
-    expires_in 2.minutes
+    expires_in 2.minutes, public: true
     respond_with(@site) if stale?(@site)
   end
 
@@ -47,9 +47,6 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   def _find_site_by_token!
     @site = apply_scopes(_base_scopes).find_by_token!(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    body = { error: "Site with token #{params[:id]} could not be found." }
-    render request.format.ref => body, status: 404
   end
 
   def _base_scopes

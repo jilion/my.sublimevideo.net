@@ -8,7 +8,7 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites/:id/addons
   def index
-    expires_in 2.minutes
+    expires_in 2.minutes, public: true
     respond_with(@addon_plans)
   end
 
@@ -16,9 +16,6 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   def _find_site_by_token!
     @site = Site.with_state('active').find_by_token!(params[:site_id])
-  rescue ActiveRecord::RecordNotFound
-    body = { error: "Site with token #{params[:site_id]} could not be found." }
-    render request.format.ref => body, status: 404
   end
 
   def _find_addon_plans
