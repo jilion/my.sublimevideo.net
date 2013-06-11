@@ -6,7 +6,7 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   has_scope :per, :state
 
-  # GET /private_api/sites/:id/addons
+  # GET /private_api/sites/:site_id/addons
   def index
     expires_in 2.minutes, public: true
     respond_with(@addon_plans)

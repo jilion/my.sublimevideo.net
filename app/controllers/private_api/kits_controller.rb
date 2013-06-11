@@ -5,7 +5,7 @@ class PrivateApi::KitsController < SublimeVideoPrivateApiController
 
   has_scope :per
 
-  # GET /private_api/sites/:id/kits
+  # GET /private_api/sites/:site_id/kits
   def index
     expires_in 2.minutes, public: true
     respond_with(@kits)
