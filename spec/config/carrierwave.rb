@@ -22,15 +22,17 @@ end
 
 def set_fog_configuration
   CarrierWave.fog_configuration
+  Fog::Mock.reset
   Fog.mock!
-  $fog_connection = Fog::Storage.new(
+  Fog.credentials = {
     provider:              'AWS',
     aws_access_key_id:     S3Wrapper.access_key_id,
-    aws_secret_access_key: S3Wrapper.secret_access_key)
+    aws_secret_access_key: S3Wrapper.secret_access_key,
+    region:                'us-east-1' }
+  $fog_connection = Fog::Storage.new(provider: 'AWS')
   S3Wrapper.buckets.each do |bucket_name, bucket|
-    $fog_connection.directories.delete(key: bucket)
-    $fog_connection.directories.create(key: bucket)
-  end
+      $fog_connection.directories.create(key: bucket)
+    end
 end
 
 def set_file_configuration

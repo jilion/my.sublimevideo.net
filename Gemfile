@@ -58,7 +58,7 @@ gem 'paranoia'
 gem 'responders'
 gem 'has_scope'
 
-gem 'fog'
+gem 'fog', '~> 1.12'
 gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
@@ -106,11 +106,7 @@ gem 'redis'
 gem 'zendesk_api'
 
 # App
-gem 'solve'
-
-# Update was needed, but not directly used by mysv
-gem 'json'
-gem 'net-scp', '1.0.4'
+gem 'solve', '0.4.2'
 
 # Gems used only for assets and not required
 # in production environments by default.
