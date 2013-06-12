@@ -54,4 +54,9 @@ class Referrer
       end
     end
   end
+
+  def self.last_urls(site_token)
+    where(token: site_token).by_updated_at.limit(10).pluck(:url)
+  end
+
 end
