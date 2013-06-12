@@ -28,6 +28,7 @@ def set_fog_configuration
     aws_access_key_id:     S3Wrapper.access_key_id,
     aws_secret_access_key: S3Wrapper.secret_access_key)
   S3Wrapper.buckets.each do |bucket_name, bucket|
+    $fog_connection.directories.delete(key: bucket)
     $fog_connection.directories.create(key: bucket)
   end
 end
