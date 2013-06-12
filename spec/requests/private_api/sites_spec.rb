@@ -1,9 +1,28 @@
 require 'spec_helper'
 
 describe 'Private API Sites requests' do
-  let!(:site1) { create(:site, hostname: 'google.com', default_kit: create(:kit), updated_at: Time.utc(2013, 4, 25)).tap { |s| s.tag_list << 'adult'; s.save! } }
-  let!(:site2) { create(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)) }
-  let!(:site3) { create(:site, created_at: 2.days.ago, state: 'archived') }
+  let!(:design) do
+    create(:design, name: 'classic')
+    create(:design, name: 'light')
+    create(:design, name: 'flat')
+  end
+  let!(:site1) do
+    manager = SiteManager.new(build(:site, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)))
+    manager.create
+    manager.site.tag_list << 'adult'; manager.site.save!
+    manager.site
+  end
+  let!(:site2) do
+    manager = SiteManager.new(build(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)))
+    manager.create
+    manager.site
+  end
+  let!(:site3) do
+    manager = SiteManager.new(build(:site, created_at: 2.days.ago))
+    manager.create
+    manager.site.archive!
+    manager.site
+  end
 
   before do
     set_api_credentials
@@ -99,7 +118,7 @@ describe 'Private API Sites requests' do
       end
     end
 
-    context 'existing site', :focus do
+    context 'existing site' do
       it 'finds site per token' do
         get "private_api/sites/#{site1.token}.json", {}, @env
         body = MultiJson.load(response.body)
