@@ -153,6 +153,9 @@ group :development do
 end
 
 group :development, :test do
+  gem 'annotate', require: false
+  gem 'wirble', require: false
+  gem 'powder', require: false
   gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'
@@ -163,6 +166,13 @@ group :development, :test do
 
   # Rails routes view
   gem 'sextant'
+
+  # Guard
+  gem 'ruby_gntp', require: false
+  gem 'guard-pow', require: false
+  gem 'guard-livereload', require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-shell', require: false
 end
 
 group :test do
@@ -181,16 +191,3 @@ group :test do
   gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
 
-group :tools do
-  gem 'annotate'
-  gem 'wirble'
-  gem 'powder'
-
-  # Guard
-  gem 'ruby_gntp'
-
-  gem 'guard-pow'
-  gem 'guard-livereload'
-  gem 'guard-rspec'
-  gem 'guard-shell'
-end
