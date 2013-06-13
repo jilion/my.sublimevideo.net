@@ -277,7 +277,7 @@ describe LoaderGenerator, :fog_mock do
 
   describe '#upload!' do
     context "stable loader" do
-      let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
+      let(:bucket) { S3Wrapper.buckets[:sublimevideo] }
       let(:path)   { "js/#{site.token}.js" }
 
       context "when site accessible_stage is beta" do
@@ -329,7 +329,7 @@ describe LoaderGenerator, :fog_mock do
 
     context "beta loader" do
       let(:generator) { described_class.new(site, 'beta') }
-      let(:bucket)    { S3Wrapper.buckets['sublimevideo'] }
+      let(:bucket)    { S3Wrapper.buckets[:sublimevideo] }
 
       describe "S3 object" do
         before do

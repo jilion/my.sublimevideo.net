@@ -110,7 +110,7 @@ class User < ActiveRecord::Base
   # state
   scope :invited,      -> { where { invitation_token != nil } }
   # some beta users don't come from svs but were directly invited from msv!!
-  scope :beta,         -> { where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } }
+  scope :beta,         -> { where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on) } }
   scope :active,       -> { where { state == 'active' } }
   scope :inactive,     -> { where { state != 'active' } }
   scope :suspended,    -> { where { state == 'suspended' } }
@@ -203,7 +203,7 @@ class User < ActiveRecord::Base
   end
 
   def beta?
-    invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
+    invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on
   end
 
   def billing_address_complete?
@@ -325,10 +325,7 @@ class User < ActiveRecord::Base
     return unless newsletter?
 
     if email_changed? || name_changed?
-      NewsletterSubscriptionManager.delay.update(self.id, {
-        email: email_was || email,
-        user: { email: email, name: name, newsletter: newsletter? }
-      })
+      NewsletterSubscriptionManager.delay.update(self.id, email_was || email)
     end
   end
 

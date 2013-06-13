@@ -45,7 +45,6 @@ gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
-gem 'configurator', github: 'jilion/configurator'
 gem 'libxml-ruby', require: 'libxml'
 gem 'yajl-ruby', require: 'yajl' # json
 
@@ -149,9 +148,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'annotate', require: false
-  gem 'wirble', require: false
-  gem 'powder', require: false
+  gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'

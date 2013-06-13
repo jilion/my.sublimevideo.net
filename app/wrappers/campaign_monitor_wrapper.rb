@@ -1,53 +1,72 @@
-require 'configurator'
+require 'createsend'
 
 class CampaignMonitorWrapper
-  include Configurator
 
-  config_file 'campaign_monitor.yml'
-  config_accessor :api_key, :lists
+  LIST = {
+    'development' => {
+      list_id: 'a064dfc4b8ccd774252a2e9c9deb9244',
+      segment: 'dev'
+    },
+    'test' => {
+      list_id: 'a064dfc4b8ccd774252a2e9c9deb9244',
+      segment: 'test'
+    },
+    'staging' => {
+      list_id: 'a064dfc4b8ccd774252a2e9c9deb9244',
+      segment: 'staging'
+    },
+    'production' => {
+      list_id: '1defd3a2fa342e3534126166f32e02d2',
+      segment: 'my.sublimevideo.net'
+    }
+  }
+
+  def self.list
+    @@list ||= LIST[Rails.env]
+  end
 
   def initialize
-    CreateSend.api_key(CampaignMonitorWrapper.api_key)
+    CreateSend.api_key(ENV['CAMPAIGN_MONITOR_API_KEY'])
   end
 
   def subscribe(params = {})
-    custom_params = self.class._build_custom_params(segment: params[:segment], user_id: params[:user][:id], beta: params[:user][:beta], billable: params[:user][:billable])
+    custom_params = self.class._build_custom_params(segment: self.class.list[:segment], user_id: params[:id], beta: params[:beta], billable: params[:billable])
 
     _request('subscribe') do
-      CreateSend::Subscriber.add(params[:list_id], params[:user][:email], params[:user][:name], custom_params, true)
+      CreateSend::Subscriber.add(self.class.list[:list_id], params[:email], params[:name], custom_params, true)
     end
   end
 
-  def import(params = {})
-    subscribers = params[:users].reduce([]) do |memo, user|
-      custom_params = self.class._build_custom_params(segment: params[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
+  def import(users = {})
+    subscribers = users.reduce([]) do |memo, user|
+      custom_params = self.class._build_custom_params(segment: self.class.list[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
 
       memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
     end
 
     _request('import') do
-      CreateSend::Subscriber.import(params[:list_id], subscribers, false)
+      CreateSend::Subscriber.import(self.class.list[:list_id], subscribers, false)
     end
   end
 
-  def unsubscribe(params = {})
+  def unsubscribe(email)
     _request('unsubscribe') do
-      CreateSend::Subscriber.new(params[:list_id], params[:email]).unsubscribe
+      CreateSend::Subscriber.new(self.class.list[:list_id], email).unsubscribe
       true
     end
   end
 
   def update(params = {})
     _request('update') do
-      if subscriber = CreateSend::Subscriber.new(params[:list_id], params[:email])
-        subscriber.update(params[:user][:email], params[:user][:name], [], params[:user][:newsletter])
+      if subscriber = CreateSend::Subscriber.new(self.class.list[:list_id], params.delete(:old_email))
+        subscriber.update(params[:email], params[:name], [], params[:newsletter])
       end
     end
   end
 
-  def subscriber(email, list_id = CampaignMonitorWrapper.lists['sublimevideo']['list_id'])
+  def subscriber(email)
     _request('subscriber_lookup') do
-      CreateSend::Subscriber.get(list_id, email)
+      CreateSend::Subscriber.get(self.class.list[:list_id], email)
     end
   end
 

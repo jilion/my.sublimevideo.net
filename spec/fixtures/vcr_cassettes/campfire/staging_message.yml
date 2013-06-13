@@ -50,7 +50,7 @@
   request: !ruby/struct:VCR::Request
     method: :post
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665/speak.json
-    body: ! '{"message":{"body":"[STAGING] Hello I''m a test message","type":"TextMessage"}}'
+    body: ! '{"message":{"body":"[STAGING] Hello I am a test message","type":"TextMessage"}}'
     headers:
       content-type:
       - application/json
@@ -84,7 +84,7 @@
       strict-transport-security:
       - max-age=31536000
     body: ! '{"message":{"type":"TextMessage","room_id":448665,"created_at":"2012/11/28
-      10:11:37 +0000","id":742902781,"user_id":1041315,"body":"[STAGING] Hello I''m
+      10:11:37 +0000","id":742902781,"user_id":1041315,"body":"[STAGING] Hello I am
       a test message","starred":false}}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
@@ -170,7 +170,7 @@
       strict-transport-security:
       - max-age=31536000
     body: ! '{"messages":[{"type":"TextMessage","room_id":448665,"created_at":"2012/11/28
-      10:11:37 +0000","id":742902781,"user_id":1041315,"body":"[STAGING] Hello I''m
+      10:11:37 +0000","id":742902781,"user_id":1041315,"body":"[STAGING] Hello I am
       a test message","starred":false}]}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction

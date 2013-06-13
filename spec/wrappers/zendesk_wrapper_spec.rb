@@ -1,6 +1,4 @@
 require 'fast_spec_helper'
-require 'configurator'
-require 'zendesk_api'
 require 'support/fixtures_helpers'
 require 'config/vcr'
 

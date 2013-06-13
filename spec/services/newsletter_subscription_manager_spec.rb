@@ -47,14 +47,7 @@ describe NewsletterSubscriptionManager do
 
   describe '.import' do
     it 'delays CampaignMonitorWrapper.import' do
-      CampaignMonitorWrapper.should delay(:import).with(
-        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
-        segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
-        users: [
-          { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s, billable: '' },
-          { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta?.to_s, billable: '' }
-        ]
-      )
+      CampaignMonitorWrapper.should delay(:import)
 
       described_class.import([user1, user2])
     end
@@ -63,8 +56,7 @@ describe NewsletterSubscriptionManager do
   describe '#subscribe' do
     it 'calls CampaignMonitorWrapper.subscribe' do
       CampaignMonitorWrapper.should_receive(:subscribe).with(
-        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
-        user: { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s, billable: '' }
+        id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s, billable: ''
       )
 
       service.subscribe
@@ -73,9 +65,7 @@ describe NewsletterSubscriptionManager do
 
   describe '#unsubscribe' do
     it 'calls CampaignMonitorWrapper.unsubscribe' do
-      CampaignMonitorWrapper.should_receive(:unsubscribe).with(
-        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], email: user1.email
-      )
+      CampaignMonitorWrapper.should_receive(:unsubscribe).with(user1.email)
 
       service.unsubscribe
     end
@@ -84,11 +74,10 @@ describe NewsletterSubscriptionManager do
   describe '#update' do
     it 'calls CampaignMonitorWrapper.update' do
       CampaignMonitorWrapper.should_receive(:update).with(
-        email: 'test@test.com', user: { email: 'test@test.com', name: 'Toto', newsletter: true },
-        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id']
+        old_email: 'test@test.com', email: user1.email, name: user1.name, newsletter: true
       )
 
-      service.update({ email: 'test@test.com', user: { email: 'test@test.com', name: 'Toto', newsletter: true } })
+      service.update('test@test.com')
     end
   end
 
@@ -122,7 +111,7 @@ describe NewsletterSubscriptionManager do
 
       context "user isn't subscribed in CM" do
         before do
-          CampaignMonitorWrapper.should_receive(:subscriber).twice { nil }
+          CampaignMonitorWrapper.should_receive(:subscriber) { nil }
         end
 
         it 'set newsletter' do

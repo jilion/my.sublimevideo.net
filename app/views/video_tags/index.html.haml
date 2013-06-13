@@ -29,17 +29,17 @@
   -#    %a#pickfiles{ href: '#' } [Select files]
   -#    %a#uploadfiles{ href: '#' } [Upload files]
   -#
-  -#  -#%form#file_upload{ action: S3Wrapper.bucket_url(S3Wrapper.buckets['videos_upload']), method: 'post', enctype: 'multipart/form-data' }
+  -#  -#%form#file_upload{ action: S3Wrapper.bucket_url(S3Wrapper.buckets[:videos_upload]), method: 'post', enctype: 'multipart/form-data' }
   -#  -#  -#%form#file_upload{ action: '', method: 'post', enctype: 'multipart/form-data', :'data-remote' => 'true' }
-  -#  -#  - upload_params_for(@site, bucket: S3Wrapper.buckets['videos_upload']).each do |key, value|
+  -#  -#  - upload_params_for(@site, bucket: S3Wrapper.buckets[:videos_upload]).each do |key, value|
   -#  -#    = hidden_field_tag key, value
   -#  -#  = file_field_tag :file, multiple: ''
   -#  -#  = submit_tag 'Upload!'
   -#
   -#  :coffee
   -#    MySublimeVideo.uploader = new MySublimeVideo.Helpers.Uploader
-  -#      url: '#{S3Wrapper.bucket_url(S3Wrapper.buckets['videos_upload'])}'
-  -#      multipart_params: #{upload_params(bucket: S3Wrapper.buckets['videos_upload'], s3_key: "#{@site.token}/${filename}", success_action_redirect: site_videos_url(@site)).to_json}
+  -#      url: '#{S3Wrapper.bucket_url(S3Wrapper.buckets[:videos_upload])}'
+  -#      multipart_params: #{upload_params(bucket: S3Wrapper.buckets[:videos_upload], s3_key: "#{@site.token}/${filename}", success_action_redirect: site_videos_url(@site)).to_json}
   -#
   -#    # form = $('#file_upload')
   -#    # form.on 'submit', (e) ->

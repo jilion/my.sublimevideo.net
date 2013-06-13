@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe App::ComponentVersion, :fog_mock do
-  let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
+  let(:bucket) { S3Wrapper.buckets[:sublimevideo] }
   let(:zip) { fixture_file('app/e.zip') }
   let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
   let(:attributes) { {

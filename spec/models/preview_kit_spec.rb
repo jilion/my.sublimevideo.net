@@ -1,9 +1,12 @@
 require 'fast_spec_helper'
-require 'configurator'
 
 require 'models/preview_kit'
 
 describe PreviewKit do
+
+  describe '.kit_names' do
+    it { described_class.kit_names.should eq %w[classic flat light html5 twit sony anthony next15 blizzard df] }
+  end
 
   describe '.kit_identifer' do
     it { described_class.kit_identifer('classic').should eq '1' }

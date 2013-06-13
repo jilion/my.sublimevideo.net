@@ -1,8 +1,11 @@
-require 'configurator'
-
 class BusinessModel
-  include Configurator
 
-  config_file 'business_model.yml', rails_env: false
-  config_accessor :days_for_trial, :days_before_trial_end
+  def self.days_for_trial
+    7
+  end
+
+  def self.days_before_trial_end
+    [2]
+  end
+
 end

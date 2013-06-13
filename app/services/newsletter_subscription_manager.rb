@@ -15,8 +15,8 @@ class NewsletterSubscriptionManager
       new(User.find(user_id)).unsubscribe
     end
 
-    def update(user_id, params = {})
-      new(User.find(user_id)).update(params)
+    def update(user_id, old_email)
+      new(User.find(user_id)).update(old_email)
     end
 
     # Subscribes the given users to the newsletter
@@ -26,24 +26,15 @@ class NewsletterSubscriptionManager
       users_to_import = users.reduce([]) do |a, user|
         a << { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s, billable: user.billable?.to_s }
       end
-      CampaignMonitorWrapper.delay.import(
-        list_id: list['list_id'],
-        segment: list['segment'],
-        users: users_to_import
-      )
+      CampaignMonitorWrapper.delay.import(users_to_import)
     end
 
     def sync_from_service(user_id)
       user = User.find(user_id)
-      return if user.newsletter?
 
-      CampaignMonitorWrapper.lists.each do |name, list|
-        return user.update_column(:newsletter, true) if CampaignMonitorWrapper.subscriber(user.email, list['list_id'])
+      if !user.newsletter? && CampaignMonitorWrapper.subscriber(user.email)
+        user.update_column(:newsletter, true)
       end
-    end
-
-    def list
-      CampaignMonitorWrapper.lists['sublimevideo']
     end
 
   end
@@ -52,25 +43,18 @@ class NewsletterSubscriptionManager
   #
   # user must respond to id, email, name and beta? (only the id is actually required)
   def subscribe
-    CampaignMonitorWrapper.subscribe(
-      list_id: self.class.list['list_id'],
-      segment: self.class.list['segment'],
-      user: { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s, billable: user.billable?.to_s }
-    )
+    CampaignMonitorWrapper.subscribe(id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s, billable: user.billable?.to_s)
   end
 
   # Unsubscribes the given user to the newsletter
   #
   # user must respond to email
   def unsubscribe
-    CampaignMonitorWrapper.unsubscribe(
-      list_id: self.class.list['list_id'],
-      email: user.email
-    )
+    CampaignMonitorWrapper.unsubscribe(user.email)
   end
 
-  def update(params)
-    CampaignMonitorWrapper.update(params.merge(list_id: self.class.list['list_id']))
+  def update(old_email)
+    CampaignMonitorWrapper.update(old_email: old_email, email: user.email, name: user.name, newsletter: user.newsletter?)
   end
 
 end

@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/rooms.json
-    body: 
+    body:
     headers:
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -50,7 +50,7 @@
   request: !ruby/struct:VCR::Request
     method: :post
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665/speak.json
-    body: ! '{"message":{"body":"Hello I''m a test message","type":"TextMessage"}}'
+    body: ! '{"message":{"body":"Hello I am a test message","type":"TextMessage"}}'
     headers:
       content-type:
       - application/json
@@ -84,13 +84,13 @@
       strict-transport-security:
       - max-age=31536000
     body: ! '{"message":{"type":"TextMessage","room_id":448665,"created_at":"2012/11/28
-      10:11:31 +0000","id":742902702,"user_id":1041315,"body":"Hello I''m a test message","starred":false}}'
+      10:11:31 +0000","id":742902702,"user_id":1041315,"body":"Hello I am a test message","starred":false}}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/rooms.json
-    body: 
+    body:
     headers:
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -137,7 +137,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665/recent.json?limit=1&since_message_id=
-    body: 
+    body:
     headers:
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -169,13 +169,13 @@
       strict-transport-security:
       - max-age=31536000
     body: ! '{"messages":[{"type":"TextMessage","room_id":448665,"created_at":"2012/11/28
-      10:11:31 +0000","id":742902702,"user_id":1041315,"body":"Hello I''m a test message","starred":false}]}'
+      10:11:31 +0000","id":742902702,"user_id":1041315,"body":"Hello I am a test message","starred":false}]}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665.json
-    body: 
+    body:
     headers:
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -275,7 +275,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/users/1041315.json
-    body: 
+    body:
     headers:
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

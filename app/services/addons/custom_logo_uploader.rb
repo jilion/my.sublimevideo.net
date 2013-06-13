@@ -1,6 +1,10 @@
 require 'tempfile'
 require 'cocaine'
 
+require 'addons/custom_logo'
+require 'cdn_file'
+require 's3_wrapper'
+
 module Addons
   class CustomLogoUploader
 

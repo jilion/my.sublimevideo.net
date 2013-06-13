@@ -1,3 +1,5 @@
+require 's3_wrapper'
+
 class CDNFile
   attr_accessor :file, :path, :headers
 
@@ -23,7 +25,7 @@ class CDNFile
   end
 
   def bucket
-    @bucket ||= S3Wrapper.buckets['sublimevideo']
+    @bucket ||= S3Wrapper.buckets[:sublimevideo]
   end
 
   private

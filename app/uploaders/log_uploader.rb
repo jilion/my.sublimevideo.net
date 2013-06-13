@@ -4,7 +4,7 @@ class LogUploader < CarrierWave::Uploader::Base
   process :set_content_type
 
   def fog_directory
-    S3Wrapper.buckets['logs']
+    S3Wrapper.buckets[:logs]
   end
 
   # Override the directory where uploaded files will be stored

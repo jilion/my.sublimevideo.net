@@ -1,11 +1,10 @@
-class PusherWrapper
-  include Configurator
+require 'pusher'
+require 'pusher_channel'
 
-  config_file     'pusher.yml'
-  config_accessor :url
+class PusherWrapper
 
   def self.key
-    url.match(/^http:\/\/(\w*):.*$/)[1]
+    ENV['PUSHER_URL'].match(/^http:\/\/(\w*):.*$/)[1]
   end
 
   def self.authenticated_response(channel_name, custom_data)

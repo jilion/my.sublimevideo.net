@@ -1,1 +1,1 @@
-Pusher.url = PusherWrapper.url
+Pusher.url = ENV['PUSHER_URL']
