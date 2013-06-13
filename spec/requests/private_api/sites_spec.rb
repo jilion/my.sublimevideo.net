@@ -7,7 +7,7 @@ describe 'Private API Sites requests' do
     create(:design, name: 'flat')
   end
   let!(:site1) do
-    manager = SiteManager.new(build(:site, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)))
+    manager = SiteManager.new(build(:site, created_at: 3.days.ago, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)))
     manager.create
     manager.site.tag_list << 'adult'; manager.site.save!
     manager.site
