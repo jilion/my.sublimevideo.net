@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe App::ComponentVersionManager, :addons do
-  let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
+  let(:bucket) { S3Wrapper.buckets[:sublimevideo] }
   let(:zip) { fixture_file('app/e.zip') }
   let(:site) {
     site = build(:site)

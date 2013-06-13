@@ -22,7 +22,7 @@ describe StatsExportUploader do
   before { uploader.store!(csv) }
 
   it "has stats_exports S3.bucket" do
-    uploader.fog_directory.should eq S3Wrapper.buckets['stats_exports']
+    uploader.fog_directory.should eq S3Wrapper.buckets[:stats_exports]
   end
 
   it "is private" do

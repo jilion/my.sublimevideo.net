@@ -276,27 +276,13 @@ describe User do
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           user.update_attribute(:email, "newsletter_update2@jilion.com")
-          NewsletterSubscriptionManager.should delay(:update).with(user.id,
-            email: "newsletter_update@jilion.com",
-            user: {
-              email: "newsletter_update2@jilion.com",
-              name: user.name,
-              newsletter: true
-            }
-          )
+          NewsletterSubscriptionManager.should delay(:update).with(user.id, "newsletter_update@jilion.com")
           user.confirm!
         end
 
         it "updates info in Campaign Monitor if user change his name" do
           user
-          NewsletterSubscriptionManager.should delay(:update).with(user.id,
-            email: "newsletter_update@jilion.com",
-            user: {
-              email: "newsletter_update@jilion.com",
-              name: 'bob',
-              newsletter: true
-            }
-          )
+          NewsletterSubscriptionManager.should delay(:update).with(user.id, "newsletter_update@jilion.com")
           user.update_attribute(:name, 'bob')
         end
 

@@ -1,16 +1,18 @@
+require 'edge_cast_wrapper'
+require 'voxcast_wrapper'
+
 module CDN
   WRAPPERS = [EdgeCastWrapper, VoxcastWrapper]
 
-  class << self
-    # Works for file & directory
-    def purge(path)
-      wrappers.each do |wrapper|
-        wrapper.delay.purge(path)
-      end
-    end
-
-    def wrappers
-      WRAPPERS
+  # Works for file & directory
+  def self.purge(path)
+    wrappers.each do |wrapper|
+      wrapper.delay.purge(path)
     end
   end
+
+  def self.wrappers
+    WRAPPERS
+  end
+
 end

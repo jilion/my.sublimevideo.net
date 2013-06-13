@@ -7,9 +7,9 @@ describe Log::Voxcast do
     use_vcr_cassette "ogone/one_log"
     subject { build(:log_voxcast, name: 'cdn.sublimevideo.net.log.1274773200-1274773260.gz', file: log_file) }
 
-    its(:hostname)   { should == 'cdn.sublimevideo.net' }
-    its(:started_at) { should == Time.zone.at(1274773200).utc }
-    its(:ended_at)   { should == Time.zone.at(1274773260).utc }
+    its(:hostname)   { should eq 'cdn.sublimevideo.net' }
+    its(:started_at) { should eq Time.zone.at(1274773200).utc }
+    its(:ended_at)   { should eq Time.zone.at(1274773260).utc }
 
     its(:parsed_at)             { should be_nil}
     its(:stats_parsed_at)       { should be_nil}
@@ -37,9 +37,9 @@ describe Log::Voxcast do
     subject { create(:log_voxcast, file: log_file) }
 
     its(:created_at) { should be_present }
-    its(:hostname)   { should == 'cdn.sublimevideo.net' }
-    its("file.url")  { should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz" }
-    its("file.size") { should == 848 }
+    its(:hostname)   { should eq 'cdn.sublimevideo.net' }
+    its("file.url")  { should eq "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz" }
+    its("file.size") { should eq 848 }
 
     it "should have good log content" do
       log = Log::Voxcast.find(subject.id) # to be sure that log is well saved with CarrierWave

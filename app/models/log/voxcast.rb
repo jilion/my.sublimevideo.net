@@ -45,11 +45,11 @@ class Log::Voxcast < ::Log
   end
 
   def self.log_filename(ended_at)
-    "#{VoxcastWrapper.hostname}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
+    "#{ENV['VOXCAST_HOSTNAME']}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
   end
 
   def self.next_ended_at
-    (where(hostname: VoxcastWrapper.hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
+    (where(hostname: ENV['VOXCAST_HOSTNAME'], created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
       1.minute.ago.change(sec: 0)) + 60.seconds
   end
 

@@ -1,15 +1,9 @@
-require 'configurator'
-
 class Vat
-  include Configurator
-
-  config_file 'vat.yml', rails_env: false
-  config_accessor :ch
 
   def self.for_country(country)
     case country
     when 'CH'
-      Vat.ch
+      0.08
     else
       0.0
     end

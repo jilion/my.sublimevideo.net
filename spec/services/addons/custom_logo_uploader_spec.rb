@@ -1,10 +1,6 @@
 require 'fast_spec_helper'
-require 'configurator'
 require 'support/fixtures_helpers'
 
-require 'models/addons/custom_logo'
-require 'wrappers/cdn_file'
-require 'wrappers/s3_wrapper'
 require 'services/addons/custom_logo_uploader'
 
 describe Addons::CustomLogoUploader do

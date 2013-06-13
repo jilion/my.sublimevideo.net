@@ -41,7 +41,7 @@ feature 'StatsExport' do
     go 'my', "/stats/exports/#{stat_export_id}"
     # File can't be downloaded directly from S3 because of Fog.mock!
     current_url.should match(
-      %r{https://s3\.amazonaws\.com/#{S3Wrapper.buckets['stats_exports']}/uploads/stats_exports/stats_export\.#{@site.hostname}\.\d+-\d+\.csv\.zip\?AWSAccessKeyId=#{S3Wrapper.access_key_id}&Signature=foo&Expires=\d+}
+      %r{https://s3\.amazonaws\.com/#{S3Wrapper.buckets[:stats_exports]}/uploads/stats_exports/stats_export\.#{@site.hostname}\.\d+-\d+\.csv\.zip\?AWSAccessKeyId=#{ENV['S3_ACCESS_KEY_ID']}&Signature=foo&Expires=\d+}
     )
 
     # Verify zip content

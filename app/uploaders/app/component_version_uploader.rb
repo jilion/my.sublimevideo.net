@@ -1,3 +1,7 @@
+require 'app'
+require 'app/component_version_zip_content_uploader'
+require 's3_wrapper'
+
 class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
@@ -7,7 +11,7 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   before :remove, :remove_zip_content
 
   def fog_directory
-    S3Wrapper.buckets['player']
+    S3Wrapper.buckets[:player]
   end
 
   def fog_public
@@ -23,7 +27,7 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_white_list
-    %w(zip)
+    %w[zip]
   end
 
   # Override the filename of the uploaded files:
