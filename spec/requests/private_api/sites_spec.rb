@@ -1,9 +1,28 @@
 require 'spec_helper'
 
 describe 'Private API Sites requests' do
-  let!(:site1) { create(:site, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)).tap { |s| s.tag_list << 'adult'; s.save! } }
-  let!(:site2) { create(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)) }
-  let!(:site3) { create(:site, created_at: 2.days.ago, state: 'archived') }
+  let!(:design) do
+    create(:design, name: 'classic')
+    create(:design, name: 'light')
+    create(:design, name: 'flat')
+  end
+  let!(:site1) do
+    manager = SiteManager.new(build(:site, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)))
+    manager.create
+    manager.site.tag_list << 'adult'; manager.site.save!
+    manager.site
+  end
+  let!(:site2) do
+    manager = SiteManager.new(build(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)))
+    manager.create
+    manager.site
+  end
+  let!(:site3) do
+    manager = SiteManager.new(build(:site, created_at: 2.days.ago))
+    manager.create
+    manager.site.archive!
+    manager.site
+  end
 
   before do
     set_api_credentials
@@ -102,7 +121,13 @@ describe 'Private API Sites requests' do
     context 'existing site' do
       it 'finds site per token' do
         get "private_api/sites/#{site1.token}.json", {}, @env
-        MultiJson.load(response.body)['token'].should eq site1.token
+        body = MultiJson.load(response.body)
+        body['token'].should eq site1.token
+        body['tags'].should eq ['adult']
+        body['default_kit']['identifier'].should eq site1.default_kit.identifier
+        body['default_kit']['name'].should eq site1.default_kit.name
+        body['default_kit']['settings'].should eq site1.default_kit.settings
+        body['default_kit']['design']['name'].should eq site1.default_kit.design.name
         response.status.should eq 200
       end
     end

@@ -8,6 +8,7 @@ describe 'Private API Kits requests' do
 
   before do
     set_api_credentials
+    site.update_column(:default_kit_id, kit1.id)
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'
   end
 
@@ -39,6 +40,9 @@ describe 'Private API Kits requests' do
       body[0]['settings'].should eq kit1.settings
       body[0]['created_at'].should be_present
       body[0]['updated_at'].should be_present
+      body[0]['default'].should be_true
+
+      body[1]['default'].should be_false
 
       response.status.should eq 200
     end

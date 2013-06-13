@@ -50,7 +50,7 @@ FactoryGirl.define do
   # ===============
   # = Site models =
   # ===============
-  factory :site, class: Site do
+  factory :site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
     user
   end

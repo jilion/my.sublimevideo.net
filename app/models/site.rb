@@ -85,9 +85,8 @@ class Site < ActiveRecord::Base
   validates :accessible_stage, inclusion: Stage.stages
 
   validates :hostname, hostname: true
-  validates :dev_hostnames,   dev_hostnames: true
-  validates :extra_hostnames, extra_hostnames: true
-  validates :staging_hostnames, extra_hostnames: true
+  validates :dev_hostnames, dev_hostnames: true
+  validates :extra_hostnames, :staging_hostnames, extra_hostnames: true
   validates :path, length: { maximum: 255 }
 
   # =============
@@ -237,12 +236,6 @@ class Site < ActiveRecord::Base
 
   def to_backbone_json(options = {})
     to_json(only: [:token, :hostname])
-  end
-
-  def as_json(options = nil)
-    json = super
-    json['tags'] = tag_list
-    json
   end
 
   %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|

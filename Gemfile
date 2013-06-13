@@ -57,7 +57,7 @@ gem 'paranoia'
 gem 'responders'
 gem 'has_scope'
 
-gem 'fog'
+gem 'fog', '~> 1.12'
 gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
@@ -69,7 +69,9 @@ gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'certified'
 gem 'edge_cast'
 
-gem 'activemerchant'
+# until github.com/Shopify/active_merchant/pull/724 is merged
+gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
+
 gem 'public_suffix', '1.2.0'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
@@ -103,11 +105,7 @@ gem 'redis'
 gem 'zendesk_api'
 
 # App
-gem 'solve'
-
-# Update was needed, but not directly used by mysv
-gem 'json'
-gem 'net-scp', '1.0.4'
+gem 'solve', '0.4.2'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -151,7 +149,6 @@ end
 
 group :development, :test do
   gem 'dotenv-rails'
-
   gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'
@@ -162,6 +159,13 @@ group :development, :test do
 
   # Rails routes view
   gem 'sextant'
+
+  # Guard
+  gem 'ruby_gntp', require: false
+  gem 'guard-pow', require: false
+  gem 'guard-livereload', require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-shell', require: false
 end
 
 group :test do
@@ -180,16 +184,3 @@ group :test do
   gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
 
-group :tools do
-  gem 'annotate'
-  gem 'wirble'
-  gem 'powder'
-
-  # Guard
-  gem 'ruby_gntp'
-
-  gem 'guard-pow'
-  gem 'guard-livereload'
-  gem 'guard-rspec'
-  gem 'guard-shell'
-end

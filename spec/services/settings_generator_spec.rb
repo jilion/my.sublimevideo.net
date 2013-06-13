@@ -100,7 +100,7 @@ describe SettingsGenerator, :fog_mock do
 
       it 'new settings have non-mangled content' do
         File.open(cdn_file.file) do |f|
-          f.read.should eq "/*! SublimeVideo settings  | (c) 2013 Jilion SA | http://sublimevideo.net\n*/(function(){sublime_.define(\"settings\",[],'(function(){var e,t,i;return t={},e={},i={license:{\"hosts\":[\"test.com\",\"test.net\"],\"stagingHosts\":[\"test-staging.net\"],\"devHosts\":[\"test.dev\"],\"path\":\"path\",\"wildcard\":true,\"stage\":\"stable\"},app:{},kits:{},defaultKit:\"1\"},t.exports=i,t.exports||e})');;sublime_.component('settings');})();"
+          f.read.should eq "/*! SublimeVideo settings  | (c) 2013 Jilion SA | http://sublimevideo.net\n*/(function(){ sublime_.define(\"settings\",[],function(){var e,t,i;return t={},e={},i={license:{\"hosts\":[\"test.com\",\"test.net\"],\"stagingHosts\":[\"test-staging.net\"],\"devHosts\":[\"test.dev\"],\"path\":\"path\",\"wildcard\":true,\"stage\":\"stable\"},app:{},kits:{},defaultKit:\"1\"},t.exports=i,t.exports||e});;sublime_.component('settings');})();"
         end
       end
     end

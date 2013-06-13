@@ -350,8 +350,8 @@ describe SettingsGenerator, :addons do
             expected = <<-CONTENT.gsub(/^ {12}/, '')
             /*! SublimeVideo settings  | (c) 2013 Jilion SA | http://sublimevideo.net
             */(function() {
-              sublime_.define("settings",[],
-              '(function() {
+               sublime_.define("settings",[],
+              function() {
               var e,t,i;return t= {
               },
               e= {
@@ -462,7 +462,7 @@ describe SettingsGenerator, :addons do
               },
               "id":"sa.sn.so","module":"sublime/image/image_app_plugin"}}}},
               defaultKit:"1"},
-              t.exports=i,t.exports||e})');;sublime_.component('settings');})();
+              t.exports=i,t.exports||e});;sublime_.component('settings');})();
 CONTENT
             File.open(subject.cdn_files[1].file) do |f|
               f.read.gsub(/\{/, " {\n  ").gsub(/(\},|\],)/, "\\1\n  ").should eq expected.strip
