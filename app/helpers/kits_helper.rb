@@ -9,7 +9,7 @@ module KitsHelper
   end
 
   def kits_settings(site)
-    @kits_settings ||= SettingsGenerator.new(site).kits
+    @kits_settings ||= SettingsGenerator.new(site).kits(true)
   end
 
   def designs_for_select(site, kit)
