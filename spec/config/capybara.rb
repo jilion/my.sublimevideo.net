@@ -18,6 +18,7 @@ Capybara.javascript_driver = :poltergeist
 
 # Capybara.server_boot_timeout = 30
 Capybara.server_port = find_available_port
+Capybara.ignore_hidden_elements = false
 
 RSpec.configure do |config|
   config.before do
