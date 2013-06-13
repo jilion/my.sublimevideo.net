@@ -12,7 +12,6 @@ require 's3_wrapper'
 
 # services
 require 'app/component_version_dependencies_solver'
-require 'player_mangler'
 
 class LoaderGenerator
   IMPORTANT_SITE_TOKENS = %w[utcf6unc]

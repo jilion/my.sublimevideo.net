@@ -1,11 +1,11 @@
 module KitsHelper
 
-  def mangled_kit_settings(kit)
-    mangled_kits_settings(kit.site)[kit.identifier].to_json
+  def formatted_kit_settings(kit)
+    formatted_kits_settings(kit.site)[kit.identifier].to_json
   end
 
-  def mangled_kits_settings(site)
-    @mangled_kits_settings ||= PlayerMangler.mangle(kits_settings(site))
+  def formatted_kits_settings(site)
+    @formatted_kits_settings ||= SettingsFormatter.format(kits_settings(site))
   end
 
   def kits_settings(site)
