@@ -503,7 +503,7 @@ GEM
       activesupport (>= 3.0.0)
     show_me_the_cookies (2.1.0)
       capybara (~> 2.0)
-    sidekiq (2.12.3)
+    sidekiq (2.12.4)
       celluloid (>= 0.14.1)
       connection_pool (>= 1.0.0)
       json
@@ -534,7 +534,7 @@ GEM
       haml
       jquery-rails
       rails (>= 3.2.12)
-    sublime_video_private_api (1.4.1)
+    sublime_video_private_api (1.5.0)
       activesupport (>= 3.2)
       faraday-http-cache (~> 0.2.0)
       her (~> 0.6.1)
