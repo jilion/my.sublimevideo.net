@@ -1,6 +1,6 @@
 - cache kit do
   - kit = exhibit(kit)
-  %li[kit]{ class: 'kit', data: { settings: mangled_kit_settings(kit) } }
+  %li[kit]{ class: 'kit', data: { settings: formatted_kit_settings(kit) } }
     = kit.render_name_as_link(self, site)
     %div.preview
       %video{ id: "preview_kit_#{kit.id}", poster: image_path("players/default_poster.png"), width: 368, height: 207 }

@@ -50,7 +50,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   end
 
   def _base_scopes
-    Site.with_state('active')
+    Site.with_state('active').order(:created_at)
   end
 
   def _list_of_params_as_string(list)
