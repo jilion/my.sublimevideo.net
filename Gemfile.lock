@@ -80,7 +80,7 @@ GIT
       xml-simple (~> 1.0.12)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   remote: https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/
   specs:
     PageRankr (4.1.1)
