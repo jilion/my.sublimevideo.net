@@ -36,7 +36,7 @@ feature 'StatsExport' do
 
     open_email(@current_user.email)
     stat_export_id = StatsExport.last.id
-    current_email.should have_content %r(stats/exports/#{stat_export_id})
+    current_email.body.should match %r(stats/exports/#{stat_export_id})
 
     go 'my', "/stats/exports/#{stat_export_id}"
     # File can't be downloaded directly from S3 because of Fog.mock!
