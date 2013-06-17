@@ -1,4 +1,5 @@
 require 'activemerchant'
+require 'custom_ogone_gateway'
 
 module OgoneWrapper
 
@@ -56,7 +57,7 @@ module OgoneWrapper
       signature_out:             ENV['OGONE_SIGNATURE_OUT']
     }
     ActiveMerchant::Billing::Base.mode = :test unless Rails.env == 'production'
-    @@_gateway ||= ActiveMerchant::Billing::OgoneGateway.new(gateway_config)
+    @@_gateway ||= CustomOgoneGateway.new(gateway_config)
   end
 
 end
