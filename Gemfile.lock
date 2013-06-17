@@ -266,7 +266,7 @@ GEM
       ruby-hmac
     formatador (0.2.4)
     google-analytics-turbolinks (0.0.1)
-    guard (1.8.0)
+    guard (1.8.1)
       formatador (>= 0.2.4)
       listen (>= 1.0.0)
       lumberjack (>= 1.0.2)
@@ -337,7 +337,7 @@ GEM
       multi_json
     libxml-ruby (2.2.2)
     liquid (2.5.0)
-    listen (1.2.1)
+    listen (1.2.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
