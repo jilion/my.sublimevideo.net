@@ -14,11 +14,6 @@ class VideoTag
     end
   end
 
-  def self.site_tokens(params = {})
-    # get_raw mutates the params hash, so dup it before (so it won't break in case of a retry)
-    get_raw('/private_api/video_tags/site_tokens', params.dup)[:parsed_data][:data][:site_tokens]
-  end
-
   def self.backbone_attributes
     [:uid, :uid_origin, :title, :poster_url, :sources_id, :sources_origin]
   end

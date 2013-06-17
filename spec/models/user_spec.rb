@@ -858,19 +858,6 @@ describe User do
 
       specify { User.with_page_loads_in_the_last_30_days.all.should =~ [user1, user2] }
     end
-
-    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons do
-      let!(:site1) { create(:site) }
-      let!(:site2) { create(:site) }
-      let!(:site3) { create(:site) }
-
-      before {
-        create(:billable_item, site: site1, item: @stats_addon_plan_2, state: 'subscribed')
-        VideoTag.should_receive(:site_tokens).with(with_invalid_uid: true) { [site2.token] }
-      }
-
-      specify { User.with_stats_realtime_addon_or_invalid_video_tag_data_uid.all.should =~ [site1.user, site2.user] }
-    end
   end # Scopes
 
 end
