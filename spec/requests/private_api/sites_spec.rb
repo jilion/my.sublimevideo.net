@@ -30,20 +30,17 @@ describe 'Private API Sites requests' do
   end
 
   describe 'index' do
-    describe 'caching strategy' do
-      it_behaves_like 'valid caching headers', cache_validation: false do
-        let(:url) { "private_api/sites.json" }
-        let(:update_record) { -> { site1.update_attribute(:hostname, 'example.com') } }
-      end
-    end
+    let(:url) { 'private_api/sites.json' }
+
+    it_behaves_like 'valid caching headers', cache_validation: false
 
     it 'supports :per scope' do
-      get 'private_api/sites.json', { per: 2 }, @env
+      get url, { per: 2 }, @env
       MultiJson.load(response.body).should have(2).sites
     end
 
     it 'supports :not_archived scope' do
-      get 'private_api/sites.json', { not_archived: true }, @env
+      get url, { not_archived: true }, @env
       body = MultiJson.load(response.body)
       body.should have(2).sites
       body[0]['token'].should eq site1.token
@@ -52,7 +49,7 @@ describe 'Private API Sites requests' do
     end
 
     it 'supports :created_on scope' do
-      get 'private_api/sites.json', { created_on: 2.days.ago }, @env
+      get url, { created_on: 2.days.ago }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
@@ -60,7 +57,7 @@ describe 'Private API Sites requests' do
     end
 
     it 'supports :not_tagged_with scope' do
-      get 'private_api/sites.json', { not_tagged_with: 'adult' }, @env
+      get url, { not_tagged_with: 'adult' }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
@@ -68,7 +65,7 @@ describe 'Private API Sites requests' do
     end
 
     it 'supports :select scope' do
-      get 'private_api/sites.json', { select: %w[token hostname] }, @env
+      get url, { select: %w[token hostname] }, @env
       video_tag = MultiJson.load(response.body).first
       video_tag.should have_key('token')
       video_tag.should have_key('hostname')
@@ -77,7 +74,7 @@ describe 'Private API Sites requests' do
     end
 
     it 'supports :without_hostnames scope' do
-      get 'private_api/sites.json', { without_hostnames: %w[google.com facebook.com] }, @env
+      get url, { without_hostnames: %w[google.com facebook.com] }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
@@ -85,7 +82,7 @@ describe 'Private API Sites requests' do
     end
 
     it 'supports :first_billable_plays_on_week scope' do
-      get 'private_api/sites.json', { first_billable_plays_on_week: Time.now.utc }, @env
+      get url, { first_billable_plays_on_week: Time.now.utc }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token
@@ -93,7 +90,7 @@ describe 'Private API Sites requests' do
     end
 
     it 'supports :user_id scope' do
-      get "private_api/sites.json", { user_id: site1.user_id }, @env
+      get url, { user_id: site1.user_id }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site1.token
@@ -102,12 +99,10 @@ describe 'Private API Sites requests' do
   end
 
   describe 'show' do
-    describe 'caching strategy' do
-      it_behaves_like 'valid caching headers' do
-        let(:url) { "private_api/sites/#{site1.token}.json" }
-        let(:expected_last_modified) { site1.updated_at }
-        let(:update_record) { -> { site1.update_attribute(:hostname, 'example.com') } }
-      end
+    let(:url) { "private_api/sites/#{site1.token}.json" }
+
+    it_behaves_like 'valid caching headers' do
+      let(:record) { site1 }
     end
 
     context 'non existing site' do
@@ -120,7 +115,7 @@ describe 'Private API Sites requests' do
 
     context 'existing site' do
       it 'finds site per token' do
-        get "private_api/sites/#{site1.token}.json", {}, @env
+        get url, {}, @env
         body = MultiJson.load(response.body)
         body['token'].should eq site1.token
         body['tags'].should eq ['adult']
@@ -134,7 +129,7 @@ describe 'Private API Sites requests' do
 
     context 'site belongs to given user' do
       it 'supports :user_id scope' do
-        get "private_api/sites/#{site1.token}.json", { user_id: site1.user_id }, @env
+        get url, { user_id: site1.user_id }, @env
         body = MultiJson.load(response.body)
         body['token'].should eq site1.token
         response.status.should eq 200
@@ -143,7 +138,7 @@ describe 'Private API Sites requests' do
 
     context 'site do not belong to given user' do
       it 'returns 404' do
-        get "private_api/sites/#{site1.token}.json", { user_id: site2.user_id }, @env
+        get url, { user_id: site2.user_id }, @env
         response.status.should eq 404
         MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
       end

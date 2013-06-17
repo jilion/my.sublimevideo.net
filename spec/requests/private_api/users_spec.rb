@@ -10,12 +10,9 @@ describe 'Private API Users requests' do
   end
 
   describe 'show' do
-    describe 'caching strategy' do
-      it_behaves_like 'valid caching headers' do
-        let(:url) { "private_api/users/#{user1.id}.json" }
-        let(:expected_last_modified) { user1.updated_at }
-        let(:update_record) { -> { user1.update_attribute(:email, 'joe@example.com') } }
-      end
+    it_behaves_like 'valid caching headers' do
+      let(:url) { "private_api/users/#{user1.id}.json" }
+      let(:record) { user1 }
     end
 
     context 'non existing user' do

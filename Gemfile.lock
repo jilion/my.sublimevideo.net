@@ -361,7 +361,7 @@ GEM
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     moped (1.5.0)
-    multi_json (1.7.6)
+    multi_json (1.7.7)
     multi_xml (0.5.4)
     multipart-post (1.2.0)
     net-scp (1.1.1)
@@ -526,7 +526,7 @@ GEM
       haml
       jquery-rails
       rails (>= 3.2.12)
-    sublime_video_private_api (1.5.0)
+    sublime_video_private_api (1.5.1)
       activesupport (>= 3.2)
       faraday-http-cache (~> 0.2.0)
       her (~> 0.6.1)
@@ -534,6 +534,7 @@ GEM
       multi_json
       rescue_me
       responders
+      timecop
     teabag (0.7.2)
       phantomjs (>= 1.8.1.1)
       railties (>= 3.2.5, < 5)

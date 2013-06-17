@@ -11,13 +11,10 @@ describe 'Private API Add-ons requests' do
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'
   end
 
-  describe 'index' do
-    describe 'caching strategy' do
-      it_behaves_like 'valid caching headers', cache_validation: false do
-        let(:url) { "private_api/sites/#{site.to_param}/addons.json" }
-        let(:update_record) { -> { site.update_attribute(:hostname, 'example.com') } }
-      end
-    end
+  describe 'index', :focus do
+    let(:url) { "private_api/sites/#{site.to_param}/addons.json" }
+
+    it_behaves_like 'valid caching headers', cache_validation: false
 
     context 'non existing site' do
       it 'returns 404' do
@@ -28,12 +25,12 @@ describe 'Private API Add-ons requests' do
     end
 
     it 'supports :per scope' do
-      get "private_api/sites/#{site.to_param}/addons.json", { per: 2 }, @env
+      get url, { per: 2 }, @env
       MultiJson.load(response.body).should have(2).addon_plans
     end
 
     it 'supports :state scope' do
-      get "private_api/sites/#{site.to_param}/addons.json", { state: 'subscribed' }, @env
+      get url, { state: 'subscribed' }, @env
       body = MultiJson.load(response.body)
       body.should have(1).addon_plan
       body[0]['addon'].should eq({
