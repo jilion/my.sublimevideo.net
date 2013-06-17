@@ -11,12 +11,10 @@ describe 'Private API Oauth2 tokens requests' do
   end
 
   describe 'show' do
-    describe 'caching strategy' do
-      it_behaves_like 'valid caching headers' do
-        let(:url) { "private_api/oauth2_tokens/#{token1.token}.json" }
-        let(:expected_last_modified) { token1.updated_at }
-        let(:update_record) { -> { token1.update_attribute(:expires_at, 3.days.from_now) } }
-      end
+    let(:url) { "private_api/oauth2_tokens/#{token1.token}.json" }
+
+    it_behaves_like 'valid caching headers' do
+      let(:record) { token1 }
     end
 
     context 'non existing Oauth2 token' do

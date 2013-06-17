@@ -13,12 +13,9 @@ describe 'Private API Kits requests' do
   end
 
   describe 'index' do
-    describe 'caching strategy' do
-      it_behaves_like 'valid caching headers', cache_validation: false do
-        let(:url) { "private_api/sites/#{site.to_param}/kits.json" }
-        let(:update_record) { -> { site.update_attribute(:hostname, 'example.com') } }
-      end
-    end
+    let(:url) { "private_api/sites/#{site.to_param}/kits.json" }
+
+    it_behaves_like 'valid caching headers', cache_validation: false
 
     context 'non existing site' do
       it 'returns 404' do
@@ -29,7 +26,7 @@ describe 'Private API Kits requests' do
     end
 
     it 'supports :per scope' do
-      get "private_api/sites/#{site.to_param}/kits.json", { per: 2 }, @env
+      get url, { per: 2 }, @env
       body = MultiJson.load(response.body)
       body.should have(2).kits
       body[0]['design'].should eq({
