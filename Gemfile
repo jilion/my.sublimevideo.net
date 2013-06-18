@@ -46,7 +46,7 @@ gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
-gem 'yajl-ruby', require: 'yajl' # json
+gem 'oj'
 
 gem 'state_machine'
 gem 'paper_trail'
