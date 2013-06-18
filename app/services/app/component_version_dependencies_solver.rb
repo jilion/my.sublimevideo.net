@@ -27,7 +27,7 @@ module App
     private
 
     def _add_component(component)
-      component.versions_for_stage(@stage).each do |version|
+      component.versions_for_stage(@stage).shift(3).each do |version|
         graph_component = @graph.artifacts(component.token, version.version)
         version.dependencies.each do |component_name, identifier|
           dep_component = ::App::Component.get(component_name)
