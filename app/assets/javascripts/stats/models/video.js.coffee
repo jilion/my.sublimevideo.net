@@ -120,6 +120,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     @limit     = parseInt(data.limit)
     @period    = data.period
     @sortBy    = data.sort_by
+    this.trigger('reset', this) # hackish?
     return data.videos
 
   clearCollectionAttributes: ->
