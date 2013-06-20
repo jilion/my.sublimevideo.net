@@ -19,7 +19,11 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.bind 'change', ->
       if MSVStats.period.get('type')?
         MSVStats.Routers.StatsRouter.setHighchartsUTC()
-        MSVStats.videos.customFetch()
+        MSVStats.videos.customFetch
+          success: (collection, response, options) ->
+            MSVStats.topVideosView.render()
+          error: (collection, response, options) ->
+            MSVStats.topVideosView.render()
 
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()

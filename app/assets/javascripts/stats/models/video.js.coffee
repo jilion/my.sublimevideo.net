@@ -120,7 +120,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     @limit     = parseInt(data.limit)
     @period    = data.period
     @sortBy    = data.sort_by
-    setTimeout (-> MSVStats.videos.trigger 'change'), 1000
+
     return data.videos
 
   clearCollectionAttributes: ->
@@ -173,7 +173,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       if (secondTime - video.addTime) > 10000 && video.isEmpty()
         this.remove(video, silent: true)
 
-  customFetch: ->
+  customFetch: (options = {}) ->
     this.clearCollectionAttributes()
     this.reset()
     if MSVStats.period.stats().isUnactive()
@@ -184,7 +184,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       if MSVStats.period.isSeconds()
         setTimeout this.fetchOldSeconds, 2000
       else
-        this.fetch()
+        this.fetch(options)
 
   fetchOldSeconds: =>
     $.get this.url(), (data) =>
