@@ -96,10 +96,11 @@ class MSVStats.Models.Video extends Backbone.Model
 class MSVStats.Collections.Videos extends Backbone.Collection
   model: MSVStats.Models.Video
 
-  initialize: ->
+  initialize: (fetchOptions) ->
     this.clearCollectionAttributes()
     @limit  = 5
     @sortBy = 'vv'
+    @fetchOptions = fetchOptions
 
   url: ->
     "/sites/#{MSVStats.site.get('token')}/stats/videos.json?#{this.urlParams()}"
@@ -124,8 +125,8 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     return data.videos
 
   clearCollectionAttributes: ->
-    @total     = null
-    @period    = null
+    @total  = null
+    @period = null
 
   change: (options = {}) ->
     @sortBy = options.sortBy if options.sortBy?
@@ -133,7 +134,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     if @period == 'seconds'
       this.trigger('reset', this)
     else
-      this.fetch()
+      this.fetch(@fetchOptions)
 
   customModels: ->
     if @period == 'seconds'
@@ -173,9 +174,9 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       if (secondTime - video.addTime) > 10000 && video.isEmpty()
         this.remove(video, silent: true)
 
-  customFetch: (options = {}) ->
+  customFetch: ->
     this.clearCollectionAttributes()
-    this.reset()
+
     if MSVStats.period.stats().isUnactive()
       # no need to fetch any data...
       @period = MSVStats.period.get('type')
@@ -184,7 +185,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       if MSVStats.period.isSeconds()
         setTimeout this.fetchOldSeconds, 2000
       else
-        this.fetch(options)
+        this.fetch(@fetchOptions)
 
   fetchOldSeconds: =>
     $.get this.url(), (data) =>

@@ -3,7 +3,6 @@ class MSVStats.Views.TopVideosView extends Backbone.View
 
   initialize: ->
     this._listenToModelsEvents()
-    this.render()
 
   events: ->
     'click a.play.active': '_prepareAndPlayVideo'
@@ -17,7 +16,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
   #
   _listenToModelsEvents: ->
     this.listenTo(@options.period, 'change', this.render)
-    this.listenTo(@options.videos, 'change reset', this.render)
+    this.listenTo(@options.videos, 'change', this.render)
 
   render: =>
     if MSVStats.videos.isReady()
