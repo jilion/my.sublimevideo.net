@@ -10,8 +10,8 @@
         %th.site
           .wrap
             %strong
-              = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
               Site
+              = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
             - unless @sites.one?
               .sorting
                 = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
