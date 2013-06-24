@@ -9,12 +9,15 @@
     %small
       = viped(invoice.user) do
         - link_to invoice.user.name_or_email, [:edit, :admin, invoice.user], title: invoice.user.email
-      = "[#{invoice.user.state}]" unless invoice.user.active?
+      = " [#{invoice.user.state}]" unless invoice.user.active?
 
   %td.site
     %small
       = admin_links_to_hostnames(invoice.site)
-      = "[#{invoice.site.state}]" unless invoice.site.active?
+      = " [#{invoice.site.state}]" unless invoice.site.active?
+
+  %td.number
+    %small= number_with_delimiter(invoice.site.last_30_days_billable_video_views)
 
   %td.period
     %small
