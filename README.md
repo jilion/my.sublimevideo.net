@@ -1,5 +1,5 @@
 # SublimeVideo's "Service" app
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/repos/50ee7c0013d6373a44010c21/feed)
+[![Code Climate](https://codeclimate.com/repos/50ee7c0013d6373a44010c21/badges/b149829029148de917ed/gpa.png)](https://codeclimate.com/repos/50ee7c0013d6373a44010c21/feed)
 
 - https://my.sublimevideo.net (https://my.sublimevideo-staging.net)
 - https://admin.sublimevideo.net (https://admin.sublimevideo-staging.net)
