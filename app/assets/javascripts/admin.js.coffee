@@ -43,6 +43,7 @@ AdminSublimeVideo.UI.prepareExpandableItems = ->
 AdminSublimeVideo.documentReady = ->
   AdminSublimeVideo.UI.prepareComponentSelector()
   AdminSublimeVideo.UI.prepareExpandableItems()
+  MySublimeVideo.UI.TableSortLinks.setup()
 
   if (searchInput = $('#search_input')).exists()
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
@@ -70,9 +71,10 @@ AdminSublimeVideo.documentReady = ->
 
   ## Filters
   if (filters = $('.filters')).exists()
-    filters.find('a.remote').each (index, link) ->
+    filters.find('a').each (index, link) ->
       $(this).click (e) ->
-        filters.find('a.remote.active').removeClass 'active'
+        SublimeVideo.UI.Table.showSpinner()
+        filters.find('a.active').removeClass 'active'
         $(link).addClass 'active'
 
   ## Range form

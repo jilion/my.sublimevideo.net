@@ -1,20 +1,20 @@
 %ul.filters
   %li
-    = link_to "#{content_tag(:strong, display_integer(Site.with_state(:active).size))} Active".html_safe, admin_sites_path(with_state: 'active'), remote: true, class: 'remote'
+    = link_to "#{content_tag(:strong, display_integer(Site.with_state(:active).size))} Active".html_safe, admin_sites_path(with_state: 'active')
     %ul{ style: 'padding:5px 0 5px 18px;' }
-      %li= link_to "#{content_tag(:strong, display_integer(Site.free.size))} Free".html_safe, admin_sites_path(free: true), remote: true, class: 'remote'
-      %li= link_to "#{content_tag(:strong, display_integer(Site.paying.size))} Paying".html_safe, admin_sites_path(paying: true), remote: true, class: 'remote'
-  %li= link_to "#{content_tag(:strong, display_integer(Site.with_state(:suspended).size))} Suspended".html_safe, admin_sites_path(with_state: 'suspended'), remote: true, class: 'remote'
-  %li= link_to "#{content_tag(:strong, display_integer(Site.with_state(:archived).size))} Archived".html_safe, admin_sites_path(with_state: 'archived'), remote: true, class: 'remote'
+      %li= link_to "#{content_tag(:strong, display_integer(Site.free.size))} Free".html_safe, admin_sites_path(free: true)
+      %li= link_to "#{content_tag(:strong, display_integer(Site.paying.size))} Paying".html_safe, admin_sites_path(paying: true)
+  %li= link_to "#{content_tag(:strong, display_integer(Site.with_state(:suspended).size))} Suspended".html_safe, admin_sites_path(with_state: 'suspended')
+  %li= link_to "#{content_tag(:strong, display_integer(Site.with_state(:archived).size))} Archived".html_safe, admin_sites_path(with_state: 'archived')
 
 = "-----------------------------------------------"
 
 %p.filters
-  = link_to "#{content_tag(:strong, display_integer(Site.active.with_extra_hostnames.size))} With extra hostnames".html_safe, admin_sites_path(with_state: 'active', with_extra_hostnames: true), remote: true, class: 'remote'
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_extra_hostnames.size))} With extra hostnames".html_safe, admin_sites_path(with_state: 'active', with_extra_hostnames: true)
   |
-  = link_to "#{content_tag(:strong, display_integer(Site.active.with_wildcard.size))} With wildcard".html_safe, admin_sites_path(with_state: 'active', with_wildcard: true), remote: true, class: 'remote'
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_wildcard.size))} With wildcard".html_safe, admin_sites_path(with_state: 'active', with_wildcard: true)
   |
-  = link_to "#{content_tag(:strong, display_integer(Site.active.with_path.size))} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true), remote: true, class: 'remote'
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_path.size))} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true)
 
 = "-----------------------------------------------"
 

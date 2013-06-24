@@ -13,8 +13,8 @@
 #= require stats
 #= require video_code
 #
-# require google-analytics-turbolinks
-# require turbolinks
+#= require google-analytics-turbolinks
+#= require turbolinks
 
 
 window.MySublimeVideo =
@@ -43,9 +43,9 @@ MySublimeVideo.UI.prepareLoaderCodePopups = ->
   $('a.loader_code').each ->
     new MySublimeVideo.UI.LoaderCode(link: $(this))
 
-MySublimeVideo.UI.prepareAddASitePopup = ->
-  if ($link = $('a#js-add_a_video')).exists()
-    new MySublimeVideo.UI.AddAVideo(link: $link)
+# MySublimeVideo.UI.prepareAddAVideoPopup = ->
+#   if ($link = $('a#js-add_a_video')).exists()
+#     new MySublimeVideo.UI.AddAVideo(link: $link)
 
 MySublimeVideo.UI.prepareFlashNotices = ->
   $('#flash .notice').each ->
@@ -97,7 +97,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFlashNotices()
   MySublimeVideo.UI.prepareHidableNotices()
   MySublimeVideo.UI.prepareLoaderCodePopups()
-  MySublimeVideo.UI.prepareAddASitePopup()
+  # MySublimeVideo.UI.prepareAddAVideoPopup()
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
@@ -107,6 +107,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()
   MySublimeVideo.UI.prepareVideoTagsTable()
+  MySublimeVideo.UI.TableSortLinks.setup()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
@@ -122,7 +123,7 @@ $(window).bind 'page:change', ->
   SublimeVideo.documentReady()
   MySublimeVideo.documentReady()
   MySublimeVideo.prepareVideosAndLightboxes()
-  SublimeVideo.UI.updateActiveItemMenus()
+  # SublimeVideo.UI.updateActiveItemMenus()
 
 $(document).ready ->
   MySublimeVideo.documentReady()

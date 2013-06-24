@@ -137,7 +137,7 @@ module Admin::SitesHelper
     text = FILTER_TITLES[:addon_plan] % [addon_plan.title, display_integer(Site.with_addon_plan(full_addon_plan_key).size)]
     href = admin_sites_path(with_addon_plan: full_addon_plan_key)
 
-    link_to(text.html_safe, href, remote: true, class: 'remote')
+    link_to(text.html_safe, href)
   end
 
   def _joined_hostname_links(site, hostnames)

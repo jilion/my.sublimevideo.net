@@ -24,7 +24,7 @@ module Admin::AdminHelper
 
   def display_tags_list(tags, filter_name = :tagged_with)
     links = tags.reduce([]) do |a, e|
-      a << link_to("#{e.name} (#{display_integer(e.count)})", url_for(filter_name => e.name), remote: true, class: 'remote')
+      a << link_to("#{e.name} (#{display_integer(e.count)})", url_for(filter_name => e.name))
     end
     raw links.join(' | ')
   end
