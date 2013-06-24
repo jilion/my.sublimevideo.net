@@ -1,6 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, :json, only: [:index]
+  respond_to :json, only: [:index]
 
   before_filter :redirect_suspended_user
   before_filter :activate_deal_from_cookie, only: [:index]
@@ -16,7 +16,6 @@ class SitesController < ApplicationController
 
     respond_with(@sites, per_page: 10) do |format|
       format.html
-      format.js
       format.json { render json: @sites.to_backbone_json }
     end
   end

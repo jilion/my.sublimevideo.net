@@ -24,8 +24,7 @@ module LinksHelper
 
     url_params = params.reject { |k, v| k =~ /by_.*|page/ }
     link_to(url_for(url_params.merge("by_#{field}" => way)),
-            class: ['sort remote', field, class_active, class_up].join(' '),
-            remote: true) do
+            class: ['sort', field, class_active, class_up].join(' ')) do
       content_tag(:span, options[:label], class: 'arrow', title: options[:title])
     end
   end

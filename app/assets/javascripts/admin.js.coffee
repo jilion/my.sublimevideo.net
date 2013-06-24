@@ -43,6 +43,7 @@ AdminSublimeVideo.UI.prepareExpandableItems = ->
 AdminSublimeVideo.documentReady = ->
   AdminSublimeVideo.UI.prepareComponentSelector()
   AdminSublimeVideo.UI.prepareExpandableItems()
+  MySublimeVideo.UI.TableSortLinks.setup()
 
   if (searchInput = $('#search_input')).exists()
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
