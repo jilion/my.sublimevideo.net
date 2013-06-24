@@ -162,6 +162,7 @@ GEM
     celluloid (0.14.1)
       timers (>= 1.0.0)
     certified (0.1.1)
+    chartkick (1.1.2)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.1)
@@ -266,6 +267,8 @@ GEM
       ruby-hmac
     formatador (0.2.4)
     google-analytics-turbolinks (0.0.1)
+    groupdate (1.0.2)
+      activerecord (>= 3.0.0)
     guard (1.8.1)
       formatador (>= 0.2.4)
       listen (>= 1.0.0)
@@ -618,6 +621,7 @@ DEPENDENCIES
   carrierwave
   carrierwave-mongoid
   certified
+  chartkick
   chosen-rails!
   cocaine
   coffee-rails
@@ -642,6 +646,7 @@ DEPENDENCIES
   ffaker
   fog (~> 1.12)
   google-analytics-turbolinks
+  groupdate
   guard-livereload
   guard-pow
   guard-rspec
