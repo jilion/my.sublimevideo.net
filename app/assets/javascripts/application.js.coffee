@@ -13,8 +13,8 @@
 #= require stats
 #= require video_code
 #
-# require google-analytics-turbolinks
-# require turbolinks
+#= require google-analytics-turbolinks
+#= require turbolinks
 
 
 window.MySublimeVideo =
