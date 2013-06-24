@@ -44,6 +44,6 @@ class MSVVideoCode.Views.Preview extends Backbone.View
 
   _settings: ->
     s = {}
-    s['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
+    s['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') }
 
     _.extend(s, MSVVideoCode.kits.selected.get('settings'), MSVVideoCode.video.get('settings'))
