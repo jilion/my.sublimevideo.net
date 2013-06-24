@@ -1,6 +1,7 @@
 #= require sublimevideo
 #= require underscore
 #= require highstock/highstock
+#= require chartkick
 #= require mousetrap.min
 #= require chosen-jquery
 #

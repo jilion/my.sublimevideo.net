@@ -10,6 +10,7 @@ require 'populate/people_populator'
 require 'populate/invoices_populator'
 require 'populate/recurring_stats_populator'
 require 'populate/sites_populator'
+require 'populate/feedbacks_populator'
 require 'populate/trends_populator'
 
 module Populate
@@ -108,6 +109,10 @@ module Populate
 
     def recurring_stats(site_token)
       RecurringStatsPopulator.new.execute(Site.find_by_token(site_token))
+    end
+
+    def feedbacks
+      FeedbacksPopulator.new.execute
     end
 
     def trends
