@@ -1,3 +1,7 @@
-= title_and_content_header("Feedbacks")
+= title_and_content_header('Trial & Cancellation feedbacks')
+
+= line_chart(Feedback.where(kind: 'account_cancellation').group_by_month(:created_at, 'Bern').count, library: { title: { text: '# of cancellation per week' } })
+
+= pie_chart(Feedback.group(:reason).count, library: { title: { text: 'Reasons for not using SV / cancelling' } })
 
 #feedbacks_table_wrap= render 'feedbacks'

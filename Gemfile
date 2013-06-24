@@ -29,6 +29,10 @@ gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'regru-premaile
 gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
 gem 'google-analytics-turbolinks'
 
+# Admin charts
+gem 'groupdate'
+gem 'chartkick'
+
 # Auth / invitations
 gem 'devise', '~> 2.1.2'
 gem 'devise_invitable'

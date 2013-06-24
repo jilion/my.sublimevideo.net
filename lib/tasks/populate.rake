@@ -24,6 +24,7 @@ namespace :db do
       timed { Populate.invoices }
       timed { Populate.stats(args.login) }
       timed { Populate.trends }
+      timed { Populate.feedbacks }
       # timed { Populate.deals }
       timed { Populate.mail_templates }
     end
@@ -81,6 +82,11 @@ namespace :db do
     desc "Create fake trends for the admin dashboard"
     task trends: :environment do
       timed { Populate.trends }
+    end
+
+    desc "Create fake feedbacks"
+    task feedbacks: :environment do
+      timed { Populate.feedbacks }
     end
 
     desc "Load Deals development fixtures."
