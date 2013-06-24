@@ -123,7 +123,7 @@ $(window).bind 'page:change', ->
   SublimeVideo.documentReady()
   MySublimeVideo.documentReady()
   MySublimeVideo.prepareVideosAndLightboxes()
-  SublimeVideo.UI.updateActiveItemMenus()
+  # SublimeVideo.UI.updateActiveItemMenus()
 
 $(document).ready ->
   MySublimeVideo.documentReady()
