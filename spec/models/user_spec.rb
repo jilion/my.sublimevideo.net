@@ -89,62 +89,6 @@ describe User do
         end
       end
     end
-
-    context "when update email" do
-      it "should validate current_password presence" do
-        user = create(:user)
-        user.update_attributes(email: "bob@doe.com").should be_false
-        user.errors[:current_password].should eq ["can't be blank"]
-      end
-
-      it "should validate current_password" do
-        user = create(:user)
-        user.update_attributes(email: "bob@doe.com", current_password: "wrong").should be_false
-        user.errors[:current_password].should eq ["is invalid"]
-      end
-
-      it "should not validate current_password with other errors" do
-        user = create(:user)
-        user.update_attributes(password: "newone", email: 'wrong').should be_false
-        user.errors[:current_password].should be_empty
-      end
-    end
-
-    context "when update password" do
-      it "should validate current_password presence" do
-        user = create(:user)
-        user.update_attributes(password: "newone").should be_false
-        user.errors[:current_password].should eq ["can't be blank"]
-      end
-
-      it "should validate current_password" do
-        user = create(:user)
-        user.update_attributes(password: "newone", current_password: "wrong").should be_false
-        user.errors[:current_password].should eq ["is invalid"]
-      end
-
-      it "should not validate current_password with other errors" do
-        user = create(:user)
-        user.update_attributes(password: "newone", email: '').should be_false
-        user.errors[:current_password].should be_empty
-      end
-    end
-
-    context "when archive" do
-      it "should validate current_password presence" do
-        user = create(:user)
-        user.archive.should be_false
-        user.errors[:current_password].should eq ["can't be blank"]
-      end
-
-      it "should validate current_password" do
-        user = create(:user)
-        user.current_password = 'wrong'
-        user.archive.should be_false
-        user.errors[:current_password].should eq ["is invalid"]
-      end
-
-    end
   end
 
   context "invited" do
@@ -169,16 +113,7 @@ describe User do
     describe "#archive" do
       [:active, :suspended].each do |state|
         context "from #{state} state" do
-          before do
-            user.update_attribute(:state, state)
-          end
-
-          it "requires current_password" do
-            user.state.should eq state
-            user.current_password = nil
-
-            expect { user.archive! }.to raise_error(StateMachine::InvalidTransition)
-          end
+          before { user.update_attribute(:state, state) }
 
           it "sets the user to archived" do
             user.state.should eq state
@@ -383,33 +318,33 @@ describe User do
   end
 
   describe "Instance Methods" do
-    subject { create(:user) }
+    let(:user) { create(:user) }
 
     describe "#notice_hidden?" do
       before do
-        subject.hidden_notice_ids << 1
-        subject.hidden_notice_ids.should eq [1]
+        user.hidden_notice_ids << 1
+        user.hidden_notice_ids.should eq [1]
       end
 
-      specify { subject.notice_hidden?(1).should be_true }
-      specify { subject.notice_hidden?("1").should be_true }
-      specify { subject.notice_hidden?(2).should be_false }
-      specify { subject.notice_hidden?('foo').should be_false }
+      specify { user.notice_hidden?(1).should be_true }
+      specify { user.notice_hidden?("1").should be_true }
+      specify { user.notice_hidden?(2).should be_false }
+      specify { user.notice_hidden?('foo').should be_false }
     end
 
     describe "#active_for_authentication?" do
       it "should be active for authentication when active" do
-        subject.should be_active_for_authentication
+        user.should be_active_for_authentication
       end
 
       it "should be active for authentication when suspended in order to allow login" do
-        subject.suspend
-        subject.should be_active_for_authentication
+        user.suspend
+        user.should be_active_for_authentication
       end
 
       it "should not be active for authentication when archived" do
-        subject.archive
-        subject.should be_active_for_authentication
+        user.archive
+        user.should_not be_active_for_authentication
       end
     end
 

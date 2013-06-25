@@ -111,10 +111,10 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                          new_user_session GET      /login(.:format)                                          users/sessions#new
                              user_session POST     /login(.:format)                                          users/sessions#create
                      destroy_user_session GET      /logout(.:format)                                         users/sessions#destroy
-                            user_password POST     /password(.:format)                                       users/passwords#create
-                        new_user_password GET      /password/new(.:format)                                   users/passwords#new
-                       edit_user_password GET      /password/edit(.:format)                                  users/passwords#edit
-                                          PUT      /password(.:format)                                       users/passwords#update
+                            user_password POST     /password(.:format)                                       devise/passwords#create
+                        new_user_password GET      /password/new(.:format)                                   devise/passwords#new
+                       edit_user_password GET      /password/edit(.:format)                                  devise/passwords#edit
+                                          PUT      /password(.:format)                                       devise/passwords#update
                         user_confirmation POST     /confirmation(.:format)                                   users/confirmations#create
                     new_user_confirmation GET      /confirmation/new(.:format)                               users/confirmations#new
                                           GET      /confirmation(.:format)                                   users/confirmations#show

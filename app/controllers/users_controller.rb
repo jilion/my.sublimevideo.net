@@ -39,21 +39,29 @@ class UsersController < Devise::RegistrationsController
 
   # PUT /account
   def update
-    @user = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+    self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+    prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
-    if @user.update_attributes(params[resource_name])
-      if is_navigational_format?
-        if @user.respond_to?(:pending_reconfirmation?) && @user.pending_reconfirmation?
-          flash_key = :update_needs_confirmation
-        end
-        set_flash_message :notice, flash_key || :updated
-      end
-      sign_in resource_name, @user, bypass: true
-      Librato.increment 'users.events', source: 'update'
-      redirect_to params[:more_info_form] ? sites_url : after_update_path_for(@user)
+    successfully_updated = if needs_password?(resource, params)
+      resource.update_with_password(params[resource_name])
     else
-      clean_up_passwords @user
-      respond_with @user
+      # remove the virtual current_password attribute update_without_password
+      # doesn't know how to ignore it
+      params[resource_name].delete(:current_password)
+      resource.update_without_password(params[resource_name])
+    end
+
+    if successfully_updated
+      if is_navigational_format?
+        flash_key = update_needs_confirmation?(resource, prev_unconfirmed_email) ? :update_needs_confirmation : :updated
+        set_flash_message :notice, flash_key
+      end
+      sign_in resource_name, resource, bypass: true
+      Librato.increment 'users.events', source: 'update'
+      respond_with resource, location: (params[:more_info_form] ? sites_url : after_update_path_for(resource))
+    else
+      clean_up_passwords resource
+      respond_with resource
     end
   end
 
@@ -76,6 +84,15 @@ class UsersController < Devise::RegistrationsController
       format.html { redirect_to [:sites] }
       format.js { render nothing: true }
     end
+  end
+
+  private
+
+  # check if we need password to update user data
+  # ie if password or email was changed
+  # extend this as needed
+  def needs_password?(user, params)
+    params[:user][:password].present?
   end
 
 end

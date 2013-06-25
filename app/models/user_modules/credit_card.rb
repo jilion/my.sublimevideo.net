@@ -88,7 +88,7 @@ module UserModules::CreditCard
       end
       reset_credit_card
 
-      skip_password(:save!)
+      save!
     end
 
     # Called from User#after_save if cc_register
@@ -198,7 +198,7 @@ module UserModules::CreditCard
       self.last_failed_cc_authorize_status = auth['STATUS'].to_i
       self.last_failed_cc_authorize_error  = auth['NCERRORPLUS']
 
-      skip_password(:save!)
+      save!
     end
 
     # We need the '_will_change!' calls since this methods is called in an after_save callback...
@@ -211,7 +211,7 @@ module UserModules::CreditCard
       end
       _reset_last_failed_cc_authorize_fields
 
-      skip_password(:save!)
+      save!
     end
 
     def _reset_credit_card_attributes

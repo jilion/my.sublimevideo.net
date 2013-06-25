@@ -1,15 +1,27 @@
 = title_and_content_header("My Account")
 
 .content_left
-  = form_for @user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
-    - if params[:action] == 'update' && @user.errors[:current_password].present?
-      = password_box resource: @user, f: f, cancel_url: [:edit, :user], password_state: "current"
-
-    = render 'users/credentials_form_fields', f: f
+  %h3.section_title Email
+  = form_for resource, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_email" } do |f|
+    .entry.email
+      = f.label :email, "Email", class: "icon"
+      = f.email_field :email, class: "text", placeholder: "Email", required: true
 
     .entry.update
-      = f.submit "Update", class: "submit blue_button", id: "user_credentials_submit"
+      = f.submit "Update", class: "submit blue_button"
+    .break
 
+  %h3.section_title Password
+  = form_for resource, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_password" } do |f|
+    .entry.password.current_password
+      = f.label :current_password, 'Current password', class: "icon"
+      = f.password_field :current_password, placeholder: 'Current password', class: "text", required: true
+    .entry.password
+      = f.label :password, "New password", class: "icon"
+      = f.password_field :password, class: "text", placeholder: "New password", autocomplete: :off
+
+    .entry.update
+      = f.submit "Update", class: "submit blue_button"
     .break
 
   %h3.section_title More information about you
@@ -33,10 +45,13 @@
       %h3.section_title= "Cancel account"
       %p= "Please understand that:"
       %ul
-        %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be cancelled."
-        %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
-        %li= "We do not offer refunds."
-      %p= link_to 'Cancel account', account_cancellation_url, class: "submit link_looks cancel delete"
+        %li
+          All your
+          = link_to 'sites', sites_path, class: 'hl'
+          will be cancelled.
+        %li All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available.
+        %li We do not offer refunds.
+      %p= link_to 'Cancel account', account_cancellation_url, class: 'submit link_looks cancel delete'
 
     .spacer
 .spacer
