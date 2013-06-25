@@ -184,8 +184,6 @@ MySublimeVideo::Application.routes.draw do
       end
 
       delete '/notice/:id' => 'users#hide_notice'
-
-      post '/password/validate' => 'users/passwords#validate'
     end
 
     %w[sign_up register].each         { |action| get action => redirect('/signup') }

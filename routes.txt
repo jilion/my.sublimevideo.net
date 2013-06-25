@@ -129,7 +129,6 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                      account_cancellation GET      /account/cancel(.:format)                                 users/cancellations#new
                                    cancel POST     /account/cancel(.:format)                                 users/cancellations#create
                                           DELETE   /notice/:id(.:format)                                     users#hide_notice
-                        password_validate POST     /password/validate(.:format)                              users/passwords#validate
                                   sign_up GET      /sign_up(.:format)                                        :controller#sign_up
                                  register GET      /register(.:format)                                       :controller#register
                                    log_in GET      /log_in(.:format)                                         :controller#log_in

@@ -37,9 +37,9 @@ group :backend do
           File.open('routes.txt', 'w') do |f|
             f << routes
           end
-          n "Updated routes.txt", "Computed new routes", :success
+          n 'Updated routes.txt', 'Computed new routes', :success
         else
-          n "'bundle exec rake routes failed'" ,"Error computing routes!", :failed
+          n "'bundle exec rake routes failed'", 'Error computing routes!', :failed
         end
       end
     end

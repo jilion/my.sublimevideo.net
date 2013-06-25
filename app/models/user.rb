@@ -162,8 +162,12 @@ class User < ActiveRecord::Base
 
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
-  def self.find_for_authentication(conditions = {})
-    where(conditions).where { state != 'archived' }.first
+  def self.find_for_authentication(tainted_conditions)
+    super(tainted_conditions.merge(state: %w[active suspended]))
+  end
+
+  def self.find_first_by_auth_conditions(tainted_conditions, opts={})
+    super(tainted_conditions, opts.merge(state: %w[active suspended]))
   end
 
   # ====================
