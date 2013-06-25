@@ -4,7 +4,7 @@ class VideoTagsController < ApplicationController
   before_filter :require_video_early_access, only: [:index]
   before_filter :find_site_by_token!
   before_filter :find_sites_or_redirect_to_new_site, only: [:index]
-  respond_to :html, :js, only: [:index]
+  respond_to :html, only: [:index]
   respond_to :json, only: [:show]
 
   FILTER_PARAMS = %w[

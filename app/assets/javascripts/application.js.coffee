@@ -43,10 +43,6 @@ MySublimeVideo.UI.prepareLoaderCodePopups = ->
   $('a.loader_code').each ->
     new MySublimeVideo.UI.LoaderCode(link: $(this))
 
-# MySublimeVideo.UI.prepareAddAVideoPopup = ->
-#   if ($link = $('a#js-add_a_video')).exists()
-#     new MySublimeVideo.UI.AddAVideo(link: $link)
-
 MySublimeVideo.UI.prepareFlashNotices = ->
   $('#flash .notice').each ->
     new MySublimeVideo.UI.Notice(element: $(this)).setupDelayedHiding()
@@ -97,7 +93,6 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFlashNotices()
   MySublimeVideo.UI.prepareHidableNotices()
   MySublimeVideo.UI.prepareLoaderCodePopups()
-  # MySublimeVideo.UI.prepareAddAVideoPopup()
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
@@ -123,7 +118,6 @@ $(window).bind 'page:change', ->
   SublimeVideo.documentReady()
   MySublimeVideo.documentReady()
   MySublimeVideo.prepareVideosAndLightboxes()
-  # SublimeVideo.UI.updateActiveItemMenus()
 
 $(document).ready ->
   MySublimeVideo.documentReady()
