@@ -139,11 +139,6 @@ class User < ActiveRecord::Base
   scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
   scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
-  scope :with_stats_realtime_addon_or_invalid_video_tag_data_uid, -> {
-    site_with_realtime_addon_tokens = Site.with_addon_plan('stats-realtime').select(:token).uniq.map(&:token)
-    site_with_invalide_video_tag_data_uid = VideoTag.site_tokens(with_invalid_uid: true)
-    joins(:sites).where(sites: { token: (site_with_realtime_addon_tokens + site_with_invalide_video_tag_data_uid).uniq })
-  }
 
   # sort
   scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way}, users.email #{way}") }
