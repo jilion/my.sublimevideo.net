@@ -8,30 +8,22 @@
       %th.video
         .wrap
           %strong
-            = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
             Video
+            = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
           - unless @video_tags.one?
             .sorting
-              = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
-              = link_to_sort :name
-              = link_to_sort :state, label: "! state"
+              = link_to_sort :date, default_way: 'desc', default: true, label: "latest"
+              = link_to_sort :title
       %th.usage
         .wrap
           - if @video_tags.one?
-            -# TODO Octave (Last 30 Days icon)
-            Plays (!)
+            Plays (Last 30 Days)
           - else
-            -# TODO Thibaud sort with aggregation framework?
-            .sorting= link_to_sort :last_30_days_billable_views, default_way: 'desc', label: "! Plays (!)"
+            .sorting= link_to_sort :last_30_days_starts, default_way: 'desc', label: "Plays (Last 30 Days)"
       %th.code
-        .wrap
-          - if @video_tags.one?
-            Embed code
-          - else
-            -# TODO Thibaud enable sort
-            .sorting= link_to_sort :embed_code, label: "! embed code"
+        .wrap= 'Embed code'
       %th.status
-        .wrap= "Status"
+        .wrap= 'Status'
     - if @video_tags.present?
       = render @video_tags
     - else

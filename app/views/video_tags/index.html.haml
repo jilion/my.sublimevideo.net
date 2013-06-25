@@ -3,51 +3,16 @@
 
 #site.video_tags
 
-  -##video_tags_filter
-  -#  -# TODO Octave Search / Filter form design
-  -#  = form_tag site_video_tags_path, method: :get, id: 'js-video_tags_filter_form', remote: true do
-  -#    - (params.keys & VideoTagsController::SORT_PARAMS).each do |sort_param|
-  -#      = hidden_field_tag sort_param, params[sort_param], class: 'js-video_tags_sort_param'
-  -#    = text_field_tag :search, params[:search], size: 20, placeholder: "Search", autocomplete: 'off', id: 'js-video_tags_filter_search'
-  -#    = select_tag :filter, videos_table_filter_options_for_select, id: 'js-video_tags_filter_select'
+  #video_tags_filter
+    -# TODO Octave Search / Filter form design
+    = form_tag site_video_tags_path, method: :get, id: 'js-video_tags_filter_form', remote: true do
+      - (params.keys & VideoTagsController::SORT_PARAMS).each do |sort_param|
+        = hidden_field_tag sort_param, params[sort_param], class: 'js-video_tags_sort_param'
+      = text_field_tag :search, params[:search], size: 20, placeholder: "Search", autocomplete: 'off', id: 'js-video_tags_filter_search'
+      = select_tag :filter, videos_table_filter_options_for_select, id: 'js-video_tags_filter_select'
 
-  -#= link_to '#', class: "add_a_video green_button", id: 'js-add_a_video' do
-  -#  %span= "Add a video"
-  -#%div{ id: "js-add_a_video_popup_content", style: 'display:none' }= render 'add_a_video', site: @site
+  = link_to 'Publish video', new_site_video_code_path(@site), class: "add_a_video green_button"
 
   .spacer
 
-  -##video_tags_table_wrap= render 'video_tags'
-
-  %h3 UNDER CONSTRUCTION
-
-  -##video_upload
-  -#  %h3 Upload a video
-  -#  #container
-  -#    #filelist No runtime found.
-  -#    %br
-  -#    %a#pickfiles{ href: '#' } [Select files]
-  -#    %a#uploadfiles{ href: '#' } [Upload files]
-  -#
-  -#  -#%form#file_upload{ action: S3Wrapper.bucket_url(S3Wrapper.buckets[:videos_upload]), method: 'post', enctype: 'multipart/form-data' }
-  -#  -#  -#%form#file_upload{ action: '', method: 'post', enctype: 'multipart/form-data', :'data-remote' => 'true' }
-  -#  -#  - upload_params_for(@site, bucket: S3Wrapper.buckets[:videos_upload]).each do |key, value|
-  -#  -#    = hidden_field_tag key, value
-  -#  -#  = file_field_tag :file, multiple: ''
-  -#  -#  = submit_tag 'Upload!'
-  -#
-  -#  :coffee
-  -#    MySublimeVideo.uploader = new MySublimeVideo.Helpers.Uploader
-  -#      url: '#{S3Wrapper.bucket_url(S3Wrapper.buckets[:videos_upload])}'
-  -#      multipart_params: #{upload_params(bucket: S3Wrapper.buckets[:videos_upload], s3_key: "#{@site.token}/${filename}", success_action_redirect: site_videos_url(@site)).to_json}
-  -#
-  -#    # form = $('#file_upload')
-  -#    # form.on 'submit', (e) ->
-  -#    #   e.preventDefault()
-  -#    #   $.ajax
-  -#    #     url: form.attr('action')
-  -#    #     type: 'post'
-  -#    #     data: form.serialize()
-  -#    #     success: (data, textStatus, jqXHR) ->
-  -#    #       console.log data
-  -#    #       console.log textStatus
+  #video_tags_table_wrap= render 'video_tags'

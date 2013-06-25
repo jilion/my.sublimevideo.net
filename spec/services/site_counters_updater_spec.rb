@@ -60,7 +60,7 @@ describe SiteCountersUpdater do
     end
 
     it 'updates site video tags counter from the last 30 days' do
-      VideoTag.should_receive(:count).with(site_token: site.token, last_30_days_active: true) { 2 }
+      VideoTag.should_receive(:count).with(site_token: site.token, last_30_days_active: true, with_valid_uid: true) { 2 }
 
       described_class.new(site).update_last_30_days_counters
 

@@ -51,6 +51,23 @@ describe VideoTagsHelper do
     end
   end
 
+  describe "#proxied_image_tag" do
+    it "returns image tag via images.weserv.nl" do
+      Helper.proxied_image_tag('http://sublimevideo.net/image.jpg').should eq(
+        "<img alt=\"Image\" src=\"https://images.weserv.nl?url=sublimevideo.net/image.jpg\" />")
+    end
+
+    it "returns image tag via images.weserv.nl with size options" do
+      Helper.proxied_image_tag('http://sublimevideo.net/image.jpg', size: '60x40').should eq(
+        "<img alt=\"Image\" height=\"40\" src=\"https://images.weserv.nl?url=sublimevideo.net/image.jpg&amp;w=60&amp;h=40\" width=\"60\" />")
+    end
+
+    it "returns image tag via images.weserv.nl with scheme less url" do
+      Helper.proxied_image_tag('sublimevideo.net/image.jpg', size: '60x40').should eq(
+        "<img alt=\"Image\" height=\"40\" src=\"https://images.weserv.nl?url=sublimevideo.net/image.jpg&amp;w=60&amp;h=40\" width=\"60\" />")
+    end
+  end
+
   describe "#playable_lightbox" do
     it "returns complete" do
       Helper.playable_lightbox(video_tag, size: '96x54').should eq(

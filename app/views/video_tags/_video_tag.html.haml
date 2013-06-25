@@ -2,8 +2,13 @@
   %td.video_tag
     .wrap
       .duration= duration_string(video_tag.duration)
-      .thumbnail= playable_lightbox(video_tag, size: '96x54')
-      .name= video_tag.name
+      - if video_tag.poster_url?
+        .thumbnail= proxied_image_tag(video_tag.poster_url, size: '60x40')
+      - else
+        .thumbnail= 'default img'
+      .name= video_tag.title
+      .uid= video_tag.uid
+      .date= video_tag.created_at
   %td.usage
     .wrap
       -#= render 'td_usage', site: site
@@ -12,8 +17,9 @@
       = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
   %td.status
     .wrap
-      = tooltip_box class: "in_progress" do
-        %span.p= t 'video_tag.status.in_progress'
-      .completed{ style: "display:none;" }
+      -#= tooltip_box class: "in_progress" do
+      -#  %span.p= t 'video_tag.status.in_progress'
+      -#.completed { style: "display:none;" }
+      .completed
         = tooltip_box class: "ok" do
           %span.p= t 'video_tag.status.ok'

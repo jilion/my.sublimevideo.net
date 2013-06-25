@@ -4,10 +4,9 @@ module VideoTagsHelper
     options_for_select [
         ['Last 30 days active', :last_30_days_active],
         ['Last 90 days active', :last_90_days_active],
-        ['Hosted on SublimeVideo', :hosted_on_sublimevideo],
-        ['Non-hosted on SublimeVideo', :not_hosted_on_sublimevideo],
-        ['Inactive only', :inactive],
-        ['Show all', :all] # inactive include
+        ['Last 365 days active', :last_365_days_active],
+        ['Show all', :all], # inactive include
+        ['Inactive only', :inactive]
       ],
       (params[:filter] || :last_30_days_active)
   end
@@ -26,6 +25,16 @@ module VideoTagsHelper
     string << (minutes < 10 ? "0#{minutes}" : minutes)
     string << (seconds < 10 ? "0#{seconds}" : seconds)
     string.join(':')
+  end
+
+  def proxied_image_tag(source, options = {})
+    image_url = source.gsub(/^(http)?s?:?\/\//, '')
+    url = "https://images.weserv.nl?url=#{URI::escape(image_url)}"
+    if options[:size]
+      dimension = options[:size].split('x')
+      url += "&w=#{dimension[0]}&h=#{dimension[1]}"
+    end
+    image_tag(url, options)
   end
 
   def playable_lightbox(video_tag, options = {})
