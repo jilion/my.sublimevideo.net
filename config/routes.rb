@@ -161,7 +161,7 @@ MySublimeVideo::Application.routes.draw do
       resources :referrers, only: [:index]
     end
 
-    devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
+    devise_for :users, module: 'users', controllers: { passwords: 'devise/passwords' }, path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
     devise_scope :user do
       resource :user, only: [], path: '' do
         get  :new,     path: '/signup', as: 'signup'
@@ -184,8 +184,6 @@ MySublimeVideo::Application.routes.draw do
       end
 
       delete '/notice/:id' => 'users#hide_notice'
-
-      post '/password/validate' => 'users/passwords#validate'
     end
 
     %w[sign_up register].each         { |action| get action => redirect('/signup') }

@@ -73,13 +73,10 @@ class User < ActiveRecord::Base
   validates :terms_and_conditions, acceptance: true, allow_nil: false, on: :create
 
   validate :validates_credit_card_attributes # in user/credit_card
-  validate :validates_current_password
 
   # =============
   # = Callbacks =
   # =============
-
-  before_save :set_password
 
   before_save :prepare_pending_credit_card, if: ->(user) { user.credit_card(true).valid? } # in user/credit_card
 
@@ -157,8 +154,12 @@ class User < ActiveRecord::Base
 
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
-  def self.find_for_authentication(conditions = {})
-    where(conditions).where { state != 'archived' }.first
+  def self.find_for_authentication(tainted_conditions)
+    super(tainted_conditions.merge(state: %w[active suspended]))
+  end
+
+  def self.find_first_by_auth_conditions(tainted_conditions, opts={})
+    super(tainted_conditions, opts.merge(state: %w[active suspended]))
   end
 
   # ====================
@@ -171,16 +172,6 @@ class User < ActiveRecord::Base
        (!request.headers.key?('HTTP_AUTHORIZATION') || !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/)
       super(request)
     end
-  end
-
-  # Devise overriding
-  def password=(new_password)
-    @password = new_password
-    # set in #set_password
-  end
-
-  def current_password=(new_current_password)
-    @current_password = new_current_password.nil? ? nil : CGI::unescapeHTML(new_current_password)
   end
 
   def email=(email)
@@ -264,45 +255,7 @@ class User < ActiveRecord::Base
     @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
   end
 
-  def skip_password(*args)
-    action = args.shift
-    @skip_password_validation = true
-    result = self.send(action, *args)
-    @skip_password_validation = false
-    result
-  end
-
   private
-
-  # validate
-  def validates_current_password
-    # @bypass_postpone if for devise reconfirmation
-    return if @skip_password_validation || @bypass_postpone || !_current_password_needed?
-
-    if current_password.blank?
-      self.errors.add(:current_password, :blank)
-    elsif !valid_password?(current_password)
-      self.errors.add(:current_password, :invalid)
-    end
-  end
-
-  def _current_password_needed?
-    persisted? &&
-    ((state_changed? && archived?) || @password.present? || email_changed?) &&
-    errors.empty? &&
-    # handle Devise password reset!!
-    # at first, Devise call valid? and then reset_password_token is not nil so no problem,
-    # but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
-    (reset_password_token.nil? && !reset_password_token_changed?)
-  end
-
-  # before_save
-  def set_password
-    if @password.present?
-      self.encrypted_password = password_digest(@password)
-      @password = nil
-    end
-  end
 
   # after_save
   def _update_newsletter_subscription

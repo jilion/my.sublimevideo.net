@@ -34,7 +34,7 @@ gem 'groupdate'
 gem 'chartkick'
 
 # Auth / invitations
-gem 'devise', '~> 2.1.2'
+gem 'devise', '~> 2.2.4'
 gem 'devise_invitable'
 gem 'devise-async'
 

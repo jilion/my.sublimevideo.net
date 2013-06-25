@@ -1,4 +1,4 @@
 Devise::Async.setup do |config|
+  config.enabled = !Rails.env.development?
   config.backend = :sidekiq
-  config.mailer  = Devise.mailer.to_s
 end

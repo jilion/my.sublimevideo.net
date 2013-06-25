@@ -108,6 +108,8 @@ describe UserManager do
   describe '#archive' do
     before do
       User.should_receive(:transaction).and_yield
+      user.stub(:valid_password?) { true }
+      user.stub(:current_password)
       user.stub_chain(:sites, :not_archived) { [site1, site2] }
       user.stub_chain(:tokens) { tokens }
       tokens.stub(:update_all)
@@ -137,18 +139,43 @@ describe UserManager do
       describe ':skip_password option' do
         context 'set to true' do
           it 'calls skip_password(:archive!)' do
-            user.should_receive(:skip_password).with(:archive!)
+            user.should_not_receive(:valid_password?)
+            user.should_receive(:archive!)
 
             service.archive(skip_password: true)
           end
         end
         context 'set to false' do
           it 'calls skip_password(:archive!)' do
+            user.should_receive(:valid_password?)
             user.should_receive(:archive!)
 
             service.archive(skip_password: false)
           end
         end
+      end
+    end
+
+    context 'with an invalid current password' do
+      before do
+        user.should_receive(:valid_password?) { false }
+        user.stub(:current_password) { stub(blank?: true) }
+      end
+
+      it 'adds an error and returns false' do
+        user.should_receive(:errors) { stub.as_null_object }
+
+        service.archive(skip_password: false).should be_false
+      end
+    end
+
+    context 'with an valid current password' do
+      before { user.should_receive(:valid_password?) { true } }
+
+      it 'adds an error and returns false' do
+        user.should_not_receive(:errors)
+
+        service.archive(skip_password: false).should be_true
       end
     end
 

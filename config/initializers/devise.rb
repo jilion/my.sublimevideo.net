@@ -155,7 +155,7 @@ Devise.setup do |config|
   # Time interval you can reset your password with a reset password key.
   # Don't put a too small interval or your users won't have the time to
   # change their passwords.
-  config.reset_password_within = 2.hours
+  config.reset_password_within = 6.hours
 
   # ==> Configuration for :token_authenticatable
   # Defines name of the authentication token params key

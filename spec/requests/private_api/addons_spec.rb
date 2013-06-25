@@ -11,7 +11,7 @@ describe 'Private API Add-ons requests' do
     @env['HTTP_HOST'] = 'my.sublimevideo.dev'
   end
 
-  describe 'index', :focus do
+  describe 'index' do
     let(:url) { "private_api/sites/#{site.to_param}/addons.json" }
 
     it_behaves_like 'valid caching headers', cache_validation: false

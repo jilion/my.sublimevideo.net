@@ -37,7 +37,11 @@ class UserManager
     { feedback: nil, skip_password: false }.merge!(options)
 
     User.transaction do
-      options[:skip_password] ? user.skip_password(:archive!) : user.archive!
+      if !options[:skip_password] && !user.valid_password?(user.current_password)
+        user.errors.add(:current_password, user.current_password.blank? ? :blank : :invalid)
+        raise 'Current password needed!'
+      end
+      user.archive!
 
       options[:feedback].save! if options[:feedback]
 
