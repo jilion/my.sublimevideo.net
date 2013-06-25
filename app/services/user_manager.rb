@@ -36,18 +36,8 @@ class UserManager
   def archive(options = {})
     { feedback: nil, skip_password: false }.merge!(options)
 
-    User.transaction do
-      if !options[:skip_password] && !user.valid_password?(user.current_password)
-        user.errors.add(:current_password, user.current_password.blank? ? :blank : :invalid)
-        raise 'Current password needed!'
-      end
-      user.archive!
+    _archive_site_and_save_feedback(options)
 
-      options[:feedback].save! if options[:feedback]
-
-      _archive_all_sites
-      _revoke_all_oauth_tokens
-    end
     NewsletterSubscriptionManager.delay.unsubscribe(user.id)
     UserMailer.delay.account_archived(user.id)
     _increment_librato('archive')
@@ -58,6 +48,24 @@ class UserManager
   end
 
   private
+
+  def _archive_site_and_save_feedback(options)
+    User.transaction do
+      _password_check! unless options.delete(:skip_password)
+      user.archive!
+      _archive_all_sites
+      _revoke_all_oauth_tokens
+
+      options[:feedback].save! if options[:feedback]
+    end
+  end
+
+  def _password_check!
+    unless user.valid_password?(user.current_password)
+      user.errors.add(:current_password, user.current_password.blank? ? :blank : :invalid)
+      raise 'Current password needed!'
+    end
+  end
 
   def _suspend_all_sites
     user.sites.active.map(&:suspend!)
