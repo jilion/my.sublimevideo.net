@@ -1,3 +1,4 @@
+ignore /public/
 notification :gntp
 
 group :frontend do
