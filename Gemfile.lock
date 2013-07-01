@@ -709,7 +709,7 @@ DEPENDENCIES
   stat_request_parser
   state_machine
   sublime_video_layout (~> 2.0)
-  sublime_video_private_api (~> 1.0)
+  sublime_video_private_api (~> 1.5)
   teabag
   timecop
   tinder

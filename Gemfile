@@ -7,7 +7,7 @@ gem 'bundler'
 
 gem 'rails', '3.2.13'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
-gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
+gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
