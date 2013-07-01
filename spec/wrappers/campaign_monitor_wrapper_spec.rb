@@ -11,7 +11,7 @@ describe CampaignMonitorWrapper do
   specify { described_class.list[:segment].should eq 'test' }
 
   before do
-    described_class.stub(_log_bad_request: true)
+    described_class.any_instance.stub(_log_bad_request: true)
     Librato.stub(:increment)
   end
 
