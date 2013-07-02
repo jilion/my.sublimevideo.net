@@ -224,6 +224,10 @@ class User < ActiveRecord::Base
     sites.not_archived.includes(:billable_items).where { billable_items.state == 'sponsored' }.present?
   end
 
+  def early_access?(feature)
+    (early_access || []).include?(feature)
+  end
+
   def name_or_email
     name.presence || email
   end

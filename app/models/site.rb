@@ -98,11 +98,6 @@ class Site < ActiveRecord::Base
     site.dev_hostnames = DEFAULT_DEV_DOMAINS if site.dev_hostnames.blank?
   end
 
-  # Only when accessible_stage change in admin
-  after_save ->(site) do
-    site.delay_update_loaders_and_settings if site.accessible_stage_changed?
-  end
-
   # =================
   # = State Machine =
   # =================
@@ -112,26 +107,8 @@ class Site < ActiveRecord::Base
     event(:suspend)   { transition all - [:suspended] => :suspended }
     event(:unsuspend) { transition suspended: :active }
 
-    after_transition ->(site) do
-      site.delay_update_loaders_and_settings
-    end
-
-    before_transition on: :suspend do |site, transition|
-      SiteManager.new(site).suspend_billable_items
-      Librato.increment 'sites.events', source: 'suspend'
-    end
-
-    before_transition on: :unsuspend do |site, transition|
-      SiteManager.new(site).unsuspend_billable_items
-      Librato.increment 'sites.events', source: 'unsuspend'
-    end
-
     before_transition on: :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
-
-      SiteManager.new(site).cancel_billable_items
-      Librato.increment 'sites.events', source: 'archive'
-      site.archived_at = Time.now.utc
     end
   end
 
@@ -141,7 +118,6 @@ class Site < ActiveRecord::Base
 
   # state
   scope :active,       -> { where { state == 'active' } }
-  scope :inactive,     -> { where { state != 'active' } }
   scope :suspended,    -> { where { state == 'suspended' } }
   scope :archived,     -> { where { state == 'archived' } }
   scope :not_archived, -> { where { state != 'archived' } }
@@ -254,12 +230,6 @@ class Site < ActiveRecord::Base
 
   def unmemoize_all
     unmemoize_all_usages
-  end
-
-  def delay_update_loaders_and_settings
-    # Delay for 5 seconds to be sure that commit transaction is done.
-    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
-    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
   end
 
 end

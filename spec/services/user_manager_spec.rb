@@ -1,9 +1,6 @@
 require 'fast_spec_helper'
-require 'sidekiq'
-require 'config/sidekiq'
 require 'support/matchers/sidekiq_matchers'
 
-require 'services/newsletter_subscription_manager'
 require 'services/user_manager'
 
 User = Class.new unless defined?(User)
@@ -11,6 +8,8 @@ UserMailer = Class.new unless defined?(UserMailer)
 
 describe UserManager do
   let(:user)           { stub(id: 1234, sites: [], save!: true) }
+  let(:site_manager_1) { stub }
+  let(:site_manager_2) { stub }
   let(:site1)          { stub(suspend: true) }
   let(:site2)          { stub(suspend: true) }
   let(:tokens)         { stub }
@@ -48,8 +47,10 @@ describe UserManager do
       User.should_receive(:transaction).and_yield
       user.stub_chain(:sites, :active) { [site1, site2] }
       user.stub(:suspend!)
-      site1.stub(:suspend!)
-      site2.stub(:suspend!)
+      SiteManager.should_receive(:new).with(site1) { site_manager_1 }
+      SiteManager.should_receive(:new).with(site2) { site_manager_2 }
+      site_manager_1.stub(:suspend)
+      site_manager_2.stub(:suspend)
     end
 
     it 'suspends user' do
@@ -58,8 +59,8 @@ describe UserManager do
     end
 
     it 'suspends active sites' do
-      site1.should_receive(:suspend!)
-      site2.should_receive(:suspend!)
+      site_manager_1.should_receive(:suspend)
+      site_manager_2.should_receive(:suspend)
       service.suspend
     end
 
@@ -79,8 +80,10 @@ describe UserManager do
       User.should_receive(:transaction).and_yield
       user.stub_chain(:sites, :suspended) { [site1, site2] }
       user.stub(:unsuspend!)
-      site1.stub(:unsuspend!)
-      site2.stub(:unsuspend!)
+      SiteManager.should_receive(:new).with(site1) { site_manager_1 }
+      SiteManager.should_receive(:new).with(site2) { site_manager_2 }
+      site_manager_1.stub(:unsuspend)
+      site_manager_2.stub(:unsuspend)
     end
 
     it 'unsuspends user' do
@@ -89,8 +92,8 @@ describe UserManager do
     end
 
     it 'suspends active sites' do
-      site1.should_receive(:unsuspend!)
-      site2.should_receive(:unsuspend!)
+      site_manager_1.should_receive(:unsuspend)
+      site_manager_2.should_receive(:unsuspend)
       service.unsuspend
     end
 
@@ -115,8 +118,10 @@ describe UserManager do
       tokens.stub(:update_all)
       user.stub(:archive!)
       feedback.stub(:save!)
-      site1.stub(:archive!)
-      site2.stub(:archive!)
+      SiteManager.stub(:new).with(site1) { site_manager_1 }
+      SiteManager.stub(:new).with(site2) { site_manager_2 }
+      site_manager_1.stub(:archive)
+      site_manager_2.stub(:archive)
     end
 
     it 'increments metrics' do
@@ -186,8 +191,8 @@ describe UserManager do
     end
 
     it 'archives the sites' do
-      site1.should_receive(:archive!)
-      site2.should_receive(:archive!)
+      site_manager_1.should_receive(:archive)
+      site_manager_2.should_receive(:archive)
 
       service.archive
     end

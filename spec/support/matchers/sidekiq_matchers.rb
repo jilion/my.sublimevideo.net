@@ -1,3 +1,5 @@
+require 'config/sidekiq'
+
 RSpec::Matchers.define :delay do |message, *opts|
   match_for_should do |object|
     setup(object, message)

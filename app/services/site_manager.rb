@@ -1,3 +1,9 @@
+require 'app'
+require 'rank_setter'
+require 'loader_generator'
+require 'settings_generator'
+require 'player_files_generator_worker'
+
 class SiteManager
   attr_reader :site
 
@@ -28,22 +34,37 @@ class SiteManager
     LoaderGenerator.delay.update_all_stages!(site.id)
     SettingsGenerator.delay.update_all!(site.id)
     RankSetter.delay(queue: 'low').set_ranks(site.id)
-    Librato.increment 'sites.events', source: 'create'
+
+    if site.user.early_access?('new_player_setup')
+      PlayerFilesGeneratorWorker.perform_async(site.token, :settings_update)
+      PlayerFilesGeneratorWorker.perform_async(site.token, :addons_update)
+    end
+
+    _increment_librato('create')
+
     true
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
     false
   end
 
-  def update(attributes)
+  def update(attributes, options = {})
     Site.transaction do
       site.attributes = attributes
       site.settings_updated_at = Time.now.utc
-      site.save!
+      site.save!(options)
     end
-    SettingsGenerator.delay.update_all!(site.id)
-    Librato.increment 'sites.events', source: 'update'
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true) if attributes[:accessible_stage]
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
+
+    if site.user.early_access?('new_player_setup')
+      PlayerFilesGeneratorWorker.perform_async(site.token, :settings_update)
+      PlayerFilesGeneratorWorker.perform_async(site.token, :addons_update) if attributes[:accessible_stage]
+    end
+
+    _increment_librato('update')
+
     true
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
     false
   end
 
@@ -60,50 +81,75 @@ class SiteManager
     end
     LoaderGenerator.delay.update_all_stages!(site.id)
     SettingsGenerator.delay.update_all!(site.id)
+
+    PlayerFilesGeneratorWorker.perform_async(site.token, :addons_update) if site.user.early_access?('new_player_setup')
+
+    _increment_librato('billable_items_update')
+
+    true
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    false
   end
 
-  # called from app/models/site.rb
-  def suspend_billable_items
-    site.billable_items.map(&:suspend!)
-  end
-
-  # called from app/models/site.rb
-  def unsuspend_billable_items
-    _set_default_designs
-    if site.plan_id?
-      _update_addon_subscriptions(_free_addon_plans_subscriptions_hash(reject: %w[logo stats support]))
-      case site.plan.name
-      when 'plus'
-        # Sponsor real-time stats
-        _update_addon_subscriptions({
-          stats: AddonPlan.get('stats', 'realtime').id,
-          support: AddonPlan.get('support', 'standard').id
-        }, force: 'sponsored')
-        _update_addon_subscriptions({
-          logo: AddonPlan.get('logo', 'disabled').id
-        }, force: 'subscribed')
-      when 'premium'
-        # Sponsor VIP email support
-        _update_addon_subscriptions({
-          support: AddonPlan.get('support', 'vip').id
-        }, force: 'sponsored')
-        _update_addon_subscriptions({
-          logo: AddonPlan.get('logo', 'disabled').id,
-          stats: AddonPlan.get('stats', 'realtime').id
-        }, force: 'subscribed')
-      end
-      site.save!
-    else
-      site.billable_items.where(state: 'suspended').each do |billable_item|
-        billable_item.state = _new_billable_item_state(billable_item.item)
-        billable_item.save!
-      end
+  def suspend
+    Site.transaction do
+      site.suspend!
+      _suspend_billable_items!
     end
+
+    # Delay for 5 seconds to be sure that commit transaction is done.
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
+
+    PlayerFilesGeneratorWorker.perform_async(site.token, :cancellation) if site.user.early_access?('new_player_setup')
+
+    _increment_librato('suspend')
+
+    true
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    false
   end
 
-  # called from app/models/site.rb
-  def cancel_billable_items
-    site.billable_items.destroy_all
+  def unsuspend
+    Site.transaction do
+      site.unsuspend!
+      _unsuspend_billable_items!
+    end
+
+    # Delay for 5 seconds to be sure that commit transaction is done.
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id)
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
+
+    if site.user.early_access?('new_player_setup')
+      PlayerFilesGeneratorWorker.perform_async(site.token, :settings_update)
+      PlayerFilesGeneratorWorker.perform_async(site.token, :addons_update)
+    end
+
+    _increment_librato('unsuspend')
+
+    true
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    false
+  end
+
+  def archive
+    Site.transaction do
+      site.archived_at = Time.now.utc
+      site.archive!
+      _cancel_billable_items
+    end
+
+    # Delay for 5 seconds to be sure that commit transaction is done.
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
+
+    PlayerFilesGeneratorWorker.perform_async(site.token, :cancellation) if site.user.early_access?('new_player_setup')
+
+    _increment_librato('archive')
+
+    true
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    false
   end
 
   private
@@ -171,6 +217,47 @@ class SiteManager
     end
   end
 
+  def _suspend_billable_items!
+    site.billable_items.map(&:suspend!)
+  end
+
+  def _unsuspend_billable_items!
+    _set_default_designs
+    if site.plan_id?
+      _update_addon_subscriptions(_free_addon_plans_subscriptions_hash(reject: %w[logo stats support]))
+      case site.plan.name
+      when 'plus'
+        # Sponsor real-time stats
+        _update_addon_subscriptions({
+          stats: AddonPlan.get('stats', 'realtime').id,
+          support: AddonPlan.get('support', 'standard').id
+        }, force: 'sponsored')
+        _update_addon_subscriptions({
+          logo: AddonPlan.get('logo', 'disabled').id
+        }, force: 'subscribed')
+      when 'premium'
+        # Sponsor VIP email support
+        _update_addon_subscriptions({
+          support: AddonPlan.get('support', 'vip').id
+        }, force: 'sponsored')
+        _update_addon_subscriptions({
+          logo: AddonPlan.get('logo', 'disabled').id,
+          stats: AddonPlan.get('stats', 'realtime').id
+        }, force: 'subscribed')
+      end
+      site.save!
+    else
+      site.billable_items.where(state: 'suspended').each do |billable_item|
+        billable_item.state = _new_billable_item_state(billable_item.item)
+        billable_item.save!
+      end
+    end
+  end
+
+  def _cancel_billable_items
+    site.billable_items.destroy_all
+  end
+
   def _cancel_design(design)
     site.billable_items.with_item(design).destroy_all
   end
@@ -218,4 +305,9 @@ class SiteManager
       'trial'
     end
   end
+
+  def _increment_librato(source)
+    Librato.increment 'sites.events', source: source
+  end
+
 end

@@ -8,13 +8,18 @@ class Admin::SitesController < Admin::AdminController
     end
   end
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :_find_site_by_token!, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
+  before_filter :_find_site_by_token!, only: [:edit, :update, :generate_loader,
+                                              :generate_settings, :videos_infos,
+                                              :invoices, :active_pages,
+                                              :update_design_subscription,
+                                              :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
   has_scope :with_wildcard, :with_path, :with_extra_hostnames, :free, :paying, type: :boolean
   # sort
-  has_scope :by_hostname, :by_user, :by_state, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags, :by_last_30_days_extra_video_views_percentage,
+  has_scope :by_hostname, :by_user, :by_state, :by_last_30_days_billable_video_views,
+            :by_last_30_days_video_tags, :by_last_30_days_extra_video_views_percentage,
             :by_date, :with_min_billable_video_views
 
   # GET /sites
@@ -40,7 +45,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     params[:site].delete(:accessible_stage) unless has_role?('god')
-    @site.update_attributes(params[:site], without_protection: true)
+    SiteManager.new(@site).update(params[:site], without_protection: true)
 
     _respond_for_site_with_notice('Site has been successfully updated.')
   end
