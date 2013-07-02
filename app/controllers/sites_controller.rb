@@ -35,7 +35,7 @@ class SitesController < ApplicationController
   # DELETE /sites/:id
   def destroy
     respond_with(@site) do |format|
-      if @site.archive
+      if SiteManager.new(@site).archive
         format.html { redirect_to :sites }
       else
         format.html { render :edit }

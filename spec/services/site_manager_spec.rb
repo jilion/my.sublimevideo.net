@@ -1,13 +1,6 @@
 require 'fast_spec_helper'
-require 'rails/railtie'
-require 'sidekiq'
-require 'config/sidekiq'
 require 'support/matchers/sidekiq_matchers'
 
-require 'models/app'
-require 'services/rank_setter'
-require 'services/loader_generator'
-require 'services/settings_generator'
 require 'services/site_manager'
 
 Site = Struct.new(:params) unless defined?(Site)
@@ -16,13 +9,9 @@ ActiveRecord = Class.new unless defined?(ActiveRecord)
 ActiveRecord::RecordInvalid = Class.new unless defined?(ActiveRecord::RecordInvalid)
 
 describe SiteManager do
-  let(:user)    { stub(sites: []) }
-  let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
+  let(:user)    { stub(sites: [], early_access?: true) }
+  let(:site)    { Struct.new(:user, :id, :token).new(user, 1234, 'abcd1234') }
   let(:service) { described_class.new(site) }
-
-  before {
-    Librato.stub(:increment)
-  }
 
   describe '.subscribe_site_to_addon' do
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
@@ -165,6 +154,127 @@ describe SiteManager do
     it 'delays the update of all settings types' do
       SettingsGenerator.should delay(:update_all!).with(site.id)
       service.update_billable_items({}, {})
+    end
+  end
+
+  describe '#suspend' do
+    before do
+      Site.stub(:transaction).and_yield
+      service.stub(:_suspend_billable_items!)
+      site.stub(:suspend!)
+    end
+
+    it 'suspends the site' do
+      site.should_receive(:suspend!)
+      service.suspend
+    end
+
+    it 'suspends all billable items' do
+      service.should_receive(:_suspend_billable_items!)
+      service.suspend
+    end
+
+    it 'delays the update of all loader stages' do
+      LoaderGenerator.should delay(:update_all_stages!).with(site.id, deletable: true)
+      service.suspend
+    end
+
+    it 'delays the update of all settings types' do
+      SettingsGenerator.should delay(:update_all!).with(site.id)
+      service.suspend
+    end
+
+    it 'delays the update of the player files (if user has early access)' do
+      PlayerFilesGeneratorWorker.should_receive(:perform_async).with(site.token, :cancellation)
+      service.suspend
+    end
+
+    it 'increments metrics' do
+      Librato.should_receive(:increment).with('sites.events', source: 'suspend')
+      service.suspend
+    end
+  end
+
+  describe '#unsuspend!' do
+    before do
+      Site.stub(:transaction).and_yield
+      service.stub(:_unsuspend_billable_items!)
+      site.stub(:unsuspend!)
+    end
+
+    it 'unsuspends the site' do
+      site.should_receive(:unsuspend!)
+      service.unsuspend
+    end
+
+    it 'unsuspends all billable items' do
+      service.should_receive(:_unsuspend_billable_items!)
+      service.unsuspend
+    end
+
+    it 'delays the update of all loader stages' do
+      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+      service.unsuspend
+    end
+
+    it 'delays the update of all settings types' do
+      SettingsGenerator.should delay(:update_all!).with(site.id)
+      service.unsuspend
+    end
+
+    it 'delays the update of the player files (if user has early access)' do
+      PlayerFilesGeneratorWorker.should_receive(:perform_async).with(site.token, :settings_update).ordered
+      PlayerFilesGeneratorWorker.should_receive(:perform_async).with(site.token, :addons_update).ordered
+      service.unsuspend
+    end
+
+    it 'increments metrics' do
+      Librato.should_receive(:increment).with('sites.events', source: 'unsuspend')
+      service.unsuspend
+    end
+  end
+
+  describe '#archive' do
+    before do
+      Site.stub(:transaction).and_yield
+      service.stub(:_cancel_billable_items)
+      site.stub(:archived_at=)
+      site.stub(:archive!)
+    end
+
+    it 'touches addons_updated_at' do
+      site.should_receive(:archived_at=)
+      service.archive
+    end
+
+    it 'archives the site' do
+      site.should_receive(:archive!)
+      service.archive
+    end
+
+    it 'clears all billable items' do
+      service.should_receive(:_cancel_billable_items)
+      service.archive
+    end
+
+    it 'delays the update of all loader stages' do
+      LoaderGenerator.should delay(:update_all_stages!).with(site.id, deletable: true)
+      service.archive
+    end
+
+    it 'delays the update of all settings types' do
+      SettingsGenerator.should delay(:update_all!).with(site.id)
+      service.archive
+    end
+
+    it 'delays the update of the player files (if user has early access)' do
+      PlayerFilesGeneratorWorker.should_receive(:perform_async).with(site.token, :cancellation)
+      service.archive
+    end
+
+    it 'increments metrics' do
+      Librato.should_receive(:increment).with('sites.events', source: 'archive')
+      service.archive
     end
   end
 

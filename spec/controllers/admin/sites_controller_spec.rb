@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Admin::SitesController do
+  let(:mock_service) { mock('SiteManager') }
 
   context "with logged in admin with the god role" do
     before { sign_in :admin, authenticated_admin(roles: ['god']) }
@@ -27,31 +28,37 @@ describe Admin::SitesController do
         Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       end
 
-      it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'mode' => 'beta', 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+      it "responds with redirect when successful" do
+        SiteManager.stub(:new).with(mock_site) { mock_service }
+        mock_service.should_receive(:update).with({ 'mode' => 'beta', 'tag_list' => ['foo'] }, { without_protection: true }) { true }
 
         put :update, id: 'abc123', site: { mode: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
-      it "responds with success to failing PUT :update" do
-        mock_site.should_receive(:update_attributes) { false }
+      it "responds with success when failing" do
+        SiteManager.stub(:new).with(mock_site) { mock_service }
+        mock_service.should_receive(:update).with({ 'mode' => 'beta', 'tag_list' => ['foo'] }, { without_protection: true }) { false }
 
-        put :update, id: 'abc123', site: {}
+        put :update, id: 'abc123', site: { mode: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end
 
-    it "responds with redirect to successful PUT :update_design_subscription" do
-      Site.should_receive(:find_by_token!).with('abc123') { mock_site }
-      Design.stub(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
-      mock_service = mock('SiteManager')
-      SiteManager.stub(:new).with(mock_site) { mock_service }
+    describe "PUT :update_design_subscription" do
+      before do
+        Site.should_receive(:find_by_token!).with('abc123') { mock_site }
+      end
 
-      mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
+      it "responds with redirect when successful" do
+        Design.stub(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
+        SiteManager.stub(:new).with(mock_site) { mock_service }
 
-      put :update_design_subscription, id: 'abc123', design_id: 42
-      response.should redirect_to(edit_admin_site_url(mock_site))
+        mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
+
+        put :update_design_subscription, id: 'abc123', design_id: 42
+        response.should redirect_to(edit_admin_site_url(mock_site))
+      end
     end
   end
 
@@ -63,17 +70,19 @@ describe Admin::SitesController do
         Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       end
 
-      it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+      it "responds with redirect when successful" do
+        SiteManager.stub(:new).with(mock_site) { mock_service }
+        mock_service.should_receive(:update).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
 
         put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
-      it "responds without success to failing PUT :update" do
-        mock_site.should_receive(:update_attributes) { false }
+      it "responds without success when failing" do
+        SiteManager.stub(:new).with(mock_site) { mock_service }
+        mock_service.should_receive(:update).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { false }
 
-        put :update, id: 'abc123', site: {}
+        put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end

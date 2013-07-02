@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Site, :addons do
+describe Site do
   context "Factory" do
     subject { create(:site) }
 
@@ -158,24 +158,6 @@ describe Site, :addons do
         end
       end
     end
-
-    describe "after_save" do
-      let(:site) { create(:site) }
-
-      it "delays LoaderGenerator update if accessible_stage changed" do
-        Timecop.freeze do
-          LoaderGenerator.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
-          site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
-        end
-      end
-
-      it "delays SettingsGenerator update if accessible_stage changed" do
-        Timecop.freeze do
-          SettingsGenerator.should delay(:update_all!, at: 5.seconds.from_now.to_i).with(site.id)
-          site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
-        end
-      end
-    end
   end # Callbacks
 
   describe "State Machine" do
@@ -183,142 +165,7 @@ describe Site, :addons do
     let(:plus_plan) { create(:plan, name: 'plus') }
     let(:premium_plan) { create(:plan, name: 'premium') }
 
-    describe "after transition" do
-      it "delays LoaderGenerator update" do
-        Timecop.freeze do
-          LoaderGenerator.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
-          site.suspend
-        end
-      end
-
-      it "delays SettingsGenerator update" do
-        Timecop.freeze do
-          SettingsGenerator.should delay(:update_all!, at: 5.seconds.from_now.to_i).with(site.id)
-          site.suspend
-        end
-      end
-    end
-
-    describe "before transition on suspend", :addons do
-      context 'with billable items' do
-        let(:site) do
-          site = build(:site)
-          SiteManager.new(site).create
-          site
-        end
-
-        it 'suspends all billable items' do
-          site.suspend!
-
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@classic_design)            .state('suspended').should have(1).item
-          site.billable_items.with_item(@flat_design)               .state('suspended').should have(1).item
-          site.billable_items.with_item(@light_design)              .state('suspended').should have(1).item
-          site.billable_items.with_item(@video_player_addon_plan_1) .state('suspended').should have(1).item
-          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('suspended').should have(1).item
-          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('suspended').should have(1).item
-          site.billable_items.with_item(@stats_addon_plan_1)        .state('suspended').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_1)         .state('suspended').should have(1).item
-          site.billable_items.with_item(@controls_addon_plan_1)     .state('suspended').should have(1).item
-          site.billable_items.with_item(@initial_addon_plan_1)      .state('suspended').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('suspended').should have(1).item
-          site.billable_items.with_item(@api_addon_plan_1)          .state('suspended').should have(1).item
-          site.billable_items.with_item(@support_addon_plan_1)      .state('suspended').should have(1).item
-        end
-
-        it "increments metrics" do
-          Librato.stub(:increment)
-          Librato.should_receive(:increment).with('sites.events', source: 'suspend')
-          site.suspend!
-        end
-      end
-    end
-
-    describe "before transition on unsuspend", :addons do
-      context 'with billable items' do
-        let(:site) do
-          site = build(:site)
-          SiteManager.new(site).create
-          site
-        end
-
-        it 'unsuspend all billable items' do
-          site.reload.billable_items.should have(13).items
-          site.suspend!
-
-          site.reload.billable_items.should have(13).items
-          site.unsuspend!
-
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
-          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
-          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
-          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_1)         .state('subscribed').should have(1).item
-          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
-          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
-        end
-      end
-
-      context 'with a billable item in trial' do
-        let(:site) do
-          site = build(:site)
-          SiteManager.new(site).tap do |service|
-            service.create
-            service.update_billable_items({}, { logo: AddonPlan.get('logo', 'disabled').id })
-          end
-          site
-        end
-
-        it 'unsuspend all billable items' do
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@logo_addon_plan_2).state('trial').should have(1).item
-
-          site.suspend!
-
-          site.reload.billable_items.with_item(@logo_addon_plan_2).state('suspended').should have(1).item
-
-          site.unsuspend!
-
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
-          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
-          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
-          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_2)         .state('trial').should have(1).item
-          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
-          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
-        end
-      end
-    end
-
     describe "before transition on archive" do
-      it "set archived_at" do
-        expect { site.archive! }.to change(site, :archived_at)
-      end
-
-      it "clear all billable items" do
-        site.archive!
-        site.billable_items.should be_empty
-      end
-
-      it "increments metrics" do
-        Librato.should_receive(:increment).with('sites.events', source: 'archive')
-        site.archive!
-      end
-
       context "with non-paid invoices" do
         before do
           @open_invoice   = create(:invoice, site: site)
@@ -349,10 +196,6 @@ describe Site, :addons do
 
       describe ".active" do
         specify { Site.active.all.should =~ [@site_active] }
-      end
-
-      describe ".inactive" do
-        specify { Site.inactive.all.should =~ [@site_archived, @site_suspended] }
       end
 
       describe ".suspended" do

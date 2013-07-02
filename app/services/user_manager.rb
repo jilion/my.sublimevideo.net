@@ -1,3 +1,6 @@
+require 'site_manager'
+require 'newsletter_subscription_manager'
+
 class UserManager
   attr_reader :user
 
@@ -17,7 +20,7 @@ class UserManager
   end
 
   %w[suspend unsuspend].each do |method_name|
-    define_method(method_name) do
+    define_method("#{method_name}") do
       begin
         User.transaction do
           user.send("#{method_name}!")
@@ -36,7 +39,7 @@ class UserManager
   def archive(options = {})
     { feedback: nil, skip_password: false }.merge!(options)
 
-    _archive_site_and_save_feedback(options)
+    _archive_and_save_feedback!(options)
 
     NewsletterSubscriptionManager.delay.unsubscribe(user.id)
     UserMailer.delay.account_archived(user.id)
@@ -49,7 +52,7 @@ class UserManager
 
   private
 
-  def _archive_site_and_save_feedback(options)
+  def _archive_and_save_feedback!(options)
     User.transaction do
       _password_check! unless options.delete(:skip_password)
       user.archive!
@@ -68,15 +71,15 @@ class UserManager
   end
 
   def _suspend_all_sites
-    user.sites.active.map(&:suspend!)
+    user.sites.active.map { |site| SiteManager.new(site).suspend }
   end
 
   def _unsuspend_all_sites
-    user.sites.suspended.map(&:unsuspend!)
+    user.sites.suspended.map { |site| SiteManager.new(site).unsuspend }
   end
 
   def _archive_all_sites
-    user.sites.not_archived.map(&:archive!)
+    user.sites.not_archived.map { |site| SiteManager.new(site).archive }
   end
 
   def _revoke_all_oauth_tokens

@@ -1,5 +1,5 @@
 module EarlyAccessControllerHelper
-  LIST = %w[video]
+  LIST = %w[video new_player_setup]
 
   def self.list
     LIST
