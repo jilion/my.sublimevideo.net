@@ -53,8 +53,8 @@ class SiteManager
       site.settings_updated_at = Time.now.utc
       site.save!(options)
     end
-    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true) if attributes[:accessible_stage]
-    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
+    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true) if attributes[:accessible_stage]
+    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(site.id)
 
     if site.user.early_access?('new_player_setup')
       PlayerFilesGeneratorWorker.perform_async(site.token, :settings_update)

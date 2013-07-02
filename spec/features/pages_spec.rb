@@ -179,7 +179,7 @@ feature "Suspended page" do
         VCR.use_cassette('ogone/visa_payment_acceptance') do
           BillingMailer.should delay(:transaction_succeeded)
           UserMailer.should delay(:account_unsuspended).with(@current_user.id)
-          LoaderGenerator.should delay(:update_all_stages!).with(@site.id, deletable: true)
+          LoaderGenerator.should delay(:update_all_stages!).with(@site.id)
           SettingsGenerator.should delay(:update_all!).with(@site.id)
 
           click_button I18n.t('invoice.retry_invoices')
