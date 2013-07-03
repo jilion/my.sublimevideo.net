@@ -7,8 +7,8 @@ class App::Component < ActiveRecord::Base
 
   attr_accessible :name, :token, as: :admin
 
-  has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
-  has_many :designs, class_name: 'Design', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
+  has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'created_at desc'
+  has_many :designs, class_name: 'Design', foreign_key: 'app_component_id', dependent: :destroy, order: 'created_at desc'
   has_many :plugins, class_name: 'App::Plugin', foreign_key: 'app_component_id'
 
   has_many :designs_sites, through: :designs, source: :sites
@@ -50,6 +50,7 @@ class App::Component < ActiveRecord::Base
   def clear_caches
     super
     Rails.cache.clear [self.class, 'app_component']
+    Rails.cache.clear [self, 'versions']
   end
 
   private

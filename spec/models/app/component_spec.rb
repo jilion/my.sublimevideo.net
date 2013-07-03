@@ -10,6 +10,17 @@ describe App::Component, :fog_mock do
   describe "Associations" do
     it { should have_many(:versions).dependent(:destroy) }
 
+    describe 'versions' do
+      before do
+        @version1 = create(:app_component_version, component: component, version: '2.5.9-alpha.4')
+        @version2 = create(:app_component_version, component: component, version: '2.5.10-alpha')
+      end
+
+      it 'returns the version ordered by created_at desc' do
+        component.versions.should eq [@version2, @version1]
+      end
+    end
+
     describe "sites" do
       it "returns sites from Design" do
         site_with_design = create(:site)
@@ -22,9 +33,6 @@ describe App::Component, :fog_mock do
         ])
       end
     end
-  end
-
-  describe "Scopes" do
   end
 
   describe "Validations" do
