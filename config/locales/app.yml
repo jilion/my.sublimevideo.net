@@ -14,6 +14,7 @@ en:
       seconds_timezone: "%d %b %Y, %R:%S %Z"
       seconds_timezone_y: "%d %b %y, %R:%S %Z"
       month_fullyear: "%B %Y"
+      fullyear: "%Y"
       Y_m_d: "%Y/%m/%d"
       d_b_Y: "%d %b %Y"
       b_Y: "%b %Y"

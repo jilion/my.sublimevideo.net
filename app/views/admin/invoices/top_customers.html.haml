@@ -1,0 +1,19 @@
+%h2 Top 20 customers per year
+
+- year = @to
+- while year >= @from
+  %h3= l year, format: :fullyear
+
+  %table
+    %tr
+      %th Customer
+      %th $$
+      - Invoice.joins(:user).select('sites.user_id, SUM(amount) AS total_amount, COUNT(DISTINCT(invoices.site_id)) AS sites_count, COUNT(invoices.id) AS invoices_count').where(state: 'paid').between(paid_at: year.beginning_of_year..year.end_of_year).group('sites.user_id').order('total_amount DESC').limit(20).each do |invoice|
+        - user = User.find(invoice.user_id)
+        %tr{ style: year.end_of_year > Time.now.utc ? "font-style:italic;" : "" }
+          %td
+            = link_to(user.name_or_email, [:admin, user])
+            = "(#{invoice.invoices_count} invoices for #{invoice.sites_count} sites)"
+          %td= display_amount invoice.total_amount.to_i
+
+  - year -= 1.year

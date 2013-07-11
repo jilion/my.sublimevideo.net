@@ -93,6 +93,8 @@ MySublimeVideo::Application.routes.draw do
       resources :invoices,  only: [:index, :show, :edit] do
         collection do
           get :monthly
+          get :yearly
+          get :top_customers
         end
         member do
           put :retry_charging

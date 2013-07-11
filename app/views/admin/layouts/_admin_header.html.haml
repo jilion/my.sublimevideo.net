@@ -20,8 +20,10 @@
       .popup_menu
         %h3= link_to "Billing", [:admin, :invoices]
         %ul
-          %li= link_to "All", [:admin, :invoices]
-          %li= link_to "Total / month", [:monthly, :admin, :invoices]
+          %li= link_to "Invoices", [:admin, :invoices]
+          %li= link_to "Monthly revenues", [:monthly, :admin, :invoices]
+          %li= link_to "Yearly revenues", [:yearly, :admin, :invoices]
+          %li= link_to "Top customers", [:top_customers, :admin, :invoices]
 
     .popup_menu
       %h3= link_to "Stats", [:admin, :trends]

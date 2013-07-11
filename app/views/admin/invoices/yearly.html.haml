@@ -1,17 +1,17 @@
-%h2 Actual monthly revenues
+%h2 Actual yearly revenues
 
 %table
   %tr
-    %th Month
+    %th Year
     %th $$ (incl. VAT) from CH customers
     %th $$ (excl. VAT) from not-CH customers
     %th $$ Total
-  - month = @to
-  - while month >= @from
-    - invoices = Invoice.paid.paid_between(month.beginning_of_month, month.end_of_month)
-    %tr{ style: month.end_of_month > 1.month.ago ? "font-style:italic;" : "" }
-      %td= l month.end_of_month, format: :month_fullyear
+  - year = @to
+  - while year >= @from
+    - invoices = Invoice.paid.paid_between(year.beginning_of_year, year.end_of_year)
+    %tr{ style: year.end_of_year > Time.now.utc ? "font-style:italic;" : "" }
+      %td= l year, format: :fullyear
       %td= display_amount invoices.where { customer_country == 'CH' }.sum(:amount)
       %td= display_amount invoices.where { (customer_country == nil) | (customer_country != 'CH') }.sum(:amount)
       %td= display_amount invoices.sum(:amount)
-    - month -= 1.month
+    - year -= 1.year
