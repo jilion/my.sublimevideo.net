@@ -11,7 +11,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateVideoCode: (opts = {}) ->
     options = {}
     _.extend(options, opts)
-    _.defaults(options, { addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+    _.defaults(options, { addons: ['player', 'videoPlayer', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
 
     attributes = []
     attributes.push "id=\"#{options['id']}\"" if options['id']?
@@ -58,7 +58,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
       "#{@video.get('thumbnail').get('src')}"
 
   generateDataSettingsAttributeContent: (options = {}) ->
-    this.generateDataSettings(options) if _.isEmpty @dataSettings
+    this.generateDataSettings(options)
     _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
 
   generateDataSettingsAttribute: (options = {}) ->
@@ -74,7 +74,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataSettings: (opts = {}) ->
     options = {}
     _.extend(options, opts)
-    _.defaults(options, { kitReplacement: true, addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+    _.defaults(options, { kitReplacement: true, addons: ['player', 'videoPlayer', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
 
     if options['settings']?
       this.generateDataSettingsFromJSON(options)
@@ -173,7 +173,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
         defaultValue
 
   getDataSettingName: (addonName, settingName) ->
-    (if _.contains(['video_player', 'lightbox'], addonName)
+    (if _.contains(['videoPlayer', 'lightbox'], addonName)
       settingName
     else
       "#{addonName}-#{settingName}"
@@ -192,4 +192,4 @@ class MySublimeVideo.Helpers.VideoTagHelper
       this.pushDataSetting(dataSettingName, currentValue)
 
   pushDataSetting: (dataSettingName, currentValue) ->
-    @dataSettings[dataSettingName] = if $.isArray(currentValue) then currentValue.join(' ') else currentValue.toString()
+    @dataSettings[dataSettingName] = currentValue.toString().split(',').join(' ')
