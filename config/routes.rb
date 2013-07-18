@@ -53,6 +53,10 @@ MySublimeVideo::Application.routes.draw do
       end
 
       resources :sites, only: [:index, :show, :edit, :update] do
+        collection do
+          get :paying
+        end
+
         member do
           get :videos_infos
           get :invoices

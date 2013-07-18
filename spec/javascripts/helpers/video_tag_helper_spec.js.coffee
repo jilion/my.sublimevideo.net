@@ -4,8 +4,8 @@ describe 'MySublimeVideo.Helpers.VideoTagHelper', ->
       @video  = new MySublimeVideo.Models.Video
       @helper = new MySublimeVideo.Helpers.VideoTagHelper(@video)
 
-    it 'remove addon name if "video_player"', ->
-      expect(@helper.getDataSettingName('video_player', 'fullmode_priority')).toEqual('fullmode-priority')
+    it 'remove addon name if "videoPlayer"', ->
+      expect(@helper.getDataSettingName('videoPlayer', 'fullmode_priority')).toEqual('fullmode-priority')
 
     it 'remove addon name if "lightbox"', ->
       expect(@helper.getDataSettingName('lightbox', 'overlay_opacity')).toEqual('overlay-opacity')
