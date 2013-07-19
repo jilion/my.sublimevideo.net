@@ -29,7 +29,7 @@ class Admin::SitesController < Admin::AdminController
   def paying
     @sites = apply_scopes(Site.with_paid_invoices.includes(:user))
 
-    respond_with(@sites, per_page: 500, paginate: true, layout: false)
+    respond_with(@sites, per_page: 250, paginate: true, layout: false)
   end
 
   # GET /sites/:id
