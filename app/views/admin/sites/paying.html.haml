@@ -97,7 +97,7 @@
   %span> ,
   = invoices.first.present? ? l(invoices.first.try(:paid_at), format: :month_fullyear) : 'Not yet invoiced'
   %span> ,
-  = invoices.paid_between(Time.utc(2013).beginning_of_year, Time.utc(2013).end_of_year).sum(:amount) / 100.0
+  = Stat::Site::Day.views_sum(token: site.token, to: Time.utc(2013, 6, 30))
   %span> ,
   = site.billable_items.with_item(AddonPlan.get('logo', 'disabled')).first.try(:state) || 'N/A'
   %span> ,
@@ -137,9 +137,9 @@
   %span> ,
   = Stat::Site::Day.views_sum(token: site.token, from: Time.utc(2013, 6), to: Time.utc(2013, 6, 30))
   %span> ,
-  = Stat::Site::Day.views_sum(token: site.token, from: Time.utc(2010, 9), to: Time.utc(2013, 6, 30))
-  %span> ,
   = invoices.paid_between(Time.utc(2011).beginning_of_year, Time.utc(2011).end_of_year).sum(:amount) / 100.0
   %span> ,
   = invoices.paid_between(Time.utc(2012).beginning_of_year, Time.utc(2012).end_of_year).sum(:amount) / 100.0
+  %span> ,
+  = invoices.paid_between(Time.utc(2013).beginning_of_year, Time.utc(2013).end_of_year).sum(:amount) / 100.0
   %br
