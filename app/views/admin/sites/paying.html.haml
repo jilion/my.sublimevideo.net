@@ -85,7 +85,7 @@
   %span> ,
   = site.state != 'archived'
   %span> ,
-  = site.user.billing_name.presence || site.user.name
+  = (site.user.billing_name.presence || site.user.name).gsub(',', ' ')
   %span> ,
   = site.user.use_personal
   %span> ,
@@ -93,7 +93,7 @@
   %span> ,
   = site.user.use_clients
   %span> ,
-  = Country[site.user.billing_country].try(:name) rescue 'N/A'
+  = (Country[site.user.billing_country].try(:name) rescue 'N/A').gsub(',', ' ')
   %span> ,
   = invoices.first.present? ? l(invoices.first.try(:paid_at), format: :month_fullyear) : 'Not yet invoiced'
   %span> ,
