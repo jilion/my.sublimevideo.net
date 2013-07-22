@@ -85,7 +85,7 @@
   %span> ,
   = site.state != 'archived'
   %span> ,
-  = (site.user.billing_name.presence || site.user.name).gsub(',', ' ')
+  = (site.user.billing_name.presence || site.user.name || '').gsub(',', ' ')
   %span> ,
   = site.user.use_personal
   %span> ,
