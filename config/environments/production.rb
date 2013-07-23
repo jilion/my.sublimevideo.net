@@ -40,6 +40,9 @@ MySublimeVideo::Application.configure do
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
 
+  # http://blog.alexmaccaw.com/faster-deploys
+  config.assets.cache_store = :dalli_store
+
   # Specifies the header that your server uses for sending files
   # (comment out if your front-end server doesn't support this)
   # http://devcenter.heroku.com/articles/rails31_heroku_cedar
