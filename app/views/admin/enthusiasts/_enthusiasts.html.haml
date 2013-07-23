@@ -8,8 +8,8 @@
     %th= "User"
     %th= "Sites"
     %th= "Comment"
-    %th= link_to_sort(:date, reverse: true, default: true)
-    %th= link_to_sort(:invited)
+    %th= link_to_sort(:created_at, reverse: true, default: true)
+    %th= link_to_sort(:invited_at)
 
   = render @enthusiasts
 

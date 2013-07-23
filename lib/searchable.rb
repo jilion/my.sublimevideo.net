@@ -27,6 +27,10 @@ module Searchable
     def additional_or_conditions
       []
     end
+
+    def lower_and_match_fields(fields)
+      fields.reduce([]) { |a, e| a << ("lower(#{e}) =~ " + 'lower("%#{q}%")') }
+    end
   end
 
 end

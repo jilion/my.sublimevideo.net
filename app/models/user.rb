@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
   scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way}") }
 
   def self.additional_or_conditions
-    %w[email name].reduce([]) { |a, e| a << ("lower(#{e}) =~ " + 'lower("%#{q}%")') }
+    lower_and_match_fields(%w[email name])
   end
 
   # =================

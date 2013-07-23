@@ -12,12 +12,12 @@ class Enthusiast < ActiveRecord::Base
 
   default_scope where(trashed_at: nil)
 
-  scope :by_date,    ->(way = 'desc') { order { created_at.send(way) } }
-  scope :by_email,   ->(way = 'desc') { order { email.send(way) }.order { created_at.desc } }
-  scope :by_invited, ->(way = 'desc') { order { invited_at.send(way) }.order { created_at.desc } }
+  %w[email created_at invited_at].each do |col|
+    scope :"by_#{col}", ->(way = 'desc') { order("#{col} #{way}").order('created_at desc') }
+  end
 
   def self.additional_or_conditions
-    %w[email free_text].reduce([]) { |a, e| a << ("lower(#{e}) =~ " + 'lower("%#{q}%")') }
+    lower_and_match_fields(%w[email free_text])
   end
 
   def confirmed?

@@ -1,7 +1,7 @@
 class Admin::EnthusiastsController < Admin::AdminController
   respond_to :js, :html
 
-  has_scope :by_date, :by_email, :by_invited
+  has_scope :by_email, :by_created_at, :by_invited_at
   has_scope :search
 
   # GET /enthusiasts
