@@ -56,6 +56,11 @@ module Stat::Site
   # =================
   # = Class Methods =
   # =================
+
+  def self.site_token_field
+    :t
+  end
+
   module ClassMethods
 
     def last_30_days_page_visits(token, type = :billable)
@@ -179,7 +184,7 @@ module Stat::Site
       end
     end
 
-  private
+    private
 
     def fill_missing_values_for_last_stats(stats, options = {})
       options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)

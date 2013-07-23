@@ -157,7 +157,7 @@ private
   def _generate_file(prefix = '')
     template_path = Rails.root.join('app', 'templates', "#{prefix}settings.js.erb")
     template = ERB.new(File.new(template_path).read)
-    file = Tempfile.new("s-#{@site.token}.js", Rails.root.join('tmp'))
+    file = Tempfile.new(["s-#{@site.token}", '.js'], Rails.root.join('tmp'))
     file.print template.result(binding)
     file.flush
     file

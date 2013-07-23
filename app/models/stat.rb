@@ -1,4 +1,3 @@
-# encoding: utf-8
 module Stat
   extend ActiveSupport::Concern
 
@@ -18,38 +17,39 @@ module Stat
     d.to_i
   end
 
+  def self.realtime_stat_addon
+    AddonPlan.get('stats', 'realtime')
+  end
+
   def self.create_stats_from_trackers!(log, trackers)
     tracker_incs = incs_from_trackers(trackers)
+
     tracker_incs.each do |site_token, values|
-      if site = ::Site.find_by_token(site_token)
-        realtime_stats_active = site.subscribed_to?(AddonPlan.get('stats', 'realtime'))
+      next unless site = ::Site.find_by_token(site_token)
 
-        if [values[:inc], values[:set], values[:add_to_set]].any? { |v| v.present? }
-          if realtime_stats_active
-            Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => values[:inc] }, upsert: true)
-            Stat::Site::Hour.collection.find(t: site_token, d: log.hour).update({ :$inc => values[:inc] }, upsert: true)
-          end
-          Stat::Site::Day.collection.find(t: site_token, d: log.day).update({
-            :$inc => values[:inc],
-            :$set => values[:set],
-            :$addToSet => values[:add_to_set]
-          }, upsert: true)
-        end
+      realtime_stats_active = site.subscribed_to?(realtime_stat_addon)
 
-        values[:videos].each do |video_ui, video_inc|
-          if video_inc.present?
-            begin
-              if realtime_stats_active
-                Stat::Video::Minute.collection.find(st: site_token, u: video_ui, d: log.minute).update({ :$inc => video_inc }, upsert: true)
-                Stat::Video::Hour.collection.find(st: site_token, u: video_ui, d: log.hour).update({ :$inc => video_inc }, upsert: true)
-              end
-              Stat::Video::Day.collection.find(st: site_token, u: video_ui, d: log.day).update({ :$inc => video_inc }, upsert: true)
-            rescue BSON::InvalidStringEncoding
-            end
-          end
-        end
-        clean_and_increment_metrics(values)
+      if [values[:inc], values[:set], values[:add_to_set]].any? { |v| v.present? }
+        increment_for_site_token_and_periods(Stat::Site, site_token, [:minute, :hour], log, values[:inc]) if realtime_stats_active
+
+        find_for_site_token_and_period(Stat::Site, site_token, :day, log).update({
+          :$inc => values[:inc],
+          :$set => values[:set],
+          :$addToSet => values[:add_to_set]
+        }, upsert: true)
       end
+
+      values[:videos].each do |video_ui, video_inc|
+        next unless video_inc.present?
+
+        begin
+          periods  = [:day]
+          periods += [:minute, :hour] if realtime_stats_active
+          increment_for_site_token_and_periods(Stat::Video, site_token, periods, log, video_inc, uid: video_ui)
+        rescue BSON::InvalidStringEncoding
+        end
+      end
+      clean_and_increment_metrics(values)
     end
 
     json = { m: true }
@@ -58,7 +58,29 @@ module Stat
     PusherWrapper.trigger('stats', 'tick', json)
   end
 
-private
+  def self.find_for_site_token_and_period(klass, site_token, period, log, options = {})
+    conditions = { klass.site_token_field => site_token, d: log.send(period) }
+    conditions[:u] = options[:uid] if options[:uid]
+
+    klass.const_get(period.camelize).collection.find(conditions)
+  end
+
+  def self.increment_for_site_token_and_periods(klass, site_token, periods, log, incs, options = {})
+    periods.each do |period|
+      find_for_site_token_and_period(klass, site_token, period, log, options).update({ :$inc => incs }, upsert: true)
+    end
+  end
+
+  private
+
+  def self.default_incs_hash
+    {
+      inc: Hash.new(0),
+      set: {},
+      add_to_set: Hash.new { |h, k| h[k] = { :$each => [] } },
+      videos: Hash.new { |h, k| h[k] = Hash.new(0) }
+    }
+  end
 
   # Merge each trackers params on one big hash
   #
@@ -66,46 +88,17 @@ private
   #
   def self.incs_from_trackers(trackers)
     trackers = only_stats_trackers(trackers)
-    incs     = Hash.new do |h, k| h[k] = {
-        inc: Hash.new(0),
-        set: {},
-        add_to_set: Hash.new { |h, k| h[k] = { :$each => [] }  },
-        videos: Hash.new { |h, k| h[k] = Hash.new(0) }
-      }
-    end
+    incs     = Hash.new { |h, k| h[k] = default_incs_hash }
+
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
         params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
         params_inc = ::StatRequestParser.stat_incs(params, user_agent, hits)
 
-        # Site
-        site = params_inc[:site]
-        if site[:inc].present?
-          site[:inc].each do |inc, value|
-            incs[site[:t]][:inc][inc] += value
-          end
-        end
-        if site[:set].present?
-          site[:set].each do |set, value|
-            incs[site[:t]][:set][set] = value
-          end
-        end
-        if site[:add_to_set].present?
-          site[:add_to_set].each do |add_to_set, value|
-            incs[site[:t]][:add_to_set][add_to_set][:$each] << value
-            incs[site[:t]][:add_to_set][add_to_set][:$each].uniq!
-          end
-        end
+        incs_from_tracker_for_site(params_inc[:site], incs)
+        incs_from_tracker_for_videos(params_inc[:videos], incs)
 
-        # Videos
-        params_inc[:videos].each do |video|
-          if video[:inc].present?
-            video[:inc].each do |inc, value|
-              incs[video[:st]][:videos][video[:u]][inc] += value
-            end
-          end
-        end
       rescue StatRequestParser::BadParamsError, ArgumentError
       rescue TypeError => ex
         Notifier.send("Request parsing problem: #{request}", exception: ex)
@@ -113,6 +106,39 @@ private
     end
 
     incs
+  end
+
+  def self.incs_from_tracker_for_site(site_params_inc, global_incs)
+    if site_params_inc[:inc].present?
+      site_params_inc[:inc].each do |key, value|
+        global_incs[site_params_inc[:t]][:inc][key] += value
+      end
+    end
+
+    if site_params_inc[:set].present?
+      site_params_inc[:set].each do |set, value|
+        global_incs[site_params_inc[:t]][:set][set] = value
+      end
+    end
+
+    if site_params_inc[:add_to_set].present?
+      site_params_inc[:add_to_set].each do |add_to_set, value|
+        global_incs[site_params_inc[:t]][:add_to_set][add_to_set][:$each] << value
+        global_incs[site_params_inc[:t]][:add_to_set][add_to_set][:$each].uniq!
+      end
+    end
+  end
+
+  def self.incs_from_tracker_for_videos(video_params_inc, global_incs)
+    video_params_inc.each do |video|
+      incs_from_tracker_for_video(video, global_incs) if video[:inc].present?
+    end
+  end
+
+  def self.incs_from_tracker_for_video(video_params_inc, global_incs)
+    video_params_inc[:inc].each do |inc, value|
+      global_incs[video_params_inc[:st]][:videos][video_params_inc[:u]][inc] += value
+    end
   end
 
   def self.only_stats_trackers(trackers)

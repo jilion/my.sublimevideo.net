@@ -136,7 +136,7 @@ class LoaderGenerator
   def _generate_file
     template_path = Rails.root.join('app', 'templates', template_file)
     template = ERB.new(File.new(template_path).read)
-    file = Tempfile.new("l-#{token}.js", Rails.root.join('tmp'))
+    file = Tempfile.new(["l-#{token}", '.js'], Rails.root.join('tmp'))
     file.print template.result(binding)
     file.flush
     file
