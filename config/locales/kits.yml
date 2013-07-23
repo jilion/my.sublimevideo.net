@@ -97,6 +97,10 @@ en:
         type: 'Embed type'
         url: 'Default embed URL'
         size: 'Default embed size'
+      values:
+        type:
+          manual: 'Manual'
+          auto: 'Automatic'
 
     google_analytics:
       title: 'Google Analytics settings'
