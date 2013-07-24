@@ -57,31 +57,61 @@ describe SitesHelper do
 
   describe "#hostname_with_subdomain_needed & #need_subdomain?" do
     context "with tumblr.com hostname" do
-      let(:site) { stub(wildcard?: true, hostname: 'tumblr.com', extra_hostnames: nil) }
+      let(:site) { stub(wildcard?: true, production_hostnames: %w[tumblr.com]) }
 
       it { helper.hostname_with_subdomain_needed(site).should eq 'tumblr.com' }
       it { helper.need_subdomain?(site).should be_true }
     end
 
     context "with tumblr.com extra hostnames" do
-      let(:site) { stub(wildcard?: true, hostname: 'rymai.me', extra_hostnames: 'web.mac.com, tumblr.com') }
+      let(:site) { stub(wildcard?: true, production_hostnames: %w[rymai.me web.mac.com tumblr.com]) }
 
       it { helper.hostname_with_subdomain_needed(site).should eq 'tumblr.com' }
       it { helper.need_subdomain?(site).should be_true }
     end
 
     context "with wildcard only" do
-      let(:site) { stub(wildcard?: true, hostname: 'rymai.me', extra_hostnames: nil) }
+      let(:site) { stub(wildcard?: true, production_hostnames: %w[rymai.me]) }
 
       it { helper.hostname_with_subdomain_needed(site).should be_nil }
       it { helper.need_subdomain?(site).should be_false }
     end
 
     context "without wildcard" do
-      let(:site) { stub(wildcard?: false, hostname: 'tumblr.com', extra_hostnames: nil) }
+      let(:site) { stub(wildcard?: false, production_hostnames: %w[tumblr.com]) }
 
       it { helper.hostname_with_subdomain_needed(site).should be_nil }
       it { helper.need_subdomain?(site).should be_false }
+    end
+  end
+
+  describe "#s3_hostname_with_subdomain_needed & #need_s3_subdomain?" do
+    context "with amazonaws.com hostname with wildcard" do
+      let(:site) { stub(wildcard?: true, production_hostnames: %w[s3.amazonaws.com]) }
+
+      it { helper.s3_hostname_with_subdomain_needed(site).should eq 's3.amazonaws.com' }
+      it { helper.need_s3_subdomain?(site).should be_true }
+    end
+
+    context "with amazonaws.com hostname without wildcard" do
+      let(:site) { stub(wildcard?: false, production_hostnames: %w[s3-us-west-2.amazonaws.com]) }
+
+      it { helper.s3_hostname_with_subdomain_needed(site).should eq 's3-us-west-2.amazonaws.com' }
+      it { helper.need_s3_subdomain?(site).should be_true }
+    end
+
+    context "with amazonaws.com extra hostnames with wildcard" do
+      let(:site) { stub(wildcard?: true, production_hostnames: %w[rymai.me web.mac.com s3-ap-southeast-1.amazonaws.com]) }
+
+      it { helper.s3_hostname_with_subdomain_needed(site).should eq 's3-ap-southeast-1.amazonaws.com' }
+      it { helper.need_s3_subdomain?(site).should be_true }
+    end
+
+    context "with amazonaws.com extra hostnames without wildcard" do
+      let(:site) { stub(wildcard?: false, production_hostnames: %w[rymai.me web.mac.com s3-fips-us-gov-west-1.amazonaws.com]) }
+
+      it { helper.s3_hostname_with_subdomain_needed(site).should eq 's3-fips-us-gov-west-1.amazonaws.com' }
+      it { helper.need_s3_subdomain?(site).should be_true }
     end
   end
 

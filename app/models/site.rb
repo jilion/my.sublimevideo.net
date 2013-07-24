@@ -249,6 +249,10 @@ class Site < ActiveRecord::Base
     write_attribute :path, attribute.respond_to?(:to_s) ? attribute.to_s.downcase.gsub(/^\/|\/$/, '') : ''
   end
 
+  def production_hostnames
+    [hostname, extra_hostnames.to_s.split(/,\s*/)].flatten
+  end
+
   def to_param
     token
   end

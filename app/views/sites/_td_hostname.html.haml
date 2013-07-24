@@ -11,6 +11,9 @@
     - if need_subdomain?(site)
       = tooltip_box href: edit_site_path(site), class: 'warning' do
         %span.p= raw t 'site.status.need_subdomain', hostname: hostname_with_subdomain_needed(site)
+    - elsif need_s3_subdomain?(site)
+      = tooltip_box href: edit_site_path(site), class: 'warning' do
+        %span.p= raw t 'site.status.need_s3_subdomain', hostname: s3_hostname_with_subdomain_needed(site)
     .action_popup
       = link_to '', class: 'show_button' do
         %span= "Show actions"

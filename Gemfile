@@ -76,7 +76,7 @@ gem 'edge_cast'
 # until github.com/Shopify/active_merchant/pull/724 is merged
 gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
 
-gem 'public_suffix', '1.2.0'
+gem 'public_suffix'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 

@@ -12,6 +12,7 @@ en:
       in_progress: "Your player is being published (this can take up to 5 minutes)."
       need_path: "If you don't own %{hostname}, we highly recommend you set a <em>path</em> to restrict the player to your pages only."
       need_subdomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
+      need_s3_subdomain: "Please add a <em>subdomain</em> to %{hostname} to restrict the player to your pages only."
     edit:
       delete_site_info1: "Your SublimeVideo license for <em>%{domain}</em> will be instantly removed from our servers."
       delete_site_info2: "This operation cannot be undone."
