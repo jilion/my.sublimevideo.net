@@ -11,7 +11,7 @@ describe CampaignMonitorWrapper do
   specify { described_class.list[:segment].should eq 'test' }
 
   before do
-    described_class.any_instance.stub(_log_bad_request: true)
+    described_class.stub(_log_bad_request: true)
     Librato.stub(:increment)
   end
 
@@ -43,7 +43,7 @@ describe CampaignMonitorWrapper do
       ]).should be_true
 
       # user 1
-      subscriber = CreateSend::Subscriber.get(described_class.list[:list_id], user1.email)
+      subscriber = CreateSend::Subscriber.get(described_class.auth, described_class.list[:list_id], user1.email)
       subscriber['EmailAddress'].should eq user1.email
       subscriber['Name'].should         eq user1.name
       subscriber['State'].should        eq 'Active'
@@ -52,7 +52,7 @@ describe CampaignMonitorWrapper do
       subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq 'true'
       subscriber['CustomFields'].find { |h| h.values.include?('billable') }['Value'].should eq 'false'
       # user 2
-      subscriber = CreateSend::Subscriber.get(described_class.list[:list_id], user2.email)
+      subscriber = CreateSend::Subscriber.get(described_class.auth, described_class.list[:list_id], user2.email)
       subscriber['EmailAddress'].should eq user2.email
       subscriber['Name'].should         eq user2.name
       subscriber['State'].should        eq 'Active'

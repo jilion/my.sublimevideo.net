@@ -185,7 +185,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
           set: { "s" => true },
@@ -208,7 +208,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           set: {},
@@ -238,7 +238,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "vv.m" => 1 },
           set: {},
@@ -270,7 +270,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           set: {},

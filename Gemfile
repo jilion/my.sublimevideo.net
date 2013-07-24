@@ -5,7 +5,7 @@ ruby '2.0.0'
 
 gem 'bundler'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.14'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
@@ -34,7 +34,7 @@ gem 'groupdate'
 gem 'chartkick'
 
 # Auth / invitations
-gem 'devise', '~> 2.2.4'
+gem 'devise', '~> 3.0.0'
 gem 'devise_invitable'
 gem 'devise-async'
 
@@ -61,7 +61,7 @@ gem 'paranoia'
 gem 'responders'
 gem 'has_scope'
 
-gem 'fog', '~> 1.12'
+gem 'fog'
 gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
@@ -87,7 +87,7 @@ gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
 gem 'array_stats'
-gem 'createsend', '~> 2.5' # Campaign Monitor
+gem 'createsend' # Campaign Monitor
 
 gem 'honeybadger'
 gem 'prowl'
@@ -98,7 +98,8 @@ gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
-gem 'addressable', '2.2.8', require: 'addressable/uri'
+gem 'addressable', require: 'addressable/uri'
+# gem 'addressabler'
 
 # Stats
 gem 'crack'
@@ -109,7 +110,7 @@ gem 'redis'
 gem 'zendesk_api'
 
 # App
-gem 'solve', '0.4.2'
+gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -140,7 +141,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'launchy',        '2.1.0' # after dependency on addressable ~> 2.3
+  gem 'launchy'
   gem 'letter_opener'
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
