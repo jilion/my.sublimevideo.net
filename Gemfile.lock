@@ -61,6 +61,14 @@ GIT
       nokogiri
 
 GIT
+  remote: git://github.com/scambra/devise_invitable.git
+  revision: 8d8fcd0b37e66addc4b38910b7395715aee1ba66
+  specs:
+    devise_invitable (1.1.8)
+      actionmailer (>= 3.2.6, < 5)
+      devise (>= 3.0.0.rc)
+
+GIT
   remote: git://github.com/softa/activerecord-postgres-hstore.git
   revision: 396f5af9af5eb70b7d9721a5bb14e14afee5cc38
   specs:
@@ -198,10 +206,6 @@ GEM
       warden (~> 1.2.3)
     devise-async (0.7.0)
       devise (>= 2.2)
-    devise_invitable (1.1.8)
-      actionmailer (~> 3.0)
-      devise (>= 2.1.2)
-      railties (~> 3.0)
     diff-lcs (1.2.4)
     display_case (0.0.7)
     dotenv (0.7.0)
@@ -626,7 +630,7 @@ DEPENDENCIES
   database_cleaner
   devise (~> 3.0.0)
   devise-async
-  devise_invitable
+  devise_invitable!
   display_case
   dotenv-rails
   eco

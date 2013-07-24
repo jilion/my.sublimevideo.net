@@ -35,7 +35,8 @@ gem 'chartkick'
 
 # Auth / invitations
 gem 'devise', '~> 3.0.0'
-gem 'devise_invitable'
+# until 1.1.9
+gem 'devise_invitable', github: 'scambra/devise_invitable'
 gem 'devise-async'
 
 # API
