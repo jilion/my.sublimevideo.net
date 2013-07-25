@@ -17,7 +17,7 @@ class UsersController < Devise::RegistrationsController
 
   # POST /signup
   def create
-    build_resource
+    build_resource(sign_up_params)
     @user = resource
     @user.referrer_site_token = cookies[:r]
 
@@ -42,13 +42,10 @@ class UsersController < Devise::RegistrationsController
     self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
-    successfully_updated = if needs_password?(resource, params)
-      resource.update_with_password(params[resource_name])
+    successfully_updated = if needs_password?(params)
+      resource.update_with_password(account_update_params)
     else
-      # remove the virtual current_password attribute update_without_password
-      # doesn't know how to ignore it
-      params[resource_name].delete(:current_password)
-      resource.update_without_password(params[resource_name])
+      resource.update_without_password(account_update_params)
     end
 
     if successfully_updated
@@ -88,10 +85,19 @@ class UsersController < Devise::RegistrationsController
 
   private
 
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:account_update) do |u|
+      keys = [:password]
+      keys << :current_password if needs_password?(params)
+
+      params[:user].permit(*(auth_keys + keys))
+    end
+  end
+
   # check if we need password to update user data
   # ie if password or email was changed
   # extend this as needed
-  def needs_password?(user, params)
+  def needs_password?(params)
     params[:user][:password].present?
   end
 
