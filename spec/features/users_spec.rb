@@ -67,56 +67,32 @@ feature 'Account page access' do
 end
 
 feature 'Email update' do
-  context 'password without special HTML characters' do
-    scenario 'do not ask for password confirmation' do
-      sign_in_as :user, { email: "old@jilion.com" }
-      Sidekiq::Worker.clear_all
-      Timecop.travel(Time.now + 1.minute) do # for after_confirmation_path_for
-        click_link('John Doe')
-
-        within '#edit_email' do
-          fill_in 'user[email]', with: "New@jilion.com"
-          click_button 'Update'
-        end
-
-        User.last.email.should eq "old@jilion.com"
-        User.last.unconfirmed_email.should eq "new@jilion.com"
-
-        Sidekiq::Worker.drain_all
-
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.to.should eq [User.last.unconfirmed_email]
-        last_delivery.subject.should eq "Confirm your email address"
-
-        go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
-
-        User.last.email.should eq "new@jilion.com"
-        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site" # redirected from /sites
-      end
-    end
+  background do
+    sign_in_as :user, { email: "old@jilion.com" }
+    Sidekiq::Worker.clear_all
   end
 
-  context 'password with special HTML characters' do
-    scenario 'do not ask for current password confirmation' do
-      sign_in_as :user, { email: "old@jilion.com", password: "abc'def" }
-      Sidekiq::Worker.clear_all
+  scenario 'do not ask for password confirmation', with_transaction_callbacks: true do
+    Timecop.travel(Time.now + 1.minute) do # for after_confirmation_path_for
       click_link('John Doe')
 
       within '#edit_email' do
-        fill_in 'user[email]', with: "New@jilion.com"
+        fill_in 'user[email]', with: 'New@jilion.com'
         click_button 'Update'
       end
 
       User.last.email.should eq "old@jilion.com"
       User.last.unconfirmed_email.should eq "new@jilion.com"
 
-      page.should have_content 'You updated your account successfully, but we need to verify your new email address.'
-
       Sidekiq::Worker.drain_all
-
       last_delivery = ActionMailer::Base.deliveries.last
-      last_delivery.to.should eq ["new@jilion.com"]
+      last_delivery.to.should eq [User.last.unconfirmed_email]
       last_delivery.subject.should eq "Confirm your email address"
+
+      go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
+
+      User.last.email.should eq "new@jilion.com"
+      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site" # redirected from /sites
     end
   end
 end
@@ -128,11 +104,11 @@ feature 'Password update' do
 
     within '#edit_password' do
       fill_in "Current password", with: "123456"
-      fill_in "New password", with: "newpassword"
+      fill_in "New password", with: "abc'def"
       click_button 'Update'
     end
 
-    User.last.valid_password?("newpassword").should be_true
+    User.last.valid_password?("abc'def").should be_true
   end
 end
 

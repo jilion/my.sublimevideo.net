@@ -1,11 +1,18 @@
 RSpec.configure do |config|
-  config.use_transactional_fixtures = true
-
   config.before(:suite) do
     DatabaseCleaner[:mongoid].strategy = :truncation
   end
 
   config.before do
+    with_transaction_callbacks = example.metadata[:with_transaction_callbacks]
+
+    config.use_transactional_fixtures = !with_transaction_callbacks
+
+    if with_transaction_callbacks
+      DatabaseCleaner[:active_record].strategy = :truncation
+    else
+      DatabaseCleaner[:active_record].strategy = :transaction
+    end
     DatabaseCleaner.start
   end
 
