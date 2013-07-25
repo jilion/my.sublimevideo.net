@@ -3,9 +3,15 @@
 .content_left
   %h3.section_title Email
   = form_for resource, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_email" } do |f|
+
     .entry.email
       = f.label :email, "Email", class: "icon"
       = f.email_field :email, class: "text", placeholder: "Email", required: true
+
+    - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+      %p.note
+        Currently waiting confirmation for:
+        %strong= resource.unconfirmed_email
 
     .entry.update
       = f.submit "Update", class: "submit blue_button"
