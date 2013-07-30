@@ -87,21 +87,22 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/update_design_subscription
   def update_design_subscription
-    @design = Design.find(params[:design_id])
-    _update_design_subscription(@design)
-
-    _respond_for_site_with_notice(t('flash.sites.update_design_subscription.notice', design_title: @design.title, state: params[:state].presence || 'subscribed'))
+    _update_billable_item_subscription('design')
   end
 
   # PUT /sites/:id/update_addon_plan_subscription
   def update_addon_plan_subscription
-    @addon_plan = AddonPlan.find(params[:addon_plan_id])
-    _update_addon_plan_subscription(@addon_plan)
-
-    _respond_for_site_with_notice(t('flash.sites.update_addon_plan_subscription.notice', addon_plan_title: @addon_plan.title, state: params[:state].presence || 'subscribed'))
+    _update_billable_item_subscription('addon_plan')
   end
 
   private
+
+  def _update_billable_item_subscription(type)
+    @item = type.classify.constantize.find(params[:"#{type}_id"])
+    send("_update_#{type}_subscription", @item)
+
+    _respond_for_site_with_notice(t("flash.sites.update_#{type}_subscription.notice", :"#{type}_title" => @item.title, state: params[:state].presence || 'subscribed'))
+  end
 
   def _set_default_scopes
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?

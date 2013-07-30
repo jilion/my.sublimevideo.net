@@ -9,7 +9,7 @@ class SiteStatsTimelineBuilder
   %w[p v].each do |view_type|
     %w[d m e em].each do |field|
       define_method("#{field}_#{view_type}v") do
-        _all.map { |s| s[view_type][field].to_i }
+        _all.map { |s| s["#{view_type}v"][field].to_i }
       end
     end
 
