@@ -17,16 +17,20 @@ class User < ActiveRecord::Base
   acts_as_taggable
 
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
-  attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
-                  :name, :postal_code, :country, :confirmation_comment,
-                  :billing_email, :billing_name, :billing_address_1, :billing_address_2,
-                  :billing_postal_code, :billing_city, :billing_region, :billing_country,
-                  :use_personal, :use_company, :use_clients,
-                  :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
-                  :newsletter, :terms_and_conditions
+  attr_accessible :email, :remember_me, :password, :current_password,
+                  :hidden_notice_ids, :name, :postal_code, :country,
+                  :confirmation_comment, :billing_email, :billing_name,
+                  :billing_address_1, :billing_address_2, :billing_postal_code,
+                  :billing_city, :billing_region, :billing_country,
+                  :use_personal, :use_company, :use_clients, :company_name,
+                  :company_url, :company_job_title, :company_employees,
+                  :company_videos_served, :newsletter, :terms_and_conditions
+
   # Credit card
   # cc_register is a flag to indicate if the CC should be recorded or not
-  attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value, :remote_ip
+  attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number,
+                  :cc_expiration_year, :cc_expiration_month,
+                  :cc_verification_value, :remote_ip
 
   serialize :hidden_notice_ids, Array
   serialize :early_access, Array
@@ -84,7 +88,7 @@ class User < ActiveRecord::Base
   after_save :_update_newsletter_subscription
   after_update :_update_newsletter_user_infos
 
-  after_update :zendesk_update
+  after_update :_zendesk_update
 
   # =================
   # = State Machine =
@@ -105,9 +109,6 @@ class User < ActiveRecord::Base
   # ==========
 
   # state
-  scope :invited,      -> { where { invitation_token != nil } }
-  # some beta users don't come from svs but were directly invited from msv!!
-  scope :beta,         -> { where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on) } }
   scope :active,       -> { where { state == 'active' } }
   scope :inactive,     -> { where { state != 'active' } }
   scope :suspended,    -> { where { state == 'suspended' } }
@@ -125,7 +126,7 @@ class User < ActiveRecord::Base
   scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
   scope :with_balance,         -> { where { balance > 0 } }
   scope :last_credit_card_expiration_notice_sent_before, ->(date) {
-      where { last_credit_card_expiration_notice_sent_at < date }
+    where { last_credit_card_expiration_notice_sent_at < date }
   }
 
   # attributes queries
@@ -163,7 +164,7 @@ class User < ActiveRecord::Base
     super(tainted_conditions.merge(state: %w[active suspended]))
   end
 
-  def self.find_first_by_auth_conditions(tainted_conditions, opts={})
+  def self.find_first_by_auth_conditions(tainted_conditions, opts = {})
     super(tainted_conditions, opts.merge(state: %w[active suspended]))
   end
 
@@ -198,7 +199,7 @@ class User < ActiveRecord::Base
   end
 
   def billing_address_complete?
-    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
+    _billing_address_attributes.all?(&:present?)
   end
 
   def billing_address_missing_fields
@@ -208,8 +209,8 @@ class User < ActiveRecord::Base
   end
 
   def more_info_incomplete?
-    [company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
-    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
+    _company_attributes.any?(&:blank?) ||
+    _use_attributes.all?(&:blank?) # one of these fields is enough
   end
 
   def billable?
@@ -244,18 +245,6 @@ class User < ActiveRecord::Base
     ).to_s
   end
 
-  def activated_deals
-    deal_activations.active.order { activated_at.desc }.map(&:deal)
-  end
-
-  def latest_activated_deal
-    deal_activations.order { activated_at.desc }.first.try(:deal)
-  end
-
-  def latest_activated_deal_still_active
-    deal_activations.active.order { activated_at.desc }.first.try(:deal)
-  end
-
   def support_requests
     @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
   end
@@ -283,11 +272,23 @@ class User < ActiveRecord::Base
   end
 
   # after_update
-  def zendesk_update
+  def _zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
       updated_field = email_changed? ? { email: email } : { name: name }
       ZendeskWrapper.delay(queue: 'low').update_user(zendesk_id, updated_field)
     end
+  end
+
+  def _billing_address_attributes
+    [billing_address_1, billing_postal_code, billing_city, billing_country]
+  end
+
+  def _company_attributes
+    [company_name, company_url, company_job_title, company_employees]
+  end
+
+  def _use_attributes
+    [use_personal, use_company, use_clients]
   end
 
   # ===========================

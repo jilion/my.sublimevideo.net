@@ -1,6 +1,6 @@
 <%= title_and_content_header("# of Videos Served per Month") %>
 <%
-videos_served = User.beta.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).order("total DESC").map! { |u| [u.company_videos_served || "Not Available", u.total.to_i] }
+videos_served = User.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).order("total DESC").map! { |u| [u.company_videos_served || "Not Available", u.total.to_i] }
 
 videos_served_with_wrong_label = videos_served.find { |e| e[0] == "Nr. of videos served" }
 videos_served_not_a_company    = videos_served.find { |e| e[0] == "Not Available" }

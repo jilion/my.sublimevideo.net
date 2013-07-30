@@ -229,7 +229,7 @@ describe User do
       end
     end
 
-    describe "after_update :zendesk_update" do
+    describe "after_update :_zendesk_update" do
       let(:user) { create(:user) }
       before do
         NewsletterSubscriptionManager.stub(:sync_from_service)
@@ -503,73 +503,6 @@ describe User do
       end
     end
 
-    describe "#activated_deals" do
-      subject { create(:user) }
-
-      context "without deals activated" do
-        its(:activated_deals) { should be_empty }
-      end
-
-      context "with deals activated" do
-        let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-        let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before do
-          @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
-          @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
-        end
-
-        its(:activated_deals) { should eq [deal2, deal1] }
-      end
-    end
-
-    describe "#latest_activated_deal" do
-      subject { create(:user) }
-
-      context "without deals activated" do
-        its(:latest_activated_deal) { should be_nil }
-      end
-
-      context "with deals activated" do
-        let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-        let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before do
-          @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
-          @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
-        end
-
-        its(:latest_activated_deal) { should eq deal2 }
-
-        it "returns a deal even if it not active anymore" do
-          Timecop.travel(4.days.from_now) do
-            subject.latest_activated_deal.should eq deal2
-          end
-        end
-      end
-    end
-
-    describe "#latest_activated_deal_still_active" do
-      subject { create(:user) }
-
-      context "without deals activated" do
-        its(:latest_activated_deal_still_active) { should be_nil }
-      end
-
-      context "with deals activated" do
-        let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-        let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before do
-          @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
-          @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
-        end
-
-        it "returns only a deal that is still active" do
-          Timecop.travel(4.days.from_now) do
-            subject.latest_activated_deal_still_active.should be_nil
-          end
-        end
-      end
-    end
-
     describe '#billable?' do
       let(:user) { create(:user) }
       let(:site) { create(:site, user: user) }
@@ -660,14 +593,6 @@ describe User do
         @user_invited = create(:user, invitation_token: '123', state: 'archived')
         @user_beta    = create(:user, invitation_token: nil, created_at: PublicLaunch.beta_transition_started_on - 1.day, state: 'suspended')
         @user_active  = create(:user)
-      end
-
-      describe ".invited" do
-        specify { User.invited.all.should =~ [@user_invited] }
-      end
-
-      describe ".beta" do
-        specify { User.beta.all.should =~ [@user_beta] }
       end
 
       describe ".active" do
