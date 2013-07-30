@@ -89,9 +89,9 @@ describe App::ComponentVersion, :fog_mock do
 
     it "doesn't removes zip content" do
       prefix = "c/#{component.token}/#{component_version.version}/"
-      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(6).files
+      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(4).files
       App::ComponentVersion.find(component_version).destroy
-      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(6).files
+      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(4).files
     end
   end
 

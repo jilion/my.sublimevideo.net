@@ -12,9 +12,7 @@ describe App::ComponentVersionZipContentUploader, :fog_mock do
   let(:zip) { fixture_file('app/e.zip') }
   ### Zip content
   # bA.js
-  # flash/flash11canvas.swf
   # flash/sublimevideo.swf
-  # images/logo.png
   # images/play_button.png
   # images/sub/sub_play_button.png
   let(:upload_path) { Pathname.new('b/e/2.0.0/') }
@@ -24,7 +22,7 @@ describe App::ComponentVersionZipContentUploader, :fog_mock do
 
   describe '.store_zip_content' do
     it 'sends all zip files in sublimvideo S3 bucket' do
-      uploader.should_receive(:put_object).exactly(6).times
+      uploader.should_receive(:put_object).exactly(4).times
       uploader.store_zip_content(zip.path)
     end
 
