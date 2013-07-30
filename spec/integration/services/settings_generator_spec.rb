@@ -49,7 +49,7 @@ describe SettingsGenerator, :addons do
 
       describe 'settings.kits["1"][:plugins]["videoPlayer"]' do
         it 'has the right settings for ["videoPlayer"][:plugins]["logo"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['logo'].should == {
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['logo'].should eq({
             settings: {
               enable: true,
               type: 'sv',
@@ -75,11 +75,11 @@ describe SettingsGenerator, :addons do
               link_url: {}
             },
             id: "sa.sh.sp"
-          }
+          })
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["initial"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['initial'].should == {
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['initial'].should eq({
             settings: {
               overlay_enable: true,
               overlay_visibility: 'autofade',
@@ -97,11 +97,11 @@ describe SettingsGenerator, :addons do
               }
             },
             id: "sa.sh.sv"
-          }
+          })
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["embed"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed'].should == {
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed'].should eq({
             settings: {
               enable: true,
               type: 'manual',
@@ -117,11 +117,11 @@ describe SettingsGenerator, :addons do
               size: {}
             },
             id: 'sa.sh.ub'
-          }
+          })
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['controls'].should == {
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['controls'].should eq({
             settings: {
               enable: true,
               visibility: 'autohide'
@@ -135,20 +135,20 @@ describe SettingsGenerator, :addons do
               }
             },
             id: 'sa.sh.sq'
-          }
+          })
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:settings].should == {
+          settings.kits['1'][:plugins]['videoPlayer'][:settings].should eq({
             volume_enable: true,
             fullmode_enable: true,
             fullmode_priority: 'screen',
             on_end: 'nothing'
-          }
+          })
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:allowed_settings].should == {
+          settings.kits['1'][:plugins]['videoPlayer'][:allowed_settings].should eq({
             volume_enable: {
               values: [true, false]
             },
@@ -161,7 +161,7 @@ describe SettingsGenerator, :addons do
             on_end: {
               values: ['nothing', 'replay', 'stop']
             }
-          }
+          })
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
@@ -171,18 +171,18 @@ describe SettingsGenerator, :addons do
 
       describe 'settings.kits["1"][:plugins]["lightbox"]' do
         it 'has the right settings for ["lightbox"][:settings]' do
-          settings.kits['1'][:plugins]['lightbox'][:settings].should == {
+          settings.kits['1'][:plugins]['lightbox'][:settings].should eq({
             on_open: 'play',
             overlay_color: "#000",
             overlay_opacity: 0.7,
             close_button_enable: true,
             close_button_visibility: "autohide",
             close_button_position: "left"
-          }
+          })
         end
 
         it 'has the right settings for ["lightbox"][:allowed_settings]' do
-          settings.kits['1'][:plugins]['lightbox'][:allowed_settings].should == {
+          settings.kits['1'][:plugins]['lightbox'][:allowed_settings].should eq({
             close_button_enable: {
               values: [true, false],
             },
@@ -201,25 +201,25 @@ describe SettingsGenerator, :addons do
             close_button_position: {
               values: ["left", "right"]
             }
-          }
+          })
         end
 
         it 'has the right settings for ["lightbox"][:id]' do
-          settings.kits['1'][:plugins]['lightbox'][:id].should == 'sa.sl.sm'
+          settings.kits['1'][:plugins]['lightbox'][:id].should eq 'sa.sl.sm'
         end
       end
 
       describe 'settings.kits["1"][:plugins]["imageViewer"]' do
         it 'has the right settings for ["imageViewer"][:settings]' do
-          settings.kits['1'][:plugins]['imageViewer'][:settings].should == {}
+          settings.kits['1'][:plugins]['imageViewer'][:settings].should eq({})
         end
 
         it 'has the right settings for ["imageViewer"][:allowed_settings]' do
-          settings.kits['1'][:plugins]['imageViewer'][:allowed_settings].should == {}
+          settings.kits['1'][:plugins]['imageViewer'][:allowed_settings].should eq({})
         end
 
         it 'has the right settings for ["imageViewer"][:id]' do
-          settings.kits['1'][:plugins]['imageViewer'][:id].should == 'sa.sn.so'
+          settings.kits['1'][:plugins]['imageViewer'][:id].should eq 'sa.sn.so'
         end
       end
 

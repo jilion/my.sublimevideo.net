@@ -8,6 +8,7 @@ class AddonSystemPopulator < Populator
       seeds = send("#{klass.to_s.underscore.gsub('/', '_')}_seeds")
 
       seeds.each do |attributes|
+        attributes = attributes.call if attributes.respond_to?(:call)
         attributes = Hash[keys.zip(attributes)]
 
         populator_class = "#{klass.to_s.demodulize}Populator"
@@ -82,37 +83,37 @@ class AddonSystemPopulator < Populator
   end
 
   def addon_keys
-    [:name, :kind, :design_dependent, :parent_addon]
+    [:name, :kind, :design_dependent, :parent_addon_id]
   end
 
   def addon_seeds
     [
-      ['video_player',     'videoPlayer',     false, nil],
-      ['controls',         'controls',        true,  Addon.get('video_player')],
-      ['initial',          'initial',         true,  Addon.get('video_player')],
-      ['sharing',          'sharing',         true,  Addon.get('video_player')],
-      ['social_sharing',   'sharing',         true,  Addon.get('video_player')],
-      ['embed',            'embed',           true,  Addon.get('video_player')],
-      ['image_viewer',     'imageViewer',     false, nil],
-      ['logo',             'logo',            false, Addon.get('video_player')],
-      ['lightbox',         'lightbox',        true,  nil],
-      ['api',              'api',             false, nil],
-      ['stats',            'stats',           false, nil],
-      ['support',          'support',         false, nil],
-      ['preview_tools',    'previewTools',    false, nil],
-      ['buy_action',       'buyAction',       true,  Addon.get('video_player')],
-      ['action',           'action',          false, Addon.get('video_player')],
-      ['end_actions',      'endActions',      true,  Addon.get('video_player')],
-      ['info',             'info',            true,  Addon.get('video_player')],
-      ['cuezones',         'cuezones',        false, Addon.get('video_player')],
-      ['google_analytics', 'googleAnalytics', false, Addon.get('video_player')],
-      ['dmt_controls',     'controls',        true,  Addon.get('video_player')],
-      ['dmt_quality',      'qualityPane',     true,  Addon.get('video_player')],
-      ['dmt_logo',         'logo',            true,  Addon.get('video_player')],
-      ['dmt_sharing',      'sharing',         true,  Addon.get('video_player')],
-      ['psg_controls',     'controls',        true,  Addon.get('video_player')],
-      ['psg_logo',         'logo',            true,  Addon.get('video_player')],
-      ['rng_controls',     'controls',        true,  Addon.get('video_player')]
+      -> { ['video_player',     'videoPlayer',     false, nil] },
+      -> { ['controls',         'controls',        true,  Addon.get('video_player').id] },
+      -> { ['initial',          'initial',         true,  Addon.get('video_player').id] },
+      -> { ['sharing',          'sharing',         true,  Addon.get('video_player').id] },
+      -> { ['social_sharing',   'sharing',         true,  Addon.get('video_player').id] },
+      -> { ['embed',            'embed',           true,  Addon.get('video_player').id] },
+      -> { ['image_viewer',     'imageViewer',     false, nil] },
+      -> { ['logo',             'logo',            false, Addon.get('video_player').id] },
+      -> { ['lightbox',         'lightbox',        true,  nil] },
+      -> { ['api',              'api',             false, nil] },
+      -> { ['stats',            'stats',           false, nil] },
+      -> { ['support',          'support',         false, nil] },
+      -> { ['preview_tools',    'previewTools',    false, nil] },
+      -> { ['buy_action',       'buyAction',       true,  Addon.get('video_player').id] },
+      -> { ['action',           'action',          false, Addon.get('video_player').id] },
+      -> { ['end_actions',      'endActions',      true,  Addon.get('video_player').id] },
+      -> { ['info',             'info',            true,  Addon.get('video_player').id] },
+      -> { ['cuezones',         'cuezones',        false, Addon.get('video_player').id] },
+      -> { ['google_analytics', 'googleAnalytics', false, Addon.get('video_player').id] },
+      -> { ['dmt_controls',     'controls',        true,  Addon.get('video_player').id] },
+      -> { ['dmt_quality',      'qualityPane',     true,  Addon.get('video_player').id] },
+      -> { ['dmt_logo',         'logo',            true,  Addon.get('video_player').id] },
+      -> { ['dmt_sharing',      'sharing',         true,  Addon.get('video_player').id] },
+      -> { ['psg_controls',     'controls',        true,  Addon.get('video_player').id] },
+      -> { ['psg_logo',         'logo',            true,  Addon.get('video_player').id] },
+      -> { ['rng_controls',     'controls',        true,  Addon.get('video_player').id] }
     ]
   end
 
