@@ -4,9 +4,11 @@ class AddonSystemPopulator < Populator
     PopulateHelpers.empty_tables(App::Component, App::ComponentVersion, App::Plugin, AddonPlanSettings, Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
     [App::Component, App::ComponentVersion, Design, Addon, App::Plugin, AddonPlan, AddonPlanSettings].each do |klass, new_records|
-      seeds_method = klass.to_s.underscore.gsub('/', '_') + '_seeds'
-      send(seeds_method).each do |attributes|
-        attributes = attributes.call if attributes.respond_to?(:call)
+      keys  = send("#{klass.to_s.underscore.gsub('/', '_')}_keys")
+      seeds = send("#{klass.to_s.underscore.gsub('/', '_')}_seeds")
+
+      seeds.each do |attributes|
+        attributes = Hash[keys.zip(attributes)]
 
         populator_class = "#{klass.to_s.demodulize}Populator"
         if Object.const_defined?(populator_class)
@@ -22,301 +24,283 @@ class AddonSystemPopulator < Populator
 
   private
 
+  def app_component_keys
+    [:name, :token]
+  end
+
   def app_component_seeds
     [
-      { name: 'app',      token: 'sa' },
-      { name: 'twit',     token: 'sf' },
-      { name: 'html5',    token: 'sg' },
-      { name: 'sony',     token: 'tj' },
-      { name: 'svnet',    token: 'sj' },
-      { name: 'anthony',  token: 'aaa' },
-      { name: 'next15',   token: 'aba' },
-      { name: 'df',       token: 'afa' },
-      { name: 'blizzard', token: 'aca' },
-
-      { name: 'daily',  token: 'aha' },
-      { name: 'psg',    token: 'aja' },
-      { name: 'orange', token: 'aia' }
+      ['app',      'sa'],
+      ['twit',     'sf'],
+      ['html5',    'sg'],
+      ['sony',     'tj'],
+      ['svnet',    'sj'],
+      ['anthony',  'aaa'],
+      ['next15',   'aba'],
+      ['df',       'afa'],
+      ['blizzard', 'aca'],
+      ['daily',    'aha'],
+      ['psg',      'aja'],
+      ['orange',   'aia']
     ]
+  end
+
+  def app_component_version_keys
+    [:component, :version, :zip]
   end
 
   def app_component_version_seeds
     [
-      { component: App::Component.get('app'),   version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-      { component: App::Component.get('twit'),  version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-      { component: App::Component.get('html5'), version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-      { component: App::Component.get('svnet'), version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
+      [App::Component.get('app'),   '1.0.0', File.new(Rails.root.join('spec/fixtures/app/e.zip'))],
+      [App::Component.get('twit'),  '1.0.0', File.new(Rails.root.join('spec/fixtures/app/e.zip'))],
+      [App::Component.get('html5'), '1.0.0', File.new(Rails.root.join('spec/fixtures/app/e.zip'))],
+      [App::Component.get('svnet'), '1.0.0', File.new(Rails.root.join('spec/fixtures/app/e.zip'))]
     ]
+  end
+
+  def design_keys
+    [:name, :skin_mod, :skin_token, :price, :availability, :stable_at, :component]
   end
 
   def design_seeds
     [
-      { name: 'classic',  skin_mod: 'sublime/sublime_skin', skin_token: 'sa.sb.sc',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
-      { name: 'flat',     skin_mod: 'players/flat/flat_skin', skin_token: 'sa.sd.sd',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
-      { name: 'light',    skin_mod: 'players/light/light_skin', skin_token: 'sa.se.se',    price: 0, availability: 'public', stable_at: Time.now.utc, component: App::Component.get('app')      },
-      { name: 'twit',     skin_mod: 'players/twit/twit_skin', skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('twit')     },
-      { name: 'html5',    skin_mod: 'players/html5/html5_skin', skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('html5')    },
-      { name: 'sony',     skin_mod: 'players/sony/sony_skin', skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('sony')     },
-      { name: 'svnet',    skin_mod: 'sublime/sublime_skin', skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('svnet')    },
-      { name: 'anthony',  skin_mod: 'players/anthony/anthony_skin', skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('anthony')  },
-      { name: 'next15',   skin_mod: 'players/next15/next15_skin', skin_token: 'aba.aba.aba', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('next15')   },
-      { name: 'df',       skin_mod: 'players/df/df_skin', skin_token: 'afa.afa.afa', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('df')       },
-      { name: 'blizzard', skin_mod: 'players/blizzard/blizzard_skin', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('blizzard') },
-
-      { name: 'daily',    skin_mod: 'players/daily/daily_skin', skin_token: 'aha.aha.aha', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('daily') },
-      { name: 'psg',      skin_mod: 'players/psg/psg_skin', skin_token: 'aja.aja.aja', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('psg') },
-      { name: 'orange',   skin_mod: 'players/orange/orange_skin', skin_token: 'aia.aia.aia', price: 0, availability: 'custom', stable_at: Time.now.utc, component: App::Component.get('orange') }
+      ['classic',  'sublime/sublime_skin',           'sa.sb.sc',    0, 'public', Time.now.utc, App::Component.get('app')],
+      ['flat',     'players/flat/flat_skin',         'sa.sd.sd',    0, 'public', Time.now.utc, App::Component.get('app')],
+      ['light',    'players/light/light_skin',       'sa.se.se',    0, 'public', Time.now.utc, App::Component.get('app')],
+      ['twit',     'players/twit/twit_skin',         'sf.sf.sf',    0, 'custom', Time.now.utc, App::Component.get('twit')],
+      ['html5',    'players/html5/html5_skin',       'sg.sg.sg',    0, 'custom', Time.now.utc, App::Component.get('html5')],
+      ['sony',     'players/sony/sony_skin',         'tj.tj.tj',    0, 'custom', Time.now.utc, App::Component.get('sony')],
+      ['svnet',    'sublime/sublime_skin',           'sj.sj.sj',    0, 'custom', Time.now.utc, App::Component.get('svnet')],
+      ['anthony',  'players/anthony/anthony_skin',   'aaa.aaa.aaa', 0, 'custom', Time.now.utc, App::Component.get('anthony')],
+      ['next15',   'players/next15/next15_skin',     'aba.aba.aba', 0, 'custom', Time.now.utc, App::Component.get('next15')],
+      ['df',       'players/df/df_skin',             'afa.afa.afa', 0, 'custom', Time.now.utc, App::Component.get('df')],
+      ['blizzard', 'players/blizzard/blizzard_skin', 'aca.aca.aca', 0, 'custom', Time.now.utc, App::Component.get('blizzard')],
+      ['daily',    'players/daily/daily_skin',       'aha.aha.aha', 0, 'custom', Time.now.utc, App::Component.get('daily')],
+      ['psg',      'players/psg/psg_skin',           'aja.aja.aja', 0, 'custom', Time.now.utc, App::Component.get('psg')],
+      ['orange',   'players/orange/orange_skin',     'aia.aia.aia', 0, 'custom', Time.now.utc, App::Component.get('orange')]
     ]
+  end
+
+  def addon_keys
+    [:name, :kind, :design_dependent, :parent_addon]
   end
 
   def addon_seeds
     [
-        -> { { name: 'video_player',     kind: 'videoPlayer',     design_dependent: false, parent_addon: nil } },
-        -> { { name: 'controls',         kind: 'controls',        design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'initial',          kind: 'initial',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'sharing',          kind: 'sharing',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'social_sharing',   kind: 'sharing',         design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'embed',            kind: 'embed',           design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'image_viewer',     kind: 'imageViewer',     design_dependent: false, parent_addon: nil } },
-        -> { { name: 'logo',             kind: 'logo',            design_dependent: false, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'lightbox',         kind: 'lightbox',        design_dependent: true,  parent_addon: nil } },
-        -> { { name: 'api',              kind: 'api',             design_dependent: false, parent_addon: nil } },
-        -> { { name: 'stats',            kind: 'stats',           design_dependent: false, parent_addon: nil } },
-        -> { { name: 'support',          kind: 'support',         design_dependent: false, parent_addon: nil } },
-        -> { { name: 'preview_tools',    kind: 'previewTools',    design_dependent: false, parent_addon: nil } },
-        -> { { name: 'buy_action',       kind: 'buyAction',       design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'action',           kind: 'action',          design_dependent: false, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'end_actions',      kind: 'endActions',      design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'info',             kind: 'info',            design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        -> { { name: 'cuezones',         kind: 'cuezones',        design_dependent: false, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'google_analytics', kind: 'googleAnalytics', design_dependent: false, parent_addon: Addon.get('video_player') } },
-
-        -> { { name: 'dmt_controls', kind: 'controls',    design_dependent: true, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'dmt_quality',  kind: 'qualityPane', design_dependent: true, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'dmt_logo',     kind: 'logo',        design_dependent: true, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'dmt_sharing',  kind: 'sharing',     design_dependent: true, parent_addon: Addon.get('video_player') } },
-
-        -> { { name: 'psg_controls', kind: 'controls', design_dependent: true, parent_addon: Addon.get('video_player') } },
-        -> { { name: 'psg_logo',     kind: 'logo',     design_dependent: true, parent_addon: Addon.get('video_player') } },
-
-        -> { { name: 'rng_controls', kind: 'controls', design_dependent: true, parent_addon: Addon.get('video_player') } }
+      ['video_player',     'videoPlayer',     false, nil],
+      ['controls',         'controls',        true,  Addon.get('video_player')],
+      ['initial',          'initial',         true,  Addon.get('video_player')],
+      ['sharing',          'sharing',         true,  Addon.get('video_player')],
+      ['social_sharing',   'sharing',         true,  Addon.get('video_player')],
+      ['embed',            'embed',           true,  Addon.get('video_player')],
+      ['image_viewer',     'imageViewer',     false, nil],
+      ['logo',             'logo',            false, Addon.get('video_player')],
+      ['lightbox',         'lightbox',        true,  nil],
+      ['api',              'api',             false, nil],
+      ['stats',            'stats',           false, nil],
+      ['support',          'support',         false, nil],
+      ['preview_tools',    'previewTools',    false, nil],
+      ['buy_action',       'buyAction',       true,  Addon.get('video_player')],
+      ['action',           'action',          false, Addon.get('video_player')],
+      ['end_actions',      'endActions',      true,  Addon.get('video_player')],
+      ['info',             'info',            true,  Addon.get('video_player')],
+      ['cuezones',         'cuezones',        false, Addon.get('video_player')],
+      ['google_analytics', 'googleAnalytics', false, Addon.get('video_player')],
+      ['dmt_controls',     'controls',        true,  Addon.get('video_player')],
+      ['dmt_quality',      'qualityPane',     true,  Addon.get('video_player')],
+      ['dmt_logo',         'logo',            true,  Addon.get('video_player')],
+      ['dmt_sharing',      'sharing',         true,  Addon.get('video_player')],
+      ['psg_controls',     'controls',        true,  Addon.get('video_player')],
+      ['psg_logo',         'logo',            true,  Addon.get('video_player')],
+      ['rng_controls',     'controls',        true,  Addon.get('video_player')]
     ]
+  end
+
+  def addon_plan_keys
+    [:name, :price, :addon, :availability, :stable_at]
   end
 
   def addon_plan_seeds
     [
-      { name: 'standard',  price: 0,    addon: Addon.get('video_player'),     availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('lightbox'),         availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('image_viewer'),     availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('preview_tools'),    availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('end_actions'),      availability: 'custom', stable_at: Time.now.utc },
-      { name: 'invisible', price: 0,    addon: Addon.get('stats'),            availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'realtime',  price: 990,  addon: Addon.get('stats'),            availability: 'public', stable_at: Time.now.utc },
-      { name: 'sublime',   price: 0,    addon: Addon.get('logo'),             availability: 'public', stable_at: Time.now.utc },
-      { name: 'disabled',  price: 990,  addon: Addon.get('logo'),             availability: 'public', stable_at: Time.now.utc },
-      { name: 'custom',    price: 1990, addon: Addon.get('logo'),             availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('controls'),         availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('initial'),          availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('sharing'),          availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'),   availability: 'public', stable_at: Time.now.utc },
-      { name: 'manual',    price: 0,    addon: Addon.get('embed'),            availability: 'public', stable_at: Time.now.utc },
-      { name: 'auto',      price: 990,  addon: Addon.get('embed'),            availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('api'),              availability: 'hidden', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('support'),          availability: 'public', stable_at: Time.now.utc },
-      { name: 'vip',       price: 9990, addon: Addon.get('support'),          availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('buy_action'),       availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('info'),             availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 0,    addon: Addon.get('action'),           availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard',  price: 690,  addon: Addon.get('cuezones'),         availability: 'public', stable_at: Time.now.utc },
-      { name: 'standard',  price: 690,  addon: Addon.get('google_analytics'), availability: 'public', stable_at: Time.now.utc },
-
-      { name: 'standard', price: 0, addon: Addon.get('dmt_controls'), availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard', price: 0, addon: Addon.get('dmt_quality'),  availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard', price: 0, addon: Addon.get('dmt_logo'),     availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard', price: 0, addon: Addon.get('dmt_sharing'),  availability: 'custom', stable_at: Time.now.utc },
-
-      { name: 'standard', price: 0, addon: Addon.get('psg_controls'), availability: 'custom', stable_at: Time.now.utc },
-      { name: 'standard', price: 0, addon: Addon.get('psg_logo'),     availability: 'custom', stable_at: Time.now.utc },
-
-      { name: 'standard', price: 0, addon: Addon.get('rng_controls'),  availability: 'custom', stable_at: Time.now.utc }
+      ['standard',  0,    Addon.get('video_player'),     'hidden', Time.now.utc],
+      ['standard',  0,    Addon.get('lightbox'),         'hidden', Time.now.utc],
+      ['standard',  0,    Addon.get('image_viewer'),     'hidden', Time.now.utc],
+      ['standard',  0,    Addon.get('preview_tools'),    'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('end_actions'),      'custom', Time.now.utc],
+      ['invisible', 0,    Addon.get('stats'),            'hidden', Time.now.utc],
+      ['realtime',  990,  Addon.get('stats'),            'public', Time.now.utc],
+      ['sublime',   0,    Addon.get('logo'),             'public', Time.now.utc],
+      ['disabled',  990,  Addon.get('logo'),             'public', Time.now.utc],
+      ['custom',    1990, Addon.get('logo'),             'public', Time.now.utc],
+      ['standard',  0,    Addon.get('controls'),         'hidden', Time.now.utc],
+      ['standard',  0,    Addon.get('initial'),          'hidden', Time.now.utc],
+      ['standard',  0,    Addon.get('sharing'),          'custom', Time.now.utc],
+      ['standard',  690,  Addon.get('social_sharing'),   'public', Time.now.utc],
+      ['manual',    0,    Addon.get('embed'),            'public', Time.now.utc],
+      ['auto',      990,  Addon.get('embed'),            'public', Time.now.utc],
+      ['standard',  0,    Addon.get('api'),              'hidden', Time.now.utc],
+      ['standard',  0,    Addon.get('support'),          'public', Time.now.utc],
+      ['vip',       9990, Addon.get('support'),          'public', Time.now.utc],
+      ['standard',  0,    Addon.get('buy_action'),       'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('info'),             'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('action'),           'custom', Time.now.utc],
+      ['standard',  690,  Addon.get('cuezones'),         'public', Time.now.utc],
+      ['standard',  690,  Addon.get('google_analytics'), 'public', Time.now.utc],
+      ['standard',  0,    Addon.get('dmt_controls'),     'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('dmt_quality'),      'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('dmt_logo'),         'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('dmt_sharing'),      'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('psg_controls'),     'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('psg_logo'),         'custom', Time.now.utc],
+      ['standard',  0,    Addon.get('rng_controls'),     'custom', Time.now.utc]
     ]
+  end
+
+  def app_plugin_keys
+    [:name, :mod, :token, :addon, :design, :component]
   end
 
   def app_plugin_seeds
     [
-      { name: 'video_player',           mod:'sublime/video/video_app_plugin', token: 'sa.sh.si',    addon: Addon.get('video_player'),     design: nil,                         component: App::Component.get('app') },
-
-      { name: 'lightbox_classic',       mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('classic'),  component: App::Component.get('app') },
-      { name: 'lightbox_flat',          mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('flat'),     component: App::Component.get('app') },
-      { name: 'lightbox_light',         mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('light'),    component: App::Component.get('app') },
-      { name: 'lightbox_twit',          mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('twit'),     component: App::Component.get('app') },
-      { name: 'lightbox_html5',         mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('html5'),    component: App::Component.get('app') },
-      { name: 'lightbox_sony',          mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('sony'),     component: App::Component.get('app') },
-      { name: 'lightbox_anthony',       mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('anthony'),  component: App::Component.get('app') },
-      { name: 'lightbox_next15',        mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('next15'),   component: App::Component.get('app') },
-      { name: 'lightbox_df',            mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('df'),       component: App::Component.get('app') },
-      { name: 'lightbox_blizzard',      mod:'sublime/lightbox/lightbox_app_plugin', token: 'sa.sl.sm',    addon: Addon.get('lightbox'),         design: Design.get('blizzard'), component: App::Component.get('app') },
-
-      { name: 'image_viewer',           mod:'sublime/image/image_app_plugin', token: 'sa.sn.so',    addon: Addon.get('image_viewer'),     design: nil,                         component: App::Component.get('app') },
-
-      { name: 'logo',                   mod:'sublime/video/plugins/logo/logo', token: 'sa.sh.sp',    addon: Addon.get('logo'),             design: nil,                         component: App::Component.get('app') },
-
-      { name: 'controls_classic',       mod:'sublime/video/plugins/controls/controls',    token: 'sa.sh.sq',    addon: Addon.get('controls'),         design: Design.get('classic'),  component: App::Component.get('app') },
-      { name: 'controls_flat',          mod:'players/flat/plugins/controls/controls',     token: 'sd.sd.sr',    addon: Addon.get('controls'),         design: Design.get('flat'),     component: App::Component.get('app') },
-      { name: 'controls_light',         mod:'players/light/plugins/controls/controls',    token: 'se.se.ss',    addon: Addon.get('controls'),         design: Design.get('light'),    component: App::Component.get('app') },
-      { name: 'controls_twit',          mod:'players/twit/plugins/controls/controls',     token: 'sf.sf.st',    addon: Addon.get('controls'),         design: Design.get('twit'),     component: App::Component.get('twit') },
-      { name: 'controls_html5',         mod:'players/html5/plugins/controls/controls',    token: 'sg.sg.su',    addon: Addon.get('controls'),         design: Design.get('html5'),    component: App::Component.get('html5') },
-      { name: 'controls_sony',          mod:'players/sony/plugins/controls/controls',     token: 'tj.tj.sx',    addon: Addon.get('controls'),         design: Design.get('sony'),     component: App::Component.get('sony') },
-      { name: 'controls_anthony',       mod:'players/anthony/plugins/controls/controls',  token: 'aaa.aaa.aab', addon: Addon.get('controls'),         design: Design.get('anthony'),  component: App::Component.get('anthony') },
-      { name: 'controls_next15',        mod:'players/next15/plugins/controls/controls',   token: 'aba.aba.abb', addon: Addon.get('controls'),         design: Design.get('next15'),   component: App::Component.get('next15') },
-      { name: 'controls_df',            mod:'players/df/plugins/controls/controls',       token: 'afa.afa.afb', addon: Addon.get('controls'),         design: Design.get('df'),       component: App::Component.get('df') },
-      { name: 'controls_blizzard',      mod:'players/blizzard/plugins/controls/controls', token: 'aca.aca.acd', addon: Addon.get('controls'),         design: Design.get('blizzard'), component: App::Component.get('blizzard') },
-
-      { name: 'initial_classic',        mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('classic'),  component: App::Component.get('app') },
-      { name: 'initial_flat',           mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('flat'),     component: App::Component.get('app') },
-      { name: 'initial_light',          mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('light'),    component: App::Component.get('app') },
-      { name: 'initial_twit',           mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('twit'),     component: App::Component.get('app') },
-      { name: 'initial_html5',          mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('html5'),    component: App::Component.get('app') },
-      { name: 'initial_sony',           mod:'players/sony/plugins/poster/start_controller',      token: 'tj.tj.sy',    addon: Addon.get('initial'),          design: Design.get('sony'),     component: App::Component.get('sony') },
-      { name: 'initial_anthony',        mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('anthony'),  component: App::Component.get('app') },
-      { name: 'initial_next15',         mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('next15'),   component: App::Component.get('app') },
-      { name: 'initial_df',             mod:'sublime/video/plugins/poster/start_controller',     token: 'sa.sh.sv',    addon: Addon.get('initial'),          design: Design.get('df'),       component: App::Component.get('app') },
-      { name: 'initial_blizzard',       mod:'players/blizzard/plugins/poster/start_controller',  token: 'aca.aca.acc', addon: Addon.get('initial'),          design: Design.get('blizzard'), component: App::Component.get('blizzard') },
-
-      { name: 'sharing_classic',        mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('classic'),  component: App::Component.get('app') },
-      { name: 'sharing_twit',           mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('twit'),     component: App::Component.get('app') },
-      { name: 'sharing_html5',          mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('html5'),    component: App::Component.get('app') },
-      { name: 'sharing_next15',         mod:'players/next15/plugins/sharing/sharing_buttons', token: 'aba.aba.abc', addon: Addon.get('sharing'),          design: Design.get('next15'),   component: App::Component.get('next15') },
-      { name: 'sharing_blizzard',       mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('blizzard'), component: App::Component.get('app') },
-      { name: 'sharing_sony',           mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('sony'),     component: App::Component.get('app') },
-      { name: 'sharing_psg',            mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('psg'),      component: App::Component.get('app') },
-      { name: 'sharing_orange',         mod:'sublime/video/plugins/sharing/sharing_buttons' , token: 'sa.sh.sz',    addon: Addon.get('sharing'),          design: Design.get('orange'),   component: App::Component.get('app') },
-
-      { name: 'social_sharing_classic', mod:'sublime/video/plugins/social_sharing/social_sharing', token: 'sa.sh.ua',    addon: Addon.get('social_sharing'),   design: Design.get('classic'),  component: App::Component.get('app') },
-      { name: 'social_sharing_flat',    mod:'sublime/video/plugins/social_sharing/social_sharing', token: 'sa.sh.ua',    addon: Addon.get('social_sharing'),   design: Design.get('flat'),     component: App::Component.get('app') },
-      { name: 'social_sharing_light',   mod:'sublime/video/plugins/social_sharing/social_sharing', token: 'sa.sh.ua',    addon: Addon.get('social_sharing'),   design: Design.get('light'),    component: App::Component.get('app') },
-
-      { name: 'embed_classic',          mod:'sublime/video/plugins/embed/embed', token: 'sa.sh.ub',    addon: Addon.get('embed'),            design: Design.get('classic'),  component: App::Component.get('app') },
-      { name: 'embed_flat',             mod:'sublime/video/plugins/embed/embed', token: 'sa.sh.ub',    addon: Addon.get('embed'),            design: Design.get('flat'),     component: App::Component.get('app') },
-      { name: 'embed_light',            mod:'sublime/video/plugins/embed/embed', token: 'sa.sh.ub',    addon: Addon.get('embed'),            design: Design.get('light'),    component: App::Component.get('app') },
-
-      { name: 'info_sony',              mod:'players/sony/plugins/info/info_controller', token: 'tj.tj.aeb',   addon: Addon.get('info'),             design: Design.get('sony'),     component: App::Component.get('sony') },
-
-      { name: 'buy_action_blizzard',    mod:'players/blizzard/plugins/buy/buy_controller', token: 'aca.aca.acb', addon: Addon.get('buy_action'),       design: Design.get('blizzard'), component: App::Component.get('blizzard') },
-      { name: 'buy_action_psg',         mod:'players/psg/plugins/buy/buy_controller',      token: 'aja.aja.ajd', addon: Addon.get('buy_action'),       design: Design.get('psg'),      component: App::Component.get('psg') },
-
-      { name: 'preview_tools_svnet',    mod:'players/svnet/plugins/extended_video_app/extended_video_app_plugin', token: 'sj.sj.sk',    addon: Addon.get('preview_tools'),    design: nil,                         component: App::Component.get('svnet') },
-
-      { name: 'end_actions_twit',       mod:'players/twit/plugins/actions/action_buttons', token: 'sf.sf.agb',   addon: Addon.get('end_actions'),      design: Design.get('twit'),     component: App::Component.get('twit') },
-
-      { name: 'action_svnet',           mod:'players/svnet/plugins/actions/action_buttons', token: 'sj.sj.adb',   addon: Addon.get('action'),           design: nil,                         component: App::Component.get('svnet') },
-
-      { name: 'cuezones',               mod:'sublime/video/plugins/cuepoints/cue_zones', token: 'sa.sh.ud',    addon: Addon.get('cuezones'),         design: nil,                         component: App::Component.get('app') },
-
-      { name: 'google_analytics',       mod:'sublime/video/plugins/google_analytics/google_analytics', token: 'sa.sh.uf',    addon: Addon.get('google_analytics'), design: nil,                         component: App::Component.get('app') },
-
-      { name: 'dmt_controls', mod:'players/daily/plugins/controls/controls'      , token: 'aha.aha.ahb', addon: Addon.get('dmt_controls'), design: Design.get('daily'), component: App::Component.get('daily') },
-      { name: 'dmt_quality',  mod:'players/daily/plugins/quality/quality'        , token: 'aha.aha.ahc', addon: Addon.get('dmt_quality'),  design: Design.get('daily'), component: App::Component.get('daily') },
-      { name: 'dmt_logo',     mod:'players/daily/plugins/logo/logo'              , token: 'aha.aha.ahd', addon: Addon.get('dmt_logo'),     design: Design.get('daily'), component: App::Component.get('daily') },
-      { name: 'dmt_sharing',  mod:'players/daily/plugins/sharing/sharing_buttons', token: 'aha.aha.ahe', addon: Addon.get('dmt_sharing'),  design: Design.get('daily'), component: App::Component.get('daily') },
-
-      { name: 'psg_controls', mod:'players/psg/plugins/controls/controls', token: 'aja.aja.ajb', addon: Addon.get('psg_controls'), design: Design.get('psg'), component: App::Component.get('psg') },
-      { name: 'psg_logo',     mod:'players/psg/plugins/logo/logo',         token: 'aja.aja.ajc', addon: Addon.get('psg_logo'),     design: Design.get('psg'), component: App::Component.get('psg') },
-
-      { name: 'rng_controls', mod:'players/orange/plugins/controls/controls', token: 'aia.aia.aib', addon: Addon.get('rng_controls'), design: Design.get('orange'), component: App::Component.get('orange') }
+      ['video_player',           'sublime/video/video_app_plugin',                                     'sa.sh.si',    Addon.get('video_player'),     nil,                    App::Component.get('app')],
+      ['lightbox_classic',       'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('classic'),  App::Component.get('app')],
+      ['lightbox_flat',          'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('flat'),     App::Component.get('app')],
+      ['lightbox_light',         'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('light'),    App::Component.get('app')],
+      ['lightbox_twit',          'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('twit'),     App::Component.get('app')],
+      ['lightbox_html5',         'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('html5'),    App::Component.get('app')],
+      ['lightbox_sony',          'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('sony'),     App::Component.get('app')],
+      ['lightbox_anthony',       'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('anthony'),  App::Component.get('app')],
+      ['lightbox_next15',        'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('next15'),   App::Component.get('app')],
+      ['lightbox_df',            'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('df'),       App::Component.get('app')],
+      ['lightbox_blizzard',      'sublime/lightbox/lightbox_app_plugin',                               'sa.sl.sm',    Addon.get('lightbox'),         Design.get('blizzard'), App::Component.get('app')],
+      ['image_viewer',           'sublime/image/image_app_plugin',                                     'sa.sn.so',    Addon.get('image_viewer'),     nil,                    App::Component.get('app')],
+      ['logo',                   'sublime/video/plugins/logo/logo',                                    'sa.sh.sp',    Addon.get('logo'),             nil,                    App::Component.get('app')],
+      ['controls_classic',       'sublime/video/plugins/controls/controls',                            'sa.sh.sq',    Addon.get('controls'),         Design.get('classic'),  App::Component.get('app')],
+      ['controls_flat',          'players/flat/plugins/controls/controls',                             'sd.sd.sr',    Addon.get('controls'),         Design.get('flat'),     App::Component.get('app')],
+      ['controls_light',         'players/light/plugins/controls/controls',                            'se.se.ss',    Addon.get('controls'),         Design.get('light'),    App::Component.get('app')],
+      ['controls_twit',          'players/twit/plugins/controls/controls',                             'sf.sf.st',    Addon.get('controls'),         Design.get('twit'),     App::Component.get('twit')],
+      ['controls_html5',         'players/html5/plugins/controls/controls',                            'sg.sg.su',    Addon.get('controls'),         Design.get('html5'),    App::Component.get('html5')],
+      ['controls_sony',          'players/sony/plugins/controls/controls',                             'tj.tj.sx',    Addon.get('controls'),         Design.get('sony'),     App::Component.get('sony')],
+      ['controls_anthony',       'players/anthony/plugins/controls/controls',                          'aaa.aaa.aab', Addon.get('controls'),         Design.get('anthony'),  App::Component.get('anthony')],
+      ['controls_next15',        'players/next15/plugins/controls/controls',                           'aba.aba.abb', Addon.get('controls'),         Design.get('next15'),   App::Component.get('next15')],
+      ['controls_df',            'players/df/plugins/controls/controls',                               'afa.afa.afb', Addon.get('controls'),         Design.get('df'),       App::Component.get('df')],
+      ['controls_blizzard',      'players/blizzard/plugins/controls/controls',                         'aca.aca.acd', Addon.get('controls'),         Design.get('blizzard'), App::Component.get('blizzard')],
+      ['initial_classic',        'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('classic'),  App::Component.get('app')],
+      ['initial_flat',           'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('flat'),     App::Component.get('app')],
+      ['initial_light',          'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('light'),    App::Component.get('app')],
+      ['initial_twit',           'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('twit'),     App::Component.get('app')],
+      ['initial_html5',          'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('html5'),    App::Component.get('app')],
+      ['initial_sony',           'players/sony/plugins/poster/start_controller',                       'tj.tj.sy',    Addon.get('initial'),          Design.get('sony'),     App::Component.get('sony')],
+      ['initial_anthony',        'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('anthony'),  App::Component.get('app')],
+      ['initial_next15',         'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('next15'),   App::Component.get('app')],
+      ['initial_df',             'sublime/video/plugins/poster/start_controller',                      'sa.sh.sv',    Addon.get('initial'),          Design.get('df'),       App::Component.get('app')],
+      ['initial_blizzard',       'players/blizzard/plugins/poster/start_controller',                   'aca.aca.acc', Addon.get('initial'),          Design.get('blizzard'), App::Component.get('blizzard')],
+      ['sharing_classic',        'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('classic'),  App::Component.get('app')],
+      ['sharing_twit',           'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('twit'),     App::Component.get('app')],
+      ['sharing_html5',          'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('html5'),    App::Component.get('app')],
+      ['sharing_next15',         'players/next15/plugins/sharing/sharing_buttons',                     'aba.aba.abc', Addon.get('sharing'),          Design.get('next15'),   App::Component.get('next15')],
+      ['sharing_blizzard',       'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('blizzard'), App::Component.get('app')],
+      ['sharing_sony',           'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('sony'),     App::Component.get('app')],
+      ['sharing_psg',            'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('psg'),      App::Component.get('app')],
+      ['sharing_orange',         'sublime/video/plugins/sharing/sharing_buttons' ,                     'sa.sh.sz',    Addon.get('sharing'),          Design.get('orange'),   App::Component.get('app')],
+      ['social_sharing_classic', 'sublime/video/plugins/social_sharing/social_sharing',                'sa.sh.ua',    Addon.get('social_sharing'),   Design.get('classic'),  App::Component.get('app')],
+      ['social_sharing_flat',    'sublime/video/plugins/social_sharing/social_sharing',                'sa.sh.ua',    Addon.get('social_sharing'),   Design.get('flat'),     App::Component.get('app')],
+      ['social_sharing_light',   'sublime/video/plugins/social_sharing/social_sharing',                'sa.sh.ua',    Addon.get('social_sharing'),   Design.get('light'),    App::Component.get('app')],
+      ['embed_classic',          'sublime/video/plugins/embed/embed',                                  'sa.sh.ub',    Addon.get('embed'),            Design.get('classic'),  App::Component.get('app')],
+      ['embed_flat',             'sublime/video/plugins/embed/embed',                                  'sa.sh.ub',    Addon.get('embed'),            Design.get('flat'),     App::Component.get('app')],
+      ['embed_light',            'sublime/video/plugins/embed/embed',                                  'sa.sh.ub',    Addon.get('embed'),            Design.get('light'),    App::Component.get('app')],
+      ['info_sony',              'players/sony/plugins/info/info_controller',                          'tj.tj.aeb',   Addon.get('info'),             Design.get('sony'),     App::Component.get('sony')],
+      ['buy_action_blizzard',    'players/blizzard/plugins/buy/buy_controller',                        'aca.aca.acb', Addon.get('buy_action'),       Design.get('blizzard'), App::Component.get('blizzard')],
+      ['buy_action_psg',         'players/psg/plugins/buy/buy_controller',                             'aja.aja.ajd', Addon.get('buy_action'),       Design.get('psg'),      App::Component.get('psg')],
+      ['preview_tools_svnet',    'players/svnet/plugins/extended_video_app/extended_video_app_plugin', 'sj.sj.sk',    Addon.get('preview_tools'),    nil,                    App::Component.get('svnet')],
+      ['end_actions_twit',       'players/twit/plugins/actions/action_buttons',                        'sf.sf.agb',   Addon.get('end_actions'),      Design.get('twit'),     App::Component.get('twit')],
+      ['action_svnet',           'players/svnet/plugins/actions/action_buttons',                       'sj.sj.adb',   Addon.get('action'),           nil,                    App::Component.get('svnet')],
+      ['cuezones',               'sublime/video/plugins/cuepoints/cue_zones',                          'sa.sh.ud',    Addon.get('cuezones'),         nil,                    App::Component.get('app')],
+      ['google_analytics',       'sublime/video/plugins/google_analytics/google_analytics',            'sa.sh.uf',    Addon.get('google_analytics'), nil,                    App::Component.get('app')],
+      ['dmt_controls',           'players/daily/plugins/controls/controls',                            'aha.aha.ahb', Addon.get('dmt_controls'),     Design.get('daily'),    App::Component.get('daily')],
+      ['dmt_quality',            'players/daily/plugins/quality/quality',                              'aha.aha.ahc', Addon.get('dmt_quality'),      Design.get('daily'),    App::Component.get('daily')],
+      ['dmt_logo',               'players/daily/plugins/logo/logo',                                    'aha.aha.ahd', Addon.get('dmt_logo'),         Design.get('daily'),    App::Component.get('daily')],
+      ['dmt_sharing',            'players/daily/plugins/sharing/sharing_buttons',                      'aha.aha.ahe', Addon.get('dmt_sharing'),      Design.get('daily'),    App::Component.get('daily')],
+      ['psg_controls',           'players/psg/plugins/controls/controls',                              'aja.aja.ajb', Addon.get('psg_controls'),     Design.get('psg'),      App::Component.get('psg')],
+      ['psg_logo',               'players/psg/plugins/logo/logo',                                      'aja.aja.ajc', Addon.get('psg_logo'),         Design.get('psg'),      App::Component.get('psg')],
+      ['rng_controls',           'players/orange/plugins/controls/controls',                           'aia.aia.aib', Addon.get('rng_controls'),     Design.get('orange'),   App::Component.get('orange')]
     ]
+  end
+
+  def addon_plan_settings_keys
+    [:addon_plan, :plugin, :suffix]
   end
 
   def addon_plan_settings_seeds
     [
-      { addon_plan: AddonPlan.get('video_player', 'standard'),     plugin: App::Plugin.get('video_player')          },
-
-      { addon_plan: AddonPlan.get('action', 'standard'),           plugin: App::Plugin.get('action_svnet')          },
-
-      { addon_plan: AddonPlan.get('info', 'standard'),             plugin: App::Plugin.get('info_sony')             },
-
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_classic')      },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_flat')         },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_light')        },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_twit')         },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_html5')        },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_sony')         },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_anthony')      },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_next15')       },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_df')           },
-      { addon_plan: AddonPlan.get('controls', 'standard'),         plugin: App::Plugin.get('controls_blizzard')     },
-
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_classic')      },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_flat'), suffix: 'without_close_button' },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_light'), suffix: 'without_close_button' },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_twit')         },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_html5')        },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_sony')         },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_anthony'), suffix: 'without_close_button' },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_next15')       },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_df')           },
-      { addon_plan: AddonPlan.get('lightbox', 'standard'),         plugin: App::Plugin.get('lightbox_blizzard'), suffix: 'without_close_button' },
-
-      { addon_plan: AddonPlan.get('image_viewer', 'standard'),     plugin: App::Plugin.get('image_viewer')          },
-
-      { addon_plan: AddonPlan.get('stats', 'invisible'),           plugin: nil                                      },
-      { addon_plan: AddonPlan.get('stats', 'realtime'),            plugin: nil                                      },
-
-      { addon_plan: AddonPlan.get('logo', 'sublime'),              plugin: App::Plugin.get('logo')                  },
-      { addon_plan: AddonPlan.get('logo', 'disabled'),             plugin: App::Plugin.get('logo')                  },
-      { addon_plan: AddonPlan.get('logo', 'custom'),               plugin: App::Plugin.get('logo')                  },
-
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_classic')       },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_flat')          },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_light')         },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_twit')          },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_html5')         },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_sony')          },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_anthony')       },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_next15')        },
-      { addon_plan: AddonPlan.get('initial', 'standard'),          plugin: App::Plugin.get('initial_blizzard')      },
-
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_classic')       },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_twit')          },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_html5')         },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_next15')        },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_blizzard')      },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_sony')          },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_psg')           },
-      { addon_plan: AddonPlan.get('sharing', 'standard'),          plugin: App::Plugin.get('sharing_orange')        },
-
-      { addon_plan: AddonPlan.get('social_sharing', 'standard'),   plugin: App::Plugin.get('social_sharing_classic') },
-      { addon_plan: AddonPlan.get('social_sharing', 'standard'),   plugin: App::Plugin.get('social_sharing_flat')   },
-      { addon_plan: AddonPlan.get('social_sharing', 'standard'),   plugin: App::Plugin.get('social_sharing_light')  },
-
-      { addon_plan: AddonPlan.get('embed', 'manual'),              plugin: App::Plugin.get('embed_classic')         },
-      { addon_plan: AddonPlan.get('embed', 'manual'),              plugin: App::Plugin.get('embed_flat')            },
-      { addon_plan: AddonPlan.get('embed', 'manual'),              plugin: App::Plugin.get('embed_light')           },
-
-      { addon_plan: AddonPlan.get('embed', 'auto'),                plugin: App::Plugin.get('embed_classic')         },
-      { addon_plan: AddonPlan.get('embed', 'auto'),                plugin: App::Plugin.get('embed_flat')            },
-      { addon_plan: AddonPlan.get('embed', 'auto'),                plugin: App::Plugin.get('embed_light')           },
-
-      { addon_plan: AddonPlan.get('preview_tools', 'standard'),    plugin: App::Plugin.get('preview_tools_svnet') },
-
-      { addon_plan: AddonPlan.get('end_actions', 'standard'),      plugin: App::Plugin.get('end_actions_twit')    },
-
-      { addon_plan: AddonPlan.get('buy_action', 'standard'),       plugin: App::Plugin.get('buy_action_blizzard') },
-      { addon_plan: AddonPlan.get('buy_action', 'standard'),       plugin: App::Plugin.get('buy_action_psg') },
-
-      { addon_plan: AddonPlan.get('cuezones', 'standard'),         plugin: App::Plugin.get('cuezones') },
-
-      { addon_plan: AddonPlan.get('google_analytics', 'standard'), plugin: App::Plugin.get('google_analytics') },
-
-      { addon_plan: AddonPlan.get('dmt_controls', 'standard'), plugin: App::Plugin.get('dmt_controls') },
-      { addon_plan: AddonPlan.get('dmt_quality', 'standard'),  plugin: App::Plugin.get('dmt_quality') },
-      { addon_plan: AddonPlan.get('dmt_logo', 'standard'),     plugin: App::Plugin.get('dmt_logo') },
-      { addon_plan: AddonPlan.get('dmt_sharing', 'standard'),  plugin: App::Plugin.get('dmt_sharing') },
-
-      { addon_plan: AddonPlan.get('psg_controls', 'standard'), plugin: App::Plugin.get('psg_controls') },
-      { addon_plan: AddonPlan.get('psg_logo', 'standard'),     plugin: App::Plugin.get('psg_logo') },
-
-      { addon_plan: AddonPlan.get('rng_controls', 'standard'), plugin: App::Plugin.get('rng_controls') }
+      [AddonPlan.get('video_player', 'standard'),     App::Plugin.get('video_player'),           nil],
+      [AddonPlan.get('action', 'standard'),           App::Plugin.get('action_svnet'),           nil],
+      [AddonPlan.get('info', 'standard'),             App::Plugin.get('info_sony'),              nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_classic'),       nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_flat'),          nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_light'),         nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_twit'),          nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_html5'),         nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_sony'),          nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_anthony'),       nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_next15'),        nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_df'),            nil],
+      [AddonPlan.get('controls', 'standard'),         App::Plugin.get('controls_blizzard'),      nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_classic'),       nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_flat'),          'without_close_button'],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_light'),         'without_close_button'],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_twit'),          nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_html5'),         nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_sony'),          nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_anthony'),       'without_close_button'],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_next15'),        nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_df'),            nil],
+      [AddonPlan.get('lightbox', 'standard'),         App::Plugin.get('lightbox_blizzard'),      'without_close_button'],
+      [AddonPlan.get('image_viewer', 'standard'),     App::Plugin.get('image_viewer'),           nil],
+      [AddonPlan.get('stats', 'invisible'),           nil,                                       nil],
+      [AddonPlan.get('stats', 'realtime'),            nil,                                       nil],
+      [AddonPlan.get('logo', 'sublime'),              App::Plugin.get('logo'),                   nil],
+      [AddonPlan.get('logo', 'disabled'),             App::Plugin.get('logo'),                   nil],
+      [AddonPlan.get('logo', 'custom'),               App::Plugin.get('logo'),                   nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_classic'),        nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_flat'),           nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_light'),          nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_twit'),           nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_html5'),          nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_sony'),           nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_anthony'),        nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_next15'),         nil],
+      [AddonPlan.get('initial', 'standard'),          App::Plugin.get('initial_blizzard'),       nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_classic'),        nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_twit'),           nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_html5'),          nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_next15'),         nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_blizzard'),       nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_sony'),           nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_psg'),            nil],
+      [AddonPlan.get('sharing', 'standard'),          App::Plugin.get('sharing_orange'),         nil],
+      [AddonPlan.get('social_sharing', 'standard'),   App::Plugin.get('social_sharing_classic'), nil],
+      [AddonPlan.get('social_sharing', 'standard'),   App::Plugin.get('social_sharing_flat'),    nil],
+      [AddonPlan.get('social_sharing', 'standard'),   App::Plugin.get('social_sharing_light'),   nil],
+      [AddonPlan.get('embed', 'manual'),              App::Plugin.get('embed_classic'),          nil],
+      [AddonPlan.get('embed', 'manual'),              App::Plugin.get('embed_flat'),             nil],
+      [AddonPlan.get('embed', 'manual'),              App::Plugin.get('embed_light'),            nil],
+      [AddonPlan.get('embed', 'auto'),                App::Plugin.get('embed_classic'),          nil],
+      [AddonPlan.get('embed', 'auto'),                App::Plugin.get('embed_flat'),             nil],
+      [AddonPlan.get('embed', 'auto'),                App::Plugin.get('embed_light'),            nil],
+      [AddonPlan.get('preview_tools', 'standard'),    App::Plugin.get('preview_tools_svnet'),    nil],
+      [AddonPlan.get('end_actions', 'standard'),      App::Plugin.get('end_actions_twit'),       nil],
+      [AddonPlan.get('buy_action', 'standard'),       App::Plugin.get('buy_action_blizzard'),    nil],
+      [AddonPlan.get('buy_action', 'standard'),       App::Plugin.get('buy_action_psg'),         nil],
+      [AddonPlan.get('cuezones', 'standard'),         App::Plugin.get('cuezones'),               nil],
+      [AddonPlan.get('google_analytics', 'standard'), App::Plugin.get('google_analytics'),       nil],
+      [AddonPlan.get('dmt_controls', 'standard'),     App::Plugin.get('dmt_controls'),           nil],
+      [AddonPlan.get('dmt_quality', 'standard'),      App::Plugin.get('dmt_quality'),            nil],
+      [AddonPlan.get('dmt_logo', 'standard'),         App::Plugin.get('dmt_logo'),               nil],
+      [AddonPlan.get('dmt_sharing', 'standard'),      App::Plugin.get('dmt_sharing'),            nil],
+      [AddonPlan.get('psg_controls', 'standard'),     App::Plugin.get('psg_controls'),           nil],
+      [AddonPlan.get('psg_logo', 'standard'),         App::Plugin.get('psg_logo'),               nil],
+      [AddonPlan.get('rng_controls', 'standard'),     App::Plugin.get('rng_controls'),           nil]
     ]
   end
 
