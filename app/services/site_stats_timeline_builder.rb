@@ -22,16 +22,22 @@ class SiteStatsTimelineBuilder
 
   private
 
+  def _all
+    @_all ||= Stat::Site::Day.last_stats(@options)
+  end
+
+  def _sum_views(type, view_types)
+    _all.map do |s|
+      view_types.inject(0) { |sum, view_type| sum += s["#{type}v"][view_type].to_i }
+    end
+  end
+
   def _normal_views(type)
-    _all.map { |s| s["#{type}v"]['m'].to_i + s["#{type}v"]['e'].to_i }
+    _sum_views(type, %w[m e])
   end
 
   def _billable_views(type)
-    _all.map { |s| s["#{type}v"]['m'].to_i + s["#{type}v"]['e'].to_i + s["#{type}v"]['em'].to_i }
-  end
-
-  def _all
-    @_all ||= Stat::Site::Day.last_stats(@options)
+    _sum_views(type, %w[m e em])
   end
 
 end

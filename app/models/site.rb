@@ -156,20 +156,25 @@ class Site < ActiveRecord::Base
     where { (hostname != nil) & (hostname != '') }.
     where { hostname << hostnames }
   end
-  scope :created_on, ->(timestamp) do
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where(created_at: timestamp.all_day)
+
+  class << self
+    %w[created_on first_billable_plays_on_week].each do |method_name|
+      define_method(method_name) do |timestamp|
+        timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+        attr_name = method_name.sub(/_on.*/, '_at')
+        timerange = method_name =~ /week/ ? timestamp.all_week : timestamp.all_day
+        where(:"#{attr_name}" => timerange)
+      end
+    end
   end
+
   scope :created_after, ->(timestamp) do
     timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
     where { created_at > timestamp }
   end
+
   scope :not_tagged_with, ->(tag) do
     tagged_with(tag, exclude: true)
-  end
-  scope :first_billable_plays_on_week, ->(timestamp) do
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where(first_billable_plays_at: timestamp.all_week)
   end
 
   # addons
