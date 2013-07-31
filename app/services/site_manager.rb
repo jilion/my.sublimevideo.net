@@ -129,8 +129,36 @@ class SiteManager
     }, options)
   end
 
-  def _set_default_addon_plans
-    _update_addon_subscriptions(_free_addon_plans_subscriptions_hash)
+  def _update_or_build_subscription(item, options)
+    if billable_item = site.billable_items.with_item(item).first
+      _update_billable_item_state!(billable_item, options)
+    elsif item.not_custom? || options[:allow_custom]
+      _build_subscription(item, options)
+    end
+  end
+
+  def _update_design_subscription(design_name, design_id, options)
+    design = Design.get(design_name)
+
+    case design_id
+    when '0'
+      _cancel_design(design)
+    else
+      _update_or_build_subscription(design, options)
+    end
+  end
+
+  def _update_addon_subscription(addon_name, addon_plan_id, options)
+    addon = Addon.get(addon_name)
+
+    case addon_plan_id
+    when '0'
+      _cancel_addon(addon)
+    else
+      addon_plan = AddonPlan.find(addon_plan_id)
+      _cancel_addon(addon, except_addon_plan: addon_plan)
+      _update_or_build_subscription(addon_plan, options)
+    end
   end
 
   def _update_design_subscriptions(design_subscriptions, options = {})
@@ -145,38 +173,8 @@ class SiteManager
     end
   end
 
-  def _update_design_subscription(design_name, design_id, options)
-    design = Design.get(design_name)
-
-    case design_id
-    when '0'
-      _cancel_design(design)
-    else
-      if billable_item = site.billable_items.with_item(design).first
-        _update_billable_item_state!(billable_item, options)
-      elsif design.not_custom? || options[:allow_custom]
-        _build_subscription(design, options)
-      end
-    end
-  end
-
-  def _update_addon_subscription(addon_name, addon_plan_id, options)
-    addon = Addon.get(addon_name)
-
-    case addon_plan_id
-    when '0'
-      _cancel_addon(addon)
-    else
-      addon_plan = AddonPlan.find(addon_plan_id)
-
-      _cancel_addon(addon, except_addon_plan: addon_plan)
-
-      if billable_item = site.billable_items.with_item(addon_plan).first
-        _update_billable_item_state!(billable_item, options)
-      elsif addon_plan.not_custom? || options[:allow_custom]
-        _build_subscription(addon_plan, options)
-      end
-    end
+  def _set_default_addon_plans
+    _update_addon_subscriptions(_free_addon_plans_subscriptions_hash)
   end
 
   def _cancel_design(design)
