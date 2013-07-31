@@ -15,36 +15,26 @@ class SiteManager
   end
 
   def create
-    Site.transaction do
+    _transaction_with_graceful_fail do
       site.save!
       _create_default_kit!
-
       _set_default_designs
       _set_default_addon_plans
-      site.loaders_updated_at  = Time.now.utc
-      site.settings_updated_at = Time.now.utc
+      _touch_timestamps(%w[loaders settings])
       site.save!
+      _delay_jobs(:loader, :settings, :rank)
+      _increment_librato('create')
     end
-    LoaderGenerator.delay.update_all_stages!(site.id)
-    SettingsGenerator.delay.update_all!(site.id)
-    RankSetter.delay(queue: 'low').set_ranks(site.id)
-    Librato.increment 'sites.events', source: 'create'
-    true
-  rescue ActiveRecord::RecordInvalid
-    false
   end
 
   def update(attributes)
-    Site.transaction do
+    _transaction_with_graceful_fail do
       site.attributes = attributes
-      site.settings_updated_at = Time.now.utc
+      _touch_timestamps('settings')
       site.save!
+      _delay_jobs(:settings)
+      _increment_librato('update')
     end
-    SettingsGenerator.delay.update_all!(site.id)
-    Librato.increment 'sites.events', source: 'update'
-    true
-  rescue ActiveRecord::RecordInvalid
-    false
   end
 
   # designs => { "classic"=>"0", "light"=>"42" }
@@ -53,13 +43,10 @@ class SiteManager
     Site.transaction do
       _update_design_subscriptions(designs || {}, options)
       _update_addon_subscriptions(addon_plans || {}, options)
-      site.loaders_updated_at  = Time.now.utc
-      site.settings_updated_at = Time.now.utc
-      site.addons_updated_at   = Time.now.utc
+      _touch_timestamps(%w[loaders settings addons])
       site.save!
     end
-    LoaderGenerator.delay.update_all_stages!(site.id)
-    SettingsGenerator.delay.update_all!(site.id)
+    _delay_jobs(:loader, :settings)
   end
 
   # called from app/models/site.rb
@@ -107,6 +94,27 @@ class SiteManager
   end
 
   private
+
+  def _transaction_with_graceful_fail
+    Site.transaction do
+      yield
+    end
+    true
+  rescue ActiveRecord::RecordInvalid
+    false
+  end
+
+  def _touch_timestamps(types)
+    Array(types).each do |type|
+      site.send("#{type}_updated_at=", Time.now.utc)
+    end
+  end
+
+  def _delay_jobs(*jobs)
+    LoaderGenerator.delay.update_all_stages!(site.id) if jobs.include?(:loader)
+    SettingsGenerator.delay.update_all!(site.id) if jobs.include?(:settings)
+    RankSetter.delay(queue: 'low').set_ranks(site.id) if jobs.include?(:rank)
+  end
 
   def _create_default_kit!
     site.kits.create!(name: 'Default player')
@@ -218,4 +226,9 @@ class SiteManager
       'trial'
     end
   end
+
+  def _increment_librato(event)
+    Librato.increment 'sites.events', source: event
+  end
+
 end
