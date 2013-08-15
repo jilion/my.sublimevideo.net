@@ -1,7 +1,6 @@
 require 'solve'
 
 class App::ComponentVersion < ActiveRecord::Base
-  serialize :dependencies, ActiveRecord::Coders::Hstore
   delegate :token, :name, to: :component
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 

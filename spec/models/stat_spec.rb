@@ -15,8 +15,8 @@ describe Stat do
 
       context "mixed view event & load event" do
         before do
-          Site.should_receive(:find_by_token).with('ovjigy83').at_least(:once) { stub(subscribed_to?: true) }
-          Site.should_receive(:find_by_token).with('site1234').at_least(:once) { stub(subscribed_to?: false) }
+          Site.should_receive(:find_by_token).with('ovjigy83').at_least(:once) { double(subscribed_to?: true) }
+          Site.should_receive(:find_by_token).with('site1234').at_least(:once) { double(subscribed_to?: false) }
 
           described_class.stub(:incs_from_trackers).and_return(
             "ovjigy83"=> {
