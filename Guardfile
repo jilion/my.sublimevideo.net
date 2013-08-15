@@ -21,7 +21,7 @@ group :frontend do
     watch(%r{config/locales/.+\.yml})
   end
 
-  guard :teabag do
+  guard :teaspoon do
     watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch('spec/javascripts/spec_helper.js.coffee')         { "spec/javascripts" }

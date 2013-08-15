@@ -163,8 +163,8 @@ group :development, :test do
   gem 'timecop'
 
   # Javascript test
-  gem 'teabag'
-  gem 'guard-teabag'
+  gem 'teaspoon'
+  gem 'guard-teaspoon'
 
   # Rails routes view
   gem 'sextant'

@@ -323,9 +323,9 @@ GEM
       rspec (~> 2.13)
     guard-shell (0.5.1)
       guard (>= 1.1.0)
-    guard-teabag (0.0.2)
+    guard-teaspoon (0.0.3)
       guard (>= 1.6.1)
-      teabag (>= 0.5.3)
+      teaspoon (>= 0.5.3)
     haml (4.0.3)
       tilt
     haml_coffee_assets (1.13.2)
@@ -555,7 +555,7 @@ GEM
       rescue_me
       responders
       timecop
-    teabag (0.7.3)
+    teaspoon (0.7.5)
       phantomjs (>= 1.8.1.1)
       railties (>= 3.2.5, < 5)
     thor (0.18.1)
@@ -667,7 +667,7 @@ DEPENDENCIES
   guard-pow
   guard-rspec
   guard-shell
-  guard-teabag
+  guard-teaspoon
   haml
   haml_coffee_assets
   has_scope
@@ -727,7 +727,7 @@ DEPENDENCIES
   state_machine
   sublime_video_layout (~> 2.0)
   sublime_video_private_api (~> 1.5)
-  teabag
+  teaspoon
   timecop
   tinder
   turbolinks!
