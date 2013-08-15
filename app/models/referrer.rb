@@ -10,7 +10,7 @@ class Referrer
   index hits: 1
   index updated_at: 1
 
-  attr_accessible :token, :url, :hits
+  # attr_accessible :token, :url, :hits
 
   cattr_accessor :per_page
   self.per_page = 100

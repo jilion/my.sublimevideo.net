@@ -11,7 +11,7 @@ class StatsExport
 
   mount_uploader :file, StatsExportUploader
 
-  attr_accessible :site_token, :from, :to, :file
+  # attr_accessible :site_token, :from, :to, :file
 
   validates :site_token, :from, :to, :file, presence: true
 

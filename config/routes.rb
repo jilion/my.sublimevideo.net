@@ -29,7 +29,7 @@ MySublimeVideo::Application.routes.draw do
   # end
 
   # Redirect to subdomains
-  match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
+  get '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
   constraints SubdomainConstraint.new('admin') do
     # We put this block out of the following scope to avoid double admin_admin in url helpers...

@@ -9,7 +9,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
 
   index month: 1, token: 1 # UsrAgent#create_or_update_from_trackers
 
-  attr_accessible :token, :platforms, :browsers, :month
+  # attr_accessible :token, :platforms, :browsers, :month
 
   # ================
   # = Associations =

@@ -5,15 +5,18 @@ ruby '2.0.0'
 
 gem 'bundler'
 
-gem 'rails', '3.2.14'
+gem 'rails', '4.0.0'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
+
+# Old stuff from Rails 3
+gem 'protected_attributes' # TODO migrate to strong_parameters
 
 # Databases
 gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
-gem 'mongoid'
+gem 'mongoid', github: 'mongoid/mongoid'
 
 # Views
 gem 'haml'
@@ -41,13 +44,13 @@ gem 'devise-async'
 
 # API
 gem 'oauth'
-gem 'oauth-plugin'
+gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4'
 
 # Internals
 gem 'dalli'
 gem 'cache_digests'
 gem 'sidekiq'
-gem 'kiqstand' # Mongoid support for Sidekiq
+gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
@@ -115,16 +118,15 @@ gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
-group :assets do
-  gem 'asset_sync'
-  gem 'eco'
-  gem 'uglifier'
-  gem 'execjs'
-  gem 'chosen-rails', github: 'jilion/chosen-rails'
-  gem 'backbone-rails'
-end
+gem 'eco'
+gem 'uglifier'
+gem 'execjs'
+gem 'backbone-rails'
 gem 'haml_coffee_assets'
 gem 'sass-rails'
+
+gem 'chosen-rails', github: 'jilion/chosen-rails'
+gem 'compass-rails', github: 'milgner/compass-rails', branch: 'rails4'
 
 group :production do
   gem 'rack-google-analytics'
@@ -137,6 +139,7 @@ group :staging, :production do
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
+  gem 'asset_sync'
 end
 
 group :development do
