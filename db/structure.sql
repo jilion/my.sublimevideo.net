@@ -51,8 +51,8 @@ CREATE TABLE addon_plan_settings (
     addon_plan_id integer NOT NULL,
     app_plugin_id integer,
     template text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -86,8 +86,8 @@ CREATE TABLE addon_plans (
     price integer NOT NULL,
     availability character varying(255) NOT NULL,
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     stable_at timestamp without time zone
 );
 
@@ -121,8 +121,8 @@ CREATE TABLE addons (
     design_dependent boolean DEFAULT true NOT NULL,
     parent_addon_id integer,
     kind character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -207,8 +207,8 @@ CREATE TABLE app_component_versions (
     app_component_id integer,
     version character varying(255),
     zip character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     dependencies hstore,
     deleted_at timestamp without time zone
 );
@@ -241,8 +241,8 @@ CREATE TABLE app_components (
     id integer NOT NULL,
     token character varying(255),
     name character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -277,8 +277,8 @@ CREATE TABLE app_plugins (
     token character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
     condition text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     mod character varying(255)
 );
 
@@ -312,8 +312,8 @@ CREATE TABLE billable_item_activities (
     item_type character varying(255) NOT NULL,
     item_id integer NOT NULL,
     state character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -346,8 +346,8 @@ CREATE TABLE billable_items (
     item_type character varying(255) NOT NULL,
     item_id integer NOT NULL,
     state character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -491,8 +491,8 @@ CREATE TABLE designs (
     availability character varying(255) NOT NULL,
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     stable_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     skin_mod character varying(255)
 );
 
@@ -599,8 +599,8 @@ CREATE TABLE feedbacks (
     next_player character varying(255),
     reason character varying(255) NOT NULL,
     comment text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     kind character varying(255)
 );
 
@@ -733,8 +733,8 @@ CREATE TABLE kits (
     design_id integer NOT NULL,
     name character varying(255) DEFAULT NULL::character varying NOT NULL,
     settings text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     identifier character varying(255)
 );
 
@@ -1047,50 +1047,6 @@ CREATE SEQUENCE tags_id_seq
 --
 
 ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
-
-
---
--- Name: tailor_made_player_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tailor_made_player_requests (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    topic character varying(255) NOT NULL,
-    job_title character varying(255),
-    company character varying(255),
-    url character varying(255),
-    country character varying(255),
-    token character varying(255),
-    topic_standalone_detail character varying(255),
-    topic_other_detail character varying(255),
-    description text NOT NULL,
-    document character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    highrise_kase_id integer,
-    zendesk_ticket_id integer
-);
-
-
---
--- Name: tailor_made_player_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tailor_made_player_requests_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tailor_made_player_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tailor_made_player_requests_id_seq OWNED BY tailor_made_player_requests.id;
 
 
 --
@@ -1456,13 +1412,6 @@ ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclas
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tailor_made_player_requests ALTER COLUMN id SET DEFAULT nextval('tailor_made_player_requests_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
 
 
@@ -1689,14 +1638,6 @@ ALTER TABLE ONLY tags
 
 
 --
--- Name: tailor_made_player_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY tailor_made_player_requests
-    ADD CONSTRAINT tailor_made_player_requests_pkey PRIMARY KEY (id);
-
-
---
 -- Name: transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1718,6 +1659,13 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY versions
     ADD CONSTRAINT versions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_addon_plan_settings_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_addon_plan_settings_on_addon_plan_id_and_app_plugin_id ON addon_plan_settings USING btree (addon_plan_id, app_plugin_id);
 
 
 --
@@ -1763,6 +1711,20 @@ CREATE UNIQUE INDEX index_admins_on_reset_password_token ON admins USING btree (
 
 
 --
+-- Name: index_app_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_app_components_on_name ON app_components USING btree (name);
+
+
+--
+-- Name: index_app_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_app_components_on_token ON app_components USING btree (token);
+
+
+--
 -- Name: index_app_plugins_on_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1774,13 +1736,6 @@ CREATE INDEX index_app_plugins_on_design_id ON app_plugins USING btree (design_i
 --
 
 CREATE INDEX index_app_plugins_on_design_id_and_addon_id ON app_plugins USING btree (design_id, addon_id);
-
-
---
--- Name: index_app_settings_templates_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_app_settings_templates_on_addon_plan_id_and_app_plugin_id ON addon_plan_settings USING btree (addon_plan_id, app_plugin_id);
 
 
 --
@@ -1875,6 +1830,13 @@ CREATE UNIQUE INDEX index_enthusiasts_on_email ON enthusiasts USING btree (email
 
 
 --
+-- Name: index_feedbacks_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_feedbacks_on_user_id ON feedbacks USING btree (user_id);
+
+
+--
 -- Name: index_invoice_items_on_deal_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1966,20 +1928,6 @@ CREATE UNIQUE INDEX index_plans_on_token ON plans USING btree (token);
 
 
 --
--- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_components_on_name ON app_components USING btree (name);
-
-
---
--- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_components_on_token ON app_components USING btree (token);
-
-
---
 -- Name: index_sites_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2061,20 +2009,6 @@ CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 --
 
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);
-
-
---
--- Name: index_tailor_made_player_requests_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_tailor_made_player_requests_on_created_at ON tailor_made_player_requests USING btree (created_at);
-
-
---
--- Name: index_tailor_made_player_requests_on_topic; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_tailor_made_player_requests_on_topic ON tailor_made_player_requests USING btree (topic);
 
 
 --
@@ -2201,17 +2135,11 @@ INSERT INTO schema_migrations (version) VALUES ('20100701091254');
 
 INSERT INTO schema_migrations (version) VALUES ('20100706142731');
 
-INSERT INTO schema_migrations (version) VALUES ('20100707142429');
-
-INSERT INTO schema_migrations (version) VALUES ('20100707142455');
-
 INSERT INTO schema_migrations (version) VALUES ('20100720092023');
 
 INSERT INTO schema_migrations (version) VALUES ('20100720101348');
 
 INSERT INTO schema_migrations (version) VALUES ('20100722100536');
-
-INSERT INTO schema_migrations (version) VALUES ('20100722155430');
 
 INSERT INTO schema_migrations (version) VALUES ('20100723135123');
 
@@ -2357,15 +2285,9 @@ INSERT INTO schema_migrations (version) VALUES ('20121122073822');
 
 INSERT INTO schema_migrations (version) VALUES ('20121127154540');
 
-INSERT INTO schema_migrations (version) VALUES ('20121202170511');
-
-INSERT INTO schema_migrations (version) VALUES ('20121205172815');
-
 INSERT INTO schema_migrations (version) VALUES ('20121207133427');
 
 INSERT INTO schema_migrations (version) VALUES ('20121217090434');
-
-INSERT INTO schema_migrations (version) VALUES ('20130117111013');
 
 INSERT INTO schema_migrations (version) VALUES ('20130206133628');
 

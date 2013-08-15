@@ -4,7 +4,7 @@ class Referrer
 
   field :token
   field :url
-  field :hits,            type: Integer, default: 0
+  field :hits, type: Integer, default: 0
 
   index token: 1, url: 1
   index hits: 1
@@ -28,7 +28,7 @@ class Referrer
   # ===============
 
   validates :token, presence: true
-  validates :url,   presence: true, format: { with: /^https?\:\/\/.*/ }
+  validates :url,   presence: true, format: { with: /https?\:\/\/.*/ }
 
   # ==========
   # = Scopes =

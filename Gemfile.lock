@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/airblade/paper_trail.git
+  revision: e81d1d435ba40f62e81dc944406fefe80e29a2e7
+  specs:
+    paper_trail (3.0.0.beta)
+      activerecord (>= 3.0, < 5.0)
+
+GIT
   remote: https://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -95,15 +102,6 @@ GIT
     devise_invitable (1.2.0)
       actionmailer (>= 3.2.6, < 5)
       devise (~> 3.0.0)
-
-GIT
-  remote: https://github.com/softa/activerecord-postgres-hstore.git
-  revision: 396f5af9af5eb70b7d9721a5bb14e14afee5cc38
-  specs:
-    activerecord-postgres-hstore (0.4.1)
-      pg
-      rails
-      rake
 
 GIT
   remote: https://github.com/thibaudgg/voxel_hapi.git
@@ -418,9 +416,6 @@ GEM
       rack (~> 1.2)
     origin (1.1.0)
     orm_adapter (0.4.0)
-    paper_trail (1.6.4)
-      actionpack (>= 2.3)
-      activerecord (>= 2.3)
     paranoia (2.0.0)
       activerecord (~> 4.0)
     pg (0.16.0)
@@ -627,7 +622,6 @@ PLATFORMS
 DEPENDENCIES
   PageRankr
   activemerchant!
-  activerecord-postgres-hstore!
   acts-as-taggable-on
   addressable
   array_stats
@@ -694,7 +688,7 @@ DEPENDENCIES
   newrelic_rpm
   oauth
   oauth-plugin!
-  paper_trail
+  paper_trail!
   paranoia
   pg
   poltergeist

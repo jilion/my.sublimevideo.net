@@ -38,7 +38,7 @@ class Site < ActiveRecord::Base
 
   # Invoices
   has_many :invoices, class_name: '::Invoice'
-  has_one  :last_invoice, class_name: '::Invoice', order: 'created_at DESC'
+  has_one  :last_invoice, -> { order(created_at: :desc) }, class_name: '::Invoice'
 
   # Addons
   has_many :billable_items
@@ -47,7 +47,7 @@ class Site < ActiveRecord::Base
   has_many :addons, through: :addon_plans
   has_many :plugins, through: :addons
 
-  has_many :billable_item_activities, order: 'created_at ASC'
+  has_many :billable_item_activities, -> { order(created_at: :asc) }
 
   has_many :kits
 

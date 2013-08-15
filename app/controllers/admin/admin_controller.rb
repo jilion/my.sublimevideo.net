@@ -12,5 +12,4 @@ class Admin::AdminController < ApplicationController
     admin_signed_in? && current_admin.has_role?(role)
   end
   helper_method :has_role?
-
 end

@@ -10,7 +10,7 @@ class Enthusiast < ActiveRecord::Base
   has_many :sites, class_name: 'EnthusiastSite', dependent: :destroy
   accepts_nested_attributes_for :sites, reject_if: ->(site) { site[:hostname].blank? }, allow_destroy: true
 
-  default_scope where(trashed_at: nil)
+  default_scope { where(trashed_at: nil) }
 
   %w[email created_at invited_at].each do |col|
     scope :"by_#{col}", ->(way = 'desc') { order("#{col} #{way}").order('created_at desc') }

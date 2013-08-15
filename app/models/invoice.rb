@@ -18,7 +18,7 @@ class Invoice < ActiveRecord::Base
 
   # Invoice items
   has_many :invoice_items
-  has_many :plan_invoice_items,  class_name: 'InvoiceItem', conditions: { type: 'InvoiceItem::Plan' }
+  has_many :plan_invoice_items, -> { where(type: 'InvoiceItem::Plan') }, class_name: 'InvoiceItem'
 
   has_and_belongs_to_many :transactions
 

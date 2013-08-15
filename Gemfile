@@ -6,6 +6,7 @@ ruby '2.0.0'
 gem 'bundler'
 
 gem 'rails', '4.0.0'
+# gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
@@ -15,8 +16,8 @@ gem 'protected_attributes' # TODO migrate to strong_parameters
 # Databases
 gem 'pg'
 gem 'squeel'
-gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
-gem 'mongoid', github: 'mongoid/mongoid'
+# gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
+gem 'mongoid', github: 'mongoid/mongoid' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -44,7 +45,7 @@ gem 'devise-async'
 
 # API
 gem 'oauth'
-gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4'
+gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4 support
 
 # Internals
 gem 'dalli'
@@ -57,7 +58,7 @@ gem 'libxml-ruby', require: 'libxml'
 gem 'yajl-ruby', require: 'yajl' # json
 
 gem 'state_machine'
-gem 'paper_trail'
+gem 'paper_trail', github: 'airblade/paper_trail' # Rails 4 support
 gem 'uniquify'
 gem 'acts-as-taggable-on'
 gem 'paranoia'

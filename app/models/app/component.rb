@@ -7,8 +7,8 @@ class App::Component < ActiveRecord::Base
 
   attr_accessible :name, :token, as: :admin
 
-  has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'created_at desc'
-  has_many :designs, class_name: 'Design', foreign_key: 'app_component_id', dependent: :destroy, order: 'created_at desc'
+  has_many :versions, -> { order(created_at: :desc) }, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy
+  has_many :designs, -> { order(created_at: :desc) }, class_name: 'Design', foreign_key: 'app_component_id', dependent: :destroy
   has_many :plugins, class_name: 'App::Plugin', foreign_key: 'app_component_id'
 
   has_many :designs_sites, through: :designs, source: :sites
