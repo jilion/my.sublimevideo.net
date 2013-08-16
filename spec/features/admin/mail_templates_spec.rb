@@ -9,7 +9,7 @@ feature "Mail templates" do
 
   scenario "it is possible to edit a mail template" do
     mail_template = create(:mail_template)
-    MailTemplate.all.should have(1).item
+    MailTemplate.should have(1).item
 
     go 'admin', "mails/templates/#{mail_template.id}/edit"
 

@@ -1,5 +1,6 @@
-#flash
-  - if flash[:notice].present? && flash[:notice] != "no_message" # hack to display no flash for certain Devise's controller actions (if flash is blank, the FlashResponder will set a default flash message...)
-    .notice= flash[:notice]
-  - if flash[:alert].present? && flash[:alert] != "no_message"
-    .notice.alert= flash[:alert]
+- if flash[:notice] || flash[:alert]
+  #flash
+    - if flash[:notice].present? && flash[:notice] != "no_message" # hack to display no flash for certain Devise's controller actions (if flash is blank, the FlashResponder will set a default flash message...)
+      .notice= flash[:notice]
+    - if flash[:alert].present? && flash[:alert] != "no_message"
+      .notice.alert= flash[:alert]

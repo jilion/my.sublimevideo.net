@@ -45,7 +45,7 @@ describe Admin::SitesController do
     it "responds with redirect to successful PUT :update_design_subscription" do
       Site.should_receive(:find_by_token!).with('abc123') { mock_site }
       Design.stub(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
-      mock_service = mock('SiteManager')
+      mock_service = double('SiteManager')
       SiteManager.stub(:new).with(mock_site) { mock_service }
 
       mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })

@@ -16,7 +16,7 @@ describe RankSetter do
     end
 
     context 'site has a hostname' do
-      let(:site) { stub(id: 1234, hostname: 'sublimevideo.net') }
+      let(:site) { double(id: 1234, hostname: 'sublimevideo.net') }
 
       it 'updates ranks' do
         site.should_receive(:google_rank=).with(6)
@@ -27,7 +27,7 @@ describe RankSetter do
     end
 
     context 'site has blank hostname' do
-      let(:site) { stub(id: 1234, hostname: '') }
+      let(:site) { double(id: 1234, hostname: '') }
 
       it 'updates ranks' do
         site.should_receive(:google_rank=).with(0)

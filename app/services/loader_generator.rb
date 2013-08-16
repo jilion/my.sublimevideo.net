@@ -120,7 +120,7 @@ class LoaderGenerator
   def self._sites_non_important(args = {})
     initial_scope = args[:component].app_component? ? Site : args[:component].sites
 
-    initial_scope.scoped.where { token << (SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
+    initial_scope.all.where { token << (SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
     .select(:id).active.where(accessible_stage: Stage.stages_equal_or_less_stable_than(args[:stage]))
     .order { last_30_days_main_video_views.desc }.order { created_at.desc }
   end

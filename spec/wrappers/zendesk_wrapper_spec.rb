@@ -78,7 +78,7 @@ describe ZendeskWrapper do
   describe '.create_user' do
     context 'user has no name' do
       use_vcr_cassette 'zendesk_wrapper/create_user_without_a_name'
-      let(:user) { stub(id: 1234, email: 'user10@example.org', name_or_email: 'user10@example.org') }
+      let(:user) { double(id: 1234, email: 'user10@example.org', name_or_email: 'user10@example.org') }
 
       after { described_class.destroy_user(@zd_user.id) }
 
@@ -94,7 +94,7 @@ describe ZendeskWrapper do
 
     context 'user has a name' do
       use_vcr_cassette 'zendesk_wrapper/create_user'
-      let(:user) { stub(id: 1234, email: 'user7@example.org', name_or_email: 'User Example') }
+      let(:user) { double(id: 1234, email: 'user7@example.org', name_or_email: 'User Example') }
 
       after { described_class.destroy_user(@zd_user.id) }
 
@@ -112,7 +112,7 @@ describe ZendeskWrapper do
   describe '.update_user' do
 
     describe 'update name' do
-      let(:user) { stub(id: 4321, email: '1231231231231@example.org', name_or_email: 'Remy Coutable') }
+      let(:user) { double(id: 4321, email: '1231231231231@example.org', name_or_email: 'Remy Coutable') }
       before { VCR.use_cassette('zendesk_wrapper/reset_user') { @zd_user = described_class.create_user(user) } }
       after { VCR.use_cassette('zendesk_wrapper/reset_user') { described_class.destroy_user(@zd_user.id) } }
       use_vcr_cassette 'zendesk_wrapper/update_user_name'
@@ -125,7 +125,7 @@ describe ZendeskWrapper do
     end
 
     describe 'update email' do
-      let(:user) { stub(id: 3210, email: '321321321@example.org', name_or_email: 'Remy Coutable') }
+      let(:user) { double(id: 3210, email: '321321321@example.org', name_or_email: 'Remy Coutable') }
       before { VCR.use_cassette('zendesk_wrapper/reset_user2') { @zd_user = described_class.create_user(user) } }
       after { VCR.use_cassette('zendesk_wrapper/reset_user2') { described_class.destroy_user(@zd_user.id) } }
       use_vcr_cassette 'zendesk_wrapper/update_user_email'
@@ -144,7 +144,7 @@ describe ZendeskWrapper do
   describe '.destroy_user' do
     context 'user has a name' do
       use_vcr_cassette 'zendesk_wrapper/destroy_user'
-      let(:user) { stub(id: 1234, email: 'user1234@example.org', name_or_email: 'User Example') }
+      let(:user) { double(id: 1234, email: 'user1234@example.org', name_or_email: 'User Example') }
 
       before { @zd_user = described_class.create_user(user) }
 

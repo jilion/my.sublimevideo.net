@@ -4,8 +4,8 @@ require 'presenters/kit_setting_presenter'
 
 describe KitSettingPresenter do
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
-  let(:kit)     { stub(site: stub, settings: { a: 'b' }) }
-  let(:view)    { stub(params: { kit: { settings: { foo: 'bar' } } }) }
+  let(:kit)     { double(site: stub, settings: { a: 'b' }) }
+  let(:view)    { double(params: { kit: { settings: { foo: 'bar' } } }) }
   let(:presenter) { described_class.new(view: view) }
 
   describe '.initialize' do
@@ -21,7 +21,7 @@ describe KitSettingPresenter do
     end
 
     context 'kit settings not in params' do
-      let(:presenter) { described_class.new(kit: kit, design: stub, view: stub(params: {})) }
+      let(:presenter) { described_class.new(kit: kit, design: stub, view: double(params: {})) }
       before do
         described_class.any_instance.stub(:load_addon_plan)
       end

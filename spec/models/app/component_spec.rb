@@ -66,7 +66,7 @@ describe App::Component, :fog_mock do
     component_version2 = App::ComponentVersion.create({ token: component.token, version: '2.0.0', zip: zip }, as: :admin)
 
     # FUCK THIS FUCKING TEST!!!!!!!!!!
-    component.reload.versions.all.should eq [component_version2, component_version1]
+    component.reload.versions.should eq [component_version2, component_version1]
   end
 
   describe '#versions_for_stage' do

@@ -394,7 +394,7 @@ describe UserModules::CreditCard do
             billing_address: { address1: user.billing_address_1, zip: user.billing_postal_code, city: user.billing_city, country: user.billing_country },
             d3d: true,
             paramplus: "CHECK_CC_USER_ID=#{user.id}"
-          }) { mock('authorize_response', params: {}) }
+          }) { double('authorize_response', params: {}) }
           user.register_credit_card_on_file
         end
       end

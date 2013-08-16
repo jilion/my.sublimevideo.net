@@ -4,7 +4,7 @@ require 'action_view'
 require 'helpers/video_tags_helper'
 
 describe VideoTagsHelper do
-  let(:video_tag) { mock('VideoTag',
+  let(:video_tag) { double('VideoTag',
     uid:  'uid-token',
     name: 'My Video',
     poster_url: 'http://media.sublimevideo.net/vpa/ms_800.jpg',

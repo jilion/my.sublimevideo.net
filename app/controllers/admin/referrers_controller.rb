@@ -16,6 +16,6 @@ class Admin::ReferrersController < Admin::AdminController
   end
 
   def load_referrers
-    @referrers = apply_scopes(Referrer.scoped)
+    @referrers = apply_scopes(Referrer.all)
   end
 end

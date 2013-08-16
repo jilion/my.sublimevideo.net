@@ -10,12 +10,12 @@ User = Class.new unless defined?(User)
 UserMailer = Class.new unless defined?(UserMailer)
 
 describe UserManager do
-  let(:user)           { stub(id: 1234, sites: [], save!: true) }
-  let(:site1)          { stub(suspend: true) }
-  let(:site2)          { stub(suspend: true) }
-  let(:tokens)         { stub }
+  let(:user)           { double(id: 1234, sites: [], save!: true) }
+  let(:site1)          { double(suspend: true) }
+  let(:site2)          { double(suspend: true) }
+  let(:tokens)         { double }
   let(:service)        { described_class.new(user) }
-  let(:feedback)       { stub }
+  let(:feedback)       { double }
 
   before {
     Librato.stub(:increment)
@@ -159,7 +159,7 @@ describe UserManager do
     context 'with an invalid current password' do
       before do
         user.should_receive(:valid_password?) { false }
-        user.stub(:current_password) { stub(blank?: true) }
+        user.stub(:current_password) { double(blank?: true) }
       end
 
       it 'adds an error and returns false' do

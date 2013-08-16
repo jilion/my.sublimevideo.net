@@ -23,7 +23,7 @@
       = render 'admin/layouts/admin_header'
       #main
         #content
-          = render 'layouts/flash', flash: flash if flash.present?
+          = render 'layouts/flash'
           = image_tag "admin/spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
           = yield
       #footer

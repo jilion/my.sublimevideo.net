@@ -78,11 +78,11 @@ describe App::ComponentVersionDependenciesSolver do
 
     context 'with stage is stable' do
       before do
-        c_a.stub(:versions_for_stage).any_number_of_times.with('stable')  { [c_a_200, c_a_100] }
-        c_c1.stub(:versions_for_stage).any_number_of_times.with('stable') { [c_c1_110, c_c1_100] }
-        c_c2.stub(:versions_for_stage).any_number_of_times.with('stable') { [c_c2_100, c_c2_200] }
-        c_c3.stub(:versions_for_stage).any_number_of_times.with('stable') { [c_c3_100, c_c3_200] }
-        c_c4.stub(:versions_for_stage).any_number_of_times.with('stable') { [] }
+        c_a.stub(:versions_for_stage).with('stable')  { [c_a_200, c_a_100] }
+        c_c1.stub(:versions_for_stage).with('stable') { [c_c1_110, c_c1_100] }
+        c_c2.stub(:versions_for_stage).with('stable') { [c_c2_100, c_c2_200] }
+        c_c3.stub(:versions_for_stage).with('stable') { [c_c3_100, c_c3_200] }
+        c_c4.stub(:versions_for_stage).with('stable') { [] }
       end
 
       context 'with 0 site components dependencies' do
@@ -112,7 +112,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.stub(:get).with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
           end
@@ -124,7 +124,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency with an unexistent dependencies' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.stub(:get).with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '3.0.0' } } # unexistent
           end
@@ -136,8 +136,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency and another dependency' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:get).with('c2') { c_c2 }
+            App::Component.stub(:get).with('app') { c_a }
+            App::Component.stub(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
           end
@@ -149,8 +149,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency and another dependency with version with an impossible dependency' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:get).with('c2') { c_c2 }
+            App::Component.stub(:get).with('app') { c_a }
+            App::Component.stub(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '2.0.0' } } # impossible
@@ -163,9 +163,9 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency and another dependency with another dependency' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:get).with('c2') { c_c2 }
-            App::Component.should_receive(:get).with('c3') { c_c3 }
+            App::Component.stub(:get).with('app') { c_a }
+            App::Component.stub(:get).with('c2') { c_c2 }
+            App::Component.stub(:get).with('c3') { c_c3 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '1.0.0', 'c3' => '1.0.0' } }
@@ -178,8 +178,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency with a new version impossible to solve' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:get).with('c2') { c_c2 }
+            App::Component.stub(:get).with('app') { c_a }
+            App::Component.stub(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c2_100.stub(:dependencies) { { 'app' => '2.0.0' } }
@@ -193,8 +193,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency impossible to solve' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:get).any_number_of_times.with('c2') { c_c2 }
+            App::Component.stub(:get).with('app') { c_a }
+            App::Component.stub(:get).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c2_100.stub(:dependencies) { { 'app' => '2.0.0' } }
@@ -210,9 +210,9 @@ describe App::ComponentVersionDependenciesSolver do
 
     context 'with stage is beta' do
       before do
-        c_a.should_receive(:versions_for_stage).any_number_of_times.with('beta') { [c_a_200, c_a_100, c_a_200beta1] }
-        c_c1.should_receive(:versions_for_stage).any_number_of_times.with('beta') { [c_c1_110, c_c1_100, c_c1_200beta1] }
-        c_c4.should_receive(:versions_for_stage).any_number_of_times.with('beta') { [] }
+        c_a.stub(:versions_for_stage).with('beta') { [c_a_200, c_a_100, c_a_200beta1] }
+        c_c1.stub(:versions_for_stage).with('beta') { [c_c1_110, c_c1_100, c_c1_200beta1] }
+        c_c4.stub(:versions_for_stage).with('beta') { [] }
       end
 
       context 'with one other site components dependency' do
@@ -220,7 +220,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency and another dependency' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.stub(:get).with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_200alpha1.stub(:dependencies) { { 'app' => '2.0.0-alpha.1' } }
@@ -236,8 +236,8 @@ describe App::ComponentVersionDependenciesSolver do
 
     context 'with stage is alpha' do
       before do
-        c_a.should_receive(:versions_for_stage).any_number_of_times.with('alpha') { [c_a_200, c_a_100, c_a_200beta1, c_a_200alpha1] }
-        c_c4.should_receive(:versions_for_stage).any_number_of_times.with('alpha') { [c_c4_100alpha1] }
+        c_a.stub(:versions_for_stage).with('alpha') { [c_a_200, c_a_100, c_a_200beta1, c_a_200alpha1] }
+        c_c4.stub(:versions_for_stage).with('alpha') { [c_c4_100alpha1] }
       end
 
       context 'with one other site components dependency' do
@@ -245,7 +245,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context 'with app component dependency and another dependency with another dependency' do
           before do
-            App::Component.should_receive(:get).any_number_of_times.with('app') { c_a }
+            App::Component.stub(:get).with('app') { c_a }
             c_c4_100alpha1.stub(:dependencies) { { 'app' => '1.0.0' } }
           end
 

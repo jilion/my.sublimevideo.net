@@ -348,23 +348,23 @@ describe Site, :addons do
       end
 
       describe ".active" do
-        specify { Site.active.all.should =~ [@site_active] }
+        specify { Site.active.should =~ [@site_active] }
       end
 
       describe ".inactive" do
-        specify { Site.inactive.all.should =~ [@site_archived, @site_suspended] }
+        specify { Site.inactive.should =~ [@site_archived, @site_suspended] }
       end
 
       describe ".suspended" do
-        specify { Site.suspended.all.should =~ [@site_suspended] }
+        specify { Site.suspended.should =~ [@site_suspended] }
       end
 
       describe ".archived" do
-        specify { Site.archived.all.should =~ [@site_archived] }
+        specify { Site.archived.should =~ [@site_archived] }
       end
 
       describe ".not_archived" do
-        specify { Site.not_archived.all.should =~ [@site_active, @site_suspended] }
+        specify { Site.not_archived.should =~ [@site_active, @site_suspended] }
       end
     end
 
@@ -377,27 +377,27 @@ describe Site, :addons do
       end
 
       describe ".without_hostnames" do
-        specify { Site.without_hostnames(%w[google.com facebook.com]).all.should =~ [@site_extra_hostnames, @site_next_cycle_plan] }
+        specify { Site.without_hostnames(%w[google.com facebook.com]).should =~ [@site_extra_hostnames, @site_next_cycle_plan] }
       end
 
       describe ".with_wildcard" do
-        specify { Site.with_wildcard.all.should =~ [@site_wildcard] }
+        specify { Site.with_wildcard.should =~ [@site_wildcard] }
       end
 
       describe ".with_path" do
-        specify { Site.with_path.all.should =~ [@site_path] }
+        specify { Site.with_path.should =~ [@site_path] }
       end
 
       describe ".with_extra_hostnames" do
-        specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
+        specify { Site.with_extra_hostnames.should =~ [@site_extra_hostnames] }
       end
 
       describe '.created_on' do
-        specify { Site.created_on(3.days.from_now).all.should =~ [@site_next_cycle_plan] }
+        specify { Site.created_on(3.days.from_now).should =~ [@site_next_cycle_plan] }
       end
 
       describe '.created_after' do
-        specify { Site.created_after(2.days.from_now).all.should =~ [@site_next_cycle_plan] }
+        specify { Site.created_after(2.days.from_now).should =~ [@site_next_cycle_plan] }
       end
     end
 
@@ -430,11 +430,11 @@ describe Site, :addons do
       end
 
       describe '.paying' do
-        it { Site.paying.all.should =~ [site1] }
+        it { Site.paying.should =~ [site1] }
       end
 
       describe '.free' do
-        it { Site.free.all.should =~ [site2] }
+        it { Site.free.should =~ [site2] }
       end
     end
 
@@ -449,7 +449,7 @@ describe Site, :addons do
       end
 
       describe ".with_not_canceled_invoices" do
-        specify { Site.with_not_canceled_invoices.all.should =~ [@site_with_paid_invoice] }
+        specify { Site.with_not_canceled_invoices.should =~ [@site_with_paid_invoice] }
       end
     end
 
@@ -460,8 +460,8 @@ describe Site, :addons do
         @site3 = create(:site, created_at: 1.days.ago)
       end
 
-      specify { Site.between(created_at: 3.days.ago.midnight..2.days.ago.end_of_day).all.should =~ [@site1, @site2] }
-      specify { Site.between(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).all.should =~ [@site3] }
+      specify { Site.between(created_at: 3.days.ago.midnight..2.days.ago.end_of_day).should =~ [@site1, @site2] }
+      specify { Site.between(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).should =~ [@site3] }
     end
 
     describe '.with_page_loads_in_the_last_30_days' do
@@ -476,7 +476,7 @@ describe Site, :addons do
         create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
       end
 
-      specify { Site.with_page_loads_in_the_last_30_days.all.should =~ [site1, site2] }
+      specify { Site.with_page_loads_in_the_last_30_days.should =~ [site1, site2] }
     end
 
     describe '.search' do

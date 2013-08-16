@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/airblade/paper_trail.git
-  revision: e81d1d435ba40f62e81dc944406fefe80e29a2e7
+  revision: 6ec14d7695313cbea55534cf72ef3076dac93e5a
   specs:
     paper_trail (3.0.0.beta)
       activerecord (>= 3.0, < 5.0)
@@ -73,7 +73,7 @@ GIT
 
 GIT
   remote: https://github.com/mongoid/mongoid.git
-  revision: 29672adc7ccbe51c7dce49934432d391a4a0b13a
+  revision: f4be91d037fd9048872f847a71286f9512aa862a
   specs:
     mongoid (4.0.0)
       activemodel (~> 4.0.0)
@@ -226,6 +226,7 @@ GEM
     cookiejar (0.3.0)
     countries (0.9.2)
       currencies (>= 0.4.0)
+    country_select (1.2.0)
     crack (0.4.1)
       safe_yaml (~> 0.9.0)
     createsend (3.4.0)
@@ -643,6 +644,7 @@ DEPENDENCIES
   coffee-rails
   compass-rails!
   countries
+  country_select
   crack
   createsend
   dalli

@@ -17,9 +17,9 @@ class Addon < ActiveRecord::Base
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
 
-  scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
-  scope :visible,         -> { includes(:plans).merge(AddonPlan.visible) }
-  scope :not_custom,      -> { includes(:plans).merge(AddonPlan.not_custom) }
+  scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid).references(:plans) }
+  scope :visible,         -> { includes(:plans).merge(AddonPlan.visible).references(:plans) }
+  scope :not_custom,      -> { includes(:plans).merge(AddonPlan.not_custom).references(:plans) }
 
   def free_plan
     plans.free.first

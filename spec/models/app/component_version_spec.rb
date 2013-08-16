@@ -45,7 +45,7 @@ describe App::ComponentVersion, :fog_mock do
     context "with an same existing component_version" do
       before { component_version }
 
-      it { should validate_uniqueness_of(:version).scoped_to(:app_component_id) }
+      it { should validate_uniqueness_of(:version).all_to(:app_component_id) }
     end
   end
 

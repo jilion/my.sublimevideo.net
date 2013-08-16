@@ -6,7 +6,7 @@ module Searchable
 
   module ClassMethods
     def search(q)
-      scopes, or_conditions = scoped, additional_or_conditions
+      scopes, or_conditions = all, additional_or_conditions
       associations = self.reflect_on_all_associations(:belongs_to) + self.reflect_on_all_associations(:has_one) + self.reflect_on_all_associations(:has_many)
       associations.each do |association|
         case association.name

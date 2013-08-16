@@ -173,7 +173,7 @@ module Stat::Site
           { :$sort => { d: 1 } }
         ])
       else
-        (options[:stats] || scoped).where(conditions).order_by(d: 1).entries
+        (options[:stats] || all).where(conditions).order_by(d: 1).entries
       end
 
       if !!options[:fill_missing_days]

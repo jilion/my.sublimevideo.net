@@ -25,7 +25,7 @@ class AddonPlan < BillableEntity
   def self.free_addon_plans(options = {})
     options.reverse_merge!(reject: [])
 
-    AddonPlan.includes(:addon).where { addon.name << options.fetch(:reject) }.not_custom.where(price: 0)
+    AddonPlan.includes(:addon).where.not(addons: { name: options.fetch(:reject) }).references(:addons).not_custom.where(price: 0)
   end
 
   def available_for_subscription?(site)

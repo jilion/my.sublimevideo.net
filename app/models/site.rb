@@ -178,16 +178,15 @@ class Site < ActiveRecord::Base
   end
 
   # addons
-  scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
+  scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid).references(:billable_items) }
   scope :paying_ids, -> do
     active.select('DISTINCT(sites.id)').joins('INNER JOIN billable_items ON billable_items.site_id = sites.id')
-    .merge(BillableItem.subscribed).merge(BillableItem.paid)
+    .merge(BillableItem.subscribed).merge(BillableItem.paid).references(:billable_items)
   end
-  scope :free, -> { active.includes(:billable_items).where { id << Site.paying_ids } }
+  scope :free, -> { active.includes(:billable_items).where { id << Site.paying_ids }.references(:billable_items) }
   def self.with_addon_plan(full_addon_name)
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
-
-    active.includes(:billable_items).merge(BillableItem.with_item(addon_plan))
+    active.includes(:billable_items).merge(BillableItem.with_item(addon_plan)).references(:billable_items)
   end
 
   # admin

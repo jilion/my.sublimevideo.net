@@ -44,7 +44,7 @@ describe Plan do
       build(:plan, price: nil).should have(1).error_on(:price)
     end
 
-    describe "uniqueness of name scoped by cycle" do
+    describe "uniqueness of name all by cycle" do
       before { create(:plan, name: "foo", cycle: "month") }
 
       it { build(:plan, name: "foo", cycle: "month").should_not be_valid }

@@ -596,7 +596,7 @@ describe User do
       end
 
       describe ".active" do
-        specify { User.active.all.should =~ [@user_active] }
+        specify { User.active.should =~ [@user_active] }
       end
     end
 
@@ -609,20 +609,20 @@ describe User do
       end
 
       describe ".without_cc" do
-        specify { User.without_cc.all.should =~ [@user_no_cc] }
+        specify { User.without_cc.should =~ [@user_no_cc] }
       end
 
       describe ".with_cc" do
-        specify { User.with_cc.all.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
+        specify { User.with_cc.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
       end
 
       describe ".cc_expire_this_month" do
-        specify { User.cc_expire_this_month.all.should =~ [@user_cc_expire_on] }
+        specify { User.cc_expire_this_month.should =~ [@user_cc_expire_on] }
       end
 
       describe ".last_credit_card_expiration_notice_sent_before" do
-        specify { User.last_credit_card_expiration_notice_sent_before(15.days.ago).all.should =~ [@user_last_credit_card_expiration_notice] }
-        specify { User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second).all.should be_empty }
+        specify { User.last_credit_card_expiration_notice_sent_before(15.days.ago).should =~ [@user_last_credit_card_expiration_notice] }
+        specify { User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second).should be_empty }
       end
     end
 
@@ -643,11 +643,11 @@ describe User do
       end
 
       describe ".free" do
-        specify { User.free.all.should =~ [site1.user, site2.user, site3.user] }
+        specify { User.free.should =~ [site1.user, site2.user, site3.user] }
       end
 
       describe ".paying" do
-        specify { User.paying.all.should =~ [site6.user] }
+        specify { User.paying.should =~ [site6.user] }
       end
     end
 
@@ -657,9 +657,9 @@ describe User do
         @user2 = create(:user, newsletter: false)
       end
 
-      specify { User.newsletter.all.should eq [@user1] }
-      specify { User.newsletter(true).all.should eq [@user1] }
-      specify { User.newsletter(false).all.should eq [@user2] }
+      specify { User.newsletter.should eq [@user1] }
+      specify { User.newsletter(true).should eq [@user1] }
+      specify { User.newsletter(false).should eq [@user2] }
     end
 
     describe ".created_on" do
@@ -668,8 +668,8 @@ describe User do
         @user2 = create(:user, created_at: 2.days.ago)
       end
 
-      specify { User.created_on(3.days.ago).all.should eq [@user1] }
-      specify { User.created_on(2.days.ago).all.should eq [@user2] }
+      specify { User.created_on(3.days.ago).should eq [@user1] }
+      specify { User.created_on(2.days.ago).should eq [@user2] }
     end
 
     describe ".search" do
@@ -681,12 +681,12 @@ describe User do
         create(:site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
       end
 
-      specify { User.search("remy").all.should eq [@user1] }
-      specify { User.search("bob").all.should eq [@user1] }
-      # specify { User.search(".dev").all.should eq [@user1] }
-      specify { User.search("192.168").all.should eq [@user1] }
-      specify { User.search("marcel").all.should eq [@user1] }
-      specify { User.search("jacques").all.should eq [@user1] }
+      specify { User.search("remy").should eq [@user1] }
+      specify { User.search("bob").should eq [@user1] }
+      # specify { User.search(".dev").should eq [@user1] }
+      specify { User.search("192.168").should eq [@user1] }
+      specify { User.search("marcel").should eq [@user1] }
+      specify { User.search("jacques").should eq [@user1] }
     end
 
     describe ".sites_tagged_with" do
@@ -716,7 +716,7 @@ describe User do
         create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
       end
 
-      specify { User.with_page_loads_in_the_last_30_days.all.should =~ [user1, user2] }
+      specify { User.with_page_loads_in_the_last_30_days.should =~ [user1, user2] }
     end
 
     describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons do
@@ -729,7 +729,7 @@ describe User do
         VideoTag.should_receive(:site_tokens).with(with_invalid_uid: true) { [site2.token] }
       }
 
-      specify { User.with_stats_realtime_addon_or_invalid_video_tag_data_uid.all.should =~ [site1.user, site2.user] }
+      specify { User.with_stats_realtime_addon_or_invalid_video_tag_data_uid.should =~ [site1.user, site2.user] }
     end
   end # Scopes
 

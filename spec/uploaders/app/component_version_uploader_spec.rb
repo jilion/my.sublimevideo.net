@@ -9,7 +9,7 @@ require 'support/fixtures_helpers'
 require 'uploaders/app/component_version_uploader'
 
 describe App::ComponentVersionUploader, :fog_mock do
-  let(:component_version) { stub(
+  let(:component_version) { double(
     name: 'app',
     token: 'e',
     version: '2.0.0',
@@ -17,9 +17,9 @@ describe App::ComponentVersionUploader, :fog_mock do
   )}
   let(:zip) { fixture_file('app/e.zip') }
   let(:uploader) { App::ComponentVersionUploader.new(component_version, :zip) }
-  let(:zip_content_uploader) { stub(App::ComponentVersionUploader).as_null_object }
+  let(:zip_content_uploader) { double(App::ComponentVersionUploader).as_null_object }
 
-  before { Rails.stub(:env) { mock('test', to_s: 'test', test?: true) } }
+  before { Rails.stub(:env) { double('test', to_s: 'test', test?: true) } }
   before { App::ComponentVersionZipContentUploader.stub(:new) { zip_content_uploader } }
 
   context 'on store!' do

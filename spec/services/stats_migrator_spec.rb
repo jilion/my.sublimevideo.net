@@ -15,18 +15,18 @@ unless defined? ActiveRecord
 end
 
 describe StatsMigrator do
-  let(:site) { mock('Site', token: 'site_token') }
+  let(:site) { double('Site', token: 'site_token') }
   let(:migrator) { StatsMigrator.new(site) }
 
   describe "#migrate" do
-    let(:site_stat) { mock('Stat::Site::Day',
+    let(:site_stat) { double('Stat::Site::Day',
       class: 'Stat::Site::Day',
       d: 'time',
       t: 'site_token',
       pv: 'page_visits',
       st: 'stages',
       s:  'ssl') }
-    let(:video_stat) { mock('Stat::Video::Day',
+    let(:video_stat) { double('Stat::Video::Day',
       class: 'Stat::Video::Day',
       d: 'time',
       st: 'site_token',

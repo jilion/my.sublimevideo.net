@@ -16,7 +16,7 @@ ActiveRecord = Class.new unless defined?(ActiveRecord)
 ActiveRecord::RecordInvalid = Class.new(Exception) unless defined?(ActiveRecord::RecordInvalid)
 
 describe SiteManager do
-  let(:user)    { stub(sites: []) }
+  let(:user)    { double(sites: []) }
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
   let(:service) { described_class.new(site) }
 

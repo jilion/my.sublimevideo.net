@@ -8,10 +8,10 @@ Site = Class.new unless defined? Site
 
 describe SupportRequest do
 
-  let(:user_without_zendesk_id) { stub(:user, id: 1, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: false) }
-  let(:user_with_zendesk_id)    { stub(:user, id: 2, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: true, zendesk_id: 1234) }
-  let(:user_without_name)       { stub(:user, id: 3, name_or_email: 'remy@rymai.me', email: 'remy@rymai.me', zendesk_id?: false) }
-  let(:site)                    { stub(:site, token: 'abcd1234', hostname: 'rymai.me', user: user_without_zendesk_id) }
+  let(:user_without_zendesk_id) { double(:user, id: 1, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: false) }
+  let(:user_with_zendesk_id)    { double(:user, id: 2, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: true, zendesk_id: 1234) }
+  let(:user_without_name)       { double(:user, id: 3, name_or_email: 'remy@rymai.me', email: 'remy@rymai.me', zendesk_id?: false) }
+  let(:site)                    { double(:site, token: 'abcd1234', hostname: 'rymai.me', user: user_without_zendesk_id) }
   let(:params) {
     {
       user_id: user_without_zendesk_id.id, type: 'other', subject: 'SUBJECT', message: 'DESCRIPTION',
@@ -79,7 +79,7 @@ describe SupportRequest do
   describe '#to_params' do
     context 'user has email support' do
       before do
-        UserSupportManager.should_receive(:new) { stub(level: 'email') }
+        UserSupportManager.should_receive(:new) { double(level: 'email') }
       end
 
       context 'user has no name' do
@@ -95,7 +95,7 @@ describe SupportRequest do
 
     context 'user has vip support' do
       before do
-        UserSupportManager.should_receive(:new) { stub(level: 'vip_email') }
+        UserSupportManager.should_receive(:new) { double(level: 'vip_email') }
       end
 
       it 'generates a hash of the params' do
@@ -109,7 +109,7 @@ describe SupportRequest do
 
     context 'user has a zendesk id' do
       before do
-        UserSupportManager.should_receive(:new) { stub(level: 'email') }
+        UserSupportManager.should_receive(:new) { double(level: 'email') }
       end
 
       it 'generates a hash of the params' do

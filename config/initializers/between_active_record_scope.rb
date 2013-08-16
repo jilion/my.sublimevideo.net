@@ -1,9 +1,9 @@
 module ActiveRecord
   class Base
     def self.between(criterion)
-      scope = scoped
+      scope = all
       criterion.each do |attribute, range|
-        scope = scoped.where { (__send__(attribute) >= range.first) & (__send__(attribute) <= range.last) }
+        scope = all.where { (__send__(attribute) >= range.first) & (__send__(attribute) <= range.last) }
       end
       scope
     end

@@ -217,20 +217,20 @@ describe HostnameHandler do
   end
 
   describe "include_hostname?" do
-    it { subject.include_hostname?('http://localhost:3000, localhost', stub(hostname: 'localhost')).should be_true }
-    it { subject.include_hostname?('124.123.151.123, localhost', stub(hostname: '124.123.151.123')).should be_true }
-    it { subject.include_hostname?('127.0.0.1, bob, 127.0.0.1', stub(hostname: 'bob')).should be_true }
-    it { subject.include_hostname?('*.*, *.*', stub(hostname: '*.*')).should be_true }
-    it { subject.include_hostname?('google.fr, jilion.com', stub(hostname: 'google.fr')).should be_true }
+    it { subject.include_hostname?('http://localhost:3000, localhost', double(hostname: 'localhost')).should be_true }
+    it { subject.include_hostname?('124.123.151.123, localhost', double(hostname: '124.123.151.123')).should be_true }
+    it { subject.include_hostname?('127.0.0.1, bob, 127.0.0.1', double(hostname: 'bob')).should be_true }
+    it { subject.include_hostname?('*.*, *.*', double(hostname: '*.*')).should be_true }
+    it { subject.include_hostname?('google.fr, jilion.com', double(hostname: 'google.fr')).should be_true }
 
-    it { subject.include_hostname?(nil, stub(hostname: 'jilion.com')).should be_false }
-    it { subject.include_hostname?('jilion.com', stub(hostname: nil)).should be_false }
-    it { subject.include_hostname?('jilion.com', stub(hostname: '')).should be_false }
+    it { subject.include_hostname?(nil, double(hostname: 'jilion.com')).should be_false }
+    it { subject.include_hostname?('jilion.com', double(hostname: nil)).should be_false }
+    it { subject.include_hostname?('jilion.com', double(hostname: '')).should be_false }
     it { subject.include_hostname?(nil, nil).should be_false }
-    it { subject.include_hostname?(nil, stub(hostname: nil)).should be_false }
-    it { subject.include_hostname?('', stub(hostname: '')).should be_false }
-    it { subject.include_hostname?('', stub(hostname: 'jilion.com')).should be_false }
-    it { subject.include_hostname?('localhost, jilion', stub(hostname: 'jilion.com')).should be_false }
+    it { subject.include_hostname?(nil, double(hostname: nil)).should be_false }
+    it { subject.include_hostname?('', double(hostname: '')).should be_false }
+    it { subject.include_hostname?('', double(hostname: 'jilion.com')).should be_false }
+    it { subject.include_hostname?('localhost, jilion', double(hostname: 'jilion.com')).should be_false }
   end
 
 end

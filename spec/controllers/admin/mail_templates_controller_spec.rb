@@ -15,7 +15,7 @@ describe Admin::MailTemplatesController do
     end
 
     describe "POST :create" do
-      before { MailTemplate.stub(:new).and_return(mock_mail_template) }
+      before { MailTemplate.stub(:new) { mock_mail_template } }
 
       it "responds with redirect when save succeed" do
         mock_mail_template.stub(:save) { true }
@@ -26,7 +26,7 @@ describe Admin::MailTemplatesController do
 
       it "responds with success when save fails" do
         mock_mail_template.stub(:save) { false }
-        mock_mail_template.should_receive(:errors).any_number_of_times.and_return(["error"])
+        mock_mail_template.stub(:errors) { ["error"] }
 
         post :create, mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
         response.should be_success
@@ -50,7 +50,7 @@ describe Admin::MailTemplatesController do
 
       it "responds with success when update_attributes fails" do
         mock_mail_template.stub(:update_attributes) { false }
-        mock_mail_template.should_receive(:errors).any_number_of_times.and_return(["error"])
+        mock_mail_template.stub(:errors) { ["error"] }
 
         put :update, id: '1', mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
         response.should be_success

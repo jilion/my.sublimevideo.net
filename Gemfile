@@ -88,6 +88,7 @@ gem 'stat_request_parser' # hosted on gemfury
 gem 'rubyzip', require: 'zip/zip'
 gem 'mime-types'
 gem 'countries'
+gem 'country_select'
 gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'

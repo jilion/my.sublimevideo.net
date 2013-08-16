@@ -56,7 +56,7 @@ describe Addon do
       create(:addon_plan, addon: @addon3, price: 0)
     end
 
-    it { described_class.with_paid_plans.all.should eq [@addon1, @addon2] }
+    it { described_class.with_paid_plans.should eq [@addon1, @addon2] }
   end
 
 end

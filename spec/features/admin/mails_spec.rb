@@ -8,8 +8,8 @@ feature "Mails index" do
     end
 
     scenario "should be 0 template and 0 log created" do
-      MailTemplate.all.should be_empty
-      MailLog.all.should be_empty
+      MailTemplate.should be_empty
+      MailLog.should be_empty
     end
 
     scenario "should have text instead of tables if no templates or no logs exist" do
@@ -33,8 +33,8 @@ feature "Mails index" do
     end
 
     scenario "should be 1 template and 1 log created" do
-      MailTemplate.all.should have(1).item
-      MailLog.all.should have(1).item
+      MailTemplate.should have(1).item
+      MailLog.should have(1).item
     end
 
     scenario "should have a table containing mail logs and a table containing mail templates" do

@@ -86,8 +86,8 @@ class Invoice < ActiveRecord::Base
 
   scope :paid_between, ->(started_at, ended_at) { between(paid_at: started_at..ended_at) }
 
-  scope :paid,           -> { where(state: 'paid').includes(:site).where { sites.refunded_at == nil } }
-  scope :refunded,       -> { where(state: 'paid').includes(:site).where { sites.refunded_at != nil } }
+  scope :paid,           -> { where(state: 'paid').includes(:site).where { sites.refunded_at == nil }.references(:site) }
+  scope :refunded,       -> { where(state: 'paid').includes(:site).where { sites.refunded_at != nil }.references(:site) }
   scope :open_or_failed, -> { where(state: %w[open failed]) }
   scope :not_canceled,   -> { where { state != 'canceled' } }
   scope :not_paid,       -> { where(state: %w[open waiting failed]) }
@@ -101,6 +101,7 @@ class Invoice < ActiveRecord::Base
     not_canceled.includes(:invoice_items)
     .where { invoice_items.started_at >= period.first }.where { invoice_items.started_at <= period.last }
     .where { invoice_items.ended_at >= period.first }.where { invoice_items.ended_at <= period.last }
+    .references(:invoice_items)
   }
 
   # sort

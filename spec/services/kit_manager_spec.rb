@@ -12,12 +12,12 @@ SettingsSanitizer = Class.new unless defined?(SettingsSanitizer)
 SettingsGenerator = Class.new unless defined?(SettingsGenerator)
 
 describe KitManager do
-  let(:site)               { stub(touch: true) }
-  let(:kit)                { stub(design: stub, site: site, site_id: 1) }
-  let(:addon_plan)         { stub }
+  let(:site)               { double(touch: true) }
+  let(:kit)                { double(design: stub, site: site, site_id: 1) }
+  let(:addon_plan)         { double }
   let(:service)            { described_class.new(kit) }
-  let(:sanitized_settings) { stub }
-  let(:settings_sanitizer) { stub(sanitize: sanitized_settings) }
+  let(:sanitized_settings) { double }
+  let(:settings_sanitizer) { double(sanitize: sanitized_settings) }
 
   describe "#save" do
     let(:params) { { name: 'My Kit', design_id: 42, settings: { "logo" => { "settings" => "value" } } } }

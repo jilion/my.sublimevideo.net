@@ -23,7 +23,7 @@ describe Design do
       @custom = create(:design, availability: 'custom')
     end
 
-    it { described_class.custom.all.should eq [@custom] }
+    it { described_class.custom.should eq [@custom] }
   end
 
   describe '.paid' do
@@ -32,7 +32,7 @@ describe Design do
       @paid = create(:design, price: 99)
     end
 
-    it { described_class.paid.all.should eq [@paid] }
+    it { described_class.paid.should eq [@paid] }
   end
 
   describe '#available_for_subscription?' do
