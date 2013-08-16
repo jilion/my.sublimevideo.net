@@ -5,7 +5,7 @@ require 'services/settings_sanitizer'
 
 describe SettingsSanitizer do
   let(:site)        { double(touch: true) }
-  let(:kit)         { double(design: stub, site: site, site_id: 1) }
+  let(:kit)         { double(design: double, site: site, site_id: 1) }
   let(:addon_plan1) { double(addon_name: 'addonName1') }
   let(:addon_plan2) { double(addon_name: 'addonName2') }
   let(:addon_plan3) { double(addon_name: 'addonName3') }

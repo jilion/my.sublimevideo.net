@@ -13,7 +13,7 @@ SettingsGenerator = Class.new unless defined?(SettingsGenerator)
 
 describe KitManager do
   let(:site)               { double(touch: true) }
-  let(:kit)                { double(design: stub, site: site, site_id: 1) }
+  let(:kit)                { double(design: double, site: site, site_id: 1) }
   let(:addon_plan)         { double }
   let(:service)            { described_class.new(kit) }
   let(:sanitized_settings) { double }

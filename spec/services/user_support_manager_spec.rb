@@ -9,7 +9,7 @@ describe UserSupportManager do
   let(:user)    { Struct.new(:id).new(1234) }
   let(:site)    { Struct.new(:user, :id).new(user, 1234) }
   let(:manager) { described_class.new(user) }
-  let(:addon)   { stub.as_null_object }
+  let(:addon)   { double.as_null_object }
 
   describe '#level' do
     before do

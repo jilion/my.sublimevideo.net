@@ -4,7 +4,7 @@ require 'spec_helper'
 feature "Enthusiasts actions:" do
   background do
     sign_in_as :admin
-    Enthusiast.stub!(:per_page).and_return(2)
+    Enthusiast.stub(:per_page) { 2 }
     3.times { |i| create(:enthusiast) }
   end
 

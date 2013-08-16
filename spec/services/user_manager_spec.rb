@@ -163,7 +163,7 @@ describe UserManager do
       end
 
       it 'adds an error and returns false' do
-        user.should_receive(:errors) { stub.as_null_object }
+        user.should_receive(:errors) { double.as_null_object }
 
         service.archive(skip_password: false).should be_false
       end
