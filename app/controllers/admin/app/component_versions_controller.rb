@@ -1,5 +1,5 @@
 class Admin
-  class App
+  module App
     class ComponentVersionsController < Admin::AppController
       respond_to :zip, only: [:show]
       respond_to :html, only: [:destroy]

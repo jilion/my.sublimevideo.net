@@ -1,5 +1,5 @@
 class Admin
-  class App
+  module App
     class ComponentsController < Admin::AppController
       respond_to :html, only: [:show, :update]
       respond_to :json
