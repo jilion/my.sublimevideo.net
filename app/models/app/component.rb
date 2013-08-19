@@ -44,7 +44,7 @@ class App::Component < ActiveRecord::Base
     # Site.where { id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
 
     # Query via plugins is too slow and useless for now
-    designs_sites.all
+    designs_sites
   end
 
   def clear_caches
@@ -56,7 +56,7 @@ class App::Component < ActiveRecord::Base
   private
 
   def _cached_versions
-    Rails.cache.fetch [self, 'versions'] { versions.all }
+    Rails.cache.fetch [self, 'versions'] { versions }
   end
 
 end
