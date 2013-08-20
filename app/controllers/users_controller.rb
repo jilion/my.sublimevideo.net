@@ -89,10 +89,9 @@ class UsersController < Devise::RegistrationsController
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
     devise_parameter_sanitizer.for(:account_update) do |u|
-      keys = [:password]
+      keys = [:email, :password]
       keys << :current_password if needs_password?(params)
-
-      params[:user].permit(*(auth_keys + keys))
+      params[:user].permit(*keys)
     end
   end
 
