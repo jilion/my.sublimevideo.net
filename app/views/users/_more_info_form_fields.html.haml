@@ -11,7 +11,7 @@
 
   .country.right_field
     = f.label :country, "Country", class: "icon"
-    = f.country_select :country, options_for_select("Country", selected: "Country")
+    = f.country_select :country, [], iso_codes: true, include_blank: 'Country'
   .spacer
 
 .entry.company_info
