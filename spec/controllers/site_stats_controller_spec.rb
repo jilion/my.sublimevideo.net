@@ -16,7 +16,8 @@ describe SiteStatsController do
 
     it "responds with success to GET :videos" do
       Site.stub(:find_by_token!) { mock_model(Site, token: SiteToken[:www])}
-      get :videos, site_id: 'demo'
+      Stat::Video.stub(:top_videos) { [] }
+      get :videos, site_id: 'demo', format: :json
       response.should_not be_redirect
     end
 
