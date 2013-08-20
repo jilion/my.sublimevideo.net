@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 
 require 'services/user_support_manager'
-require 'models/support_request'
+require 'models/support_request' unless defined?(SupportRequest)
 
 User = Class.new unless defined? User
 Site = Class.new unless defined? Site
@@ -24,12 +24,12 @@ describe SupportRequest do
   let(:vip_support_request)             { described_class.new(params.merge(user_id: user_without_zendesk_id.id)) }
   let(:support_request_without_name)    { described_class.new(params.merge(user_id: user_without_name.id)) }
   before do
-    User.stub(:find_by_id).with(1) { user_without_zendesk_id }
-    User.stub(:find_by_id).with(2) { user_with_zendesk_id }
-    User.stub(:find_by_id).with(3) { user_without_name }
-    User.stub(:find_by_id).with(nil) { nil }
-    Site.stub(:find_by_token).with('abcd1234') { site }
-    Site.stub(:find_by_token).with(nil) { nil }
+    User.stub(:where).with(id: 1) { double(first: user_without_zendesk_id) }
+    User.stub(:where).with(id: 2) { double(first: user_with_zendesk_id) }
+    User.stub(:where).with(id: 3) { double(first: user_without_name) }
+    User.stub(:where).with(id: nil) { double(first: nil) }
+    Site.stub(:where).with(token: 'abcd1234') { double(first: site) }
+    Site.stub(:where).with(token: nil) { double(first: nil) }
   end
 
   describe 'Factory' do
@@ -129,5 +129,6 @@ end
 #  message         :text      not null
 #  requester_name  :string
 #  requester_email :string
+#
 #
 #

@@ -21,7 +21,7 @@ module Stat::Site
   # ====================
 
   def site
-    Site.find_by_token(t)
+    Site.where(token: t).first
   end
 
   def token

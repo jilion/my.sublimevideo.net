@@ -27,7 +27,7 @@ describe Referrer do
       Referrer.create_or_update_from_trackers!(@trackers)
     end
 
-    let(:site) { Site.find_by_token('ibvjcopp') }
+    let(:site) { Site.where(token: 'ibvjcopp').first }
 
     it { Referrer.count.should eq 2 }
 

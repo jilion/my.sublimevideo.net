@@ -1,6 +1,6 @@
 class SiteStatsController < ApplicationController
   skip_before_filter :authenticate_user!, if: :demo_site?
-  before_filter :redirect_suspended_user, :find_site_by_token!
+  before_filter :redirect_suspended_user, :load_site
   before_filter :redirect_user_without_stats_addon, unless: :demo_site?
   before_filter :find_sites_or_redirect_to_new_site, only: [:index], unless: :demo_site?
 

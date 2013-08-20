@@ -88,9 +88,9 @@ module Populate
     end
 
     def video_tags(user_login_or_site_token)
-      sites = User.find_by_email!("#{user_login_or_site_token}@jilion.com").sites
+      sites = User.where(email: "#{user_login_or_site_token}@jilion.com").first!.sites
     rescue
-      sites = [Site.find_by_token(user_login_or_site_token)]
+      sites = [Site.where(token: user_login_or_site_token).first]
     ensure
       sites.compact.each do |site|
         SiteCountersUpdater.new(site).update_last_30_days_video_tags_counters
@@ -98,9 +98,9 @@ module Populate
     end
 
     def stats(user_login_or_site_token)
-      sites = User.find_by_email!("#{user_login_or_site_token}@jilion.com").sites
+      sites = User.where(email: "#{user_login_or_site_token}@jilion.com").first!.sites
     rescue
-      sites = [Site.find_by_token(user_login_or_site_token)]
+      sites = [Site.where(token: user_login_or_site_token).first]
     ensure
       sites.compact.each do |site|
         StatsPopulator.new.execute(site)
@@ -108,7 +108,7 @@ module Populate
     end
 
     def recurring_stats(site_token)
-      RecurringStatsPopulator.new.execute(Site.find_by_token(site_token))
+      RecurringStatsPopulator.new.execute(Site.where(token: site_token).first)
     end
 
     def feedbacks

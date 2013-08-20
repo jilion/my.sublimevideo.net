@@ -20,7 +20,7 @@ class Referrer
   # ================
 
   def site
-    Site.find_by_token(token)
+    Site.where(token: token).first
   end
 
   # ===============

@@ -1,8 +1,8 @@
 require 'has_scope'
 
 class PrivateApi::SitesController < SublimeVideoPrivateApiController
-  before_filter :_find_sites, only: [:index]
-  before_filter :_find_site_by_token!, only: [:show, :add_tag]
+  before_filter :_load_sites, only: [:index]
+  before_filter :_load_site, only: [:show, :add_tag]
 
   has_scope :per, :created_on, :created_after, :not_tagged_with, :by_date,
             :with_min_billable_video_views, :first_billable_plays_on_week, :user_id
@@ -41,12 +41,12 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   private
 
-  def _find_sites
+  def _load_sites
     @sites = apply_scopes(_base_scopes.page(params[:page]))
   end
 
-  def _find_site_by_token!
-    @site = apply_scopes(_base_scopes).find_by_token!(params[:id])
+  def _load_site
+    @site = apply_scopes(_base_scopes).where(token: params[:id]).first!
   end
 
   def _base_scopes

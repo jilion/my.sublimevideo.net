@@ -14,7 +14,7 @@ class OauthController < ApplicationController
 
   # DELETE /oauth/revoke
   def revoke
-    @token = current_user.tokens.find_by_token!(params[:token])
+    @token = current_user.tokens.where(token: params[:token]).first!
     @token.invalidate!
 
     respond_with(@token) do |format|

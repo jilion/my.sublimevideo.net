@@ -103,7 +103,7 @@ gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
-gem 'addressable', require: 'addressable/uri'
+gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 # gem 'addressabler'
 
 # Stats
@@ -146,8 +146,8 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'launchy'
-  gem 'letter_opener'
+  # gem 'launchy'
+  # gem 'letter_opener'
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
   gem 'bullet'

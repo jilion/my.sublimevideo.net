@@ -144,7 +144,8 @@ describe TransactionsController do
 
         context "transaction is already paid" do
           it "should return" do
-            Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(mock_transaction(:paid? => true))
+            Transaction.stub_chain(:where, :first!) { mock_transaction }
+            mock_transaction.stub(:paid?) { true }
             mock_transaction.should_not_receive(:process_payment_response)
 
             post :callback, @params.merge(@sha_params)
@@ -166,8 +167,10 @@ describe TransactionsController do
             end
 
             it "should add a notice and redirect to /account" do
-              Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(@m = mock_transaction(:paid? => false, state: 'paid'))
-              @m.should_receive(:process_payment_response).with(@sha_params)
+              Transaction.stub_chain(:where, :first!) { mock_transaction }
+              mock_transaction.stub(:paid?) { false }
+              mock_transaction.stub(:state) { 'paid' }
+              mock_transaction.should_receive(:process_payment_response).with(@sha_params)
 
               post :callback, @params.merge(@sha_params)
               flash[:notice].should be_nil
@@ -186,8 +189,10 @@ describe TransactionsController do
             end
 
             it "should add an alert and redirect to /account" do
-              Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(@m = mock_transaction(:paid? => false, state: 'failed'))
-              @m.should_receive(:process_payment_response).with(@sha_params)
+              Transaction.stub_chain(:where, :first!) { mock_transaction }
+              mock_transaction.stub(:paid?) { false }
+              mock_transaction.stub(:state) { 'failed' }
+              mock_transaction.should_receive(:process_payment_response).with(@sha_params)
 
               post :callback, @params.merge(@sha_params)
               flash[:notice].should eq ""

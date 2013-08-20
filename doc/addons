@@ -1,4 +1,4 @@
-s = Site.find_by_token 'hzii2b7f'
+s = Site.where(token: 'hzii2b7f').first
 s.billable_items.build({ item: AddonPlan.get('sharing', 'standard'), state: 'sponsored' }, as: :admin)
 s.billable_items.build({ item: Design.get('twit'), state: 'sponsored' }, as: :admin)
 s.save

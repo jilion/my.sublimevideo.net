@@ -31,13 +31,13 @@ module SitesControllerHelper
     end
   end
 
-  def find_site_by_token!
+  def load_site
     return if public_page?
 
     @site = if demo_site?
-      Site.find_by_token!(SiteToken[:www])
+      Site.where(token: SiteToken[:www]).first!
     else
-      current_user.sites.not_archived.find_by_token!(params[:site_id] || params[:id])
+      current_user.sites.not_archived.where(token: params[:site_id] || params[:id]).first!
     end
     @site = exhibit(@site)
   end

@@ -1,6 +1,6 @@
 class AssistantController < ApplicationController
   before_filter :find_sites
-  before_filter :find_site_by_token!, :update_current_assistant_step_and_redirect, except: [:new_site]
+  before_filter :load_site, :update_current_assistant_step_and_redirect, except: [:new_site]
   before_filter :set_current_assistant_step_to_player_and_redirect_if_addons_already_updated, except: [:new_site]
   before_filter :find_default_kit!, only: [:player, :publish_video]
 

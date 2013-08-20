@@ -1,5 +1,5 @@
 class PrivateApi::UsersController < SublimeVideoPrivateApiController
-  before_filter :_find_user_by_id!, only: [:show]
+  before_filter :_load_user, only: [:show]
 
   # GET /private_api/users/:id
   def show
@@ -9,7 +9,7 @@ class PrivateApi::UsersController < SublimeVideoPrivateApiController
 
   private
 
-  def _find_user_by_id!
-    @user = User.with_state('active').find_by_id!(params[:id])
+  def _load_user
+    @user = User.with_state('active').find(params[:id])
   end
 end

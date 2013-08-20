@@ -27,7 +27,7 @@ private
   end
 
   def find_deal_by_token!
-    @deal = Deal.find_by_token!(params[:id])
+    @deal = Deal..where(token: params[:id]).first!
   end
 
 end

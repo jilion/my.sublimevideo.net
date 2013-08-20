@@ -1,7 +1,7 @@
 require 'has_scope'
 
 class PrivateApi::AddonsController < SublimeVideoPrivateApiController
-  before_filter :_find_site_by_token!, only: [:index]
+  before_filter :_load_site, only: [:index]
   before_filter :_find_addon_plans, only: [:index]
 
   has_scope :per, :state
@@ -14,8 +14,8 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   private
 
-  def _find_site_by_token!
-    @site = Site.with_state('active').find_by_token!(params[:site_id])
+  def _load_site
+    @site = Site.with_state('active').where(token: params[:site_id]).first!
   end
 
   def _find_addon_plans

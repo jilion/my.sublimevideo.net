@@ -8,7 +8,7 @@ class Admin::SitesController < Admin::AdminController
     end
   end
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :_find_site_by_token!, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
+  before_filter :load_site, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -116,8 +116,8 @@ class Admin::SitesController < Admin::AdminController
     end
   end
 
-  def _find_site_by_token!
-    @site = Site.find_by_token!(params[:id])
+  def load_site
+    @site = Site.where(token: params[:id]).first!
   end
 
   def _update_design_subscription(design)

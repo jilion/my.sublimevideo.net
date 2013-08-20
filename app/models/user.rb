@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
 
   # API
   has_many :client_applications
-  has_many :tokens, -> { order(authorized_at: :desc).includes(:client_applications) }, class_name: 'OauthToken'
+  has_many :tokens, -> { includes(:client_applications).order(authorized_at: :desc).references(:client_applications) }, class_name: 'OauthToken'
 
   # ===============
   # = Validations =

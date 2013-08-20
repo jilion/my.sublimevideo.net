@@ -89,7 +89,7 @@ class Admin::UsersController < Admin::AdminController
 
   # DELETE /users/:id/oauth_revoke
   def oauth_revoke
-    @token = @user.tokens.find_by_token!(params[:token])
+    @token = @user.tokens.where(token: params[:token]).first!
     @token.invalidate!
 
     redirect_to edit_admin_user_path(@user), notice: "Authorization for the application '#{@token.client_application.name}' has been revoked."

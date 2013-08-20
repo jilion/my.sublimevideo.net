@@ -41,7 +41,7 @@ class InvoiceCreator
   private
 
   def self._create_for_month(date, site_id)
-    if site = Site.not_archived.find_by_id(site_id)
+    if site = Site.not_archived.where(id: site_id).first
       build_for_month(date, site).save
     end
   end

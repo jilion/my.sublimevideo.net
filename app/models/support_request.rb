@@ -13,11 +13,11 @@ class SupportRequest
   end
 
   def user
-    @user ||= User.find_by_id(params[:user_id])
+    @user ||= User.where(id: params[:user_id]).first
   end
 
   def site
-    @site ||= Site.find_by_token(params[:site_token])
+    @site ||= Site.where(token: params[:site_token]).first
   end
 
   def subject

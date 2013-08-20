@@ -10,14 +10,13 @@ describe VideoTagsController do
 
   context "with demo site" do
     let(:site) { mock_model(Site, token: SiteToken[:www]) }
+    before { Site.stub_chain(:where, :first!) { site } }
 
     it "responds with success to GET :show" do
-      Site.stub(:find_by_token!) { site }
       VideoTag.stub(:find).with('2', _site_token: site.token)
-      get :show, site_id: 'demo', id: '2'
+      get :show, site_id: 'demo', id: '2', format: :json
       response.should_not be_redirect
     end
-
   end
 
 end

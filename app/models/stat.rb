@@ -25,7 +25,7 @@ module Stat
     tracker_incs = incs_from_trackers(trackers)
 
     tracker_incs.each do |site_token, values|
-      next unless site = ::Site.find_by_token(site_token)
+      next unless site = ::Site.where(token: site_token).first
 
       realtime_stats_active = site.subscribed_to?(realtime_stat_addon)
 
@@ -62,7 +62,7 @@ module Stat
     conditions = { klass.site_token_field => site_token, d: log.send(period) }
     conditions[:u] = options[:uid] if options[:uid]
 
-    klass.const_get(period.camelize).collection.find(conditions)
+    klass.const_get(period.to_s.camelize).collection.find(conditions)
   end
 
   def self.increment_for_site_token_and_periods(klass, site_token, periods, log, incs, options = {})
@@ -89,6 +89,7 @@ module Stat
   def self.incs_from_trackers(trackers)
     trackers = only_stats_trackers(trackers)
     incs     = Hash.new { |h, k| h[k] = default_incs_hash }
+
 
     trackers.each do |tracker, hits|
       begin

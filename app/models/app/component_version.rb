@@ -17,7 +17,7 @@ class App::ComponentVersion < ActiveRecord::Base
   end
 
   def token=(token)
-    self.component = App::Component.find_by_token!(token)
+    self.component = App::Component.where(token: token).first!
   end
 
   def dependencies=(arg)

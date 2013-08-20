@@ -23,7 +23,7 @@ class SiteUsage
   index site_id: 1, day: 1
 
   def site
-    Site.find_by_id(site_id)
+    Site.where(id: site_id).first
   end
 
   def billable_player_hits

@@ -31,7 +31,7 @@ describe Stat::Site do
       create(:site_day_stat, t: site.token, d: Time.now.utc.midnight, vv: { e: 103 })
 
       @mock_site = mock_model(Site)
-      Site.stub(:find_by_token).and_return(@mock_site)
+      Site.stub_chain(:where, :first) { @mock_site }
     end
 
     describe "with seconds period (missing value not filled)" do

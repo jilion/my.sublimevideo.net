@@ -23,7 +23,7 @@ module Stat::Video
   # ====================
 
   def site
-    Site.find_by_token(st)
+    Site.where(token: st).first
   end
 
   def site_token

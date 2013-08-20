@@ -2,7 +2,7 @@ class Admin::AdminsController < Admin::AdminController
   respond_to :js, :html
 
   before_filter { |controller| require_role?('god') }
-  before_filter :find_by_id, only: [:edit, :update, :reset_auth_token, :destroy]
+  before_filter :load_admin, only: [:edit, :update, :reset_auth_token, :destroy]
 
   has_scope :by_date
 
@@ -36,7 +36,7 @@ class Admin::AdminsController < Admin::AdminController
 
 private
 
-  def find_by_id
+  def load_admin
     @admin = Admin.find(params[:id])
   end
 

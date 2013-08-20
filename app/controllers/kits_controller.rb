@@ -1,7 +1,7 @@
 class KitsController < ApplicationController
   respond_to :js, only: [:fields, :process_custom_logo]
 
-  before_filter :redirect_suspended_user, :find_site_by_token!
+  before_filter :redirect_suspended_user, :load_site
   before_filter :find_design, only: [:new, :create, :edit, :update, :process_custom_logo, :fields]
   before_filter :find_kit, only: [:show, :edit, :update, :set_as_default]
   before_filter :find_or_build_kit, only: [:process_custom_logo, :fields]
@@ -71,13 +71,13 @@ class KitsController < ApplicationController
   private
 
   def find_or_build_kit
-    @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
+    @kit = exhibit(@site.kits.where(identifier: params[:id])).first!
   rescue ActiveRecord::RecordNotFound
     @kit = exhibit(@site.kits.build(design_id: @design.id))
   end
 
   def find_kit
-    @kit    = exhibit(@site.kits.find_by_identifier!(params[:id]))
+    @kit    = exhibit(@site.kits.where(identifier: params[:id])).first!
     @design = @kit.design
   rescue ActiveRecord::RecordNotFound
     redirect_to [@site, :kits]

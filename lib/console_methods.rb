@@ -7,6 +7,6 @@ module ConsoleMethods
 
   # Find a site by token
   def s(site_token)
-    Site.find_by_token!(site_token.to_s)
+    Site.where(token: site_token.to_s).first!
   end
 end

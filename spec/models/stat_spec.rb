@@ -15,8 +15,8 @@ describe Stat do
 
       context "mixed view event & load event" do
         before do
-          Site.should_receive(:find_by_token).with('ovjigy83').at_least(:once) { double(subscribed_to?: true) }
-          Site.should_receive(:find_by_token).with('site1234').at_least(:once) { double(subscribed_to?: false) }
+          Site.stub(:where).with(token: 'ovjigy83').at_least(:once) { double(first: double(subscribed_to?: true)) }
+          Site.stub(:where).with(token: 'site1234').at_least(:once) { double(first: double(subscribed_to?: false)) }
 
           described_class.stub(:incs_from_trackers).and_return(
             "ovjigy83"=> {
@@ -178,11 +178,11 @@ describe Stat do
 
     context "load event with 1 video loaded" do
       before do
-        described_class.stub(:only_stats_trackers).and_return({
+        described_class.stub(:only_stats_trackers) { {
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=h&st=b", user_agent] => 2,
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f&s=1", user_agent] => 1,
           ["?t=ovjigy83&e=l&d=d&h=e&vu[]=efgh5678&pm[]=f&st=b", user_agent] => 1
-        })
+        } }
       end
 
       specify { described_class.incs_from_trackers(nil).should eq({

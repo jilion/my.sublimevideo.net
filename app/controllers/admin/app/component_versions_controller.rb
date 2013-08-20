@@ -15,7 +15,7 @@ class Admin
 
       # GET /app/components/:component_id/versions/:id
       def show
-        @component_version = @component.versions.with_deleted.find_by_version!(params[:id])
+        @component_version = @component.versions.with_deleted.where(version: params[:id]).first!
         respond_with @component_version do |format|
           format.zip { redirect_to @component_version.zip.url }
         end
@@ -30,7 +30,7 @@ class Admin
 
       # DELETE /app/components/:component_id/versions/:id
       def destroy
-        @component_version = @component.versions.find_by_version!(params[:id])
+        @component_version = @component.versions.where(version: params[:id]).first!
         ::App::ComponentVersionManager.new(@component_version).destroy
         respond_with @component_version, location: [:admin, @component]
       end
@@ -38,7 +38,7 @@ class Admin
     private
 
       def find_component
-        @component = ::App::Component.find_by_token!(params[:component_id])
+        @component = ::App::Component.where(token: params[:component_id]).first!
       rescue ActiveRecord::RecordNotFound
         body = { status: 404, error: "Component with token '#{params[:component_id]}' could not be found." }
         render request.format.ref => body, status: 404

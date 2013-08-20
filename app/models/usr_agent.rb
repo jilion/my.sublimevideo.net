@@ -16,7 +16,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
   # ================
 
   def site
-    Site.find_by_token(token)
+    Site.where(token: token).first
   end
 
   # ===============
