@@ -44,7 +44,7 @@ describe StatsExporter do
     end
 
     it "send a email when export is done" do
-      stats_export = stub
+      stats_export = double
       StatsExport.stub(:create!) { stats_export }
       StatsExportMailer.should_receive(:export_ready).with(stats_export) { double('mailer', deliver!: true) }
       stats_exporter.create_and_notify_export
