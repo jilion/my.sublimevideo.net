@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-source 'https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/' # thibaud@jilion.com account
+source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com account
 
 ruby '2.0.0'
 
@@ -39,7 +39,7 @@ gem 'chartkick'
 
 # Auth / invitations
 gem 'devise', '~> 3.0.0'
-# until 1.1.9
+# Until 1.1.9
 gem 'devise_invitable', github: 'scambra/devise_invitable'
 gem 'devise-async'
 
@@ -75,7 +75,6 @@ gem 'cocaine'
 
 # CDN
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'certified'
 gem 'edge_cast'
 
 # until github.com/Shopify/active_merchant/pull/724 is merged

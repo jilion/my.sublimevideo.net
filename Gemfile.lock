@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/airblade/paper_trail.git
-  revision: 6ec14d7695313cbea55534cf72ef3076dac93e5a
+  revision: ccf06da461d7b16196ca263126513763ad566d2a
   specs:
     paper_trail (3.0.0.beta)
       activerecord (>= 3.0, < 5.0)
@@ -126,7 +126,7 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/
+  remote: https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/
   specs:
     PageRankr (4.1.1)
       httparty (>= 0.9.0)
@@ -203,7 +203,6 @@ GEM
       mongoid
     celluloid (0.14.1)
       timers (>= 1.0.0)
-    certified (0.1.1)
     chartkick (1.2.0)
     chunky_png (1.2.8)
     climate_control (0.0.3)
@@ -256,7 +255,8 @@ GEM
       eco-source
       execjs
     eco-source (1.1.0.rc.1)
-    edge_cast (0.0.1)
+    edge_cast (1.0.0)
+      activesupport (~> 4.0)
       faraday (~> 0.8)
       faraday_middleware (~> 0.8)
     em-http-request (1.0.3)
@@ -637,7 +637,6 @@ DEPENDENCIES
   capybara-email
   carrierwave
   carrierwave-mongoid
-  certified
   chartkick
   chosen-rails!
   cocaine
