@@ -8,7 +8,7 @@ class Admin::AdminsController < Admin::AdminController
 
   # GET /admins
   def index
-    @admins = Admin.where { encrypted_password != nil }
+    @admins = Admin.where.not(encrypted_password: nil)
     @admins = apply_scopes(@admins).by_date
     respond_with(@admins)
   end

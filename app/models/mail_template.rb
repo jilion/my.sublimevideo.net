@@ -7,10 +7,10 @@ class MailTemplate < ActiveRecord::Base
   validates :title,   presence: true, uniqueness: true
   validates :subject, :body, presence: true
 
-  scope :archived,     -> { where { archived_at != nil } }
+  scope :archived,     -> { where.not(archived_at: nil) }
   scope :not_archived, -> { where(archived_at: nil) }
-  scope :by_title,     ->(way = 'asc') { order { title.send(way) } }
-  scope :by_date,      ->(way = 'desc') { order { created_at.send(way) } }
+  scope :by_title,     ->(way = 'asc') { order(title: way.to_sym) }
+  scope :by_date,      ->(way = 'desc') { order(created_at: way.to_sym) }
 
   def snapshotize
     { title: title, subject: subject, body: body }

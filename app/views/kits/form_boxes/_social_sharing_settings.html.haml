@@ -1,4 +1,4 @@
-- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self, addon_name: 'sharing')
   #sharing_settings.expandable_settings_box
     - kit_settings_expanding_handler('sharing') do
       = link_to t('kit.social_sharing.title'), ''

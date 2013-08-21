@@ -7,7 +7,7 @@ class EmailUniquenessValidator < ActiveModel::EachValidator
   end
 
   def active_user_with_same_email_exists?(record, new_email)
-    User.not_archived.where { (lower(email) == lower(new_email)) & (id != record.id) }.exists?
+    User.not_archived.where("lower(email) = lower(?)", new_email).where.not(id: record.id).exists?
   end
 
 end

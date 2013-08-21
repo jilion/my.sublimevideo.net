@@ -16,7 +16,7 @@ class Enthusiast < ActiveRecord::Base
     scope :"by_#{col}", ->(way = 'desc') { order("#{col} #{way}").order('created_at desc') }
   end
 
-  def self.additional_or_conditions
+  def self.additional_or_conditions(q)
     lower_and_match_fields(%w[email free_text])
   end
 

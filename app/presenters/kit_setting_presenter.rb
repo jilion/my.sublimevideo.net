@@ -1,5 +1,5 @@
 class KitSettingPresenter
-  attr_accessor :addon_plan, :settings
+  attr_accessor :addon_name, :addon_plan, :settings
 
   def self.init(*args)
     presenter = self.new(*args)
@@ -15,6 +15,7 @@ class KitSettingPresenter
     @kit        = options.fetch(:kit)
     @design     = options.fetch(:design)
     @view       = options.fetch(:view)
+    @addon_name = options.fetch(:addon_name)
     @settings   = load_settings
     @addon_plan = load_addon_plan
   end
@@ -42,6 +43,7 @@ class KitSettingPresenter
     populate_params!(params)
 
     if params[:setting_template].present?
+      params[:setting_template].symbolize_keys!
       opts = { kit: @kit, params: params }
       if params[:partial]
         @view.render("kits/inputs/#{params[:partial]}", opts)
@@ -102,10 +104,6 @@ class KitSettingPresenter
 
   def get_value_from_params(params)
     params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
-  end
-
-  def addon_name
-    @addon_name_from_view ||= @view.view_renderer.instance_variable_get('@_partial_renderer').instance_values['path'].sub(%r{.+/(\w+)_settings}, '\1')
   end
 
   def _addon_plan_settings_record

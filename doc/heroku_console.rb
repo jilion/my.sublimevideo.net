@@ -1,5 +1,5 @@
 # Sites ith active videos without Schooltube & Railscast
-sites = Site.where {(last_30_days_video_tags > 0) & (token.not_in ['2xrynuh2', '3s7oes9q'])}.all
+sites = Site.where("last_30_days_video_tags > ?", 0).where.not(token: ['2xrynuh2', '3s7oes9q']).all
 
 sum = sites.count
 # => 3830

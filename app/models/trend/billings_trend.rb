@@ -42,7 +42,7 @@ class BillingsTrend
   end
 
   def self._first_invoice_day
-    (Invoice.paid.order { paid_at.asc }.first.try(:paid_at) || 1.day.from_now).midnight
+    (Invoice.paid.order(:paid_at).first.try(:paid_at) || 1.day.from_now).midnight
   end
 
   def self._nested_keys(invoice_item)

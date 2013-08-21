@@ -110,34 +110,31 @@ class User < ActiveRecord::Base
   # ==========
 
   # state
-  scope :active,       -> { where { state == 'active' } }
-  scope :inactive,     -> { where { state != 'active' } }
-  scope :suspended,    -> { where { state == 'suspended' } }
-  scope :archived,     -> { where { state == 'archived' } }
-  scope :not_archived, -> { where { state != 'archived' } }
+  scope :active,       -> { where(state: 'active') }
+  scope :inactive,     -> { where.not(state: 'active') }
+  scope :suspended,    -> { where(state: 'suspended') }
+  scope :archived,     -> { where(state: 'archived') }
+  scope :not_archived, -> { where.not(state: 'archived') }
 
   # billing
   scope :paying,     -> { active.includes(:sites, :billable_items).merge(Site.paying) }
-  scope :paying_ids, -> { active.select('DISTINCT(users.id)').joins('INNER JOIN sites ON sites.user_id = users.id INNER JOIN billable_items ON billable_items.site_id = sites.id').merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :free,       -> { active.where { id << User.paying_ids } }
+  scope :free,       -> { active.where.not(id: User.paying.pluck(:id)) }
 
   # credit card
   scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
-  scope :with_cc,              -> { where { (cc_type != nil) & (cc_last_digits != nil) } }
+  scope :with_cc,              -> { where.not(cc_type: nil, cc_last_digits: nil) }
   scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
-  scope :with_balance,         -> { where { balance > 0 } }
-  scope :last_credit_card_expiration_notice_sent_before, ->(date) {
-    where { last_credit_card_expiration_notice_sent_at < date }
-  }
+  scope :with_balance,         -> { where("balance > ?", 0) }
+  scope :last_credit_card_expiration_notice_sent_before, ->(date) { where("last_credit_card_expiration_notice_sent_at < ?", date) }
 
   # attributes queries
-  scope :created_on, ->(date) { where { created_at >> date.all_day } }
+  scope :created_on, ->(date) { where(created_at: date.all_day) }
   scope :newsletter, ->(bool = true) { where(newsletter: bool) }
   scope :vip,        ->(bool = true) { where(vip: bool) }
 
-  scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
+  scope :sites_tagged_with, ->(word) { joins(:sites).where(sites: { id: Site.not_archived.tagged_with(word).pluck(:id) }) }
 
-  scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
+  scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days).references(:sites) }
   scope :with_stats_realtime_addon_or_invalid_video_tag_data_uid, -> {
     site_with_realtime_addon_tokens = Site.with_addon_plan('stats-realtime').select(:token).uniq.map(&:token)
     site_with_invalide_video_tag_data_uid = VideoTag.site_tokens(with_invalid_uid: true)
@@ -151,8 +148,8 @@ class User < ActiveRecord::Base
   scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way}") }
   scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way}") }
 
-  def self.additional_or_conditions
-    lower_and_match_fields(%w[email name])
+  def self.additional_or_conditions(q)
+    lower_and_match_fields('users', %w[email name], q)
   end
 
   # =================

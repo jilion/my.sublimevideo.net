@@ -10,13 +10,13 @@ class Deal < ActiveRecord::Base
 
   scope :active, -> {
     now = Time.now.utc.to_s(:db)
-    where { (started_at <= now) & (ended_at >= now) }
+    where("deals.started_at <= ? and deals.ended_at >= ?", now, now)
   }
 
   # sort
-  scope :by_id,         ->(way = 'desc') { order { id.send(way) } }
-  scope :by_started_at, ->(way = 'desc') { order { started_at.send(way) } }
-  scope :by_ended_at,   ->(way = 'desc') { order { ended_at.send(way) } }
+  scope :by_id,         ->(way = 'desc') { order(id: way.to_sym) }
+  scope :by_started_at, ->(way = 'desc') { order(started_at: way.to_sym) }
+  scope :by_ended_at,   ->(way = 'desc') { order(ended_at: way.to_sym) }
 
   before_validation :ensure_availability_scope_is_valid
 

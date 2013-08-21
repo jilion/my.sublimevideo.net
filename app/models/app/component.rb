@@ -39,7 +39,7 @@ class App::Component < ActiveRecord::Base
 
   def sites
     # via_designs = designs_sites.all
-    # site_designs = BillableItem.designs.where {site_id == sites.id}
+    # site_designs = BillableItem.designs.where { site_id == sites.id }
     # via_plugins = plugins_sites.where {app_plugins.design_id.in(site_designs.select{item_id}) | app_plugins.design_id.eq(nil)}
     # Site.where { id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
 

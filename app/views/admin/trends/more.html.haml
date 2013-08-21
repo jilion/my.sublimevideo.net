@@ -4,7 +4,7 @@
 
 - if has_role?('invoices')
   %h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
-  %h3.revenue= "Date range revenue: #{display_amount(Invoice.between(created_at: range_start_date..range_end_date).total_revenue)}"
+  %h3.revenue= "Date range revenue: #{display_amount(Invoice.where(created_at: range_start_date..range_end_date).total_revenue)}"
 
 - not_archived_sites = Site.not_archived.count
 - free_sites         = Site.free.count

@@ -15,7 +15,7 @@ class AddonPlan < BillableEntity
 
   def self.find_cached_by_addon_name_and_name(addon_name, addon_plan_name)
     Rails.cache.fetch [self, 'find_cached_by_addon_name_and_name', addon_name.to_s.dup, addon_plan_name.to_s.dup] do
-      joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
+      joins(:addon).where("addons.name = ? AND addon_plans.name = ?", addon_name.to_s, addon_plan_name.to_s).first
     end
   end
   class << self
@@ -34,7 +34,7 @@ class AddonPlan < BillableEntity
       false
     when 'public'
       addon_plan_ids_except_myself = addon.plans.pluck(:id) - [id]
-      !site.billable_items.addon_plans.where { item_id >> addon_plan_ids_except_myself }.state('sponsored').exists?
+      !site.billable_items.addon_plans.where(item_id: addon_plan_ids_except_myself).state('sponsored').exists?
     when 'custom'
       site.addon_plans.where(id: id).exists?
     end

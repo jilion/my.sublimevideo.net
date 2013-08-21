@@ -460,8 +460,8 @@ describe Site, :addons do
         @site3 = create(:site, created_at: 1.days.ago)
       end
 
-      specify { Site.between(created_at: 3.days.ago.midnight..2.days.ago.end_of_day).should =~ [@site1, @site2] }
-      specify { Site.between(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).should =~ [@site3] }
+      specify { Site.where(created_at: 3.days.ago.midnight..2.days.ago.end_of_day).should =~ [@site1, @site2] }
+      specify { Site.where(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).should =~ [@site3] }
     end
 
     describe '.with_page_loads_in_the_last_30_days' do

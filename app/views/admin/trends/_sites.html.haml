@@ -1,6 +1,6 @@
-- sites_created_during_range = Site.between(created_at: range_start_date..range_end_date).count
-- sites_created_yesterday    = Site.between(created_at: Time.now.yesterday.midnight..Time.now.yesterday.end_of_day).count
-- sites_created_today        = Site.between(created_at: Date.today..Time.now).count
+- sites_created_during_range = Site.where(created_at: range_start_date..range_end_date).count
+- sites_created_yesterday    = Site.where(created_at: Time.now.yesterday.midnight..Time.now.yesterday.end_of_day).count
+- sites_created_today        = Site.where(created_at: Date.today..Time.now).count
 
 %h4 New sites
 

@@ -11,7 +11,7 @@
     - invoices = Invoice.paid.paid_between(year.beginning_of_year, year.end_of_year)
     %tr{ style: year.end_of_year > Time.now.utc ? "font-style:italic;" : "" }
       %td= l year, format: :fullyear
-      %td= display_amount invoices.where { customer_country == 'CH' }.sum(:amount)
-      %td= display_amount invoices.where { (customer_country == nil) | (customer_country != 'CH') }.sum(:amount)
+      %td= display_amount invoices.where(customer_country: 'CH').sum(:amount)
+      %td= display_amount invoices.where("customer_country = ? OR customer_country != ?", nil, 'CH').sum(:amount)
       %td= display_amount invoices.sum(:amount)
     - year -= 1.year

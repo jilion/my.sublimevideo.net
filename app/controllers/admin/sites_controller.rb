@@ -20,7 +20,7 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites
   def index
     @sites = apply_scopes(Site.includes(:user, :billable_items))
-    @tags  = Site.tag_counts.order { tags.name }
+    @tags  = Site.tag_counts.order('tags.name')
 
     respond_with(@sites, per_page: 50)
   end
@@ -39,7 +39,7 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites/:id/edit
   def edit
-    @tags = Site.tag_counts.order { tags.name }
+    @tags = Site.tag_counts.order('tags.name')
 
     respond_with(@site)
   end

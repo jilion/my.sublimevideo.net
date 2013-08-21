@@ -6,7 +6,7 @@ class Admin
 
       # GET /app/components
       def index
-        @components = ::App::Component.order { created_at.desc }
+        @components = ::App::Component.order(created_at: :desc)
         respond_with @components
       end
 

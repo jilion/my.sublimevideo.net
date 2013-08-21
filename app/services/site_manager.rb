@@ -185,7 +185,7 @@ class SiteManager
     addon_plan_ids_to_cancel  = addon.plans.pluck(:id)
     addon_plan_ids_to_cancel -= [options[:except_addon_plan].id] if options[:except_addon_plan]
 
-    site.billable_items.addon_plans.where { item_id >> addon_plan_ids_to_cancel }.destroy_all
+    site.billable_items.addon_plans.where(item_id: addon_plan_ids_to_cancel).destroy_all
   end
 
   def _update_billable_item_state!(billable_item, options)

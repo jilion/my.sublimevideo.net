@@ -10,7 +10,7 @@ class OauthToken < ActiveRecord::Base
   validates :client_application, :token, presence: true
   validates :token, uniqueness: true
 
-  scope :valid, -> { where { (invalidated_at == nil) & (authorized_at != nil) } }
+  scope :valid, -> { where(invalidated_at: nil).where.not(authorized_at: nil) }
 
   def invalidated?
     invalidated_at?

@@ -14,7 +14,7 @@ class RevenuesTrend
     if self.present?
       self.order_by(d: 1).last.try(:d)
     else
-      (BillableItemActivity.order { created_at.asc }.first.created_at).midnight - 1.day
+      (BillableItemActivity.order(:created_at).first.created_at).midnight - 1.day
     end
   end
 
