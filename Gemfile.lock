@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/jilion/chosen-rails.git
+  remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
     chosen-rails (1.0.0)
@@ -9,7 +9,7 @@ GIT
       sass-rails (>= 3.2)
 
 GIT
-  remote: https://github.com/jilion/premailer-rails.git
+  remote: git://github.com/jilion/premailer-rails.git
   revision: 2903e08143415b09eedbd15002382ffd4fdfaf57
   branch: regru-premailer-dependency
   specs:
@@ -18,7 +18,7 @@ GIT
       regru-premailer (~> 1.7)
 
 GIT
-  remote: https://github.com/jilion/pusher-gem.git
+  remote: git://github.com/jilion/pusher-gem.git
   revision: 3b080047d13c54f40d92c04d1723fd5b06ae652e
   specs:
     pusher (0.11.1)
@@ -26,7 +26,7 @@ GIT
       signature (~> 0.1.6)
 
 GIT
-  remote: https://github.com/jilion/turbolinks.git
+  remote: git://github.com/jilion/turbolinks.git
   revision: 0a192f579ec837dd616623592dcdaaf2305a9583
   branch: ios_video_issue
   specs:
@@ -34,13 +34,13 @@ GIT
       coffee-rails
 
 GIT
-  remote: https://github.com/jilion/useragent.git
+  remote: git://github.com/jilion/useragent.git
   revision: 9fd0f887527850994c543caa7cf5327bd635dc02
   specs:
     useragent (0.2.3)
 
 GIT
-  remote: https://github.com/librato/librato-rails.git
+  remote: git://github.com/librato/librato-rails.git
   revision: 82a95ae54f2ed990135a7b655293107384da2796
   branch: feature/rack_first
   specs:
@@ -49,7 +49,7 @@ GIT
       rails (>= 3.0)
 
 GIT
-  remote: https://github.com/rymai/active_merchant.git
+  remote: git://github.com/rymai/active_merchant.git
   revision: 4dc159611a3ab12cb41dd6a4a5ae4e28962a1354
   branch: ogone-store-amount-option
   specs:
@@ -63,15 +63,15 @@ GIT
       nokogiri
 
 GIT
-  remote: https://github.com/scambra/devise_invitable.git
-  revision: 1610c515ff2f0e7ffa12d4e9413877524c0f2e45
+  remote: git://github.com/scambra/devise_invitable.git
+  revision: 7a7cb78f39c68ae5d565289ad1f097d6b76ab433
   specs:
     devise_invitable (1.2.1)
       actionmailer (>= 3.2.6, < 5)
       devise (~> 3.0.0)
 
 GIT
-  remote: https://github.com/softa/activerecord-postgres-hstore.git
+  remote: git://github.com/softa/activerecord-postgres-hstore.git
   revision: 396f5af9af5eb70b7d9721a5bb14e14afee5cc38
   specs:
     activerecord-postgres-hstore (0.4.1)
@@ -80,7 +80,7 @@ GIT
       rake
 
 GIT
-  remote: https://github.com/thibaudgg/voxel_hapi.git
+  remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 590c89b458e21be52825ea9f7532182c68310715
   branch: 1.9.2
   specs:
