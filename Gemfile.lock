@@ -382,6 +382,8 @@ GEM
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
+    launchy (2.1.0)
+      addressable (~> 2.2.6)
     librato-metrics (1.0.4)
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
@@ -679,6 +681,7 @@ DEPENDENCIES
   hpricot
   kaminari!
   kiqstand!
+  launchy
   librato-rails!
   libxml-ruby
   liquid

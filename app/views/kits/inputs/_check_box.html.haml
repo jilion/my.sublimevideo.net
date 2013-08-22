@@ -1,5 +1,6 @@
+%p= parameters.inspect
 .entry.checkbox_wrap
-  = hidden_field_tag kit_setting_input_field_name(params), 0, data: kit_setting_data(params)
-  = check_box_tag kit_setting_input_field_name(params), 1, SettingsSanitizer.cast_boolean(params[:value]), id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
-  = label_tag kit_setting_input_field_id(params), kit_setting_title(params)
+  = hidden_field_tag kit_setting_input_field_name(parameters), 0, data: kit_setting_data(parameters)
+  = check_box_tag kit_setting_input_field_name(parameters), 1, SettingsSanitizer.cast_boolean(parameters[:value]), id: kit_setting_input_field_id(parameters), class: 'previewable', data: kit_setting_data(parameters)
+  = label_tag kit_setting_input_field_id(parameters), kit_setting_title(parameters)
 .spacer

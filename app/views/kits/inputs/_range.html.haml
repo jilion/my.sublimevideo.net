@@ -1,6 +1,6 @@
 .entry.range
-  %h5= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
+  %h5= label_tag kit_setting_input_field_id(parameters), kit_setting_title(parameters)
 
-  = range_field_tag kit_setting_input_field_name(params), params[:value], in: params[:setting_template][:range], step: params[:setting_template][:step], style: 'display:inline', id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
-  %span.value_displayer= params[:value]
+  = range_field_tag kit_setting_input_field_name(parameters), parameters[:value], in: parameters[:setting_template][:range], step: parameters[:setting_template][:step], style: 'display:inline', id: kit_setting_input_field_id(parameters), class: 'previewable', data: kit_setting_data(parameters)
+  %span.value_displayer= parameters[:value]
 .spacer

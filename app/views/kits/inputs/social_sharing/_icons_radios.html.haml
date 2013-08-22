@@ -1,0 +1,7 @@
+.entry#sharing_icon_chooser
+  %h5= kit_setting_title(parameters)
+  - parameters[:setting_template][:values].each do |choice|
+    .radio_wrap
+      = radio_button_tag kit_setting_input_field_name(parameters), choice, parameters[:value] == choice, id: kit_setting_input_field_id(parameters, "_#{choice}"), disabled: parameters[:disabled], data: kit_setting_data(parameters)
+      = label_tag kit_setting_input_field_id(parameters, "_#{choice}"), image_tag("players/sharing_#{choice}_icon@2x.png", size: (choice == 'alt' ? '28x21' : '24x19'))
+  .spacer

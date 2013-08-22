@@ -36,24 +36,24 @@ module KitsHelper
     haml_tag("div.#{classes.join('.')}", capture_haml { yield })
   end
 
-  def kit_setting_title(params, suffix = '')
-    t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}#{suffix}")
+  def kit_setting_title(parameters, suffix = '')
+    t("kit.#{parameters[:addon].name}.settings.#{parameters[:translation_key] || parameters[:setting_key]}#{suffix}")
   end
 
-  def kit_setting_radio_label(params, choice = '')
-    t("kit.#{params[:addon].name}.values.#{params[:translation_key] || params[:setting_key]}.#{choice}")
+  def kit_setting_radio_label(parameters, choice = '')
+    t("kit.#{parameters[:addon].name}.values.#{parameters[:translation_key] || parameters[:setting_key]}.#{choice}")
   end
 
-  def kit_setting_input_field_name(params, suffix = '')
-    "kit[settings][#{params[:addon].name}][#{params[:setting_key]}]#{suffix}"
+  def kit_setting_input_field_name(parameters, suffix = '')
+    "kit[settings][#{parameters[:addon].name}][#{parameters[:setting_key]}]#{suffix}"
   end
 
-  def kit_setting_input_field_id(params, suffix = '')
-    "kit_setting-#{params[:addon].name}-#{params[:setting_key]}#{suffix}"
+  def kit_setting_input_field_id(parameters, suffix = '')
+    "kit_setting-#{parameters[:addon].name}-#{parameters[:setting_key]}#{suffix}"
   end
 
-  def kit_setting_data(params)
-    params[:data].merge(addon: params[:addon].kind, setting: params[:setting_key], default: params[:value])
+  def kit_setting_data(parameters)
+    parameters[:data].merge(addon: parameters[:addon].kind, setting: parameters[:setting_key], default: parameters[:value])
   end
 
   def kits_for_select(site)

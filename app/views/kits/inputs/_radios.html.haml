@@ -1,7 +1,7 @@
 .entry
-  - if params[:show_title]
-    %h5= kit_setting_title(params)
+  - if parameters[:show_title]
+    %h5= kit_setting_title(parameters)
 
-  - params[:setting_template][:values].each do |choice|
-    = render 'kits/inputs/radio', kit: kit, params: params, choice: choice
+  - parameters[:setting_template][:values].each do |choice|
+    = render 'kits/inputs/radio', kit: kit, parameters: parameters, choice: choice
 .spacer

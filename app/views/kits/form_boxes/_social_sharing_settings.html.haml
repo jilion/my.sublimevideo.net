@@ -1,13 +1,13 @@
-- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self, addon_name: 'sharing')
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self, addon_name: 'social_sharing')
   #sharing_settings.expandable_settings_box
-    - kit_settings_expanding_handler('sharing') do
+    - kit_settings_expanding_handler('social_sharing') do
       = link_to t('kit.social_sharing.title'), ''
-    - kit_settings_expendable_block('sharing') do
+    - kit_settings_expendable_block('social_sharing') do
       = presenter.render_master_input_field(setting_key: 'enable') do
-        = presenter.render_input_field(setting_key: 'icon', partial: 'sharing/icons_radios')
+        = presenter.render_input_field(setting_key: 'icon', partial: 'social_sharing/icons_radios')
         = presenter.render_input_field(setting_key: 'url')
         %p.info= "If you want to test the sharing button in the player preview above, you need to provide a value for this field (at least temporarily)."
-        = presenter.render_input_field(setting_key: 'buttons', partial: 'sharing/buttons_dragndrop')
+        = presenter.render_input_field(setting_key: 'buttons', partial: 'social_sharing/buttons_dragndrop')
         = presenter.render_input_field(setting_key: 'image', show_title: true)
         %p.info
           = raw "You can provide a link to a specific image in the #{link_to 'Publish video', new_site_video_code_path(site), class: 'hl'} page."

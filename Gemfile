@@ -147,7 +147,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  # gem 'launchy'
+  gem 'launchy'
   # gem 'letter_opener'
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'

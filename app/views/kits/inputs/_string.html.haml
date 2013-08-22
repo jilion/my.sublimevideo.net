@@ -1,13 +1,13 @@
 - field_classes = %w[text previewable]
-- field_classes << 'no_icon' unless params[:icon]
+- field_classes << 'no_icon' unless parameters[:icon]
 
-%h5= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
+%h5= label_tag kit_setting_input_field_id(parameters), kit_setting_title(parameters)
 
-- if params[:note]
-  %p.info= params[:note]
+- if parameters[:note]
+  %p.info= parameters[:note]
 
-.entry{ class: params[:entry_class] }
-  - if params[:icon]
-    = label_tag kit_setting_input_field_id(params), kit_setting_title(params), class: 'icon'
-  = text_field_tag kit_setting_input_field_name(params), params[:setting], id: kit_setting_input_field_id(params), class: field_classes.join(' '), data: kit_setting_data(params), placeholder: params[:placeholder]
+.entry{ class: parameters[:entry_class] }
+  - if parameters[:icon]
+    = label_tag kit_setting_input_field_id(parameters), kit_setting_title(parameters), class: 'icon'
+  = text_field_tag kit_setting_input_field_name(parameters), parameters[:setting], id: kit_setting_input_field_id(parameters), class: field_classes.join(' '), data: kit_setting_data(parameters), placeholder: parameters[:placeholder]
 .spacer
