@@ -1832,13 +1832,6 @@ CREATE UNIQUE INDEX index_enthusiasts_on_email ON enthusiasts USING btree (email
 
 
 --
--- Name: index_feedbacks_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_feedbacks_on_user_id ON feedbacks USING btree (user_id);
-
-
---
 -- Name: index_invoice_items_on_deal_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
