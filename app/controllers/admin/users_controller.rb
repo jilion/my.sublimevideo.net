@@ -19,8 +19,8 @@ class Admin::UsersController < Admin::AdminController
   # GET /users
   def index
     @users = apply_scopes(User.includes(:sites, :invoices))
-    @user_tags = User.tag_counts.order { tags.name }
-    @site_tags = Site.tag_counts.order { tags.name }
+    @user_tags = User.tag_counts.order('tags.name')
+    @site_tags = Site.tag_counts.order('tags.name')
 
     respond_with(@users, per_page: 50)
   end
@@ -33,7 +33,7 @@ class Admin::UsersController < Admin::AdminController
   # GET /users/:id/edit
   def edit
     @user = User.includes(:enthusiast, :feedbacks).find(params[:id])
-    @tags = User.tag_counts.order { tags.name }
+    @tags = User.tag_counts.order('tags.name')
     @oauth_authorizations = @user.tokens.valid
 
     respond_with(@user)

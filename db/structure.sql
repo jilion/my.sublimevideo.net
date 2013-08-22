@@ -175,7 +175,8 @@ CREATE TABLE admins (
     invited_by_type character varying(255),
     roles text,
     unconfirmed_email character varying(255),
-    authentication_token character varying(255)
+    authentication_token character varying(255),
+    invitation_created_at timestamp without time zone
 );
 
 
@@ -1166,7 +1167,8 @@ CREATE TABLE users (
     vip boolean DEFAULT false,
     early_access text,
     last_credit_card_expiration_notice_sent_at timestamp without time zone,
-    billing_email character varying(255)
+    billing_email character varying(255),
+    invitation_created_at timestamp without time zone
 );
 
 
@@ -1830,13 +1832,6 @@ CREATE UNIQUE INDEX index_enthusiasts_on_email ON enthusiasts USING btree (email
 
 
 --
--- Name: index_feedbacks_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_feedbacks_on_user_id ON feedbacks USING btree (user_id);
-
-
---
 -- Name: index_invoice_items_on_deal_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2312,3 +2307,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130531141047');
 INSERT INTO schema_migrations (version) VALUES ('20130603122845');
 
 INSERT INTO schema_migrations (version) VALUES ('20130605081105');
+
+INSERT INTO schema_migrations (version) VALUES ('20130821142238');

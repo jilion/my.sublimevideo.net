@@ -1,3 +1,5 @@
-class Version < ActiveRecord::Base
-  attr_accessible :admin_id, :ip
+module PaperTrail
+  class Version < ActiveRecord::Base
+    attr_accessible :admin_id, :ip
+  end
 end

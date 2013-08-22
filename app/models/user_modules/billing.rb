@@ -6,7 +6,7 @@ module UserModules::Billing
   included do
 
     def sponsored?
-      sites.not_archived.includes(:billable_items).where { billable_items.state == 'sponsored' }.present?
+      sites.not_archived.joins(:billable_items).where(billable_items: { state: 'sponsored' }).present?
     end
 
     def billable?

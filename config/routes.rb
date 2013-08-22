@@ -216,8 +216,8 @@ MySublimeVideo::Application.routes.draw do
 
     scope 'assistant' do
       match 'new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
-      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
-      match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
+      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put, :patch]
+      match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put, :patch]
       get   ':site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
       match ':site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
     end

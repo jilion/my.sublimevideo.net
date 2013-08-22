@@ -20,7 +20,7 @@ class BillingsTrend
   end
 
   def self.trend_hash(day)
-    invoices = Invoice.includes(:invoice_items).paid.between(paid_at: day.beginning_of_day..day.end_of_day).references(:invoice_items)
+    invoices = Invoice.includes(:invoice_items).paid.paid_between(day.beginning_of_day, day.end_of_day).references(:invoice_items)
     hash = {
       d: day.to_time,
       ne: Hash.new { |h, k| h[k] = Hash.new(0) },
@@ -42,7 +42,7 @@ class BillingsTrend
   end
 
   def self._first_invoice_day
-    (Invoice.paid.order { paid_at.asc }.first.try(:paid_at) || 1.day.from_now).midnight
+    (Invoice.paid.order(:paid_at).first.try(:paid_at) || 1.day.from_now).midnight
   end
 
   def self._nested_keys(invoice_item)

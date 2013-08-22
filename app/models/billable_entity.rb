@@ -15,7 +15,7 @@ class BillableEntity < ActiveRecord::Base
   end
 
   def self.paid
-    where { (stable_at != nil) & (price > 0) }
+    where.not(stable_at: nil).where("price > ?", 0)
   end
 
   def self.custom
@@ -27,7 +27,7 @@ class BillableEntity < ActiveRecord::Base
   end
 
   def self.visible
-    where { availability != 'hidden' }
+    where.not(availability: 'hidden')
   end
 
   validates :price, numericality: true

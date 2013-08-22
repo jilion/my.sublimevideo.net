@@ -23,7 +23,7 @@ describe BillableEntity do
     end
 
     describe '.paid' do
-      it { AddonPlan.paid.should =~ [@addon_plan4, @addon_plan5, @addon_plan6] }
+      it { AddonPlan.paid.to_a.should =~ [@addon_plan4, @addon_plan5, @addon_plan6] }
     end
 
     describe '.custom' do

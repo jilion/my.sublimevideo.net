@@ -59,7 +59,7 @@ class Transaction < ActiveRecord::Base
   # =================
 
   def self.charge_invoices
-    User.active.includes(:invoices).merge(Invoice.open_or_failed).find_in_batches(batch_size: 100) do |users|
+    User.active.joins(:invoices).merge(Invoice.open_or_failed).find_in_batches(batch_size: 100) do |users|
       now = Time.now.utc
       users.each_with_index do |user, index|
         delay(at: (now + index * 5.seconds).to_i).charge_invoices_by_user_id(user.id)

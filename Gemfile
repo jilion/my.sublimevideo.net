@@ -3,11 +3,13 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 
 ruby '2.0.0'
 
-gem 'bundler'
-
 gem 'rails', '4.0.0'
-
 # gem 'rails', github: 'rails/rails', branch: '4-0-stable'
+
+# until https://github.com/rails/sprockets-rails/pull/77 is merged
+gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
+# gem 'sprockets-rails', github: 'rails/sprockets-rails' # Need > 2.0.0
+
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
@@ -16,15 +18,13 @@ gem 'protected_attributes' # TODO migrate to strong_parameters
 
 # Databases
 gem 'pg'
-gem 'squeel'
-# gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'mongoid', github: 'mongoid/mongoid' # Rails 4 support
 
 # Views
 gem 'haml'
 gem 'rabl'
 gem 'coffee-rails'
-gem 'kaminari'
+gem 'kaminari', github: 'kolodovskyy/kaminari' # https://github.com/amatsuda/kaminari/pull/433
 gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
@@ -61,7 +61,7 @@ gem 'yajl-ruby', require: 'yajl' # json
 gem 'state_machine'
 gem 'paper_trail', github: 'airblade/paper_trail' # Rails 4 support
 gem 'uniquify'
-gem 'acts-as-taggable-on'
+gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on' # Need > 2.4.1
 gem 'paranoia'
 
 gem 'responders'
@@ -125,10 +125,6 @@ gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
-
-# until https://github.com/rails/sprockets-rails/pull/77 is merged
-gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
-
 gem 'sass-rails'
 
 gem 'chosen-rails', github: 'jilion/chosen-rails'

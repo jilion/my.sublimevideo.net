@@ -230,7 +230,7 @@ describe Invoice, :addons do
       end
 
       describe '.between' do
-        specify { described_class.between(created_at: 24.hours.ago..15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
+        specify { described_class.where(created_at: 24.hours.ago..15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
       end
 
       describe '.with_state' do

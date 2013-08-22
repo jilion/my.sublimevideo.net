@@ -19,7 +19,7 @@ class AssistantController < ApplicationController
   # GET /assistant/:site_id/addons
   # PUT /assistant/:site_id/addons
   def addons
-    if request.put?
+    if request.put? || request.patch?
       SiteManager.new(@site).update_billable_items(params[:designs], params[:addon_plans])
 
       redirect_to assistant_player_path(@site), notice: t('flash.addons.subscribe.notice')
@@ -29,7 +29,7 @@ class AssistantController < ApplicationController
   # GET /assistant/:site_id/player
   # PUT /assistant/:site_id/player
   def player
-    if request.put?
+    if request.put? || request.patch?
       KitManager.new(@kit).save(params[:kit])
 
       redirect_to assistant_publish_video_path(@site)

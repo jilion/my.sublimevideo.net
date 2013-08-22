@@ -8,7 +8,7 @@ class AddonsController < ApplicationController
   # GET /addons
   # GET /sites/:site_id/addons
   def index
-    unless @site = current_user.sites.not_archived..where(token: params[:site_id]).first!
+    unless @site = current_user.sites.not_archived.where(token: params[:site_id]).first
       redirect_to [@sites.first, :addons]
     end
 
@@ -20,7 +20,7 @@ class AddonsController < ApplicationController
   def show
     @addon = Addon.get(params[:id])
 
-    unless @site = current_user.sites.not_archived.where(token: params[:site_id]).first!
+    unless @site = current_user.sites.not_archived.where(token: params[:site_id]).first
       redirect_to site_addon_path(@sites.first, @addon, p: params[:p])
     end
   end

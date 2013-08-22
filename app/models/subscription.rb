@@ -25,20 +25,16 @@ class Subscription < ActiveRecord::Base
     where(state: 'beta')
   end
 
-  def self.subscribed
-    where(state: 'subscribed')
-  end
+  scope :subscribed, -> { where(state: 'subscribed') }
 
   def self.active
     where(state: ACTIVE_STATES)
   end
 
-  def self.paid
-    where {
-      ((item_type == 'Design') & (item_id >> Design.paid.pluck(:id))) |
-      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.paid.pluck('addon_plans.id')))
-    }
-  end
+  scope :paid, -> {
+    where("(item_type = 'Design' AND item_id IN (?)) OR (item_type = 'AddonPlan' AND item_id IN (?))",
+      Design.paid.pluck(:id), AddonPlan.paid.pluck('addon_plans.id'))
+  }
 
   def self.with_item(design_or_addon_plan)
     where(item_type: design_or_addon_plan.class.to_s, item_id: design_or_addon_plan.id)

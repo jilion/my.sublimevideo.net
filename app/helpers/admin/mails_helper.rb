@@ -1,7 +1,7 @@
 module Admin::MailsHelper
 
   def mail_templates_for_select(selected_template)
-    items = MailTemplate.not_archived.order { created_at.desc }.reduce([]) do |a, e|
+    items = MailTemplate.not_archived.order(created_at: :desc).reduce([]) do |a, e|
       a << ["##{e.id} - #{e.title}", e.id]
     end
 

@@ -3,8 +3,8 @@ class BillableItemActivity < Subscription
 
   validates :state, inclusion: STATES + ['canceled']
 
-  scope :before, ->(date)   { where { created_at < date } }
-  scope :during, ->(period) { where { created_at >> period } }
+  scope :before, ->(date)   { where("billable_item_activities.created_at < ?", date) }
+  scope :during, ->(period) { where(created_at: period) }
 end
 
 # == Schema Information

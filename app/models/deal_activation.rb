@@ -8,7 +8,7 @@ class DealActivation < ActiveRecord::Base
   validates :deal_id, presence: true, uniqueness: { scope: :user_id }
   validates :user_id, presence: true
 
-  scope :active, -> { includes(:deal).merge(Deal.active) }
+  scope :active, -> { joins(:deal).merge(Deal.active) }
 
   before_validation :ensure_available_to_user, if: :deal_id?
   before_validation :ensure_deal_is_active, if: :deal_id?

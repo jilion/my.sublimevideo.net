@@ -14,9 +14,9 @@ class MailLog < ActiveRecord::Base
   before_create :snapshotize_template
 
   # sort
-  scope :by_template_title, ->(way = 'asc') { includes(:template).order { template.title.send(way) } }
-  scope :by_admin_email,    ->(way = 'asc') { includes(:admin).order { admin.email.send(way) } }
-  scope :by_date,           ->(way = 'desc') { order { created_at.send(way) } }
+  scope :by_template_title, ->(way = 'asc') { includes(:template).order("templates.title #{way}") }
+  scope :by_admin_email,    ->(way = 'asc') { includes(:admin).order("admins.email #{way}") }
+  scope :by_date,           ->(way = 'desc') { order(created_at: way.to_sym) }
 
   private
 

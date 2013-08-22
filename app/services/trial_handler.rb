@@ -91,7 +91,7 @@ class TrialHandler
   end
 
   def self._sites_with_subscriptions_in_trial
-    Site.not_archived.select('DISTINCT("sites".*)').joins(:billable_items).where { billable_items.state == 'trial' }
+    Site.not_archived.select('DISTINCT("sites".*)').joins(:billable_items).where(billable_items: { state:'trial' })
   end
 
   def self._find_site(site_id)
