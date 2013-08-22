@@ -6,6 +6,7 @@ ruby '2.0.0'
 gem 'bundler'
 
 gem 'rails', '4.0.0'
+
 # gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
@@ -124,6 +125,10 @@ gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
+
+# until https://github.com/rails/sprockets-rails/pull/77 is merged
+gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
+
 gem 'sass-rails'
 
 gem 'chosen-rails', github: 'jilion/chosen-rails'
