@@ -50,7 +50,9 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   end
 
   def _base_scopes
-    Site.with_state('active').order(:created_at)
+    scopes = Site.with_state('active').order(:created_at).includes(:default_kit).references(:kits)
+    scopes = scopes.select(:default_kit_id) if params['select']
+    scopes
   end
 
   def _list_of_params_as_string(list)

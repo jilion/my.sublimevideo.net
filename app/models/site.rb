@@ -148,11 +148,11 @@ class Site < ActiveRecord::Base
 
   # attributes queries
   scope :with_wildcard,              -> { where(wildcard: true) }
-  scope :with_path,                  -> { where.not(path: nil, path: '', path: ' ') }
-  scope :with_extra_hostnames,       -> { where.not(extra_hostnames: nil, extra_hostnames: '') }
+  scope :with_path,                  -> { where.not(path: [nil, '', ' ']) }
+  scope :with_extra_hostnames,       -> { where.not(extra_hostnames: [nil, '']) }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
   scope :with_paid_invoices,         -> { joins(:invoices).merge(::Invoice.with_state('paid')).where(refunded_at: nil) }
-  scope :without_hostnames,          ->(hostnames = []) { where.not(hostname: nil, hostname: '', hostname: hostnames) }
+  scope :without_hostnames,          ->(hostnames = []) { where.not(hostname: [nil, ''] + hostnames) }
 
   class << self
     %w[created_on first_billable_plays_on_week].each do |method_name|
@@ -171,7 +171,7 @@ class Site < ActiveRecord::Base
   end
 
   scope :not_tagged_with, ->(tag) do
-    tagged_with(tag, exclude: true)
+    tagged_with(tag, exclude: true).references(:taggings)
   end
 
   # addons
