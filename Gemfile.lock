@@ -47,6 +47,14 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: https://github.com/kolodovskyy/kaminari.git
+  revision: 3047786adf33242d3a964b50491e584af52ce945
+  specs:
+    kaminari (0.14.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
+
+GIT
   remote: https://github.com/librato/librato-rails.git
   revision: 82a95ae54f2ed990135a7b655293107384da2796
   branch: feature/rack_first
@@ -87,6 +95,15 @@ GIT
       moped (~> 1.5)
       origin (~> 1.0)
       tzinfo (~> 0.3.22)
+
+GIT
+  remote: https://github.com/rails/sprockets-rails.git
+  revision: cc4387db9aa57e0835bc017356f95d25bad08d93
+  specs:
+    sprockets-rails (2.0.0)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      sprockets (~> 2.8)
 
 GIT
   remote: https://github.com/rymai/active_merchant.git
@@ -364,9 +381,6 @@ GEM
       multi_json
     jwt (0.1.8)
       multi_json (>= 1.5)
-    kaminari (0.14.1)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
     kgio (2.8.0)
     librato-metrics (1.0.4)
       aggregate (~> 0.2.2)
@@ -529,10 +543,6 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.0.0)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      sprockets (~> 2.8)
     stat_request_parser (1.3.0)
       activesupport (>= 3.0.0)
     state_machine (1.2.0)
@@ -667,7 +677,7 @@ DEPENDENCIES
   has_scope
   honeybadger
   hpricot
-  kaminari
+  kaminari!
   kiqstand!
   librato-rails!
   libxml-ruby
@@ -714,6 +724,7 @@ DEPENDENCIES
   silent-postgres
   snail
   solve
+  sprockets-rails!
   stat_request_parser
   state_machine
   sublime_video_layout (~> 2.0)

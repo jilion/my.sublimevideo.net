@@ -20,6 +20,6 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   def _find_addon_plans
     subscriptions = apply_scopes(BillableItem.addon_plans.where(site_id: @site.id).page(params[:page]))
-    @addon_plans = AddonPlan.includes(:addon).find(subscriptions.pluck(:item_id))
+    @addon_plans = AddonPlan.includes(:addon).find(*subscriptions.pluck(:item_id))
   end
 end
