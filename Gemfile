@@ -49,7 +49,6 @@ gem 'oauth'
 gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4 support
 
 # Internals
-gem 'dalli'
 gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
@@ -142,6 +141,8 @@ group :staging, :production do
   gem 'newrelic-redis'
   gem 'newrelic_moped'
   gem 'asset_sync'
+  gem 'memcachier'
+  gem 'dalli'
 end
 
 group :development do
