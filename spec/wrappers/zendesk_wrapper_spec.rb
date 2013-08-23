@@ -43,7 +43,7 @@ describe ZendeskWrapper do
 
         @zd_ticket = described_class.ticket(@zd_ticket.id)
         @zd_ticket.description.should eq 'DESCRIPTION'
-        @zd_ticket.tags.should eq ['email-support']
+        @zd_ticket.tags.map(&:name).should eq ['email-support']
         @zd_ticket.requester.name.should eq 'Remy'
         @zd_ticket.requester.email.should eq 'user@example.com'
       end
@@ -54,9 +54,9 @@ describe ZendeskWrapper do
 
       before do
         @foo = fixture_file('foo.jpg', 'wb') { |f| f.write 'foo' }
-        @foo.stub(:original_filename, 'foo.jpg')
+        @foo.stub(:original_filename) { 'foo.jpg' }
         @bar = fixture_file('bar.jpg', 'wb') { |f| f.write 'bar' }
-        @bar.stub(:original_filename, 'bar.jpg')
+        @bar.stub(:original_filename) { 'bar.jpg' }
       end
 
       it 'returns the created ticket' do
