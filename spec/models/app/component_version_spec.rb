@@ -19,7 +19,7 @@ describe App::ComponentVersion, :fog_mock do
     its(:name)         { should eq component.name }
     its(:version)      { should eq '2.0.0' }
     its(:zip)          { should be_present }
-    its(:dependencies) { should eq({"app" => "1.0.0"}) }
+    its(:dependencies) { should eq({ app: "1.0.0" }) }
 
     it { should be_valid }
 
@@ -45,7 +45,7 @@ describe App::ComponentVersion, :fog_mock do
     context "with an same existing component_version" do
       before { component_version }
 
-      it { should validate_uniqueness_of(:version).all_to(:app_component_id) }
+      it { should validate_uniqueness_of(:version).scoped_to(:app_component_id) }
     end
   end
 
