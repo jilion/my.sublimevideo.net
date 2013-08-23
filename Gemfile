@@ -44,7 +44,6 @@ gem 'oauth'
 gem 'oauth-plugin'
 
 # Internals
-gem 'dalli'
 gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand' # Mongoid support for Sidekiq
@@ -137,6 +136,8 @@ group :staging, :production do
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
+  gem 'memcachier'
+  gem 'dalli'
 end
 
 group :development do
