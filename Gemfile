@@ -4,11 +4,9 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 ruby '2.0.0'
 
 gem 'rails', '4.0.0'
-# gem 'rails', github: 'rails/rails', branch: '4-0-stable'
 
 # until https://github.com/rails/sprockets-rails/pull/77 is merged
 gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
-# gem 'sprockets-rails', github: 'rails/sprockets-rails' # Need > 2.0.0
 
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
@@ -97,7 +95,8 @@ gem 'createsend' # Campaign Monitor
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
-gem 'librato-rails', github: 'librato/librato-rails'
+# gem 'librato-rails', github: 'librato/librato-rails'
+gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
 gem 'rack-status'
 
 # Highest version change the query_values method behavior
@@ -106,7 +105,7 @@ gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 # gem 'addressabler'
 
 # Stats
-# gem 'crack'
+gem 'crack'
 gem 'pusher', github: 'jilion/pusher-gem'
 gem 'redis'
 
