@@ -4,7 +4,11 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 ruby '2.0.0'
 
 gem 'rails', '4.0.0'
-gem 'sprockets-rails', github: 'rails/sprockets-rails' # Need > 2.0.0
+# gem 'rails', github: 'rails/rails', branch: '4-0-stable'
+
+# until https://github.com/rails/sprockets-rails/pull/77 is merged
+gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
+# gem 'sprockets-rails', github: 'rails/sprockets-rails' # Need > 2.0.0
 
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
@@ -143,6 +147,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
+  gem 'launchy'
   gem 'quiet_assets'
   gem 'bullet'
 
@@ -151,7 +156,6 @@ group :development do
   gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
 
   # gem 'em-http-request' # async pusher in populate
-  # gem 'launchy'
   # gem 'letter_opener'
 end
 

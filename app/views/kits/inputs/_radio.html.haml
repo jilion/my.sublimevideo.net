@@ -1,3 +1,3 @@
 .radio_wrap
-  = radio_button_tag kit_setting_input_field_name(params), choice, params[:value] == choice, id: kit_setting_input_field_id(params, "_#{choice}"), disabled: params[:disabled], data: kit_setting_data(params)
-  = label_tag kit_setting_input_field_id(params, "_#{choice}"), kit_setting_radio_label(params, choice)
+  = radio_button_tag kit_setting_input_field_name(parameters), choice, parameters[:value] == choice, id: kit_setting_input_field_id(parameters, "_#{choice}"), disabled: parameters[:disabled], data: kit_setting_data(parameters)
+  = label_tag kit_setting_input_field_id(parameters, "_#{choice}"), kit_setting_radio_label(parameters, choice)

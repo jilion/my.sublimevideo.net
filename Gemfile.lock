@@ -47,6 +47,15 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: https://github.com/johnmcdowall/sprockets-rails.git
+  revision: cb9bee46b2d5808d160842d5da5d837e26524446
+  specs:
+    sprockets-rails (2.0.0)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      sprockets (~> 2.8)
+
+GIT
   remote: https://github.com/kolodovskyy/kaminari.git
   revision: 3047786adf33242d3a964b50491e584af52ce945
   specs:
@@ -101,15 +110,6 @@ GIT
   specs:
     i18n-extra_translations (0.0.5)
       i18n (~> 0.6)
-
-GIT
-  remote: https://github.com/rails/sprockets-rails.git
-  revision: 18026870bb5fde945802674fb5b88be976ff6b94
-  specs:
-    sprockets-rails (2.0.0)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      sprockets (~> 2.8)
 
 GIT
   remote: https://github.com/rymai/active_merchant.git
@@ -374,6 +374,8 @@ GEM
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
+    launchy (2.1.0)
+      addressable (~> 2.2.6)
     librato-metrics (1.1.0)
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
@@ -671,6 +673,7 @@ DEPENDENCIES
   i18n-extra_translations!
   kaminari!
   kiqstand!
+  launchy
   librato-rails!
   libxml-ruby
   liquid

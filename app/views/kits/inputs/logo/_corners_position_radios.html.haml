@@ -1,14 +1,14 @@
 .entry
-  %h5= kit_setting_title(params)
+  %h5= kit_setting_title(parameters)
 
   %table#logo_position
     %tr
       - %w[top-left top-right].each do |choice|
         %td
-          = render 'kits/inputs/radio', kit: kit, params: params, choice: choice
+          = render 'kits/inputs/radio', kit: kit, parameters: parameters, choice: choice
     %tr
       - %w[bottom-left bottom-right].each do |choice|
         %td
-          = render 'kits/inputs/radio', kit: kit, params: params.merge(label_on_left: true), choice: choice
+          = render 'kits/inputs/radio', kit: kit, parameters: parameters.merge(label_on_left: true), choice: choice
 
 .spacer
