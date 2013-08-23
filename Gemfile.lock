@@ -56,11 +56,10 @@ GIT
 
 GIT
   remote: https://github.com/librato/librato-rails.git
-  revision: 82a95ae54f2ed990135a7b655293107384da2796
-  branch: feature/rack_first
+  revision: 0105ff4c7f3eb4eb5f901c222db47cfccdb26fd0
   specs:
-    librato-rails (0.8.1)
-      librato-metrics (~> 1.0.2)
+    librato-rails (0.9.0)
+      librato-rack (~> 0.4.1)
       rails (>= 3.0)
 
 GIT
@@ -97,8 +96,15 @@ GIT
       tzinfo (~> 0.3.22)
 
 GIT
+  remote: https://github.com/nicoolas25/i18n-extra_translations.git
+  revision: 88aa85da8e535aed2c01dd37291bfef1402cdf2e
+  specs:
+    i18n-extra_translations (0.0.5)
+      i18n (~> 0.6)
+
+GIT
   remote: https://github.com/rails/sprockets-rails.git
-  revision: cc4387db9aa57e0835bc017356f95d25bad08d93
+  revision: 18026870bb5fde945802674fb5b88be976ff6b94
   specs:
     sprockets-rails (2.0.0)
       actionpack (>= 3.0)
@@ -121,9 +127,9 @@ GIT
 
 GIT
   remote: https://github.com/scambra/devise_invitable.git
-  revision: beb17795e7b04aebef80a009108311f4c6fb2624
+  revision: 1610c515ff2f0e7ffa12d4e9413877524c0f2e45
   specs:
-    devise_invitable (1.2.0)
+    devise_invitable (1.2.1)
       actionmailer (>= 3.2.6, < 5)
       devise (~> 3.0.0)
 
@@ -244,7 +250,6 @@ GEM
       fssm (>= 0.2.7)
       sass (~> 3.1)
     connection_pool (1.1.0)
-    cookiejar (0.3.0)
     countries (0.9.2)
       currencies (>= 0.4.0)
     country_select (1.2.0)
@@ -272,23 +277,10 @@ GEM
     dotenv (0.8.0)
     dotenv-rails (0.8.0)
       dotenv (= 0.8.0)
-    eco (1.0.0)
-      coffee-script
-      eco-source
-      execjs
-    eco-source (1.1.0.rc.1)
     edge_cast (1.0.0)
       activesupport (~> 4.0)
       faraday (~> 0.8)
       faraday_middleware (~> 0.8)
-    em-http-request (1.0.3)
-      addressable (>= 2.2.3)
-      cookiejar
-      em-socksify
-      eventmachine (>= 1.0.0.beta.4)
-      http_parser.rb (>= 0.5.3)
-    em-socksify (0.3.0)
-      eventmachine (>= 1.0.0.beta.4)
     em-websocket (0.5.0)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.5.3)
@@ -377,15 +369,17 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.0)
-    jsonpath (0.5.3)
+    jsonpath (0.5.4)
       multi_json
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
-    librato-metrics (1.0.4)
+    librato-metrics (1.1.0)
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
       multi_json
+    librato-rack (0.4.1)
+      librato-metrics (~> 1.1.0)
     libxml-ruby (2.2.2)
     liquid (2.5.1)
     listen (1.3.0)
@@ -647,7 +641,6 @@ DEPENDENCIES
   compass-rails!
   countries
   country_select
-  crack
   createsend
   dalli
   database_cleaner
@@ -656,9 +649,7 @@ DEPENDENCIES
   devise_invitable!
   display_case
   dotenv-rails
-  eco
   edge_cast
-  em-http-request
   excon
   execjs
   factory_girl
@@ -677,6 +668,7 @@ DEPENDENCIES
   has_scope
   honeybadger
   hpricot
+  i18n-extra_translations!
   kaminari!
   kiqstand!
   librato-rails!

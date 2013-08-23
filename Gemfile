@@ -94,8 +94,7 @@ gem 'createsend' # Campaign Monitor
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
-gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
-gem 'lograge'
+gem 'librato-rails', github: 'librato/librato-rails'
 gem 'rack-status'
 
 # Highest version change the query_values method behavior
@@ -104,7 +103,7 @@ gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 # gem 'addressabler'
 
 # Stats
-gem 'crack'
+# gem 'crack'
 gem 'pusher', github: 'jilion/pusher-gem'
 gem 'redis'
 
@@ -116,7 +115,7 @@ gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
-gem 'eco'
+# gem 'eco'
 gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
@@ -131,9 +130,10 @@ group :production do
 end
 
 group :staging, :production do
+  gem 'lograge'
   gem 'rack-cache'
   gem 'rack-ssl-enforcer'
-  gem 'unicorn'
+  gem 'unicorn', require: false
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
@@ -143,15 +143,16 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  # gem 'launchy'
-  # gem 'letter_opener'
-  gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
   gem 'bullet'
 
   gem 'better_errors'
   gem 'binding_of_caller'
-  # gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+  gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+
+  # gem 'em-http-request' # async pusher in populate
+  # gem 'launchy'
+  # gem 'letter_opener'
 end
 
 group :development, :test do
@@ -161,7 +162,6 @@ group :development, :test do
 
   # Javascript test
   gem 'teaspoon'
-  gem 'guard-teaspoon'
 
   # Rails routes view
   gem 'sextant'
@@ -172,6 +172,7 @@ group :development, :test do
   gem 'guard-livereload', require: false
   gem 'guard-rspec', require: false
   gem 'guard-shell', require: false
+  gem 'guard-teaspoon', require: false
 end
 
 group :test do
