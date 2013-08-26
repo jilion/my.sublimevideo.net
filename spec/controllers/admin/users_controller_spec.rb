@@ -13,14 +13,14 @@ describe Admin::UsersController do
       it "responds with redirect to successful PUT :update" do
         mock_site.stub(:update) { true }
 
-        put :update, id: '1', user: {}
+        put :update, id: '1', user: { foo: 'bar' }
         response.should redirect_to(edit_admin_user_url(mock_user))
       end
 
       it "responds with success to failing PUT :update" do
         mock_site.stub(:update) { false }
 
-        put :update, id: '1', user: {}
+        put :update, id: '1', user: { foo: 'bar' }
         response.should_not be_success
         response.should redirect_to(edit_admin_user_url(mock_user))
       end
