@@ -8,8 +8,8 @@ describe "Admin::App::Components JSON actions" do
     admin
   }
   let(:zip) { fixture_file_upload(Rails.root.join('spec/fixtures', "app/e.zip")) }
-  let(:component) { App::Component.create({ name: 'app', token: App::Component::APP_TOKEN }, as: :admin) }
-  let(:component_version) { App::ComponentVersion.create({ token: component.token, version: '2.0.0', zip: fixture_file("app/e.zip") }, as: :admin) }
+  let(:component) { App::Component.create(name: 'app', token: App::Component::APP_TOKEN) }
+  let(:component_version) { App::ComponentVersion.create(token: component.token, version: '2.0.0', zip: fixture_file("app/e.zip")) }
   let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev' } }
 
   describe "Auhtentication" do

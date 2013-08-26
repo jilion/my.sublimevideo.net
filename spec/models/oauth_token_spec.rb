@@ -26,10 +26,6 @@ describe OauthToken do
   describe "Validations" do
     subject { create(:oauth_token) }
 
-    [].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:client_application) }
     it { should validate_presence_of(:token) }
   end

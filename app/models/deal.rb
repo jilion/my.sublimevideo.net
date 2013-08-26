@@ -1,7 +1,4 @@
 class Deal < ActiveRecord::Base
-
-  attr_accessible :token, :name, :description, :kind, :value, :availability_scope, :started_at, :ended_at
-
   has_many :deal_activations
   has_many :invoice_items
 

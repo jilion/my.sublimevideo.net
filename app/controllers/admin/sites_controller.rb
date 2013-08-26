@@ -8,7 +8,7 @@ class Admin::SitesController < Admin::AdminController
     end
   end
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :load_site, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
+  before_filter :_set_site, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -47,7 +47,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     params[:site].delete(:accessible_stage) unless has_role?('god')
-    @site.update_attributes(params[:site], without_protection: true)
+    @site.update(_site_params)
 
     _respond_for_site_with_notice('Site has been successfully updated.')
   end
@@ -116,8 +116,12 @@ class Admin::SitesController < Admin::AdminController
     end
   end
 
-  def load_site
+  def _set_site
     @site = Site.where(token: params[:id]).first!
+  end
+
+  def _site_params
+    params.require(:site).permit!
   end
 
   def _update_design_subscription(design)

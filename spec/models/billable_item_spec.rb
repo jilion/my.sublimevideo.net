@@ -10,10 +10,6 @@ describe BillableItem do
 
   describe 'Validations' do
     [:item, :site, :state].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
-    [:item, :site, :state].each do |attr|
       it { should validate_presence_of(attr) }
     end
 
@@ -58,7 +54,7 @@ describe BillableItem do
         it "create a BillableItemActivity record with the #{new_state} state" do
         billable_item # eager load!
           expect {
-            billable_item.update_attributes({ state: new_state }, without_protection: true)
+            billable_item.update(state: new_state)
           }.to change(BillableItemActivity, :count).by(1)
           last_billable_item_activity = BillableItemActivity.last
 

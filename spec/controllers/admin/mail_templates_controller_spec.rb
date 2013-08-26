@@ -41,15 +41,15 @@ describe Admin::MailTemplatesController do
     end
 
     describe "PUT :update" do
-      it "responds with redirect when update_attributes succeed" do
-        mock_mail_template.stub(:update_attributes) { true }
+      it "responds with redirect when update succeed" do
+        mock_mail_template.stub(:update) { true }
 
         put :update, id: '1', mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
         response.should redirect_to(edit_admin_mail_template_path(mock_mail_template.id))
       end
 
-      it "responds with success when update_attributes fails" do
-        mock_mail_template.stub(:update_attributes) { false }
+      it "responds with success when update fails" do
+        mock_mail_template.stub(:update) { false }
         mock_mail_template.stub(:errors) { ["error"] }
 
         put :update, id: '1', mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }

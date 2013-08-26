@@ -1,7 +1,4 @@
 class DealActivation < ActiveRecord::Base
-
-  attr_accessible :deal_id, :user_id
-
   belongs_to :deal
   belongs_to :user
 

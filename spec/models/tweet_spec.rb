@@ -69,10 +69,6 @@ describe Tweet do
   end
 
   describe "Validations" do
-    [:tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:tweet_id) }
     it { should validate_presence_of(:from_user_id) }

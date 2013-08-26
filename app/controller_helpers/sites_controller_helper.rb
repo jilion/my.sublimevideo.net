@@ -15,13 +15,13 @@ module SitesControllerHelper
     end
   end
 
-  def find_sites
+  def _set_sites
     @sites ||= current_user.sites.not_archived
   end
 
-  def find_sites_or_redirect_to_new_site
+  def _set_sites_or_redirect_to_new_site
     if user_signed_in?
-      find_sites
+      _set_sites
 
       if @sites.empty?
         redirect_to(assistant_new_site_path, flash: flash)
@@ -31,7 +31,7 @@ module SitesControllerHelper
     end
   end
 
-  def load_site
+  def _set_site
     return if public_page?
 
     @site = if demo_site?

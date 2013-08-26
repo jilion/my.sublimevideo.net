@@ -11,9 +11,6 @@ gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
-# Old stuff from Rails 3
-gem 'protected_attributes' # TODO migrate to strong_parameters
-
 # Databases
 gem 'pg'
 gem 'mongoid', github: 'mongoid/mongoid' # Rails 4 support

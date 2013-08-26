@@ -1,7 +1,4 @@
 class MailTemplate < ActiveRecord::Base
-
-  attr_accessible :title, :subject, :body, :archived_at
-
   has_many :logs, class_name: 'MailLog', foreign_key: 'template_id'
 
   validates :title,   presence: true, uniqueness: true

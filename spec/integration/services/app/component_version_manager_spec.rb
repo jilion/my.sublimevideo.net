@@ -9,17 +9,18 @@ describe App::ComponentVersionManager, :addons do
     site
   }
   let(:component) { site.components.first }
-  let(:component_version) { component.versions.build({ token: component.token, version: '2.0.0', zip: zip }, as: :admin) }
+  let(:component_version) { component.versions.build(token: component.token, version: '2.0.0', zip: zip) }
 
   before do
-    component.versions.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin)
+    component.versions.create(token: component.token, version: '1.0.0', zip: zip)
   end
 
   describe "#create" do
+    before { Sidekiq::Worker.clear_all }
+
     it "updates site loader" do
       component.versions.last.version.should_not eq component_version.version
 
-      Sidekiq::Worker.clear_all
       App::ComponentVersionManager.new(component_version).create
       Sidekiq::Worker.drain_all
 

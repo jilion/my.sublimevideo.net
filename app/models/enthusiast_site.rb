@@ -1,7 +1,4 @@
 class EnthusiastSite < ActiveRecord::Base
-
-  attr_accessible :hostname
-
   belongs_to :enthusiast
 
   validates :hostname, presence: true, hostname: true

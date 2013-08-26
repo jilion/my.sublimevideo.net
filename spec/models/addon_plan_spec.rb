@@ -15,10 +15,6 @@ describe AddonPlan do
   end
 
   describe 'Validations' do
-    [:addon, :name, :price, :availability, :required_stage, :stable_at].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
     it { should ensure_inclusion_of(:required_stage).in_array(::Stage.stages) }
     it { should ensure_inclusion_of(:availability).in_array(%w[hidden public custom]) }
 

@@ -5,8 +5,6 @@ class Subscription < ActiveRecord::Base
   ACTIVE_STATES   = %w[beta trial subscribed sponsored] unless defined? ACTIVE_STATES
   STATES          = INACTIVE_STATES + ACTIVE_STATES unless defined? STATES
 
-  attr_accessible :item, :site, :state, as: :admin
-
   belongs_to :site
   belongs_to :item, polymorphic: true
 

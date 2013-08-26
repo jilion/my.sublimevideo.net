@@ -39,9 +39,6 @@ MySublimeVideo::Application.configure do
   # number of complex assets.
   config.assets.debug = true
 
-  # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
-
   # config.log_tags = [:uuid, :remote_ip]
 
   config.after_initialize do

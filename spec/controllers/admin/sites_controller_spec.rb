@@ -28,16 +28,16 @@ describe Admin::SitesController do
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'mode' => 'beta', 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+        mock_site.should_receive(:update).with('mode' => 'beta', 'tag_list' => ['foo']) { true }
 
         put :update, id: 'abc123', site: { mode: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds with success to failing PUT :update" do
-        mock_site.should_receive(:update_attributes) { false }
+        mock_site.should_receive(:update) { false }
 
-        put :update, id: 'abc123', site: {}
+        put :update, id: 'abc123', site: { mode: 'beta' }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end
@@ -62,16 +62,16 @@ describe Admin::SitesController do
       before { Site.stub_chain(:where, :first!) { mock_site } }
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+        mock_site.should_receive(:update).with('tag_list' => ['foo']) { true }
 
         put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds without success to failing PUT :update" do
-        mock_site.should_receive(:update_attributes) { false }
+        mock_site.should_receive(:update) { false }
 
-        put :update, id: 'abc123', site: {}
+        put :update, id: 'abc123', site: { foo: 'bar' }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end

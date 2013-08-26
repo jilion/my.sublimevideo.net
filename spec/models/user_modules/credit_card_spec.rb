@@ -107,7 +107,7 @@ describe UserModules::CreditCard do
       let(:user) {
         user = create(:user)
         user = User.find(user.id)
-        user.assign_attributes(valid_cc_attributes_master)
+        user.attributes = valid_cc_attributes_master
         user.prepare_pending_credit_card
         user
       }

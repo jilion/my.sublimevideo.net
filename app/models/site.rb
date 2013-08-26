@@ -22,8 +22,6 @@ class Site < ActiveRecord::Base
 
   attr_accessor :last_transaction, :remote_ip
 
-  attr_accessible :hostname, :extra_hostnames, :staging_hostnames, :dev_hostnames, :path, :wildcard, :remote_ip, :default_kit_id
-
   serialize :last_30_days_billable_video_views_array, Array
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')

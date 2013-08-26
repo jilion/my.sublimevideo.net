@@ -3,8 +3,6 @@ require 'searchable'
 class Enthusiast < ActiveRecord::Base
   include Searchable
 
-  attr_accessible :email, :free_text, :interested_in_beta, :sites_attributes, :remote_ip, :starred, :invited_at
-
   has_one :user
 
   has_many :sites, class_name: 'EnthusiastSite', dependent: :destroy

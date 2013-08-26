@@ -19,7 +19,7 @@ class Admin
 
       # POST /app/components
       def create
-        @component = ::App::Component.new(params[:component], as: :admin)
+        @component = ::App::Component.new(_component_params)
         @component.save
         respond_with @component, location: [:admin, @component]
       end
@@ -27,7 +27,7 @@ class Admin
       # PUT /app/components/:id (token)
       def update
         @component = ::App::Component.where(token: params[:id]).first!
-        App::Component.update_attributes(params[:component], as: :admin)
+        App::Component.update(_component_params)
         respond_with @component, location: [:admin, @component]
       end
 
@@ -36,6 +36,12 @@ class Admin
         @component = ::App::Component.where(token: params[:id]).first!
         @component.destroy
         respond_with @component, location: [:admin, :app, :components]
+      end
+
+    private
+
+      def _component_params
+        params.require(:component).permit!
       end
     end
   end

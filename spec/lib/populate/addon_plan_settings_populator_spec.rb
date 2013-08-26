@@ -19,7 +19,7 @@ describe AddonPlanSettingsPopulator do
 
         it 'creates the record in DB' do
           template = YAML.load_file(described_class::SETTINGS_DIR.join("video_player_template.yml")).symbolize_keys
-          AddonPlanSettings.should_receive(:create).with(base_attrs.merge(template: template), without_protection: true)
+          AddonPlanSettings.should_receive(:create).with(base_attrs.merge(template: template))
 
           populator.execute
         end
@@ -30,7 +30,7 @@ describe AddonPlanSettingsPopulator do
 
         it 'creates the record in DB' do
           template = YAML.load_file(described_class::SETTINGS_DIR.join("lightbox_without_close_button_template.yml")).symbolize_keys
-          AddonPlanSettings.should_receive(:create).with(base_attrs.merge(template: template), without_protection: true)
+          AddonPlanSettings.should_receive(:create).with(base_attrs.merge(template: template))
 
           populator.execute
         end
@@ -41,7 +41,7 @@ describe AddonPlanSettingsPopulator do
       let(:base_attrs) { { addon_plan: double(addon_name: 'foo', name: 'bar'), plugin: double } }
 
       it 'creates the record in DB and set the templat to {}' do
-        AddonPlanSettings.should_receive(:create).with(base_attrs.merge(template: {}), without_protection: true)
+        AddonPlanSettings.should_receive(:create).with(base_attrs.merge(template: {}))
 
         populator.execute
       end

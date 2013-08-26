@@ -2,8 +2,8 @@ class Admin::MailTemplatesController < Admin::AdminController
   respond_to :html
 
   before_filter { |controller| require_role?('god') }
-  before_filter :_find_first_user, only: [:edit, :preview]
-  before_filter :_find_mail_template, only: [:edit, :update, :preview]
+  before_filter :_set_user, only: [:edit, :preview]
+  before_filter :_set_mail_template, only: [:edit, :update, :preview]
 
   # GET /mails/templates/new
   def new
@@ -12,7 +12,7 @@ class Admin::MailTemplatesController < Admin::AdminController
 
   # POST /mails/templates
   def create
-    @mail_template = MailTemplate.new(params[:mail_template])
+    @mail_template = MailTemplate.new(_mail_template_params)
     @mail_template.save
     respond_with(@mail_template, location: [:admin, :mails])
   end
@@ -24,7 +24,7 @@ class Admin::MailTemplatesController < Admin::AdminController
 
   # PUT /mails/templates/:id
   def update
-    @mail_template.update_attributes(params[:mail_template])
+    @mail_template.update(_mail_template_params)
     respond_with(@mail_template, location: [:edit,  :admin, @mail_template])
   end
 
@@ -35,14 +35,18 @@ class Admin::MailTemplatesController < Admin::AdminController
 
   private
 
-  def _find_first_user
+  def _set_user
     @user = User.first
   end
 
-  def _find_mail_template
+  def _set_mail_template
     @mail_template = MailTemplate.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to [:new, :admin, :mail], alert: 'Please select an email template!'
+  end
+
+  def _mail_template_params
+    params.require(:mail_template).permit!
   end
 
 end

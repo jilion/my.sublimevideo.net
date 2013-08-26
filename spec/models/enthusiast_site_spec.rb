@@ -15,13 +15,9 @@ describe EnthusiastSite do
   describe "Validations" do
     subject { create(:enthusiast_site) }
 
-    [:hostname].each do |attribute|
-      it { should allow_mass_assignment_of(attribute) }
-    end
-
     it { should validate_presence_of(:hostname) }
 
-    specify { EnthusiastSite.validators_on(:hostname).map(&:class).should == [ActiveModel::Validations::PresenceValidator, HostnameValidator] }
+    specify { EnthusiastSite.validators_on(:hostname).map(&:class).should == [ActiveRecord::Validations::PresenceValidator, HostnameValidator] }
   end
 
 end

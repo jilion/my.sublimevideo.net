@@ -5,7 +5,7 @@ describe App::Component, :fog_mock do
     name: 'app',
     token: App::Component::APP_TOKEN
   } }
-  let(:component) { App::Component.create(attributes, as: :admin) }
+  let(:component) { App::Component.create(attributes) }
 
   describe "Associations" do
     it { should have_many(:versions).dependent(:destroy) }
@@ -37,10 +37,6 @@ describe App::Component, :fog_mock do
 
   describe "Validations" do
     [:name, :token].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
-    [:name, :token].each do |attr|
       it { should validate_presence_of(attr) }
     end
 
@@ -62,8 +58,8 @@ describe App::Component, :fog_mock do
 
   it "should have many versions" do
     zip = fixture_file('app/e.zip')
-    component_version1 = App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin)
-    component_version2 = App::ComponentVersion.create({ token: component.token, version: '2.0.0', zip: zip }, as: :admin)
+    component_version1 = App::ComponentVersion.create(token: component.token, version: '1.0.0', zip: zip)
+    component_version2 = App::ComponentVersion.create(token: component.token, version: '2.0.0', zip: zip)
 
     # FUCK THIS FUCKING TEST!!!!!!!!!!
     component.reload.versions.should eq [component_version2, component_version1]
@@ -71,9 +67,9 @@ describe App::Component, :fog_mock do
 
   describe '#versions_for_stage' do
    let!(:zip) { fixture_file('app/e.zip') }
-   let!(:component_version_alpha)  { App::ComponentVersion.create({ token: component.token, version: '1.0.0-alpha', zip: zip }, as: :admin) }
-   let!(:component_version_beta)   { App::ComponentVersion.create({ token: component.token, version: '1.0.0-beta', zip: zip }, as: :admin) }
-   let!(:component_version_stable) { App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin) }
+   let!(:component_version_alpha)  { App::ComponentVersion.create(token: component.token, version: '1.0.0-alpha', zip: zip) }
+   let!(:component_version_beta)   { App::ComponentVersion.create(token: component.token, version: '1.0.0-beta', zip: zip) }
+   let!(:component_version_stable) { App::ComponentVersion.create(token: component.token, version: '1.0.0', zip: zip) }
 
     context 'aplha stage given' do
       it 'returns alpha version only' do

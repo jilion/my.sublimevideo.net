@@ -1,7 +1,5 @@
 class Admin::Admins::RegistrationsController < Devise::RegistrationsController
-
   helper :all
-
   before_filter :authenticate_admin!
   layout 'admin'
 

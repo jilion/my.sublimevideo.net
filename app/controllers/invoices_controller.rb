@@ -1,7 +1,7 @@
 class InvoicesController < ApplicationController
   before_filter :redirect_suspended_user, only: [:index]
-  before_filter :find_sites_or_redirect_to_new_site, only: [:index]
-  before_filter :load_site, only: [:index, :retry]
+  before_filter :_set_sites_or_redirect_to_new_site, only: [:index]
+  before_filter :_set_site, only: [:index, :retry]
 
   layout 'application' # needed because otherwise the 'invoices' layout is automatically used
 
@@ -23,7 +23,7 @@ class InvoicesController < ApplicationController
   def retry
     @invoices = @site.invoices.open_or_failed
 
-    retry_invoices(@invoices)
+    _retry_invoices(@invoices)
 
     respond_with(@invoices) do |format|
       format.html { redirect_to site_invoices_url(site_id: @site.to_param) }
@@ -34,7 +34,7 @@ class InvoicesController < ApplicationController
   def retry_all
     @invoices = current_user.invoices.open_or_failed
 
-    retry_invoices(@invoices)
+    _retry_invoices(@invoices)
 
     respond_with(@invoices) do |format|
       format.html { redirect_to sites_url }
@@ -43,7 +43,7 @@ class InvoicesController < ApplicationController
 
   private
 
-  def retry_invoices(invoices)
+  def _retry_invoices(invoices)
     if invoices.present?
       transaction = Transaction.charge_by_invoice_ids(invoices.map(&:id))
       if transaction.paid?

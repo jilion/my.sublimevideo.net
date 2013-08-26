@@ -1,7 +1,5 @@
 class Admin::Admins::SessionsController < Devise::SessionsController
-
   helper :all
-
   layout 'admin'
 
   # GET /resource/sign_in

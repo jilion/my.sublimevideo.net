@@ -1,6 +1,6 @@
 class ClientApplicationsController < ApplicationController
-  before_filter :_team_accessible_only
-  before_filter :_find_client_application, only: [:show, :edit, :update, :destroy]
+  before_filter :_restrict_to_jilion_team
+  before_filter :_set_client_application, only: [:show, :edit, :update, :destroy]
 
   # GET /account/applications
   def index
@@ -15,7 +15,7 @@ class ClientApplicationsController < ApplicationController
 
   # POST /account/applications
   def create
-    @application = current_user.client_applications.build(params[:client_application])
+    @application = current_user.client_applications.build(_client_application_params)
     respond_with(@application) do |format|
       if @application.save
         format.html { redirect_to client_application_url(@application), id: @application.id, notice: 'Application registered successfully.' }
@@ -34,7 +34,7 @@ class ClientApplicationsController < ApplicationController
 
   # PUT /account/applications/:id
   def update
-    @application.update_attributes(params[:client_application])
+    @application.update(_client_application_params)
     respond_with(@application)
   end
 
@@ -46,15 +46,16 @@ class ClientApplicationsController < ApplicationController
 
   private
 
-  def _team_accessible_only
+  def _client_application_params
+    params.require(:client_application).permit(:name, :url, :callback_url, :support_url)
+  end
+
+  def _restrict_to_jilion_team
     redirect_to [:edit, :user] unless current_user.email =~ /@jilion.com$/
   end
 
-  def _find_client_application
-    unless @application = current_user.client_applications.find(params[:id])
-      flash.now[:error] = 'Wrong application id'
-      raise ActiveRecord::RecordNotFound
-    end
+  def _set_client_application
+    @application = current_user.client_applications.find(params[:id])
   end
 
 end

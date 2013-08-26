@@ -1,7 +1,4 @@
 class MailLog < ActiveRecord::Base
-
-  attr_accessible :template_id, :admin_id, :criteria, :user_ids
-
   serialize :criteria
   serialize :user_ids
   serialize :snapshot

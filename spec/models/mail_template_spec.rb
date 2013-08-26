@@ -20,7 +20,6 @@ describe MailTemplate do
 
   describe "Validations" do
     [:title, :subject, :body].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
       it { should validate_presence_of(attr) }
     end
 

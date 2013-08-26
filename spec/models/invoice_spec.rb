@@ -31,10 +31,6 @@ describe Invoice, :addons do
   describe "Validations" do
     subject { create(:invoice) }
 
-    [:site, :renew].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:site) }
     it { should validate_presence_of(:invoice_items_amount) }
     it { should validate_presence_of(:vat_rate) }
@@ -147,7 +143,7 @@ describe Invoice, :addons do
           %w[open failed].each do |state|
             context "from #{state}" do
               before do
-                invoice.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
+                invoice.reload.update(state: state, amount: 0)
                 invoice.user.should be_active
               end
 
@@ -164,7 +160,7 @@ describe Invoice, :addons do
           %w[open failed].each do |state|
             context "from #{state}" do
               before do
-                invoice.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
+                invoice.reload.update(state: state, amount: 0)
                 invoice.user.update_attribute(:state, 'suspended')
                 invoice.user.should be_suspended
               end

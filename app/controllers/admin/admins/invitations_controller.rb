@@ -1,7 +1,5 @@
 class Admin::Admins::InvitationsController < Devise::InvitationsController
-
   helper :all
-
   skip_before_filter :authenticate_user!
   layout 'admin'
 

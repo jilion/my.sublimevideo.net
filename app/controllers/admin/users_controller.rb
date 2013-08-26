@@ -2,8 +2,8 @@ class Admin::UsersController < Admin::AdminController
   respond_to :html, except: [:stats, :invoices, :support_requests]
   respond_to :js, only: [:index, :stats, :invoices, :support_requests]
 
-  before_filter :set_default_scopes, only: [:index]
-  before_filter :_find_user, only: [:update, :destroy, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
+  before_filter :_set_default_scopes, only: [:index]
+  before_filter :_set_user, only: [:update, :destroy, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
@@ -41,7 +41,7 @@ class Admin::UsersController < Admin::AdminController
 
   # PUT /users/:id
   def update
-    @user.update_attributes(params[:user], without_protection: true)
+    @user.update(_user_params)
 
     respond_with(@user, notice: 'User has been successfully updated.') do |format|
       format.js   { render 'admin/shared/flash_update' }
@@ -97,13 +97,17 @@ class Admin::UsersController < Admin::AdminController
 
   private
 
-  def set_default_scopes
+  def _set_default_scopes
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
     params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
-  def _find_user
+  def _set_user
     @user = User.find(params[:id])
+  end
+
+  def _user_params
+    params.require(:user).permit!
   end
 
 end

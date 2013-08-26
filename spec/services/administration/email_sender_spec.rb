@@ -23,7 +23,7 @@ describe Administration::EmailSender do
     it "should keep a snapshot that doesn't change when the original template is modified" do
       subject
       old_snapshot = mail_template.snapshotize
-      mail_template.reload.update_attributes(title: "foo", subject: "bar", body: "John Doe")
+      mail_template.reload.update(title: "foo", subject: "bar", body: "John Doe")
 
       subject.snapshot.should_not eq mail_template.snapshotize
       subject.snapshot.should eq old_snapshot

@@ -10,8 +10,8 @@ class UsersController < Devise::RegistrationsController
   respond_to :js, only: [:hide_notice]
 
   prepend_before_filter :authenticate_scope!, only: [:edit, :update, :more_info, :hide_notice]
-  before_filter :configure_permitted_parameters
   before_filter :redirect_suspended_user
+  before_filter :_configure_permitted_parameters
 
   skip_before_filter :verify_authenticity_token, only: [:hide_notice]
   skip_around_filter :destroy_if_previously_invited # Avoid DeviseInvitable shit
@@ -43,7 +43,7 @@ class UsersController < Devise::RegistrationsController
     self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
-    successfully_updated = if needs_password?(params)
+    successfully_updated = if _needs_password?(params)
       resource.update_with_password(account_update_params)
     else
       resource.update_without_password(account_update_params)
@@ -86,11 +86,13 @@ class UsersController < Devise::RegistrationsController
 
   private
 
-  def configure_permitted_parameters
+  def _configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
     devise_parameter_sanitizer.for(:account_update) do |u|
-      keys = [:email, :password]
-      keys << :current_password if needs_password?(params)
+      keys = [:email, :password, :name, :newsletter, :confirmation_comment,
+        :postal_code, :country, :use_personal, :use_company, :use_clients,
+        :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]
+      keys << :current_password if _needs_password?(params)
       params[:user].permit(*keys)
     end
   end
@@ -98,7 +100,7 @@ class UsersController < Devise::RegistrationsController
   # check if we need password to update user data
   # ie if password or email was changed
   # extend this as needed
-  def needs_password?(params)
+  def _needs_password?(params)
     params[:user][:password].present?
   end
 

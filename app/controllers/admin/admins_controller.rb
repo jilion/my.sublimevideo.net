@@ -19,7 +19,7 @@ class Admin::AdminsController < Admin::AdminController
 
   # PUT /admins/:id
   def update
-    @admin.update_attributes(params[:admin])
+    @admin.update(params[:admin])
     respond_with(@admin, location: [:admin, :admins])
   end
 

@@ -51,10 +51,6 @@ describe Site, :addons do
   end
 
   describe "Validations" do
-    [:hostname, :dev_hostnames, :staging_hostnames, :extra_hostnames, :path, :wildcard].each do |attribute|
-      it { should allow_mass_assignment_of(attribute) }
-    end
-
     it { should validate_presence_of(:user) }
     it { should ensure_length_of(:path).is_at_most(255) }
 
@@ -131,7 +127,7 @@ describe Site, :addons do
     it "works!" do
       old_hostname = site.hostname
       with_versioning do
-        site.update_attributes(hostname: "bob.com")
+        site.update(hostname: "bob.com")
       end
       site.versions.last.reify.hostname.should eq old_hostname
     end
@@ -165,14 +161,14 @@ describe Site, :addons do
       it "delays LoaderGenerator update if accessible_stage changed" do
         Timecop.freeze do
           LoaderGenerator.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
-          site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
+          site.update(accessible_stage: 'alpha')
         end
       end
 
       it "delays SettingsGenerator update if accessible_stage changed" do
         Timecop.freeze do
           SettingsGenerator.should delay(:update_all!, at: 5.seconds.from_now.to_i).with(site.id)
-          site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
+          site.update(accessible_stage: 'alpha')
         end
       end
     end

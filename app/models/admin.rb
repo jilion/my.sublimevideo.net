@@ -4,8 +4,6 @@ class Admin < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :async
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :roles
-
   serialize :roles, Array
 
   has_many :mail_logs, class_name: 'MailLog'

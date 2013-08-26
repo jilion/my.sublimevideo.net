@@ -43,10 +43,6 @@ describe User do
   end
 
   describe "Validations" do
-    [:name, :email, :postal_code, :country, :confirmation_comment, :remember_me, :password, :billing_email, :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :hidden_notice_ids, :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:email) }
     it { should allow_value('test@example.com').for(:billing_email) }
@@ -88,14 +84,6 @@ describe User do
           user.should be_valid
         end
       end
-    end
-  end
-
-  context "invited" do
-    subject { create(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(validate: false) } }
-
-    it "should not be able to update enthusiast_id" do
-      expect { subject.update_attributes(enthusiast_id: 13) }.to raise_error
     end
   end
 
@@ -146,7 +134,7 @@ describe User do
         subject do
           user = create(:user_no_cc)
           user.reload
-          user.update_attributes(valid_cc_attributes)
+          user.update(valid_cc_attributes)
           user
         end
 

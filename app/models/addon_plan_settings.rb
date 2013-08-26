@@ -1,8 +1,6 @@
 class AddonPlanSettings < ActiveRecord::Base
   serialize :template, Hash
 
-  attr_accessible :addon_plan, :plugin, :template, as: :admin
-
   belongs_to :addon_plan
   belongs_to :plugin, class_name: 'App::Plugin', foreign_key: 'app_plugin_id'
 

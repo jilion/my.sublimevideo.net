@@ -2,8 +2,6 @@ class BillableEntity < ActiveRecord::Base
   self.abstract_class = true
   AVAILABILITIES = %w[hidden public custom]
 
-  attr_accessible :name, :price, :availability, :required_stage, :stable_at, as: :admin
-
   has_many :billable_items, as: :item
   has_many :sites, through: :billable_items
 

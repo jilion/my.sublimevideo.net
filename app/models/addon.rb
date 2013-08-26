@@ -3,8 +3,6 @@ require 'findable_and_cached'
 class Addon < ActiveRecord::Base
   include FindableAndCached
 
-  attr_accessible :name, :design_dependent, :parent_addon, :kind, as: :admin
-
   belongs_to :parent_addon, class_name: 'Addon'
   has_many :plans, class_name: 'AddonPlan'
   has_many :plugins, class_name: 'App::Plugin'

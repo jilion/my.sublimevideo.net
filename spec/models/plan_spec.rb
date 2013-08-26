@@ -31,10 +31,6 @@ describe Plan do
   describe "Validations" do
     subject { create(:plan) }
 
-    [:name, :cycle, :video_views, :price, :support_level].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:video_views) }
     it { should validate_presence_of(:cycle) }
@@ -90,7 +86,6 @@ describe Plan do
       specify { build(:plan, cycle: "month", name: "comet").title.should eq "Comet Plan" }
       specify { build(:plan, cycle: "year", name: "comet").title.should eq "Comet Plan (yearly)" }
     end
-
   end
 
 end

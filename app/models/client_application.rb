@@ -1,6 +1,4 @@
 class ClientApplication < ActiveRecord::Base
-
-  attr_accessible :name, :url, :callback_url, :support_url
   attr_accessor :token_callback_url
 
   belongs_to :user

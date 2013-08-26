@@ -149,7 +149,7 @@ feature "'More info' update" do
 
     @current_user.reload.name.should eq "Bob Doe"
     @current_user.postal_code.should eq ""
-    @current_user.country.should eq "FR"
+    @current_user.country.should eq "fr"
     @current_user.company_name.should eq ""
     @current_user.company_employees.should eq "6-20 employees"
   end

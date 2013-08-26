@@ -283,7 +283,7 @@ class AddonSystemPopulator < Populator
         populator = populator_class.constantize.new(attributes)
         populator.execute
       else
-        klass.create(attributes, without_protection: true)
+        klass.create(attributes)
       end
     end
   end

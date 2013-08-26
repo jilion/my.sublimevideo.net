@@ -8,12 +8,6 @@ describe App::Plugin do
     it { should have_many(:sites).through(:addon) }
   end
 
-  describe "Validations" do
-    [:addon, :design, :component, :token, :name].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-  end
-
   it { build(:app_plugin, design: nil).should be_valid }
 
   describe '.get' do

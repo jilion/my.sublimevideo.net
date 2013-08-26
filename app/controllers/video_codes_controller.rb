@@ -1,6 +1,6 @@
 class VideoCodesController < ApplicationController
   before_filter :redirect_suspended_user, only: [:new]
-  before_filter :find_sites_or_redirect_to_new_site, :redirect_to_first_site, :load_site, only: [:new, :show]
+  before_filter :_set_sites_or_redirect_to_new_site, :_redirect_to_first_site, :_set_site, only: [:new, :show]
   before_filter :require_video_early_access, only: [:show]
 
   # GET /sites/:site_id/publish-video
@@ -20,7 +20,7 @@ class VideoCodesController < ApplicationController
 
   private
 
-  def redirect_to_first_site
+  def _redirect_to_first_site
     unless params[:site_id]
       redirect_to(new_site_video_code_path(current_user.sites.not_archived.by_date.first.token)) and return
     end

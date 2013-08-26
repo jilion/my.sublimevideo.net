@@ -1,7 +1,7 @@
 # Options here can still be overridden by cmd line args.
 #   sidekiq -C config.yml
 ---
-# :verbose: true
+:verbose: false
 :concurrency: 50
 :require: '.'
 :timeout: 60

@@ -1,7 +1,4 @@
 class OauthToken < ActiveRecord::Base
-
-  attr_accessible :user, :client_application, :scope, :callback_url
-
   belongs_to :user
   belongs_to :client_application
 

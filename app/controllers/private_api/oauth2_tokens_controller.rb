@@ -1,5 +1,5 @@
 class PrivateApi::Oauth2TokensController < SublimeVideoPrivateApiController
-  before_filter :_find_oauth2_token_by_token!, only: [:show]
+  before_filter :_set_oauth2_token_by_token!, only: [:show]
 
   # GET /private_api/oauth2_tokens/:id
   def show
@@ -9,7 +9,7 @@ class PrivateApi::Oauth2TokensController < SublimeVideoPrivateApiController
 
   private
 
-  def _find_oauth2_token_by_token!
+  def _set_oauth2_token_by_token!
     @oauth2_token = Oauth2Token.valid.where(token: params[:id]).first!
   end
 end

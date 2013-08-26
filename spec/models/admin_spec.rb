@@ -19,10 +19,6 @@ describe Admin do
   describe "Validations" do
     subject { create(:admin) }
 
-    [:email, :password, :password_confirmation, :remember_me, :roles].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it "can have defined roles" do
       Admin.roles.each do |role|
         build(:admin, roles: [role]).should be_valid

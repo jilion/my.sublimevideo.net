@@ -13,10 +13,6 @@ describe InvoiceItem do
   end # Associations
 
   describe "Validations" do
-    [:invoice, :item, :deduct, :started_at, :ended_at, :price, :amount].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
     it { should validate_presence_of(:item_type) }
     it { should validate_presence_of(:item_id) }
     it { should validate_presence_of(:price) }

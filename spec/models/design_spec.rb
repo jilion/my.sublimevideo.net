@@ -7,10 +7,6 @@ describe Design do
   end
 
   describe 'Validations' do
-    [:name, :price, :availability, :required_stage, :stable_at].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
     it { should validate_numericality_of(:price) }
 
     it { should ensure_inclusion_of(:required_stage).in_array(::Stage.stages) }

@@ -1,6 +1,4 @@
 class AddonPlan < BillableEntity
-  attr_accessible :addon, as: :admin
-
   belongs_to :addon
   has_many :components, through: :addon
   has_many :settings, class_name: 'AddonPlanSettings'

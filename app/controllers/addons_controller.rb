@@ -2,8 +2,8 @@ class AddonsController < ApplicationController
   skip_before_filter :authenticate_user!, only: [:show]
   before_filter :redirect_to_features_page_if_user_not_signed_in!, only: [:show]
   before_filter :redirect_suspended_user, only: [:index, :show, :subscribe]
-  before_filter :find_sites_or_redirect_to_new_site, only: [:index, :show, :subscribe]
-  before_filter :load_site, only: [:subscribe]
+  before_filter :_set_sites_or_redirect_to_new_site, only: [:index, :show, :subscribe]
+  before_filter :_set_site, only: [:subscribe]
 
   # GET /addons
   # GET /sites/:site_id/addons
@@ -44,7 +44,7 @@ class AddonsController < ApplicationController
     end
   end
 
-  def find_sites
+  def _set_sites
     @sites = current_user.sites.not_archived.by_last_30_days_billable_video_views
   end
 

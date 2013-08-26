@@ -138,7 +138,7 @@ namespace :user do
           puts "Update credit card for #{email}, make it expire at the end of the month..."
           Time.now.utc.end_of_month.to_date
         end
-        user.update_attributes({
+        user.update({
           cc_type: 'visa',
           cc_full_name: user.name,
           cc_number: "4111111111111111",

@@ -10,23 +10,16 @@ describe Kit do
   end
 
   describe 'Validations' do
-    [:site, :identifier, :name, :design_id].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-    [:name, :design_id].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     [:site, :design, :identifier, :name].each do |attr|
       it { should validate_presence_of(attr) }
     end
 
     describe 'uniqueness of identifier by site_id' do
       it 'adds an error if identifier is not unique for this site' do
-        kit = Kit.create({ site: site, design_id: design.id, name: 'My player 1' }, as: :admin)
+        kit = Kit.create(site: site, design_id: design.id, name: 'My player 1')
         kit.identifier.should eq '1'
 
-        kit2 = Kit.new({ site: site, design_id: design.id, name: 'My player 2' }, as: :admin)
+        kit2 = Kit.new(site: site, design_id: design.id, name: 'My player 2')
         kit2.identifier = kit.identifier
         kit2.should_not be_valid
         kit2.should have(1).error_on(:identifier)
@@ -35,10 +28,10 @@ describe Kit do
 
     describe 'uniqueness of name by site_id' do
       it 'adds an error if name is not unique for this site' do
-        kit = Kit.create({ site: site, design_id: design.id, name: 'My player' }, as: :admin)
+        kit = Kit.create(site: site, design_id: design.id, name: 'My player')
         kit.name.should eq 'My player'
 
-        kit2 = Kit.new({ site: site, design_id: design.id, name: 'My player' }, as: :admin)
+        kit2 = Kit.new(site: site, design_id: design.id, name: 'My player')
         kit2.should_not be_valid
         kit2.should have(1).error_on(:name)
       end
@@ -46,7 +39,7 @@ describe Kit do
   end
 
   describe 'Initialization' do
-    let(:kit) { Kit.new({ site: site, design_id: nil, name: 'My player' }, as: :admin) }
+    let(:kit) { Kit.new(site: site, design_id: nil, name: 'My player') }
     before do
       create(:design, name: 'flat')
       @classic_design = create(:design, name: 'classic')
@@ -59,7 +52,7 @@ describe Kit do
     end
 
     describe 'set identifier' do
-      let(:kit) { Kit.new({ site: site, name: 'My player' }, as: :admin) }
+      let(:kit) { Kit.new(site: site, name: 'My player') }
 
       context 'site has no kit yet' do
         specify do
@@ -82,7 +75,7 @@ describe Kit do
   end
 
   describe '#default?' do
-    let(:kit)  { Kit.create!({ site: site, design_id: design.id, name: 'My player' }, as: :admin) }
+    let(:kit)  { Kit.create!(site: site, design_id: design.id, name: 'My player') }
     let(:site) { create(:site) }
     context 'kit is not default' do
       it { kit.should_not be_default }

@@ -2,7 +2,6 @@ require 'solve'
 
 class App::ComponentVersion < ActiveRecord::Base
   delegate :token, :name, to: :component
-  attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id', touch: true
 

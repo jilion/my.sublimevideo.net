@@ -1,11 +1,9 @@
 class Plan < ActiveRecord::Base
-
   CYCLES         = %w[month year none]
   UNPAID_NAMES   = %w[trial free sponsored]
   STANDARD_NAMES = %w[plus premium]
   SUPPORT_LEVELS = %w[forum email vip_email]
 
-  attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9'), length: 12
 
   # ================

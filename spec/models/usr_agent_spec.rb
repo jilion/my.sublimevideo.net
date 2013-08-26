@@ -3,10 +3,6 @@ require 'spec_helper'
 describe UsrAgent do
 
   describe "Validations" do
-    [:token, :platforms, :browsers, :month].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:token) }
     it { should validate_presence_of(:month) }
   end

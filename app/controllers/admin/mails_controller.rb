@@ -28,7 +28,7 @@ class Admin::MailsController < Admin::AdminController
   # POST /mails/confirm
   def confirm
     @user = User.first
-    _find_mail_template(params[:mail][:template_id])
+    _set_mail_template(params[:mail][:template_id])
   end
 
   # POST /mails
@@ -39,7 +39,7 @@ class Admin::MailsController < Admin::AdminController
 
   private
 
-  def _find_mail_template(template_id)
+  def _set_mail_template(template_id)
     @mail_template = MailTemplate.find(template_id)
   rescue ActiveRecord::RecordNotFound
     redirect_to [:new, :admin, :mail], alert: 'Please select an email template!'

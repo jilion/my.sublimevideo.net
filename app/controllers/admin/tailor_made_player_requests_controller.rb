@@ -3,8 +3,8 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
 
   before_filter { |controller| require_role?('god') }
 
-  before_filter :set_default_scopes, only: [:index]
-  before_filter :find_tailor_made_player_request, only: [:show, :destroy]
+  before_filter :_set_default_scopes, only: [:index]
+  before_filter :_set_tailor_made_player_request, only: [:show, :destroy]
 
   # GET /tailor_made_player_requests
   def index
@@ -26,11 +26,11 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
 
   private
 
-  def set_default_scopes
+  def _set_default_scopes
     params[:by_date] = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
-  def find_tailor_made_player_request
+  def _set_tailor_made_player_request
     @tailor_made_player_request = TailorMadePlayerRequest.find(params[:id])
   end
 

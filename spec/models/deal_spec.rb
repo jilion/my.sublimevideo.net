@@ -26,10 +26,6 @@ describe Deal do
   describe "Validations" do
     subject { create(:deal) }
 
-    [:token, :name, :description, :kind, :value, :availability_scope, :started_at, :ended_at].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:token) }
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:kind) }

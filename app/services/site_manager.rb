@@ -197,7 +197,7 @@ class SiteManager
   end
 
   def _build_subscription(design_or_addon, options)
-    site.billable_items.build({ item: design_or_addon, state: _new_billable_item_state(design_or_addon, options) }, without_protection: true)
+    site.billable_items.build(item: design_or_addon, state: _new_billable_item_state(design_or_addon, options))
   end
 
   def _free_addon_plans_subscriptions_hash(*args)

@@ -10,9 +10,6 @@ describe Addon do
   end
 
   describe 'Validations' do
-    [:name, :design_dependent, :parent_addon, :kind].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
     # it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
   end
 
