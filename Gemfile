@@ -92,8 +92,7 @@ gem 'createsend' # Campaign Monitor
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
-# gem 'librato-rails', github: 'librato/librato-rails'
-gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
+gem 'librato-rails', github: 'librato/librato-rails'
 gem 'rack-status'
 
 # Highest version change the query_values method behavior
