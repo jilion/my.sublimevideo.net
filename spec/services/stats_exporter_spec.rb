@@ -15,11 +15,11 @@ end
 describe StatsExporter do
 
   let(:site_token) { 'site_token' }
-  let(:site) { mock(Site, token: site_token) }
+  let(:site) { double(Site, token: site_token) }
   let(:from) { 30.days.ago.midnight.to_i }
   let(:to) { 1.days.ago.midnight.to_i }
   let(:stats_exporter) { StatsExporter.new(site_token, from, to) }
-  let(:csv_export) { stub }
+  let(:csv_export) { double }
 
   before {
     Librato.stub(:increment)
@@ -29,7 +29,7 @@ describe StatsExporter do
   describe "#create_and_notify_export" do
 
     before do
-      StatsExportMailer.stub(:export_ready) { stub('mailer').as_null_object }
+      StatsExportMailer.stub(:export_ready) { double('mailer').as_null_object }
       stats_exporter.should_receive(:with_tempfile_csv_export).and_yield(csv_export)
     end
 
@@ -44,9 +44,9 @@ describe StatsExporter do
     end
 
     it "send a email when export is done" do
-      stats_export = stub
+      stats_export = double
       StatsExport.stub(:create!) { stats_export }
-      StatsExportMailer.should_receive(:export_ready).with(stats_export) { stub('mailer', deliver!: true) }
+      StatsExportMailer.should_receive(:export_ready).with(stats_export) { double('mailer', deliver!: true) }
       stats_exporter.create_and_notify_export
     end
 
@@ -54,12 +54,12 @@ describe StatsExporter do
 
   describe "#with_tempfile_csv_export" do
     let(:video_tags) { [
-      stub(uid: 'uid1', title: 'video1'),
-      stub(uid: 'uid2', title: 'video2')
+      double(uid: 'uid1', title: 'video1'),
+      double(uid: 'uid2', title: 'video2')
     ] }
     let(:video_stats) { [
-      stub(vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 }),
-      stub(vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
+      double(vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 }),
+      double(vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     ] }
 
     it "yield with a csv full of loads/plays" do

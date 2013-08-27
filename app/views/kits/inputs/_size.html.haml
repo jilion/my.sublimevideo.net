@@ -1,9 +1,9 @@
-- width_and_height = params[:value].to_s.split('x')
+- width_and_height = parameters[:value].to_s.split('x')
 
 .entry.size
-  %h5= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
+  %h5= label_tag kit_setting_input_field_id(parameters), kit_setting_title(parameters)
 
-  = text_field_tag kit_setting_input_field_name(params, '[]'), width_and_height[0], size: 4, maxlength: 4, placeholder: 'Width', id: kit_setting_input_field_id(params), class: 'text no_icon previewable', data: kit_setting_data(params)
+  = text_field_tag kit_setting_input_field_name(parameters, '[]'), width_and_height[0], size: 4, maxlength: 4, placeholder: 'Width', id: kit_setting_input_field_id(parameters), class: 'text no_icon previewable', data: kit_setting_data(parameters)
   x
-  = text_field_tag kit_setting_input_field_name(params, '[]'), width_and_height[1], size: 4, maxlength: 4, placeholder: 'Height', id: kit_setting_input_field_id(params), class: 'text no_icon previewable', data: kit_setting_data(params)
+  = text_field_tag kit_setting_input_field_name(parameters, '[]'), width_and_height[1], size: 4, maxlength: 4, placeholder: 'Height', id: kit_setting_input_field_id(parameters), class: 'text no_icon previewable', data: kit_setting_data(parameters)
 .spacer

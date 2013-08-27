@@ -1,8 +1,8 @@
 require 'has_scope'
 
 class PrivateApi::SitesController < SublimeVideoPrivateApiController
-  before_filter :_find_sites, only: [:index]
-  before_filter :_find_site_by_token!, only: [:show, :add_tag]
+  before_filter :_set_sites, only: [:index]
+  before_filter :_set_site, only: [:show, :add_tag]
 
   has_scope :per, :created_on, :created_after, :not_tagged_with, :by_date,
             :with_min_billable_video_views, :first_billable_plays_on_week, :user_id
@@ -22,38 +22,31 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   end
 
   # PUT /private_api/sites/:id/add_tag
-  before_filter(only: :add_tag) { |controller| controller.required_params!(:tag) }
   def add_tag
-    @site.tag_list << params[:tag]
+    @site.tag_list << _tag_params
     @site.save!
 
     respond_with(@site)
   end
 
-  def required_params!(*param_keys)
-    present_params_keys = params.select { |k, v| param_keys.include?(k.to_sym) && v.present? }.keys.map(&:to_sym)
-
-    unless present_params_keys.size == param_keys.size
-      body = { error: "Missing #{_list_of_params_as_string(param_keys - present_params_keys)} parameters." }
-      render request.format.ref => body, status: 400
-    end
-  end
-
   private
 
-  def _find_sites
+  def _set_sites
     @sites = apply_scopes(_base_scopes.page(params[:page]))
   end
 
-  def _find_site_by_token!
-    @site = apply_scopes(_base_scopes).find_by_token!(params[:id])
+  def _set_site
+    @site = apply_scopes(_base_scopes).where(token: params[:id]).first!
+  end
+
+  def _tag_params
+    params.require(:tag)
   end
 
   def _base_scopes
-    Site.with_state('active').order(:created_at)
+    scopes = Site.with_state('active').order(:created_at).includes(:default_kit).references(:kits)
+    scopes = scopes.select(:default_kit_id) if params['select']
+    scopes
   end
 
-  def _list_of_params_as_string(list)
-    list.map { |p| ":#{p}" }.join(', ')
-  end
 end

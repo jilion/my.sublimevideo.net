@@ -152,21 +152,5 @@ describe 'Private API Sites requests' do
       site2.tag_list.should include('adult')
       response.status.should eq 204
     end
-
-    describe 'requires the :tag param' do
-      it 'returns a 400 if :tag is missing' do
-        put "private_api/sites/#{site1.token}/add_tag.json", {}, @env
-
-        MultiJson.load(response.body).should eq({ 'error' => 'Missing :tag parameters.' })
-        response.status.should eq 400
-      end
-
-      it 'returns a 400 if :tag is nil' do
-        put "private_api/sites/#{site1.token}/add_tag.json", { tag: nil }, @env
-
-        MultiJson.load(response.body).should eq({ 'error' => 'Missing :tag parameters.' })
-        response.status.should eq 400
-      end
-    end
   end
 end

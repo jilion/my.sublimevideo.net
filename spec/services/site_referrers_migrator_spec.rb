@@ -4,7 +4,7 @@ require 'site_referrers_migrator'
 class Referrer; end unless defined? Referrer
 
 describe SiteReferrersMigrator do
-  let(:site) { mock('Site', token: 'site_token') }
+  let(:site) { double('Site', token: 'site_token') }
   let(:pages) { %w[url] }
   let(:migrator) { SiteReferrersMigrator.new(site) }
 

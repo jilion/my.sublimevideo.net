@@ -33,8 +33,8 @@ feature "Mails index" do
     end
 
     scenario "should be 1 template and 1 log created" do
-      MailTemplate.all.should have(1).item
-      MailLog.all.should have(1).item
+      MailTemplate.should have(1).item
+      MailLog.should have(1).item
     end
 
     scenario "should have a table containing mail logs and a table containing mail templates" do

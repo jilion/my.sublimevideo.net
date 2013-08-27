@@ -42,6 +42,6 @@ RSpec::Matchers.define :delay do |message, *opts|
   end
 
   def setup(object, message)
-    @delayed_job_mock = mock("Delay Method for #{object}.#{message}").as_null_object
+    @delayed_job_mock = double("Delay Method for #{object}.#{message}").as_null_object
   end
 end

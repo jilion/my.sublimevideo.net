@@ -34,8 +34,14 @@ module SitesHelper
   def hostname_with_subdomain_needed(site)
     if site.wildcard?
       list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
-      list.find { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
+      site.production_hostnames.find { |h| h.in?(list) }
     end
+  end
+
+  def s3_hostname_with_subdomain_needed(site)
+    found = nil
+
+    site.production_hostnames.find { |h| h =~ /amazonaws\.com\Z/ && h.split('.').size < 4 }
   end
 
   def need_path?(site)
@@ -44,6 +50,10 @@ module SitesHelper
 
   def need_subdomain?(site)
     hostname_with_subdomain_needed(site).present?
+  end
+
+  def need_s3_subdomain?(site)
+    s3_hostname_with_subdomain_needed(site).present?
   end
 
   def cdn_up_to_date?(site)

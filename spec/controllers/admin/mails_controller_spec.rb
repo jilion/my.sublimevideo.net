@@ -9,7 +9,7 @@ describe Admin::MailsController do
     end
 
     it "should assign mail logs array as @mail_logs and mail templates array as @mail_templates and render :index on GET :index" do
-      MailLog.stub_chain(:scoped, :by_date, :page) { [mock_mail_log] }
+      MailLog.stub_chain(:all, :by_date, :page) { [mock_mail_log] }
       MailTemplate.stub_chain(:not_archived, :by_date, :page) { [mock_mail_template] }
       MailTemplate.stub_chain(:archived, :by_date, :page) { [mock_mail_template] }
 

@@ -1,4 +1,3 @@
-# encoding: utf-8
 class SitesTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -37,7 +36,7 @@ class SitesTrend
 
   def self.trend_hash(day)
     {
-      d: day.to_time,
+      d:  day.utc,
       fr: { free: Site.free.count },
       pa: { addons: Site.paying.count },
       su: Site.suspended.count,

@@ -1,5 +1,5 @@
 class Stage
-  STAGES = %w[stable beta alpha]
+  STAGES = %w[stable beta alpha] unless defined?(STAGES)
 
   def self.stages
     STAGES

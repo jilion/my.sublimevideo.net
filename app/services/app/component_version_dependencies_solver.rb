@@ -19,7 +19,7 @@ module App
     end
 
     def solve
-      demands = @components.select { |c| c.versions_for_stage(@stage).any? }.map { |component| [component.token] }
+      demands = @components.select { |c| c.versions_for_stage(@stage).any? }.map { |component| [component.token, '>= 0.0.0-alpha'] }
       @dependencies = Solve.it!(@graph, demands)
       self
     end

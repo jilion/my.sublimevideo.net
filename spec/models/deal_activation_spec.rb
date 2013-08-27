@@ -21,10 +21,6 @@ describe DealActivation do
   describe "Validations" do
     subject { create(:deal_activation) }
 
-    [:deal_id, :user_id].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:deal_id) }
     it { should validate_presence_of(:user_id) }
   end # Validations

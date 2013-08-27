@@ -6,13 +6,13 @@ class InvoiceItemBuilder
   end
 
   def build_invoice_item(args = {})
-    invoice_item = InvoiceItem.const_get(item.class.to_s.sub(/::/, '')).new({
+    invoice_item = InvoiceItem.const_get(item.class.to_s.sub(/::/, '')).new(
       item: item,
       started_at: args[:started_at],
       ended_at: args[:ended_at],
       price: item.price,
       amount: _amount(args[:started_at], args[:ended_at], args[:price_per_day_of_year])
-    }, without_protection: true)
+    )
 
     invoice.invoice_items << invoice_item unless invoice_item.amount.zero?
   end

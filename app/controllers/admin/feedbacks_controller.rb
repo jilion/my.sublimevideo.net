@@ -7,7 +7,7 @@ class Admin::FeedbacksController < Admin::AdminController
   has_scope :by_user, :by_kind, :by_reason, :by_date
 
   def index
-    @feedbacks = apply_scopes(Feedback.scoped)
+    @feedbacks = apply_scopes(Feedback.all)
 
     respond_with(@feedbacks, per_page: 50)
   end

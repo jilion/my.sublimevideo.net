@@ -1,4 +1,4 @@
-- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self, addon_name: 'google_analytics')
   #google_analytics_settings.expandable_settings_box
     - kit_settings_expanding_handler('google_analytics') do
       = link_to t('kit.google_analytics.title'), ''

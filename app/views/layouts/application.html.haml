@@ -6,9 +6,8 @@
   = sublimevideo_loader_tag(:my, host: cdn_host).html_safe
   = javascript_include_tag '//d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js'
 
-- if flash.present?
-  = content_for :middle do
-    = render "layouts/flash", flash: flash
+= content_for :middle do
+  = render "layouts/flash"
 
 = content_for :javascript_bottom do
   - if Rails.env.production? && user_signed_in?

@@ -1,6 +1,4 @@
 class AddonPlan < BillableEntity
-  attr_accessible :addon, as: :admin
-
   belongs_to :addon
   has_many :components, through: :addon
   has_many :settings, class_name: 'AddonPlanSettings'
@@ -15,7 +13,7 @@ class AddonPlan < BillableEntity
 
   def self.find_cached_by_addon_name_and_name(addon_name, addon_plan_name)
     Rails.cache.fetch [self, 'find_cached_by_addon_name_and_name', addon_name.to_s.dup, addon_plan_name.to_s.dup] do
-      joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
+      joins(:addon).where("addons.name = ? AND addon_plans.name = ?", addon_name.to_s, addon_plan_name.to_s).first
     end
   end
   class << self
@@ -25,7 +23,7 @@ class AddonPlan < BillableEntity
   def self.free_addon_plans(options = {})
     options.reverse_merge!(reject: [])
 
-    AddonPlan.includes(:addon).where { addon.name << options.fetch(:reject) }.not_custom.where(price: 0)
+    AddonPlan.includes(:addon).where.not(addons: { name: options.fetch(:reject) }).references(:addons).not_custom.where(price: 0)
   end
 
   def available_for_subscription?(site)
@@ -34,7 +32,7 @@ class AddonPlan < BillableEntity
       false
     when 'public'
       addon_plan_ids_except_myself = addon.plans.pluck(:id) - [id]
-      !site.billable_items.addon_plans.where { item_id >> addon_plan_ids_except_myself }.state('sponsored').exists?
+      !site.billable_items.addon_plans.where(item_id: addon_plan_ids_except_myself).state('sponsored').exists?
     when 'custom'
       site.addon_plans.where(id: id).exists?
     end

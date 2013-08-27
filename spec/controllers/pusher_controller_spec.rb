@@ -11,7 +11,7 @@ describe PusherController do
 
       it "return a json authenticated response" do
         authenticated_response = {}
-        PusherChannel.stub(:new).with(channel_name) { stub(accessible?: true) }
+        PusherChannel.stub(:new).with(channel_name) { double(accessible?: true) }
         PusherWrapper.should_receive(:authenticated_response).with(channel_name, socket_id) {
           authenticated_response
         }
@@ -22,7 +22,7 @@ describe PusherController do
 
     context "with a un-accessible channel" do
       it "return 'Not authorized' 403 status" do
-        PusherChannel.stub(:new).with(channel_name) { stub(accessible?: false) }
+        PusherChannel.stub(:new).with(channel_name) { double(accessible?: false) }
         post :auth, channel_name: channel_name
         response.status.should eq(403)
       end
@@ -30,7 +30,7 @@ describe PusherController do
   end
 
   describe "webhook" do
-    let(:webhook) { stub(:webhook) }
+    let(:webhook) { double(:webhook) }
     before { Pusher::WebHook.stub(:new).with(request) { webhook } }
 
     context "with valid webhook request" do

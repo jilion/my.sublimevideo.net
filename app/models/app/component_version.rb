@@ -1,9 +1,7 @@
 require 'solve'
 
 class App::ComponentVersion < ActiveRecord::Base
-  serialize :dependencies, ActiveRecord::Coders::Hstore
   delegate :token, :name, to: :component
-  attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id', touch: true
 
@@ -18,7 +16,7 @@ class App::ComponentVersion < ActiveRecord::Base
   end
 
   def token=(token)
-    self.component = App::Component.find_by_token!(token)
+    self.component = App::Component.where(token: token).first!
   end
 
   def dependencies=(arg)

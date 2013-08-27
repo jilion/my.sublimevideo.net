@@ -257,7 +257,7 @@ describe Transaction do
     end
 
     describe "#failed" do
-      specify { Transaction.failed.all.should =~ [@failed_transaction] }
+      specify { Transaction.failed.should =~ [@failed_transaction] }
     end
   end # Scopes
 
@@ -408,7 +408,7 @@ describe Transaction do
 
         context "with a purchase that need a 3d secure authentication" do
           before do
-            OgoneWrapper.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
+            OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
           end
 
           context "alias" do
@@ -435,7 +435,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to an invalid credit card" do
-          before { OgoneWrapper.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
+          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
           it "should set transaction and invoices to failed state" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
@@ -445,7 +445,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a refused purchase" do
-          before { OgoneWrapper.stub(:purchase) { mock('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
+          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
           it "should set transaction and invoices to failed state" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
@@ -454,7 +454,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a waiting authorization" do
-          before { OgoneWrapper.stub(:purchase) { mock('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
+          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
           it "should not succeed nor fail transaction nor invoices" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
@@ -464,7 +464,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a uncertain result" do
-          before { OgoneWrapper.stub(:purchase) { mock('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
+          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
           it "should not succeed nor fail transaction nor invoices, with status 2" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })

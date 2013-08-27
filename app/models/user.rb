@@ -1,6 +1,7 @@
 require 'searchable'
 
 class User < ActiveRecord::Base
+  include UserModules::Billing
   include UserModules::CreditCard
   include Searchable
 
@@ -17,16 +18,6 @@ class User < ActiveRecord::Base
   acts_as_taggable
 
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
-  attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
-                  :name, :postal_code, :country, :confirmation_comment,
-                  :billing_email, :billing_name, :billing_address_1, :billing_address_2,
-                  :billing_postal_code, :billing_city, :billing_region, :billing_country,
-                  :use_personal, :use_company, :use_clients,
-                  :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
-                  :newsletter, :terms_and_conditions
-  # Credit card
-  # cc_register is a flag to indicate if the CC should be recorded or not
-  attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value, :remote_ip
 
   serialize :hidden_notice_ids, Array
   serialize :early_access, Array
@@ -54,7 +45,7 @@ class User < ActiveRecord::Base
 
   # API
   has_many :client_applications
-  has_many :tokens, class_name: 'OauthToken', order: 'authorized_at DESC', include: [:client_application]
+  has_many :tokens, -> { includes(:client_application).order(authorized_at: :desc) }, class_name: 'OauthToken'
 
   # ===============
   # = Validations =
@@ -84,7 +75,7 @@ class User < ActiveRecord::Base
   after_save :_update_newsletter_subscription
   after_update :_update_newsletter_user_infos
 
-  after_update :zendesk_update
+  after_update :_zendesk_update
 
   # =================
   # = State Machine =
@@ -105,37 +96,36 @@ class User < ActiveRecord::Base
   # ==========
 
   # state
-  scope :invited,      -> { where { invitation_token != nil } }
-  # some beta users don't come from svs but were directly invited from msv!!
-  scope :beta,         -> { where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on) } }
-  scope :active,       -> { where { state == 'active' } }
-  scope :inactive,     -> { where { state != 'active' } }
-  scope :suspended,    -> { where { state == 'suspended' } }
-  scope :archived,     -> { where { state == 'archived' } }
-  scope :not_archived, -> { where { state != 'archived' } }
+  scope :active,       -> { where(state: 'active') }
+  scope :inactive,     -> { where.not(state: 'active') }
+  scope :suspended,    -> { where(state: 'suspended') }
+  scope :archived,     -> { where(state: 'archived') }
+  scope :not_archived, -> { where.not(state: 'archived') }
 
   # billing
   scope :paying,     -> { active.includes(:sites, :billable_items).merge(Site.paying) }
-  scope :paying_ids, -> { active.select('DISTINCT(users.id)').joins('INNER JOIN sites ON sites.user_id = users.id INNER JOIN billable_items ON billable_items.site_id = sites.id').merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :free,       -> { active.where { id << User.paying_ids } }
+  scope :free,       -> { active.where.not(id: User.paying.pluck(:id)) }
 
   # credit card
   scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
-  scope :with_cc,              -> { where { (cc_type != nil) & (cc_last_digits != nil) } }
+  scope :with_cc,              -> { where.not(cc_type: nil, cc_last_digits: nil) }
   scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
-  scope :with_balance,         -> { where { balance > 0 } }
-  scope :last_credit_card_expiration_notice_sent_before, ->(date) {
-      where { last_credit_card_expiration_notice_sent_at < date }
-  }
+  scope :with_balance,         -> { where("balance > ?", 0) }
+  scope :last_credit_card_expiration_notice_sent_before, ->(date) { where("last_credit_card_expiration_notice_sent_at < ?", date) }
 
   # attributes queries
-  scope :created_on, ->(date) { where { created_at >> date.all_day } }
+  scope :created_on, ->(date) { where(created_at: date.all_day) }
   scope :newsletter, ->(bool = true) { where(newsletter: bool) }
   scope :vip,        ->(bool = true) { where(vip: bool) }
 
-  scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
+  scope :sites_tagged_with, ->(word) { joins(:sites).where(sites: { id: Site.not_archived.tagged_with(word).pluck(:id) }) }
 
-  scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
+  scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days).references(:sites) }
+  scope :with_stats_realtime_addon_or_invalid_video_tag_data_uid, -> {
+    site_with_realtime_addon_tokens = Site.with_addon_plan('stats-realtime').select(:token).uniq.map(&:token)
+    site_with_invalide_video_tag_data_uid = VideoTag.site_tokens(with_invalid_uid: true)
+    joins(:sites).where(sites: { token: (site_with_realtime_addon_tokens + site_with_invalide_video_tag_data_uid).uniq })
+  }
 
   # sort
   scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way}, users.email #{way}") }
@@ -144,8 +134,8 @@ class User < ActiveRecord::Base
   scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way}") }
   scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way}") }
 
-  def self.additional_or_conditions
-    %w[email name].reduce([]) { |a, e| a << ("lower(#{e}) =~ " + 'lower("%#{q}%")') }
+  def self.additional_or_conditions(q)
+    lower_and_match_fields('users', %w[email name], q)
   end
 
   # =================
@@ -158,7 +148,7 @@ class User < ActiveRecord::Base
     super(tainted_conditions.merge(state: %w[active suspended]))
   end
 
-  def self.find_first_by_auth_conditions(tainted_conditions, opts={})
+  def self.find_first_by_auth_conditions(tainted_conditions, opts = {})
     super(tainted_conditions, opts.merge(state: %w[active suspended]))
   end
 
@@ -192,63 +182,13 @@ class User < ActiveRecord::Base
     invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on
   end
 
-  def billing_address_complete?
-    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
-  end
-
-  def billing_address_missing_fields
-    %w[billing_address_1 billing_postal_code billing_city billing_country].reject do |field|
-      self.send(field).present?
-    end
-  end
-
   def more_info_incomplete?
-    [company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
-    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
-  end
-
-  def billable?
-    sites.not_archived.paying.count > 0
-  end
-
-  def trial_or_billable?
-    billable? || sites.not_archived.any? { |site| site.total_billable_items_price > 0 }
-  end
-
-  def sponsored?
-    sites.not_archived.includes(:billable_items).where { billable_items.state == 'sponsored' }.present?
+    _company_attributes.any?(&:blank?) ||
+    _use_attributes.all?(&:blank?) # one of these fields is enough
   end
 
   def name_or_email
     name.presence || email
-  end
-
-  def billing_name_or_billing_email
-    billing_name.presence || billing_email
-  end
-
-  def billing_address(fallback_to_name = true)
-    Snail.new(
-      name:        billing_name.presence || (fallback_to_name ? name : nil),
-      line_1:      billing_address_1,
-      line_2:      billing_address_2,
-      postal_code: billing_postal_code,
-      city:        billing_city,
-      region:      billing_region,
-      country:     billing_country.to_s
-    ).to_s
-  end
-
-  def activated_deals
-    deal_activations.active.order { activated_at.desc }.map(&:deal)
-  end
-
-  def latest_activated_deal
-    deal_activations.order { activated_at.desc }.first.try(:deal)
-  end
-
-  def latest_activated_deal_still_active
-    deal_activations.active.order { activated_at.desc }.first.try(:deal)
   end
 
   def support_requests
@@ -278,11 +218,19 @@ class User < ActiveRecord::Base
   end
 
   # after_update
-  def zendesk_update
+  def _zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
       updated_field = email_changed? ? { email: email } : { name: name }
       ZendeskWrapper.delay(queue: 'low').update_user(zendesk_id, updated_field)
     end
+  end
+
+  def _company_attributes
+    [company_name, company_url, company_job_title, company_employees]
+  end
+
+  def _use_attributes
+    [use_personal, use_company, use_clients]
   end
 
   # ===========================

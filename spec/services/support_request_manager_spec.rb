@@ -6,17 +6,17 @@ require 'services/support_request_manager'
 SupportRequest = Struct.new(:params) unless defined?(SupportRequest)
 
 describe SupportRequestManager do
-  let(:user_without_zendesk_id) { mock('user', zendesk_id?: false) }
-  let(:user_with_zendesk_id)    { mock('user', zendesk_id?: true) }
-  let(:support_request1)        { mock('support_request', to_params: {}, user: user_without_zendesk_id) }
-  let(:support_request2)        { mock('support_request', to_params: {}, user: user_with_zendesk_id) }
-  let(:ticket)                  { mock('ticket', requester_id: 12, params: {}) }
+  let(:user_without_zendesk_id) { double('user', zendesk_id?: false) }
+  let(:user_with_zendesk_id)    { double('user', zendesk_id?: true) }
+  let(:support_request1)        { double('support_request', to_params: {}, user: user_without_zendesk_id) }
+  let(:support_request2)        { double('support_request', to_params: {}, user: user_with_zendesk_id) }
+  let(:ticket)                  { double('ticket', requester_id: 12, params: {}) }
   let(:manager1)                { described_class.new(support_request1) }
   let(:manager2)                { described_class.new(support_request2) }
 
   describe '.create_zendesk_user' do
     context 'user has a zendesk id' do
-      let(:user) { stub(zendesk_id?: true) }
+      let(:user) { double(zendesk_id?: true) }
 
       it 'does nothing' do
         ZendeskWrapper.should_not_receive(:create_user)
@@ -27,7 +27,7 @@ describe SupportRequestManager do
     end
 
     context 'user has no zendesk id' do
-      let(:user) { stub(zendesk_id?: false) }
+      let(:user) { double(zendesk_id?: false) }
 
       it 'create a user in Zendesk and set the zendesk_id from it' do
         ZendeskWrapper.should_receive(:create_user).with(user).and_return(OpenStruct.new(id: 42))

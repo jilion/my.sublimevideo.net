@@ -1,5 +1,5 @@
 class KitSettingPresenter
-  attr_accessor :addon_plan, :settings
+  attr_accessor :addon_name, :addon_plan, :settings
 
   def self.init(*args)
     presenter = self.new(*args)
@@ -15,6 +15,7 @@ class KitSettingPresenter
     @kit        = options.fetch(:kit)
     @design     = options.fetch(:design)
     @view       = options.fetch(:view)
+    @addon_name = options.fetch(:addon_name)
     @settings   = load_settings
     @addon_plan = load_addon_plan
   end
@@ -31,36 +32,36 @@ class KitSettingPresenter
     addon_plan_settings.key?(key.to_sym)
   end
 
-  def render_master_input_field(params = {}, &block)
-    @view.haml_concat(render_input_field(params))
+  def render_master_input_field(parameters = {}, &block)
+    @view.haml_concat(render_input_field(parameters))
     @view.haml_tag(:div, @view.capture_haml { yield }, class: 'indent')
 
     nil
   end
 
-  def render_input_field(params = {})
-    populate_params!(params)
+  def render_input_field(parameters = {})
+    parameters = populate_parameters(parameters)
 
-    if params[:setting_template].present?
-      opts = { kit: @kit, params: params }
-      if params[:partial]
-        @view.render("kits/inputs/#{params[:partial]}", opts)
+    if parameters[:setting_template].present?
+      opts = { kit: @kit, parameters: parameters }
+      if parameters[:partial]
+        @view.render("kits/inputs/#{parameters[:partial]}", opts)
       else
-        case params[:setting_template][:type]
+        case parameters[:setting_template][:type]
         when 'boolean'
-          if params[:setting_template][:values] && params[:setting_template][:values].many?
+          if parameters[:setting_template][:values] && parameters[:setting_template][:values].many?
             @view.render('kits/inputs/check_box', opts)
           end
         when 'float'
           @view.render('kits/inputs/range', opts)
         when 'string', 'url'
-          if params[:setting_template][:values] && params[:setting_template][:values].many?
+          if parameters[:setting_template][:values] && parameters[:setting_template][:values].many?
             @view.render('kits/inputs/radios', opts)
           else
             @view.render('kits/inputs/string', opts)
           end
         else
-          @view.render("kits/inputs/#{params[:setting_template][:type]}", opts)
+          @view.render("kits/inputs/#{parameters[:setting_template][:type]}", opts)
         end
       end
     end
@@ -73,10 +74,10 @@ class KitSettingPresenter
   private
 
   def load_settings
-    load_settings_from_params || load_settings_from_kit
+    load_settings_from_parameters || load_settings_from_kit
   end
 
-  def load_settings_from_params
+  def load_settings_from_parameters
     if @view.params[:kit] && @view.params[:kit][:settings]
       @view.params[:kit][:settings]
     end
@@ -90,22 +91,22 @@ class KitSettingPresenter
     @kit.site.addon_plan_for_addon_name(addon_name)
   end
 
-  def populate_params!(params)
-    params[:data]              ||= {}
-    params[:addon]             ||= @addon_plan.addon
-    params[:addon_plan_settings] ||= addon_plan_settings.symbolize_keys
-    params[:setting_template]    = params[:addon_plan_settings][params[:setting_key].to_sym]
-    params[:settings]            = @settings
-    params[:setting]             = @settings[addon_name.to_sym][params[:setting_key].to_sym] rescue nil
-    params[:value]               = get_value_from_params(params)
+  def populate_parameters(parameters)
+    parameters = parameters.with_indifferent_access
+
+    parameters[:data]                ||= {}
+    parameters[:addon]               ||= @addon_plan.addon
+    parameters[:addon_plan_settings] ||= addon_plan_settings.symbolize_keys
+    parameters[:setting_template]      = parameters[:addon_plan_settings][parameters[:setting_key].to_sym]
+    parameters[:settings]              = @settings
+    parameters[:setting]               = @settings[addon_name.to_sym][parameters[:setting_key].to_sym] rescue nil
+    parameters[:value]                 = get_value_from_parameters(parameters)
+
+    parameters
   end
 
-  def get_value_from_params(params)
-    params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
-  end
-
-  def addon_name
-    @addon_name_from_view ||= @view.view_renderer.instance_variable_get('@_partial_renderer').instance_values['path'].sub(%r{.+/(\w+)_settings}, '\1')
+  def get_value_from_parameters(parameters)
+    parameters[:setting].nil? ? parameters[:setting_template][:default] : parameters[:setting]
   end
 
   def _addon_plan_settings_record

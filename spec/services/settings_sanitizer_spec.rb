@@ -4,11 +4,11 @@ require 'rails/railtie'
 require 'services/settings_sanitizer'
 
 describe SettingsSanitizer do
-  let(:site)        { stub(touch: true) }
-  let(:kit)         { stub(design: stub, site: site, site_id: 1) }
-  let(:addon_plan1) { stub(addon_name: 'addonName1') }
-  let(:addon_plan2) { stub(addon_name: 'addonName2') }
-  let(:addon_plan3) { stub(addon_name: 'addonName3') }
+  let(:site)        { double(touch: true) }
+  let(:kit)         { double(design: double, site: site, site_id: 1) }
+  let(:addon_plan1) { double(addon_name: 'addonName1') }
+  let(:addon_plan2) { double(addon_name: 'addonName2') }
+  let(:addon_plan3) { double(addon_name: 'addonName3') }
   let(:addon_plan_settings) {
     {
       booleanSetting: {

@@ -9,9 +9,14 @@ MySublimeVideo::Application.configure do
   # One-line logs
   config.lograge.enabled = true
 
-  # The production environment is meant for finished, "live" apps.
-  # Code is not reloaded between requests
+  # Code is not reloaded between requests.
   config.cache_classes = true
+
+  # Eager load code on boot. This eager loads most of Rails and
+  # your application in memory, allowing both thread web servers
+  # and those relying on copy on write to perform better.
+  # Rake tasks automatically ignore this option for performance.
+  config.eager_load = true
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
@@ -39,6 +44,9 @@ MySublimeVideo::Application.configure do
 
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
+
+  # http://blog.alexmaccaw.com/faster-deploys
+  # config.assets.cache_store = :dalli_store
 
   # Specifies the header that your server uses for sending files
   # (comment out if your front-end server doesn't support this)
@@ -84,9 +92,6 @@ MySublimeVideo::Application.configure do
     password: ENV['SENDGRID_PASSWORD'],
     domain: ENV['SENDGRID_DOMAIN']
   }
-
-  # Enable threaded mode
-  # config.threadsafe!
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found)

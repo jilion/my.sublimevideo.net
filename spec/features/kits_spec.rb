@@ -78,6 +78,7 @@ feature 'New kit' do
     click_link 'Basic Player settings'
     find('#kit_setting-initial-overlay_enable[value="1"]').should be_checked
     uncheck 'kit_setting-initial-overlay_enable'
+    find('#kit_setting-initial-overlay_enable[value="1"]').should_not be_checked
     select 'Flat', from: 'Player design:'
     sleep 1
     find('#kit_setting-initial-overlay_enable[value="1"]').should_not be_checked
@@ -92,6 +93,7 @@ feature 'New kit' do
       go 'my', "/sites/#{@site.to_param}/addons"
       check "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.name}"
       expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(1)
+      @site.subscribed_to?(@social_sharing_addon_plan_1).should be_true
       go 'my', "/sites/#{@site.to_param}/players"
       click_link 'New Player'
     end

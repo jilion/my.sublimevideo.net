@@ -22,7 +22,7 @@ describe SettingsGenerator, :fog_mock do
     Librato.stub(:increment)
   }
 
-  let(:site) { mock("Site",
+  let(:site) { double("Site",
     id: 1,
     token: 'abcd1234',
     hostname: 'test.com',
@@ -33,7 +33,7 @@ describe SettingsGenerator, :fog_mock do
     path: 'path', path?: true,
     subscribed_to?: true,
     accessible_stage: 'stable',
-    default_kit: stub(identifier: '1')
+    default_kit: double(identifier: '1')
   )}
   let(:settings) { described_class.new(site) }
 
@@ -120,9 +120,9 @@ describe SettingsGenerator, :fog_mock do
           default: false
         }
       } }
-      let(:addon) { mock(Addon) }
-      let(:addon_plan_settings) { mock(AddonPlanSettings, template: template, app_plugin_id: nil) }
-      let(:addon_plan) { mock(AddonPlan, addon: addon, settings: [addon_plan_settings], kind: 'stats') }
+      let(:addon) { double(Addon) }
+      let(:addon_plan_settings) { double(AddonPlanSettings, template: template, app_plugin_id: nil) }
+      let(:addon_plan) { double(AddonPlan, addon: addon, settings: [addon_plan_settings], kind: 'stats') }
 
       before do
         site.stub_chain(:addon_plans, :includes, :order) { [addon_plan] }
@@ -185,24 +185,24 @@ describe SettingsGenerator, :fog_mock do
       let(:kit_settings2) { {
         'addon2' => { close_button_position: 'left' }
       } }
-      let(:design1) { mock(Design) }
-      let(:design2) { mock(Design) }
-      let(:kit1) { mock(Kit, id: 1, identifier: '1', design_id: 1, design: design1, skin_token: 'skin_token1', skin_mod: 'foo/bar', settings: kit_settings1) }
-      let(:kit2) { mock(Kit, id: 2, identifier: '2', design_id: 2, design: design2, skin_token: 'skin_token2', skin_mod: 'foo/bar2', settings: kit_settings2) }
-      let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
-      let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
-      let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
-      let(:plugin1) { mock(App::Plugin, id: 1, design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
-      let(:plugin2_1) { mock(App::Plugin, id: 2, design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
-      let(:plugin2_2) { mock(App::Plugin, id: 3, design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
-      let(:plugin3) { mock(App::Plugin, id: 4, design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
-      let(:addon_plan_settings1) { mock(AddonPlanSettings, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
-      let(:addon_plan_settings2_1) { mock(AddonPlanSettings, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
-      let(:addon_plan_settings2_2) { mock(AddonPlanSettings, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
-      let(:addon_plan_settings3) { mock(AddonPlanSettings, template: {}, app_plugin_id: plugin3.id, plugin: plugin3) }
-      let(:addon_plan1) { mock(AddonPlan, addon: addon1, addon_id: addon1.id, addon_name: 'addon1', kind: 'addon_kind1', settings: [addon_plan_settings1], settings_for: addon_plan_settings1) }
-      let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, addon_name: 'addon2', kind: 'addon_kind2', settings: [addon_plan_settings2_1, addon_plan_settings2_2]) }
-      let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, addon_name: 'addon3', kind: 'addon_kind3', settings: [addon_plan_settings3], settings_for: nil) }
+      let(:design1) { double(Design) }
+      let(:design2) { double(Design) }
+      let(:kit1) { double(Kit, id: 1, identifier: '1', design_id: 1, design: design1, skin_token: 'skin_token1', skin_mod: 'foo/bar', settings: kit_settings1) }
+      let(:kit2) { double(Kit, id: 2, identifier: '2', design_id: 2, design: design2, skin_token: 'skin_token2', skin_mod: 'foo/bar2', settings: kit_settings2) }
+      let(:addon1) { double(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
+      let(:addon2) { double(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
+      let(:addon3) { double(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
+      let(:plugin1) { double(App::Plugin, id: 1, design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
+      let(:plugin2_1) { double(App::Plugin, id: 2, design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
+      let(:plugin2_2) { double(App::Plugin, id: 3, design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
+      let(:plugin3) { double(App::Plugin, id: 4, design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
+      let(:addon_plan_settings1) { double(AddonPlanSettings, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
+      let(:addon_plan_settings2_1) { double(AddonPlanSettings, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
+      let(:addon_plan_settings2_2) { double(AddonPlanSettings, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
+      let(:addon_plan_settings3) { double(AddonPlanSettings, template: {}, app_plugin_id: plugin3.id, plugin: plugin3) }
+      let(:addon_plan1) { double(AddonPlan, addon: addon1, addon_id: addon1.id, addon_name: 'addon1', kind: 'addon_kind1', settings: [addon_plan_settings1], settings_for: addon_plan_settings1) }
+      let(:addon_plan2) { double(AddonPlan, addon: addon2, addon_id: addon2.id, addon_name: 'addon2', kind: 'addon_kind2', settings: [addon_plan_settings2_1, addon_plan_settings2_2]) }
+      let(:addon_plan3) { double(AddonPlan, addon: addon3, addon_id: addon3.id, addon_name: 'addon3', kind: 'addon_kind3', settings: [addon_plan_settings3], settings_for: nil) }
 
       before do
         site.stub_chain(:addon_plans, :includes, :order) { [addon_plan1, addon_plan2, addon_plan3] }

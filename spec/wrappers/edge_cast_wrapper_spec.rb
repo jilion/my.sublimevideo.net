@@ -3,7 +3,7 @@ require 'fast_spec_helper'
 require 'wrappers/edge_cast_wrapper'
 
 describe EdgeCastWrapper do
-  let(:client) { mock('EdgeCast') }
+  let(:client) { double('EdgeCast') }
 
   before { Librato.stub(:increment) }
 

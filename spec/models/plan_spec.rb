@@ -31,10 +31,6 @@ describe Plan do
   describe "Validations" do
     subject { create(:plan) }
 
-    [:name, :cycle, :video_views, :price, :support_level].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:video_views) }
     it { should validate_presence_of(:cycle) }
@@ -44,7 +40,7 @@ describe Plan do
       build(:plan, price: nil).should have(1).error_on(:price)
     end
 
-    describe "uniqueness of name scoped by cycle" do
+    describe "uniqueness of name all by cycle" do
       before { create(:plan, name: "foo", cycle: "month") }
 
       it { build(:plan, name: "foo", cycle: "month").should_not be_valid }
@@ -90,7 +86,6 @@ describe Plan do
       specify { build(:plan, cycle: "month", name: "comet").title.should eq "Comet Plan" }
       specify { build(:plan, cycle: "year", name: "comet").title.should eq "Comet Plan (yearly)" }
     end
-
   end
 
 end

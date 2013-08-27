@@ -10,7 +10,7 @@ require 'uploaders/stats_export_uploader'
 require 'wrappers/s3_wrapper'
 
 describe StatsExportUploader do
-  let(:stat_export) { stub(
+  let(:stat_export) { double(
     site_hostname: 'example.com',
     from: Time.utc(2012,1,20),
     to: Time.utc(2012,4,20)
@@ -18,7 +18,7 @@ describe StatsExportUploader do
   let(:csv) { fixture_file('stats_export.csv') }
   let(:uploader) { StatsExportUploader.new(stat_export, :file) }
 
-  before { Rails.stub(:env) { mock('test', to_s: 'test', test?: true) } }
+  before { Rails.stub(:env) { double('test', to_s: 'test', test?: true) } }
   before { uploader.store!(csv) }
 
   it "has stats_exports S3.bucket" do

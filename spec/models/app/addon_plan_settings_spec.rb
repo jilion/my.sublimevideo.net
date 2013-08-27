@@ -6,12 +6,6 @@ describe AddonPlanSettings do
     it { should belong_to(:plugin).class_name('App::Plugin') }
   end
 
-  describe "Validations" do
-    [:addon_plan, :plugin, :template].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-  end
-
   describe '.get' do
     before do
       @addon = create(:addon, name: 'foo')

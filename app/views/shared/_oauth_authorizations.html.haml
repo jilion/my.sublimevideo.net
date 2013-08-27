@@ -1,12 +1,16 @@
 %table
   %tr
     %th Application Name
+    %th Token
     %th Issued at
-    %th &nbsp;
+    %th Expires at
+    %th Revoke
   - authorizations.each do |authorization|
     = content_tag_for :tr, authorization do
       %td= link_to authorization.client_application.name, authorization.client_application.url
+      %td= authorization.token
       %td= authorization.authorized_at
+      %td= authorization.expires_at
       %td
         = form_tag revoke_path, method: 'delete', data: { confirm: 'Are your sure?' } do
           = hidden_field_tag 'token', authorization.token

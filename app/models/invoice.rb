@@ -7,8 +7,6 @@ class Invoice < ActiveRecord::Base
 
   uniquify :reference, chars: Array('a'..'z') - ['o'] + Array('1'..'9')
 
-  attr_accessible :site, :renew
-
   # ================
   # = Associations =
   # ================
@@ -18,7 +16,7 @@ class Invoice < ActiveRecord::Base
 
   # Invoice items
   has_many :invoice_items
-  has_many :plan_invoice_items,  class_name: 'InvoiceItem', conditions: { type: 'InvoiceItem::Plan' }
+  has_many :plan_invoice_items, -> { where(type: 'InvoiceItem::Plan') }, class_name: 'InvoiceItem'
 
   has_and_belongs_to_many :transactions
 
@@ -84,23 +82,22 @@ class Invoice < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :paid_between, ->(started_at, ended_at) { between(paid_at: started_at..ended_at) }
+  scope :paid_between, ->(started_at, ended_at) { where(paid_at: started_at..ended_at) }
 
-  scope :paid,           -> { where(state: 'paid').includes(:site).where { sites.refunded_at == nil } }
-  scope :refunded,       -> { where(state: 'paid').includes(:site).where { sites.refunded_at != nil } }
+  scope :paid,           -> { where(state: 'paid').joins(:site).where(sites: { refunded_at: nil }) }
+  scope :refunded,       -> { where(state: 'paid').joins(:site).where.not(sites: { refunded_at: nil }) }
   scope :open_or_failed, -> { where(state: %w[open failed]) }
-  scope :not_canceled,   -> { where { state != 'canceled' } }
+  scope :not_canceled,   -> { where.not(state: 'canceled') }
   scope :not_paid,       -> { where(state: %w[open waiting failed]) }
   scope :renew,          ->(bool = true) { where(renew: bool) }
   scope :site_id,        ->(site_id) { where(site_id: site_id) }
-  scope :user_id,        ->(user_id) { joins(:user).where { user.id == user_id } }
+  scope :user_id,        ->(user_id) { joins(:user).where(user: { id: user_id }) }
 
   scope :for_month, ->(date) { for_period(date.all_month) }
 
   scope :for_period, ->(period) {
-    not_canceled.includes(:invoice_items)
-    .where { invoice_items.started_at >= period.first }.where { invoice_items.started_at <= period.last }
-    .where { invoice_items.ended_at >= period.first }.where { invoice_items.ended_at <= period.last }
+    not_canceled.joins(:invoice_items)
+    .where("invoice_items.started_at >= ? AND invoice_items.started_at <= ?", period.first, period.last)
   }
 
   # sort
@@ -110,8 +107,8 @@ class Invoice < ActiveRecord::Base
   scope :by_user,                ->(way = 'desc') { joins(:user).order("users.name #{way}, users.billing_email #{way}, users.email #{way}") }
   scope :by_invoice_items_count, ->(way = 'desc') { order("invoices.invoice_items_count #{way}") }
 
-  def self.additional_or_conditions
-    ['lower(reference) =~ lower("%#{q}%")']
+  def self.additional_or_conditions(q)
+    ["reference ILIKE '%#{q}%'"]
   end
 
   def self.total_revenue
@@ -123,7 +120,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def last_transaction
-    transactions.order { created_at.asc }.last
+    transactions.order(created_at: :asc).last
   end
 
   def refunded?
@@ -138,7 +135,7 @@ class Invoice < ActiveRecord::Base
 
   def no_invoice_for_the_same_month
     first_invoice_item = invoice_items.first
-    if first_invoice_item && site.invoices.not_canceled.where { id != my { id } }.for_month(first_invoice_item.started_at).any?
+    if first_invoice_item && site.invoices.not_canceled.where.not(id: id).for_month(first_invoice_item.started_at).any?
       self.errors.add(:base, 'Already one invoice for this month.')
     end
   end

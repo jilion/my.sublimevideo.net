@@ -4,13 +4,11 @@ class Referrer
 
   field :token
   field :url
-  field :hits,            type: Integer, default: 0
+  field :hits, type: Integer, default: 0
 
   index token: 1, url: 1
   index hits: 1
   index updated_at: 1
-
-  attr_accessible :token, :url, :hits
 
   cattr_accessor :per_page
   self.per_page = 100
@@ -20,7 +18,7 @@ class Referrer
   # ================
 
   def site
-    Site.find_by_token(token)
+    Site.where(token: token).first
   end
 
   # ===============
@@ -28,7 +26,7 @@ class Referrer
   # ===============
 
   validates :token, presence: true
-  validates :url,   presence: true, format: { with: /^https?\:\/\/.*/ }
+  validates :url,   presence: true, format: { with: /https?\:\/\/.*/ }
 
   # ==========
   # = Scopes =

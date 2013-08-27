@@ -19,7 +19,7 @@ TrailingWhitespace:
   Enabled: true
 
 # Use two spaces per indentation level.
-Indentation:
+CaseIndentation:
   Enabled: true
 
 # Use empty lines between defs and to break up a method into logical paragraphs.

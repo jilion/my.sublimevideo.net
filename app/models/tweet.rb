@@ -26,8 +26,6 @@ class Tweet
 
   KEYWORDS = ['jilion', 'sublimevideo', 'aelios', 'aeliosapp', 'videojs', 'jw player']
 
-  attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
-
   scope :keywords,          ->(keywords) { where(keywords: keywords) }
   scope :favorites,         -> { where(favorited: true) }
   scope :by_date,           ->(way = 'desc') { order_by([:tweeted_at, way]) }
@@ -52,7 +50,7 @@ class Tweet
         while search = remote_search(keyword, max_id: max_id) and search.results.present?
           search.results.each do |tweet|
             if t = self.where(tweet_id: tweet.id).first
-              t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
+              t.add_to_set(keywords: keyword) unless t.keywords.include?(keyword)
             else
               self.create_from_twitter_tweet!(tweet)
             end

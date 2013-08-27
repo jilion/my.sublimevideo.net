@@ -16,7 +16,7 @@ describe Admin::SitesController do
     end
 
     it "responds with success to GET :edit" do
-      Site.should_receive(:find_by_token!).with('abc123') { mock_site }
+      Site.stub_chain(:where, :first!) { mock_site }
 
       get :edit, id: 'abc123'
       response.should render_template(:edit)
@@ -24,28 +24,28 @@ describe Admin::SitesController do
 
     describe "PUT :update" do
       before do
-        Site.should_receive(:find_by_token!).with('abc123') { mock_site }
+      Site.stub_chain(:where, :first!) { mock_site }
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'mode' => 'beta', 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+        mock_site.should_receive(:update).with('mode' => 'beta', 'tag_list' => ['foo']) { true }
 
         put :update, id: 'abc123', site: { mode: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds with success to failing PUT :update" do
-        mock_site.should_receive(:update_attributes) { false }
+        mock_site.should_receive(:update) { false }
 
-        put :update, id: 'abc123', site: {}
+        put :update, id: 'abc123', site: { mode: 'beta' }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end
 
     it "responds with redirect to successful PUT :update_design_subscription" do
-      Site.should_receive(:find_by_token!).with('abc123') { mock_site }
+      Site.stub_chain(:where, :first!) { mock_site }
       Design.stub(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
-      mock_service = mock('SiteManager')
+      mock_service = double('SiteManager')
       SiteManager.stub(:new).with(mock_site) { mock_service }
 
       mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
@@ -59,21 +59,19 @@ describe Admin::SitesController do
     before { sign_in :admin, authenticated_admin(roles: ['marcom']) }
 
     describe "PUT :update" do
-      before do
-        Site.should_receive(:find_by_token!).with('abc123') { mock_site }
-      end
+      before { Site.stub_chain(:where, :first!) { mock_site } }
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
+        mock_site.should_receive(:update).with('tag_list' => ['foo']) { true }
 
         put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds without success to failing PUT :update" do
-        mock_site.should_receive(:update_attributes) { false }
+        mock_site.should_receive(:update) { false }
 
-        put :update, id: 'abc123', site: {}
+        put :update, id: 'abc123', site: { foo: 'bar' }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end

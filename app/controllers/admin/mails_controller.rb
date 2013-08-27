@@ -11,7 +11,7 @@ class Admin::MailsController < Admin::AdminController
     params[:by_date]   = 'desc' unless params[:by_date]
     templates_and_logs = !(params[:mail_logs] || params[:mail_templates])
     if params[:mail_logs] || templates_and_logs
-      @mail_logs = apply_scopes(MailLog.scoped).page(params[:page])
+      @mail_logs = apply_scopes(MailLog.all).page(params[:page])
     end
     if params[:mail_templates] || templates_and_logs
       @mail_templates = apply_scopes(MailTemplate.not_archived).page(params[:page])
@@ -28,7 +28,7 @@ class Admin::MailsController < Admin::AdminController
   # POST /mails/confirm
   def confirm
     @user = User.first
-    _find_mail_template(params[:mail][:template_id])
+    _set_mail_template(params[:mail][:template_id])
   end
 
   # POST /mails
@@ -39,7 +39,7 @@ class Admin::MailsController < Admin::AdminController
 
   private
 
-  def _find_mail_template(template_id)
+  def _set_mail_template(template_id)
     @mail_template = MailTemplate.find(template_id)
   rescue ActiveRecord::RecordNotFound
     redirect_to [:new, :admin, :mail], alert: 'Please select an email template!'

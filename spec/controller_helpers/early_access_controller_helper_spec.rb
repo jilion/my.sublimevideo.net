@@ -9,7 +9,7 @@ describe EarlyAccessControllerHelper do
   end
 
   describe "current_user_early_access" do
-    let(:current_user) { mock('user', early_access: ['video']) }
+    let(:current_user) { double('user', early_access: ['video']) }
     before { Controller.stub(:current_user) { current_user } }
 
     context "in dev mode" do

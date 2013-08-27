@@ -1,17 +1,17 @@
 require 'fast_spec_helper'
 
 require 'services/user_support_manager'
-require 'models/support_request'
+require 'models/support_request' unless defined?(SupportRequest)
 
 User = Class.new unless defined? User
 Site = Class.new unless defined? Site
 
 describe SupportRequest do
 
-  let(:user_without_zendesk_id) { stub(:user, id: 1, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: false) }
-  let(:user_with_zendesk_id)    { stub(:user, id: 2, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: true, zendesk_id: 1234) }
-  let(:user_without_name)       { stub(:user, id: 3, name_or_email: 'remy@rymai.me', email: 'remy@rymai.me', zendesk_id?: false) }
-  let(:site)                    { stub(:site, token: 'abcd1234', hostname: 'rymai.me', user: user_without_zendesk_id) }
+  let(:user_without_zendesk_id) { double(:user, id: 1, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: false) }
+  let(:user_with_zendesk_id)    { double(:user, id: 2, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: true, zendesk_id: 1234) }
+  let(:user_without_name)       { double(:user, id: 3, name_or_email: 'remy@rymai.me', email: 'remy@rymai.me', zendesk_id?: false) }
+  let(:site)                    { double(:site, token: 'abcd1234', hostname: 'rymai.me', user: user_without_zendesk_id) }
   let(:params) {
     {
       user_id: user_without_zendesk_id.id, type: 'other', subject: 'SUBJECT', message: 'DESCRIPTION',
@@ -24,12 +24,12 @@ describe SupportRequest do
   let(:vip_support_request)             { described_class.new(params.merge(user_id: user_without_zendesk_id.id)) }
   let(:support_request_without_name)    { described_class.new(params.merge(user_id: user_without_name.id)) }
   before do
-    User.stub(:find_by_id).with(1) { user_without_zendesk_id }
-    User.stub(:find_by_id).with(2) { user_with_zendesk_id }
-    User.stub(:find_by_id).with(3) { user_without_name }
-    User.stub(:find_by_id).with(nil) { nil }
-    Site.stub(:find_by_token).with('abcd1234') { site }
-    Site.stub(:find_by_token).with(nil) { nil }
+    User.stub(:where).with(id: 1) { double(first: user_without_zendesk_id) }
+    User.stub(:where).with(id: 2) { double(first: user_with_zendesk_id) }
+    User.stub(:where).with(id: 3) { double(first: user_without_name) }
+    User.stub(:where).with(id: nil) { double(first: nil) }
+    Site.stub(:where).with(token: 'abcd1234') { double(first: site) }
+    Site.stub(:where).with(token: nil) { double(first: nil) }
   end
 
   describe 'Factory' do
@@ -79,7 +79,7 @@ describe SupportRequest do
   describe '#to_params' do
     context 'user has email support' do
       before do
-        UserSupportManager.should_receive(:new) { stub(level: 'email') }
+        UserSupportManager.should_receive(:new) { double(level: 'email') }
       end
 
       context 'user has no name' do
@@ -95,7 +95,7 @@ describe SupportRequest do
 
     context 'user has vip support' do
       before do
-        UserSupportManager.should_receive(:new) { stub(level: 'vip_email') }
+        UserSupportManager.should_receive(:new) { double(level: 'vip_email') }
       end
 
       it 'generates a hash of the params' do
@@ -109,7 +109,7 @@ describe SupportRequest do
 
     context 'user has a zendesk id' do
       before do
-        UserSupportManager.should_receive(:new) { stub(level: 'email') }
+        UserSupportManager.should_receive(:new) { double(level: 'email') }
       end
 
       it 'generates a hash of the params' do
@@ -129,5 +129,6 @@ end
 #  message         :text      not null
 #  requester_name  :string
 #  requester_email :string
+#
 #
 #

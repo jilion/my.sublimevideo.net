@@ -1,10 +1,7 @@
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Transaction < ActiveRecord::Base
-
   uniquify :order_id, chars: Array('a'..'z') + Array('0'..'9'), length: 30
-
-  attr_accessible :invoices
 
   # ================
   # = Associations =
@@ -59,7 +56,7 @@ class Transaction < ActiveRecord::Base
   # =================
 
   def self.charge_invoices
-    User.active.includes(:invoices).merge(Invoice.open_or_failed).find_in_batches(batch_size: 100) do |users|
+    User.active.joins(:invoices).merge(Invoice.open_or_failed).find_in_batches(batch_size: 100) do |users|
       now = Time.now.utc
       users.each_with_index do |user, index|
         delay(at: (now + index * 5.seconds).to_i).charge_invoices_by_user_id(user.id)
@@ -69,7 +66,7 @@ class Transaction < ActiveRecord::Base
 
   def self.charge_invoices_by_user_id(user_id)
     if user = User.active.find(user_id)
-      invoices = user.invoices.open_or_failed.all
+      invoices = user.invoices.open_or_failed.to_a
 
       invoices.each do |invoice|
         if invoice.transactions.failed.count >= 15
@@ -192,7 +189,7 @@ private
 
   # before_validation
   def reject_paid_invoices
-    self.invoices.reject! { |invoice| invoice.paid? }
+    self.invoices = invoices.reject { |invoice| invoice.paid? }
   end
 
   # before_validation

@@ -43,10 +43,6 @@ describe User do
   end
 
   describe "Validations" do
-    [:name, :email, :postal_code, :country, :confirmation_comment, :remember_me, :password, :billing_email, :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :hidden_notice_ids, :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:email) }
     it { should allow_value('test@example.com').for(:billing_email) }
@@ -88,14 +84,6 @@ describe User do
           user.should be_valid
         end
       end
-    end
-  end
-
-  context "invited" do
-    subject { create(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(validate: false) } }
-
-    it "should not be able to update enthusiast_id" do
-      expect { subject.update_attributes(enthusiast_id: 13) }.to raise_error
     end
   end
 
@@ -146,7 +134,7 @@ describe User do
         subject do
           user = create(:user_no_cc)
           user.reload
-          user.update_attributes(valid_cc_attributes)
+          user.update(valid_cc_attributes)
           user
         end
 
@@ -229,7 +217,7 @@ describe User do
       end
     end
 
-    describe "after_update :zendesk_update" do
+    describe "after_update :_zendesk_update" do
       let(:user) { create(:user) }
       before do
         NewsletterSubscriptionManager.stub(:sync_from_service)
@@ -503,73 +491,6 @@ describe User do
       end
     end
 
-    describe "#activated_deals" do
-      subject { create(:user) }
-
-      context "without deals activated" do
-        its(:activated_deals) { should be_empty }
-      end
-
-      context "with deals activated" do
-        let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-        let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before do
-          @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
-          @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
-        end
-
-        its(:activated_deals) { should eq [deal2, deal1] }
-      end
-    end
-
-    describe "#latest_activated_deal" do
-      subject { create(:user) }
-
-      context "without deals activated" do
-        its(:latest_activated_deal) { should be_nil }
-      end
-
-      context "with deals activated" do
-        let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-        let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before do
-          @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
-          @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
-        end
-
-        its(:latest_activated_deal) { should eq deal2 }
-
-        it "returns a deal even if it not active anymore" do
-          Timecop.travel(4.days.from_now) do
-            subject.latest_activated_deal.should eq deal2
-          end
-        end
-      end
-    end
-
-    describe "#latest_activated_deal_still_active" do
-      subject { create(:user) }
-
-      context "without deals activated" do
-        its(:latest_activated_deal_still_active) { should be_nil }
-      end
-
-      context "with deals activated" do
-        let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-        let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before do
-          @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
-          @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
-        end
-
-        it "returns only a deal that is still active" do
-          Timecop.travel(4.days.from_now) do
-            subject.latest_activated_deal_still_active.should be_nil
-          end
-        end
-      end
-    end
-
     describe '#billable?' do
       let(:user) { create(:user) }
       let(:site) { create(:site, user: user) }
@@ -662,16 +583,8 @@ describe User do
         @user_active  = create(:user)
       end
 
-      describe ".invited" do
-        specify { User.invited.all.should =~ [@user_invited] }
-      end
-
-      describe ".beta" do
-        specify { User.beta.all.should =~ [@user_beta] }
-      end
-
       describe ".active" do
-        specify { User.active.all.should =~ [@user_active] }
+        specify { User.active.should =~ [@user_active] }
       end
     end
 
@@ -684,20 +597,20 @@ describe User do
       end
 
       describe ".without_cc" do
-        specify { User.without_cc.all.should =~ [@user_no_cc] }
+        specify { User.without_cc.should =~ [@user_no_cc] }
       end
 
       describe ".with_cc" do
-        specify { User.with_cc.all.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
+        specify { User.with_cc.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
       end
 
       describe ".cc_expire_this_month" do
-        specify { User.cc_expire_this_month.all.should =~ [@user_cc_expire_on] }
+        specify { User.cc_expire_this_month.should =~ [@user_cc_expire_on] }
       end
 
       describe ".last_credit_card_expiration_notice_sent_before" do
-        specify { User.last_credit_card_expiration_notice_sent_before(15.days.ago).all.should =~ [@user_last_credit_card_expiration_notice] }
-        specify { User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second).all.should be_empty }
+        specify { User.last_credit_card_expiration_notice_sent_before(15.days.ago).should =~ [@user_last_credit_card_expiration_notice] }
+        specify { User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second).should be_empty }
       end
     end
 
@@ -718,11 +631,11 @@ describe User do
       end
 
       describe ".free" do
-        specify { User.free.all.should =~ [site1.user, site2.user, site3.user] }
+        specify { User.free.should =~ [site1.user, site2.user, site3.user] }
       end
 
       describe ".paying" do
-        specify { User.paying.all.should =~ [site6.user] }
+        specify { User.paying.should =~ [site6.user] }
       end
     end
 
@@ -732,9 +645,9 @@ describe User do
         @user2 = create(:user, newsletter: false)
       end
 
-      specify { User.newsletter.all.should eq [@user1] }
-      specify { User.newsletter(true).all.should eq [@user1] }
-      specify { User.newsletter(false).all.should eq [@user2] }
+      specify { User.newsletter.should eq [@user1] }
+      specify { User.newsletter(true).should eq [@user1] }
+      specify { User.newsletter(false).should eq [@user2] }
     end
 
     describe ".created_on" do
@@ -743,8 +656,8 @@ describe User do
         @user2 = create(:user, created_at: 2.days.ago)
       end
 
-      specify { User.created_on(3.days.ago).all.should eq [@user1] }
-      specify { User.created_on(2.days.ago).all.should eq [@user2] }
+      specify { User.created_on(3.days.ago).should eq [@user1] }
+      specify { User.created_on(2.days.ago).should eq [@user2] }
     end
 
     describe ".search" do
@@ -756,12 +669,12 @@ describe User do
         create(:site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
       end
 
-      specify { User.search("remy").all.should eq [@user1] }
-      specify { User.search("bob").all.should eq [@user1] }
-      # specify { User.search(".dev").all.should eq [@user1] }
-      specify { User.search("192.168").all.should eq [@user1] }
-      specify { User.search("marcel").all.should eq [@user1] }
-      specify { User.search("jacques").all.should eq [@user1] }
+      specify { User.search("remy").should eq [@user1] }
+      specify { User.search("bob").should eq [@user1] }
+      # specify { User.search(".dev").should eq [@user1] }
+      specify { User.search("192.168").should eq [@user1] }
+      specify { User.search("marcel").should eq [@user1] }
+      specify { User.search("jacques").should eq [@user1] }
     end
 
     describe ".sites_tagged_with" do
@@ -791,7 +704,20 @@ describe User do
         create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
       end
 
-      specify { User.with_page_loads_in_the_last_30_days.all.should =~ [user1, user2] }
+      specify { User.with_page_loads_in_the_last_30_days.should =~ [user1, user2] }
+    end
+
+    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons do
+      let!(:site1) { create(:site) }
+      let!(:site2) { create(:site) }
+      let!(:site3) { create(:site) }
+
+      before {
+        create(:billable_item, site: site1, item: @stats_addon_plan_2, state: 'subscribed')
+        VideoTag.should_receive(:site_tokens).with(with_invalid_uid: true) { [site2.token] }
+      }
+
+      specify { User.with_stats_realtime_addon_or_invalid_video_tag_data_uid.should =~ [site1.user, site2.user] }
     end
   end # Scopes
 

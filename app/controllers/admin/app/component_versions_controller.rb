@@ -5,7 +5,7 @@ class Admin
       respond_to :html, only: [:destroy]
       respond_to :json
 
-      before_filter :find_component
+      before_filter :_set_component
 
       # GET /app/components/:component_id/versions
       def index
@@ -15,7 +15,7 @@ class Admin
 
       # GET /app/components/:component_id/versions/:id
       def show
-        @component_version = @component.versions.with_deleted.find_by_version!(params[:id])
+        @component_version = @component.versions.with_deleted.where(version: params[:id]).first!
         respond_with @component_version do |format|
           format.zip { redirect_to @component_version.zip.url }
         end
@@ -23,27 +23,30 @@ class Admin
 
       # POST /app/components/:component_id/versions
       def create
-        @component_version = @component.versions.build(params[:version], as: :admin)
+        @component_version = @component.versions.build(_version_params)
         ::App::ComponentVersionManager.new(@component_version).create
         respond_with @component_version, location: [:admin, @component]
       end
 
       # DELETE /app/components/:component_id/versions/:id
       def destroy
-        @component_version = @component.versions.find_by_version!(params[:id])
+        @component_version = @component.versions.where(version: params[:id]).first!
         ::App::ComponentVersionManager.new(@component_version).destroy
         respond_with @component_version, location: [:admin, @component]
       end
 
     private
 
-      def find_component
-        @component = ::App::Component.find_by_token!(params[:component_id])
+      def _set_component
+        @component = ::App::Component.where(token: params[:component_id]).first!
       rescue ActiveRecord::RecordNotFound
         body = { status: 404, error: "Component with token '#{params[:component_id]}' could not be found." }
         render request.format.ref => body, status: 404
       end
 
+      def _version_params
+        params.require(:version).permit!
+      end
     end
   end
 end

@@ -4,13 +4,11 @@ class Admin < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :async
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :roles
-
   serialize :roles, Array
 
   has_many :mail_logs, class_name: 'MailLog'
 
-  scope :by_date, ->(way = 'desc') { order { created_at.send(way) } }
+  scope :by_date, ->(way = 'desc') { order(created_at: way.to_sym) }
 
   validates :roles, admin_roles: true
 

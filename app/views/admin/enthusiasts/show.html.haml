@@ -2,12 +2,6 @@
 
 .status
   %h3= "Status"
-  -#%br
-  -#.starred
-  -#  %strong= "Starred:"
-  -#  %span{ id: "star_enthusiast_#{@enthusiast.id}" }
-  -#    = render "star_form", enthusiast: @enthusiast
-  -#%br
 
   .invited
     - if @enthusiast.interested_in_beta && @enthusiast.confirmed? && @enthusiast.invited_at?

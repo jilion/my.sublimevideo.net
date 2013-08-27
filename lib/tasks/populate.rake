@@ -130,7 +130,7 @@ namespace :user do
       email = argv("email")
       return if email.nil?
 
-      User.find_by_email(email).tap do |user|
+      User.where(email: email).first.tap do |user|
         date = if user.cc_expire_on == Time.now.utc.end_of_month.to_date
           puts "Update credit card for #{email}, make it expire in 2 years..."
           2.years.from_now
@@ -138,7 +138,7 @@ namespace :user do
           puts "Update credit card for #{email}, make it expire at the end of the month..."
           Time.now.utc.end_of_month.to_date
         end
-        user.update_attributes({
+        user.update({
           cc_type: 'visa',
           cc_full_name: user.name,
           cc_number: "4111111111111111",
@@ -155,7 +155,7 @@ namespace :user do
       email = argv("email")
       return if email.nil?
 
-      User.find_by_email(email).tap do |user|
+      User.where(email: email).first.tap do |user|
         if user.suspended?
           puts "Unsuspend #{email}..."
           user.update_attribute(:state, 'active')

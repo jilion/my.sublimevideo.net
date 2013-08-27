@@ -1,6 +1,4 @@
 class ClientApplication < ActiveRecord::Base
-
-  attr_accessible :name, :url, :callback_url, :support_url
   attr_accessor :token_callback_url
 
   belongs_to :user
@@ -17,7 +15,7 @@ class ClientApplication < ActiveRecord::Base
   validates :support_url, :callback_url, format: { with: URI::regexp(%w[http https]), allow_blank: true }
 
   def self.find_token(token_key)
-    token = OauthToken.includes(:client_application).find_by_token(token_key)
+    token = OauthToken.includes(:client_application).where(token: token_key).first
     if token && token.authorized?
       token
     else

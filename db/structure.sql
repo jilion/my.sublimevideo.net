@@ -51,8 +51,8 @@ CREATE TABLE addon_plan_settings (
     addon_plan_id integer NOT NULL,
     app_plugin_id integer,
     template text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -86,8 +86,8 @@ CREATE TABLE addon_plans (
     price integer NOT NULL,
     availability character varying(255) NOT NULL,
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     stable_at timestamp without time zone
 );
 
@@ -121,8 +121,8 @@ CREATE TABLE addons (
     design_dependent boolean DEFAULT true NOT NULL,
     parent_addon_id integer,
     kind character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -166,8 +166,8 @@ CREATE TABLE admins (
     locked_at timestamp without time zone,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     reset_password_sent_at timestamp without time zone,
     invitation_accepted_at timestamp without time zone,
     invitation_limit integer,
@@ -175,7 +175,8 @@ CREATE TABLE admins (
     invited_by_type character varying(255),
     roles text,
     unconfirmed_email character varying(255),
-    authentication_token character varying(255)
+    authentication_token character varying(255),
+    invitation_created_at timestamp without time zone
 );
 
 
@@ -207,8 +208,8 @@ CREATE TABLE app_component_versions (
     app_component_id integer,
     version character varying(255),
     zip character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     dependencies hstore,
     deleted_at timestamp without time zone
 );
@@ -241,8 +242,8 @@ CREATE TABLE app_components (
     id integer NOT NULL,
     token character varying(255),
     name character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -277,8 +278,8 @@ CREATE TABLE app_plugins (
     token character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
     condition text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     mod character varying(255)
 );
 
@@ -312,8 +313,8 @@ CREATE TABLE billable_item_activities (
     item_type character varying(255) NOT NULL,
     item_id integer NOT NULL,
     state character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -346,8 +347,8 @@ CREATE TABLE billable_items (
     item_type character varying(255) NOT NULL,
     item_id integer NOT NULL,
     state character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -383,8 +384,8 @@ CREATE TABLE client_applications (
     callback_url character varying(255),
     key character varying(40),
     secret character varying(40),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -416,8 +417,8 @@ CREATE TABLE deal_activations (
     deal_id integer,
     user_id integer,
     activated_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -454,8 +455,8 @@ CREATE TABLE deals (
     availability_scope character varying(255),
     started_at timestamp without time zone,
     ended_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -491,8 +492,8 @@ CREATE TABLE designs (
     availability character varying(255) NOT NULL,
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     stable_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     skin_mod character varying(255)
 );
 
@@ -599,8 +600,8 @@ CREATE TABLE feedbacks (
     next_player character varying(255),
     reason character varying(255) NOT NULL,
     comment text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     kind character varying(255)
 );
 
@@ -639,8 +640,8 @@ CREATE TABLE invoice_items (
     discounted_percentage double precision,
     price integer,
     amount integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     deal_id integer
 );
 
@@ -684,8 +685,8 @@ CREATE TABLE invoices (
     invoice_items_amount integer,
     invoice_items_count integer DEFAULT 0,
     transactions_count integer DEFAULT 0,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     paid_at timestamp without time zone,
     last_failed_at timestamp without time zone,
     renew boolean DEFAULT false,
@@ -733,8 +734,8 @@ CREATE TABLE kits (
     design_id integer NOT NULL,
     name character varying(255) DEFAULT NULL::character varying NOT NULL,
     settings text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     identifier character varying(255)
 );
 
@@ -769,8 +770,8 @@ CREATE TABLE mail_logs (
     criteria text,
     user_ids text,
     snapshot text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -802,8 +803,8 @@ CREATE TABLE mail_templates (
     title character varying(255),
     subject character varying(255),
     body text,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     archived_at timestamp without time zone
 );
 
@@ -844,8 +845,8 @@ CREATE TABLE oauth_tokens (
     authorized_at timestamp without time zone,
     invalidated_at timestamp without time zone,
     expires_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -879,8 +880,8 @@ CREATE TABLE plans (
     cycle character varying(255),
     video_views integer,
     price integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     support_level integer DEFAULT 0,
     stats_retention_days integer
 );
@@ -926,8 +927,8 @@ CREATE TABLE sites (
     token character varying(255),
     state character varying(255),
     archived_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     accessible_stage character varying(255) DEFAULT 'beta'::character varying,
     google_rank integer,
     alexa_rank integer,
@@ -1066,8 +1067,8 @@ CREATE TABLE transactions (
     pay_id character varying(255),
     nc_status integer,
     status integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -1117,8 +1118,8 @@ CREATE TABLE users (
     cc_last_digits character varying(255),
     cc_expire_on date,
     cc_updated_at timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
     zendesk_id integer,
@@ -1166,7 +1167,8 @@ CREATE TABLE users (
     vip boolean DEFAULT false,
     early_access text,
     last_credit_card_expiration_notice_sent_at timestamp without time zone,
-    billing_email character varying(255)
+    billing_email character varying(255),
+    invitation_created_at timestamp without time zone
 );
 
 
@@ -1662,6 +1664,13 @@ ALTER TABLE ONLY versions
 
 
 --
+-- Name: index_addon_plan_settings_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_addon_plan_settings_on_addon_plan_id_and_app_plugin_id ON addon_plan_settings USING btree (addon_plan_id, app_plugin_id);
+
+
+--
 -- Name: index_addon_plans_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1704,6 +1713,20 @@ CREATE UNIQUE INDEX index_admins_on_reset_password_token ON admins USING btree (
 
 
 --
+-- Name: index_app_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_app_components_on_name ON app_components USING btree (name);
+
+
+--
+-- Name: index_app_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_app_components_on_token ON app_components USING btree (token);
+
+
+--
 -- Name: index_app_plugins_on_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1715,13 +1738,6 @@ CREATE INDEX index_app_plugins_on_design_id ON app_plugins USING btree (design_i
 --
 
 CREATE INDEX index_app_plugins_on_design_id_and_addon_id ON app_plugins USING btree (design_id, addon_id);
-
-
---
--- Name: index_app_settings_templates_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_app_settings_templates_on_addon_plan_id_and_app_plugin_id ON addon_plan_settings USING btree (addon_plan_id, app_plugin_id);
 
 
 --
@@ -1907,20 +1923,6 @@ CREATE UNIQUE INDEX index_plans_on_token ON plans USING btree (token);
 
 
 --
--- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_components_on_name ON app_components USING btree (name);
-
-
---
--- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_components_on_token ON app_components USING btree (token);
-
-
---
 -- Name: index_sites_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2091,6 +2093,8 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 --
 -- PostgreSQL database dump complete
 --
+
+SET search_path TO "$user",public;
 
 INSERT INTO schema_migrations (version) VALUES ('20100510081902');
 
@@ -2303,3 +2307,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130531141047');
 INSERT INTO schema_migrations (version) VALUES ('20130603122845');
 
 INSERT INTO schema_migrations (version) VALUES ('20130605081105');
+
+INSERT INTO schema_migrations (version) VALUES ('20130821142238');

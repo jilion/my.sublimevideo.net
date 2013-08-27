@@ -16,13 +16,13 @@ class BillableItem < Subscription
 
   after_save ->(billable_item) do
     if billable_item.state_changed?
-      billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin)
+      billable_item.site.billable_item_activities.create(item: billable_item.item, state: billable_item.state)
       _increment_librato
     end
   end
 
   after_destroy ->(billable_item) do
-    billable_item.site.billable_item_activities.create({ item: billable_item.item, state: 'canceled' }, as: :admin)
+    billable_item.site.billable_item_activities.create(item: billable_item.item, state: 'canceled')
     _increment_librato(state: 'canceled')
   end
 

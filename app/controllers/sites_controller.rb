@@ -4,9 +4,9 @@ class SitesController < ApplicationController
 
   before_filter :redirect_suspended_user
   before_filter :activate_deal_from_cookie, only: [:index]
-  before_filter :find_sites_or_redirect_to_new_site, except: [:new, :create]
-  before_filter :find_sites, only: [:new, :create]
-  before_filter :find_site_by_token!, only: [:edit, :update, :destroy]
+  before_filter :_set_sites_or_redirect_to_new_site, except: [:new, :create]
+  before_filter :_set_sites, only: [:new, :create]
+  before_filter :_set_site, only: [:edit, :update, :destroy]
 
   has_scope :by_hostname, :by_date, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags
 
@@ -27,7 +27,7 @@ class SitesController < ApplicationController
 
   # PUT /sites/:id
   def update
-    SiteManager.new(@site).update(params[:site])
+    SiteManager.new(@site).update(_site_params)
 
     respond_with(@site, location: [:edit, @site])
   end
@@ -41,6 +41,12 @@ class SitesController < ApplicationController
         format.html { render :edit }
       end
     end
+  end
+
+  private
+
+  def _site_params
+    params.require(:site).permit(:hostname, :extra_hostnames, :staging_hostnames, :dev_hostnames, :path, :wildcard)
   end
 
 end

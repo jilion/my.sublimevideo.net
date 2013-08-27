@@ -26,4 +26,4 @@ class AdminSublimeVideo.Views.TimeRangeTitleView extends Backbone.View
   #
   _toggleDatePicker: (event) ->
     event.stopPropagation()
-    AdminSublimeVideo.datePickersView.render()
+    AdminSublimeVideo.datePickersView.toggle()

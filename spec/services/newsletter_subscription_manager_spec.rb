@@ -13,7 +13,7 @@ describe NewsletterSubscriptionManager do
   let(:user2) { OpenStruct.new(id: 13, beta?: false, newsletter?: true, email_was: 'old_user2@example.org', email: 'user2@example.org', name: 'User2 Example') }
   let(:user3) { OpenStruct.new(id: 12, beta?: true, newsletter?: false, email_was: nil, email: 'user@example.org', name: 'User Example') }
   let(:service) { described_class.new(user1) }
-  let(:stubbed_service) { stub }
+  let(:stubbed_service) { double }
 
   describe '.subscribe' do
     it 'create a new instance and calls #subscribe on it' do

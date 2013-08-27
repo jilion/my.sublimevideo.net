@@ -3,7 +3,7 @@ class SupportRequestsController < ApplicationController
 
   # POST /help
   def create
-    @support_request = SupportRequest.new(params[:support_request].merge(user_id: current_user.id))
+    @support_request = SupportRequest.new(_support_request_params)
     manager = SupportRequestManager.new(@support_request)
 
     respond_with(@support_request) do |format|
@@ -13,6 +13,13 @@ class SupportRequestsController < ApplicationController
         format.html { render 'pages/help' }
       end
     end
+  end
+
+  private
+
+  def _support_request_params
+    params.require(:support_request).permit(:site_token, :subject, :message, :test_page, :env, :uploads).merge(
+      user_id: current_user.id)
   end
 
 end

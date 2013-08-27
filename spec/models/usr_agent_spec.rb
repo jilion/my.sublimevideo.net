@@ -3,10 +3,6 @@ require 'spec_helper'
 describe UsrAgent do
 
   describe "Validations" do
-    [:token, :platforms, :browsers, :month].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:token) }
     it { should validate_presence_of(:month) }
   end
@@ -14,14 +10,14 @@ describe UsrAgent do
   describe ".create_or_update_from_trackers!" do
     let(:log_file) { fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
     before do
-      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
+      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
       @trackers = LogAnalyzer.parse(log_file, 'VoxcastUserAgentsLogFileFormat')
       create(:site).update_attribute(:token, 'ibvjcopp')
       UsrAgent.create_or_update_from_trackers!(@log, @trackers)
     end
 
-    let(:site) { Site.find_by_token('ibvjcopp') }
+    let(:site) { Site.where(token: 'ibvjcopp').first }
 
     it { UsrAgent.count.should == 1 }
 

@@ -10,7 +10,7 @@ class AddonPlanSettingsPopulator < Populator
   end
 
   def execute
-    @addon_plan_settings_record = AddonPlanSettings.create(@attributes, without_protection: true)
+    @addon_plan_settings_record = AddonPlanSettings.create(@attributes)
   end
 
   def set_template

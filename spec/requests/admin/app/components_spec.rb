@@ -7,7 +7,7 @@ describe "Admin::App::Components JSON actions" do
     admin.reset_authentication_token!
     admin
   }
-  let(:component) { App::Component.create({ name: 'name', token: 'token' }, as: :admin) }
+  let(:component) { App::Component.create(name: 'name', token: 'token') }
   let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev' } }
 
   describe "Auhtentication" do

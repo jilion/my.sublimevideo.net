@@ -81,7 +81,7 @@ feature 'Billing address update' do
         sign_in_as :user_with_site
         create(:billable_item, site: @current_user.sites.first, item: create(:addon_plan), state: 'subscribed')
         @current_user.should be_billable
-        @current_user.update_attributes(billing_address_1: '', billing_email: '')
+        @current_user.update(billing_address_1: '', billing_email: '')
         go 'my', 'account'
         page.should have_content 'Your billing address is incomplete.'
         page.should have_content 'No billing email address specified.'

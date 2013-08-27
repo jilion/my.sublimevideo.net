@@ -1,4 +1,3 @@
-# encoding: utf-8
 class TailorMadePlayerRequestsTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -26,13 +25,13 @@ class TailorMadePlayerRequestsTrend
     end
 
     scope.each do |trend|
-      trend.update_attributes(trend_hash(trend.d))
+      trend.update(trend_hash(trend.d))
     end
   end
 
   def self.trend_hash(day)
     hash = {
-      d: day.to_time,
+      d: day.utc,
       n: Hash.new(0)
     }
 

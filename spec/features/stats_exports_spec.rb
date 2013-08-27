@@ -24,7 +24,7 @@ feature 'StatsExport' do
     end
   end
 
-  scenario "request and download stats exports", :js do
+  pending "request and download stats exports", :js do
     go 'my', "/sites/#{@site.token}/stats"
 
     current_url.should match %r{sites/#{@site.token}/stats}

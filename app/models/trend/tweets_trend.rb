@@ -1,4 +1,3 @@
-# encoding: utf-8
 class TweetsTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -21,7 +20,7 @@ class TweetsTrend
   def self.trend_hash(day)
     tweets = Tweet.between(tweeted_at: day.beginning_of_day..day.end_of_day).all
     hash = {
-      d: day.to_time,
+      d: day.utc,
       k: Hash.new(0)
     }
 

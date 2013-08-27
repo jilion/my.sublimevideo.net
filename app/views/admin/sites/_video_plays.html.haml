@@ -30,4 +30,4 @@
 
 %p
   All time video plays:
-  = content_tag(:strong, display_integer(Stat::Site::Day.views_sum(token: site.token)))
+  = content_tag(:strong, display_integer(site.views))

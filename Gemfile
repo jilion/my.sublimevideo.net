@@ -1,25 +1,23 @@
 source 'https://rubygems.org'
-source 'https://8dezqz7z7HWea9vtaFwg@gem.fury.io/me/' # thibaud@jilion.com account
+source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com account
 
 ruby '2.0.0'
 
-gem 'bundler'
+gem 'rails', '4.0.0'
+gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
-gem 'rails', '3.2.13'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
-gem 'sublime_video_private_api', '~> 1.0' # hosted on gemfury
+gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'squeel'
-gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
-gem 'mongoid'
+gem 'mongoid', github: 'mongoid/mongoid' # Rails 4 support
 
 # Views
 gem 'haml'
 gem 'rabl'
 gem 'coffee-rails'
-gem 'kaminari'
+gem 'kaminari', github: 'kolodovskyy/kaminari' # https://github.com/amatsuda/kaminari/pull/433
 gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
@@ -34,34 +32,34 @@ gem 'groupdate'
 gem 'chartkick'
 
 # Auth / invitations
-gem 'devise', '~> 2.2.4'
-gem 'devise_invitable'
+gem 'devise', '~> 3.0.0'
+# Until 1.1.9
+gem 'devise_invitable', github: 'scambra/devise_invitable'
 gem 'devise-async'
 
 # API
 gem 'oauth'
-gem 'oauth-plugin'
+gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4 support
 
 # Internals
-gem 'dalli'
 gem 'cache_digests'
 gem 'sidekiq'
-gem 'kiqstand' # Mongoid support for Sidekiq
+gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
 gem 'oj'
 
 gem 'state_machine'
-gem 'paper_trail'
+gem 'paper_trail', github: 'airblade/paper_trail' # Rails 4 support
 gem 'uniquify'
-gem 'acts-as-taggable-on'
+gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on' # Need > 2.4.1
 gem 'paranoia'
 
 gem 'responders'
 gem 'has_scope'
 
-gem 'fog', '~> 1.12'
+gem 'fog'
 gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
@@ -70,35 +68,35 @@ gem 'cocaine'
 
 # CDN
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'certified'
 gem 'edge_cast'
 
 # until github.com/Shopify/active_merchant/pull/724 is merged
 gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
 
-gem 'public_suffix', '1.2.0'
+gem 'public_suffix'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 
 gem 'rubyzip', require: 'zip/zip'
 gem 'mime-types'
 gem 'countries'
+gem 'country_select'
 gem 'snail'
 gem 'PageRankr', require: 'page_rankr'
 gem 'twitter'
 gem 'array_stats'
-gem 'createsend', '~> 2.5' # Campaign Monitor
+gem 'createsend' # Campaign Monitor
 
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
-gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
-gem 'lograge'
+gem 'librato-rails', github: 'librato/librato-rails'
 gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
-gem 'addressable', '2.2.8', require: 'addressable/uri'
+gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
+# gem 'addressabler'
 
 # Stats
 gem 'crack'
@@ -109,57 +107,59 @@ gem 'redis'
 gem 'zendesk_api'
 
 # App
-gem 'solve', '0.4.2'
+gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
-group :assets do
-  gem 'asset_sync'
-  gem 'eco'
-  gem 'uglifier'
-  gem 'execjs'
-  gem 'chosen-rails', github: 'jilion/chosen-rails'
-  gem 'backbone-rails'
-end
+# gem 'eco'
+gem 'uglifier'
+gem 'execjs'
+gem 'backbone-rails'
 gem 'haml_coffee_assets'
 gem 'sass-rails'
+
+gem 'chosen-rails', github: 'jilion/chosen-rails'
+gem 'compass-rails', github: 'milgner/compass-rails', branch: 'rails4'
 
 group :production do
   gem 'rack-google-analytics'
 end
 
 group :staging, :production do
+  gem 'lograge'
   gem 'rack-cache'
   gem 'rack-ssl-enforcer'
-  gem 'unicorn'
+  gem 'unicorn', require: false
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
+  gem 'asset_sync'
+  gem 'memcachier'
+  gem 'dalli'
 end
 
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'launchy',        '2.1.0' # after dependency on addressable ~> 2.3
-  gem 'letter_opener'
-  gem 'em-http-request' # async pusher in populate
+  gem 'launchy'
   gem 'quiet_assets'
   gem 'bullet'
 
   gem 'better_errors'
   gem 'binding_of_caller'
-  # gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+  gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+
+  # gem 'em-http-request' # async pusher in populate
+  # gem 'letter_opener'
 end
 
 group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'
-  gem 'debugger'
   gem 'timecop'
 
   # Javascript test
-  gem 'teabag'
-  gem 'guard-teabag'
+  gem 'teaspoon'
 
   # Rails routes view
   gem 'sextant'
@@ -170,6 +170,7 @@ group :development, :test do
   gem 'guard-livereload', require: false
   gem 'guard-rspec', require: false
   gem 'guard-shell', require: false
+  gem 'guard-teaspoon', require: false
 end
 
 group :test do

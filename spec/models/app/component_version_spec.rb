@@ -3,14 +3,14 @@ require 'spec_helper'
 describe App::ComponentVersion, :fog_mock do
   let(:bucket) { S3Wrapper.buckets[:sublimevideo] }
   let(:zip) { fixture_file('app/e.zip') }
-  let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
+  let(:component) { App::Component.create(name: 'app', token: 'e') }
   let(:attributes) { {
     token: component.token,
     version: '2.0.0',
     dependencies: { app: "1.0.0" },
     zip: zip
   } }
-  let(:component_version) { App::ComponentVersion.create(attributes, as: :admin) }
+  let(:component_version) { App::ComponentVersion.create(attributes) }
 
   context "Object" do
     subject { component_version }
@@ -19,13 +19,13 @@ describe App::ComponentVersion, :fog_mock do
     its(:name)         { should eq component.name }
     its(:version)      { should eq '2.0.0' }
     its(:zip)          { should be_present }
-    its(:dependencies) { should eq({"app" => "1.0.0"}) }
+    its(:dependencies) { should eq({ app: "1.0.0" }) }
 
     it { should be_valid }
 
     it "has empty hash dependencies by default" do
       attributes.delete(:dependencies)
-      App::ComponentVersion.create(attributes, as: :admin).dependencies.should eq({})
+      App::ComponentVersion.create(attributes).dependencies.should eq({})
     end
   end
 
@@ -34,10 +34,6 @@ describe App::ComponentVersion, :fog_mock do
   end
 
   describe "Validations" do
-    [:component, :token, :version, :dependencies, :zip].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
     [:component, :zip].each do |attr|
       it { should validate_presence_of(attr) }
     end
@@ -62,7 +58,7 @@ describe App::ComponentVersion, :fog_mock do
   end
 
   it "supports json for dependencies" do
-    version = App::ComponentVersion.create(attributes.merge(dependencies: {app: "1.0.0"}.to_json), as: :admin)
+    version = App::ComponentVersion.create(attributes.merge(dependencies: {app: "1.0.0"}.to_json))
     version.dependencies.should eq({"app" => "1.0.0"})
   end
 
@@ -89,9 +85,9 @@ describe App::ComponentVersion, :fog_mock do
 
     it "doesn't removes zip content" do
       prefix = "c/#{component.token}/#{component_version.version}/"
-      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(6).files
+      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(4).files
       App::ComponentVersion.find(component_version).destroy
-      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(6).files
+      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(4).files
     end
   end
 

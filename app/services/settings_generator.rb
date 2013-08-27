@@ -140,7 +140,7 @@ private
   end
 
   def _addon_plan_settings(template, kit_settings = nil)
-    template.reduce({}) do |hash, (key, value)|
+    template.deep_symbolize_keys.reduce({}) do |hash, (key, value)|
       kit_value = kit_settings && kit_settings[key]
       hash[key] = kit_value.nil? ? value[:default] : kit_value
       hash
@@ -148,7 +148,7 @@ private
   end
 
   def _addon_plan_allowed_settings(template)
-    template.reduce({}) do |hash, (key, value)|
+    template.deep_symbolize_keys.reduce({}) do |hash, (key, value)|
       hash[key] = value.slice(:values, :range)
       hash
     end
@@ -157,7 +157,7 @@ private
   def _generate_file(prefix = '')
     template_path = Rails.root.join('app', 'templates', "#{prefix}settings.js.erb")
     template = ERB.new(File.new(template_path).read)
-    file = Tempfile.new("s-#{@site.token}.js", Rails.root.join('tmp'))
+    file = Tempfile.new(["s-#{@site.token}", '.js'], Rails.root.join('tmp'))
     file.print template.result(binding)
     file.flush
     file

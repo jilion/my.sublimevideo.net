@@ -1,7 +1,5 @@
 class InvoiceItem < ActiveRecord::Base
-
   attr_accessor   :deduct
-  attr_accessible :invoice, :item, :deduct, :started_at, :ended_at, :price, :amount, as: :admin
 
   # ================
   # = Associations =

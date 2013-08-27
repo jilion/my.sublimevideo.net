@@ -7,17 +7,18 @@ describe Stat do
       @log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz')
       log_time  = 5.days.ago.change(hour: 0).to_i
       @log      = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
+      described_class.stub(:realtime_stat_addon)
     end
 
-    describe ".create_stats_from_trackers!", :addons do
+    describe ".create_stats_from_trackers!" do
       use_vcr_cassette "stat/pusher", erb: true
 
       context "mixed view event & load event" do
         before do
-          site1 = create(:site).tap { |s| s.update_attribute(:token, 'ovjigy83') }
-          site2 = create(:site).tap { |s| s.update_attribute(:token, 'site1234') }
-          create(:billable_item, site: site1, item: @stats_addon_plan_2)
-          described_class.stub(:incs_from_trackers).and_return({
+          Site.stub(:where).with(token: 'ovjigy83').at_least(:once) { double(first: double(subscribed_to?: true)) }
+          Site.stub(:where).with(token: 'site1234').at_least(:once) { double(first: double(subscribed_to?: false)) }
+
+          described_class.stub(:incs_from_trackers).and_return(
             "ovjigy83"=> {
               inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
               set: { "jq" => '1.9.0' },
@@ -36,44 +37,43 @@ describe Stat do
                 "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
               }
             }
-          })
+          )
         end
 
         it "create 1 minute site stats for the site with stats addon active" do
-          Stat.create_stats_from_trackers!(@log, nil)
+          expect { Stat.create_stats_from_trackers!(@log, nil) }.to change(Stat::Site::Minute, :count).by(1)
 
-          Stat::Site::Minute.count.should eq 1
           Stat::Site::Minute.where(t: 'ovjigy83', d: @log.minute).should be_present
           Stat::Site::Minute.where(t: 'site1234', d: @log.minute).should_not be_present
         end
 
         it "create 2 minute video stats for the site with stats addon active" do
-          Stat.create_stats_from_trackers!(@log, nil)
+          expect { Stat.create_stats_from_trackers!(@log, nil) }.to change(Stat::Video::Minute, :count).by(2)
 
-          Stat::Video::Minute.count.should eq 2
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).should be_present
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vlc.should eq 3
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vvc.should eq 1
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).should be_present
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vlc.should eq 3
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vvc.should eq 0
+          video_minute_stat = Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute)
+          video_minute_stat.should be_present
+          video_minute_stat.first.vlc.should eq 3
+          video_minute_stat.first.vvc.should eq 1
+
+          video_minute_stat = Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute)
+          video_minute_stat.should be_present
+          video_minute_stat.first.vlc.should eq 3
+          video_minute_stat.first.vvc.should eq 0
 
           Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).should_not be_present
           Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).should_not be_present
         end
 
         it "create 1 hour site stats for the site with stats addon active" do
-          Stat.create_stats_from_trackers!(@log, nil)
+          expect { Stat.create_stats_from_trackers!(@log, nil) }.to change(Stat::Site::Hour, :count).by(1)
 
-          Stat::Site::Hour.count.should eq 1
           Stat::Site::Hour.where(t: 'ovjigy83', d: @log.hour).should be_present
           Stat::Site::Hour.where(t: 'site1234', d: @log.hour).should_not be_present
         end
 
         it "create 2 hour video stats for the site with stats addon active" do
-          Stat.create_stats_from_trackers!(@log, nil)
+          expect { Stat.create_stats_from_trackers!(@log, nil) }.to change(Stat::Video::Hour, :count).by(2)
 
-          Stat::Video::Hour.count.should eq 2
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).should be_present
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vlc.should eq 3
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vvc.should eq 1
@@ -86,7 +86,7 @@ describe Stat do
         end
 
         it "create 2 day site stats for all sites" do
-          Stat.create_stats_from_trackers!(@log, nil)
+          expect { Stat.create_stats_from_trackers!(@log, nil) }.to change(Stat::Site::Day, :count).by(2)
 
           Stat::Site::Day.count.should eq 2
           Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).should be_present
@@ -110,9 +110,8 @@ describe Stat do
         end
 
         it "create 2 day video stats for all sites" do
-          Stat.create_stats_from_trackers!(@log, nil)
+          expect { Stat.create_stats_from_trackers!(@log, nil) }.to change(Stat::Video::Day, :count).by(4)
 
-          Stat::Video::Day.count.should eq 4
           Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
           Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vlc.should eq 3
           Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vvc.should eq 1
@@ -179,14 +178,14 @@ describe Stat do
 
     context "load event with 1 video loaded" do
       before do
-        described_class.stub(:only_stats_trackers).and_return({
+        described_class.stub(:only_stats_trackers) { {
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=h&st=b", user_agent] => 2,
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f&s=1", user_agent] => 1,
           ["?t=ovjigy83&e=l&d=d&h=e&vu[]=efgh5678&pm[]=f&st=b", user_agent] => 1
-        })
+        } }
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
           set: { "s" => true },
@@ -209,7 +208,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           set: {},
@@ -239,7 +238,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "vv.m" => 1 },
           set: {},
@@ -271,7 +270,7 @@ describe Stat do
         })
       end
 
-      specify { described_class.incs_from_trackers(nil).should eql({
+      specify { described_class.incs_from_trackers(nil).should eq({
         "ovjigy83"=> {
           inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           set: {},

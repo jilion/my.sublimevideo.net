@@ -44,7 +44,7 @@ describe HostnameHandler do
     it { subject.clean('<script type="text/javascript" src="//cdn.sublimevideo.net/js/abcd1234.js"></script>enontab.org').should eq '&lt;script type=&quot;text/javascript&quot; src=&quot;//cdn.sublimevideo.net/js/abcd1234.js&quot;&gt;&lt;/script&gt;enontab.org' }
   end
 
-  describe "valid?" do
+  describe "main_invalid?" do
     it { subject.main_invalid?("*.google.com").should be_false }
     it { subject.main_invalid?("éCOLE.fr").should be_false }
     it { subject.main_invalid?("ASDASD.COM").should be_false }
@@ -81,9 +81,13 @@ describe HostnameHandler do
     it { subject.main_invalid?("ftp://127.]boo[:3000").should be_true }
     it { subject.main_invalid?("www.joke;foo").should be_true }
     it { subject.main_invalid?("http://www.bob.com,,localhost:3000").should be_true }
+
+    it { subject.main_invalid?("s3.amazonaws.com").should be_true }
+    it { subject.main_invalid?("s3-us-gov-west-1.amazonaws.com").should be_true }
+    it { subject.main_invalid?("subdomain.s3.amazonaws.com").should be_false }
   end
 
-  describe "extra_valid?" do
+  describe "extra_invalid?" do
     it { subject.extra_invalid?(nil).should be_false }
     it { subject.extra_invalid?("").should be_false }
     it { subject.extra_invalid?("*.google.com").should be_false }
@@ -119,9 +123,13 @@ describe HostnameHandler do
     it { subject.extra_invalid?("ftp://127.]boo[:3000").should be_true }
     it { subject.extra_invalid?("www.joke;foo").should be_true }
     it { subject.extra_invalid?("http://www.bob.com,,localhost:3000").should be_true }
+
+    it { subject.extra_invalid?("s3.amazonaws.com").should be_true }
+    it { subject.extra_invalid?("s3-us-gov-west-1.amazonaws.com").should be_true }
+    it { subject.extra_invalid?("subdomain.s3.amazonaws.com").should be_false }
   end
 
-  describe "dev_valid?" do
+  describe "dev_invalid?" do
     it { subject.dev_invalid?(nil).should be_false }
     it { subject.dev_invalid?("").should be_false }
     it { subject.dev_invalid?("127.0.0.1").should be_false }
@@ -171,6 +179,10 @@ describe HostnameHandler do
     it { subject.dev_invalid?("www.com").should be_true }
     it { subject.dev_invalid?("ftp://www.www.com").should be_true }
     it { subject.dev_invalid?("https://www.co.uk").should be_true }
+
+    it { subject.dev_invalid?("s3.amazonaws.com").should be_false }
+    it { subject.dev_invalid?("s3-us-gov-west-1.amazonaws.com").should be_false }
+    it { subject.dev_invalid?("subdomain.s3.amazonaws.com").should be_true }
   end
 
   describe "wildcard?" do
@@ -204,21 +216,21 @@ describe HostnameHandler do
     it { subject.duplicate?("google.fr, staging.google.fr").should be_false }
   end
 
-  describe "include?" do
-    it { subject.include_hostname?('http://localhost:3000, localhost', stub(hostname: 'localhost')).should be_true }
-    it { subject.include_hostname?('124.123.151.123, localhost', stub(hostname: '124.123.151.123')).should be_true }
-    it { subject.include_hostname?('127.0.0.1, bob, 127.0.0.1', stub(hostname: 'bob')).should be_true }
-    it { subject.include_hostname?('*.*, *.*', stub(hostname: '*.*')).should be_true }
-    it { subject.include_hostname?('google.fr, jilion.com', stub(hostname: 'google.fr')).should be_true }
+  describe "include_hostname?" do
+    it { subject.include_hostname?('http://localhost:3000, localhost', double(hostname: 'localhost')).should be_true }
+    it { subject.include_hostname?('124.123.151.123, localhost', double(hostname: '124.123.151.123')).should be_true }
+    it { subject.include_hostname?('127.0.0.1, bob, 127.0.0.1', double(hostname: 'bob')).should be_true }
+    it { subject.include_hostname?('*.*, *.*', double(hostname: '*.*')).should be_true }
+    it { subject.include_hostname?('google.fr, jilion.com', double(hostname: 'google.fr')).should be_true }
 
-    it { subject.include_hostname?(nil, stub(hostname: 'jilion.com')).should be_false }
-    it { subject.include_hostname?('jilion.com', stub(hostname: nil)).should be_false }
-    it { subject.include_hostname?('jilion.com', stub(hostname: '')).should be_false }
+    it { subject.include_hostname?(nil, double(hostname: 'jilion.com')).should be_false }
+    it { subject.include_hostname?('jilion.com', double(hostname: nil)).should be_false }
+    it { subject.include_hostname?('jilion.com', double(hostname: '')).should be_false }
     it { subject.include_hostname?(nil, nil).should be_false }
-    it { subject.include_hostname?(nil, stub(hostname: nil)).should be_false }
-    it { subject.include_hostname?('', stub(hostname: '')).should be_false }
-    it { subject.include_hostname?('', stub(hostname: 'jilion.com')).should be_false }
-    it { subject.include_hostname?('localhost, jilion', stub(hostname: 'jilion.com')).should be_false }
+    it { subject.include_hostname?(nil, double(hostname: nil)).should be_false }
+    it { subject.include_hostname?('', double(hostname: '')).should be_false }
+    it { subject.include_hostname?('', double(hostname: 'jilion.com')).should be_false }
+    it { subject.include_hostname?('localhost, jilion', double(hostname: 'jilion.com')).should be_false }
   end
 
 end

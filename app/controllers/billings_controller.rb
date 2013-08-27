@@ -1,6 +1,5 @@
 class BillingsController < ApplicationController
-
-  before_filter :_find_user, only: [:edit, :update]
+  before_filter :_set_user, only: [:edit, :update]
 
   # GET /account/billing/edit
   def edit
@@ -9,24 +8,32 @@ class BillingsController < ApplicationController
 
   # PUT /account/billing
   def update
-    @user.assign_attributes(params[:user].merge(remote_ip: request.try(:remote_ip)))
+    @user.attributes = _user_params
 
     respond_with(@user, flash: false) do |format|
-      format.html { @user.save ? success_response : render(:edit) }
+      format.html { @user.save ? _success_response : render(:edit) }
     end
   end
 
   private
 
-  def _find_user
+  def _set_user
     @user = User.find(current_user.id)
+  end
+
+  def _user_params
+    params.require(:user).permit(
+      :billing_email, :billing_name, :billing_address_1, :billing_address_2,
+      :billing_postal_code, :billing_city, :billing_region, :billing_country,
+      :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
+    ).merge(remote_ip: request.try(:remote_ip))
   end
 
   def _store_return_to
     session[:return_to] = params.delete(:return_to) if params[:return_to]
   end
 
-  def success_response
+  def _success_response
     if @user.d3d_html # 3-d secure identification needed
       render text: _d3d_html_inject
     else

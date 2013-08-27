@@ -1,0 +1,11 @@
+#start_time.box
+  %h4 From:
+  #start_time_picker.picker
+#end_time.box
+  %h4 To:
+  #end_time_picker.picker
+.spacer
+.actions
+  %button.cancel cancel
+  %button.apply Apply
+.spacer

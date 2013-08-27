@@ -41,7 +41,7 @@ class SettingsSanitizer
   def sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings, setting_key, setting_value)
     addon_name = addon_plan.addon_name
     setting_key = setting_key.to_sym
-    return unless setting_template = addon_plan_settings[setting_key]
+    return unless setting_template = addon_plan_settings[setting_key].to_options
 
     case setting_template[:type]
     when 'image', 'url'

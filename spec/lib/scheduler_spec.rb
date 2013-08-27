@@ -33,7 +33,7 @@ Log::Voxcast = Class.new unless defined?(Log::Voxcast)
 describe Scheduler do
 
   describe ".supervise_queues" do
-    let(:sidekiq_queue) { mock(Sidekiq::Queue) }
+    let(:sidekiq_queue) { double(Sidekiq::Queue) }
     before do
       Sidekiq::Client.stub(:registered_queues) { ['default'] }
       Sidekiq::Queue.stub(:new).with('default') { sidekiq_queue }

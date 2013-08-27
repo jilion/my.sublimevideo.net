@@ -7,10 +7,6 @@ describe Design do
   end
 
   describe 'Validations' do
-    [:name, :price, :availability, :required_stage, :stable_at].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
     it { should validate_numericality_of(:price) }
 
     it { should ensure_inclusion_of(:required_stage).in_array(::Stage.stages) }
@@ -23,7 +19,7 @@ describe Design do
       @custom = create(:design, availability: 'custom')
     end
 
-    it { described_class.custom.all.should eq [@custom] }
+    it { described_class.custom.should eq [@custom] }
   end
 
   describe '.paid' do
@@ -32,7 +28,7 @@ describe Design do
       @paid = create(:design, price: 99)
     end
 
-    it { described_class.paid.all.should eq [@paid] }
+    it { described_class.paid.should eq [@paid] }
   end
 
   describe '#available_for_subscription?' do

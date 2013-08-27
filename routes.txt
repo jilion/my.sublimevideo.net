@@ -24,6 +24,7 @@
                                admin_exit GET      /exit(.:format)                                           :controller#exit
                                admin_root          /                                                         :controller#:action
                               admin_admin          /                                                         :controller#:action
+                       paying_admin_sites GET      /sites/paying(.:format)                                   admin/sites#paying
                   videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
                       invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages
@@ -60,6 +61,8 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
          admin_tailor_made_player_request GET      /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#show
                                           DELETE   /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#destroy
                    monthly_admin_invoices GET      /invoices/monthly(.:format)                               admin/invoices#monthly
+                    yearly_admin_invoices GET      /invoices/yearly(.:format)                                admin/invoices#yearly
+             top_customers_admin_invoices GET      /invoices/top_customers(.:format)                         admin/invoices#top_customers
              retry_charging_admin_invoice PUT      /invoices/:id/retry_charging(.:format)                    admin/invoices#retry_charging
                            admin_invoices GET      /invoices(.:format)                                       admin/invoices#index
                        edit_admin_invoice GET      /invoices/:id/edit(.:format)                              admin/invoices#edit

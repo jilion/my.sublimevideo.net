@@ -5,8 +5,6 @@ class Subscription < ActiveRecord::Base
   ACTIVE_STATES   = %w[beta trial subscribed sponsored] unless defined? ACTIVE_STATES
   STATES          = INACTIVE_STATES + ACTIVE_STATES unless defined? STATES
 
-  attr_accessible :item, :site, :state, as: :admin
-
   belongs_to :site
   belongs_to :item, polymorphic: true
 
@@ -34,10 +32,8 @@ class Subscription < ActiveRecord::Base
   end
 
   def self.paid
-    where {
-      ((item_type == 'Design') & (item_id >> Design.paid.pluck(:id))) |
-      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.paid.pluck('addon_plans.id')))
-    }
+    where("(item_type = 'Design' AND item_id IN (?)) OR (item_type = 'AddonPlan' AND item_id IN (?))",
+      Design.paid.pluck(:id), AddonPlan.paid.pluck('addon_plans.id'))
   end
 
   def self.with_item(design_or_addon_plan)

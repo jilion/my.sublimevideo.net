@@ -4,7 +4,7 @@ require 'support/fixtures_helpers'
 require 'services/addons/custom_logo_uploader'
 
 describe Addons::CustomLogoUploader do
-  let(:kit)  { stub(identifier: '1', site: stub(token: 'abcd1234')) }
+  let(:kit)  { double(identifier: '1', site: double(token: 'abcd1234')) }
   let(:file) { fixture_file('logo-white-big.png') }
   let(:custom_logo) { Addons::CustomLogo.new(file) }
 

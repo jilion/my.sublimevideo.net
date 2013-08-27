@@ -2,8 +2,8 @@ class Admin::UsersController < Admin::AdminController
   respond_to :html, except: [:stats, :invoices, :support_requests]
   respond_to :js, only: [:index, :stats, :invoices, :support_requests]
 
-  before_filter :set_default_scopes, only: [:index]
-  before_filter :_find_user, only: [:update, :destroy, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
+  before_filter :_set_default_scopes, only: [:index]
+  before_filter :_set_user, only: [:update, :destroy, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
@@ -19,8 +19,8 @@ class Admin::UsersController < Admin::AdminController
   # GET /users
   def index
     @users = apply_scopes(User.includes(:sites, :invoices))
-    @user_tags = User.tag_counts.order { tags.name }
-    @site_tags = Site.tag_counts.order { tags.name }
+    @user_tags = User.tag_counts.order('tags.name')
+    @site_tags = Site.tag_counts.order('tags.name')
 
     respond_with(@users, per_page: 50)
   end
@@ -33,7 +33,7 @@ class Admin::UsersController < Admin::AdminController
   # GET /users/:id/edit
   def edit
     @user = User.includes(:enthusiast, :feedbacks).find(params[:id])
-    @tags = User.tag_counts.order { tags.name }
+    @tags = User.tag_counts.order('tags.name')
     @oauth_authorizations = @user.tokens.valid
 
     respond_with(@user)
@@ -41,7 +41,7 @@ class Admin::UsersController < Admin::AdminController
 
   # PUT /users/:id
   def update
-    @user.update_attributes(params[:user], without_protection: true)
+    @user.update(_user_params)
 
     respond_with(@user, notice: 'User has been successfully updated.') do |format|
       format.js   { render 'admin/shared/flash_update' }
@@ -89,7 +89,7 @@ class Admin::UsersController < Admin::AdminController
 
   # DELETE /users/:id/oauth_revoke
   def oauth_revoke
-    @token = @user.tokens.find_by_token!(params[:token])
+    @token = @user.tokens.where(token: params[:token]).first!
     @token.invalidate!
 
     redirect_to edit_admin_user_path(@user), notice: "Authorization for the application '#{@token.client_application.name}' has been revoked."
@@ -97,13 +97,17 @@ class Admin::UsersController < Admin::AdminController
 
   private
 
-  def set_default_scopes
+  def _set_default_scopes
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
     params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
-  def _find_user
+  def _set_user
     @user = User.find(params[:id])
+  end
+
+  def _user_params
+    params.require(:user).permit!
   end
 
 end

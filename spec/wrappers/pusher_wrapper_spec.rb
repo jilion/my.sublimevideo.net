@@ -19,9 +19,9 @@ describe PusherWrapper do
   end
 
   describe '.handle_webhook' do
-    let(:webhook) { stub(:webhook, events: [event] ) }
+    let(:webhook) { double(:webhook, events: [event] ) }
     let(:channel_name) { 'channel_name' }
-    let(:channel) { mock(PusherChannel) }
+    let(:channel) { double(PusherChannel) }
 
     before { PusherChannel.should_receive(:new).with(channel_name) { channel } }
 
@@ -54,7 +54,7 @@ describe PusherWrapper do
     let(:event_name) { 'event_name' }
     let(:data) { { some: 'data' } }
     let(:channel_name) { 'channel_name' }
-    let(:channel) { mock(PusherChannel, to_s: channel_name) }
+    let(:channel) { double(PusherChannel, to_s: channel_name) }
     before { PusherChannel.should_receive(:new).with(channel_name) { channel } }
 
     context 'with public channel' do

@@ -3,9 +3,9 @@ require 'spec_helper'
 describe LayoutHelper do
 
   describe '#sticky_notices' do
-    let(:user)                   { stub }
-    let(:sites)                  { stub }
-    let(:site_will_leave_trial)  { stub }
+    let(:user)                   { double }
+    let(:sites)                  { double }
+    let(:site_will_leave_trial)  { double }
     let(:sites_will_leave_trial) { [{ site: site_will_leave_trial }] }
     before do
       helper.should_receive(:credit_card_warning).with(user).and_return(true)

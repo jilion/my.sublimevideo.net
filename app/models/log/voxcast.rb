@@ -7,8 +7,6 @@ class Log::Voxcast < ::Log
   field :user_agents_parsed_at, type: DateTime
   field :video_tags_parsed_at,  type: DateTime
 
-  attr_accessible :file
-
   # ===============
   # = Validations =
   # ===============

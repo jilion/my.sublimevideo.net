@@ -19,24 +19,24 @@ unless defined?(SiteToken)
 end
 
 describe LoaderGenerator, :fog_mock do
-  let(:site) { mock("Site",
+  let(:site) { double("Site",
     id: 1,
     token: 'abcd1234',
     accessible_stage: 'beta',
     active?: true
   )}
-  let(:component) { mock(App::Component, id: 'component_id', token: 'b', app_component?: false, clear_caches: true) }
-  let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true, clear_caches: true) }
+  let(:component) { double(App::Component, id: 'component_id', token: 'b', app_component?: false, clear_caches: true) }
+  let(:app_component) { double(App::Component, id: 'app_component_id', token: 'e', app_component?: true, clear_caches: true) }
   let(:generator) { described_class.new(site, 'stable') }
-  let(:v2_4_0_alpha) { stub(version: '2.4.0-alpha', solve_version: Solve::Version.new('2.4.0-alpha')) }
-  let(:v2_5_0_alpha) { stub(version: '2.5.0-alpha', solve_version: Solve::Version.new('2.5.0-alpha')) }
-  let(:v2_5_1_alpha) { stub(version: '2.5.1-alpha', solve_version: Solve::Version.new('2.5.1-alpha')) }
-  let(:v2_4_0_beta) { stub(version: '2.4.0-beta', solve_version: Solve::Version.new('2.4.0-beta')) }
-  let(:v2_5_0_beta) { stub(version: '2.5.0-beta', solve_version: Solve::Version.new('2.5.0-beta')) }
-  let(:v2_5_1_beta) { stub(version: '2.5.1-beta', solve_version: Solve::Version.new('2.5.1-beta')) }
-  let(:v2_4_0) { stub(version: '2.4.0', solve_version: Solve::Version.new('2.4.0')) }
-  let(:v2_5_0) { stub(version: '2.5.0', solve_version: Solve::Version.new('2.5.0')) }
-  let(:v2_5_1) { stub(version: '2.5.1', solve_version: Solve::Version.new('2.5.1')) }
+  let(:v2_4_0_alpha) { double(version: '2.4.0-alpha', solve_version: Solve::Version.new('2.4.0-alpha')) }
+  let(:v2_5_0_alpha) { double(version: '2.5.0-alpha', solve_version: Solve::Version.new('2.5.0-alpha')) }
+  let(:v2_5_1_alpha) { double(version: '2.5.1-alpha', solve_version: Solve::Version.new('2.5.1-alpha')) }
+  let(:v2_4_0_beta) { double(version: '2.4.0-beta', solve_version: Solve::Version.new('2.4.0-beta')) }
+  let(:v2_5_0_beta) { double(version: '2.5.0-beta', solve_version: Solve::Version.new('2.5.0-beta')) }
+  let(:v2_5_1_beta) { double(version: '2.5.1-beta', solve_version: Solve::Version.new('2.5.1-beta')) }
+  let(:v2_4_0) { double(version: '2.4.0', solve_version: Solve::Version.new('2.4.0')) }
+  let(:v2_5_0) { double(version: '2.5.0', solve_version: Solve::Version.new('2.5.0')) }
+  let(:v2_5_1) { double(version: '2.5.1', solve_version: Solve::Version.new('2.5.1')) }
   before do
     Librato.stub(:increment)
     App::Component.stub(:app_component) { app_component }
@@ -200,12 +200,12 @@ describe LoaderGenerator, :fog_mock do
   end
 
   describe '.update_all_dependant_sites' do
-    let(:scoped_sites) { stub }
+    let(:all_sites) { double }
     before do
       App::Component.stub(:find) { app_component }
-      described_class.stub(:_sites_non_important) { scoped_sites }
-      scoped_sites.should_receive(:count) { 42 }
-      scoped_sites.should_receive(:find_each).and_yield(site)
+      described_class.stub(:_sites_non_important) { all_sites }
+      all_sites.should_receive(:count) { 42 }
+      all_sites.should_receive(:find_each).and_yield(site)
     end
 
     it "clears caches of component" do
@@ -220,7 +220,7 @@ describe LoaderGenerator, :fog_mock do
 
     context "with app_component version" do
       before do
-        described_class.should_receive(:_sites_non_important).with(component: app_component, stage: 'beta') { scoped_sites }
+        described_class.should_receive(:_sites_non_important).with(component: app_component, stage: 'beta') { all_sites }
       end
 
       it "delays important sites update" do
@@ -241,7 +241,7 @@ describe LoaderGenerator, :fog_mock do
     context "with non app_component version" do
       before do
         App::Component.stub(:find) { component }
-        described_class.should_receive(:_sites_non_important).with(component: component, stage: 'beta') { scoped_sites }
+        described_class.should_receive(:_sites_non_important).with(component: component, stage: 'beta') { all_sites }
       end
 
       it "delays important sites update" do

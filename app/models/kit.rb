@@ -1,9 +1,6 @@
 class Kit < ActiveRecord::Base
   serialize :settings, Hash
 
-  attr_accessible :site, :identifier, :name, :design_id, as: :admin
-  attr_accessible :name, :design_id
-
   belongs_to :site
   belongs_to :design
 

@@ -8,10 +8,6 @@ describe BillableItemActivity do
 
   describe "Validations" do
     [:item, :site, :state].each do |attr|
-      it { should allow_mass_assignment_of(attr).as(:admin) }
-    end
-
-    [:item, :site, :state].each do |attr|
       it { should validate_presence_of(attr) }
     end
 

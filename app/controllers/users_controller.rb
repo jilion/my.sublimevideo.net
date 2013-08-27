@@ -11,13 +11,14 @@ class UsersController < Devise::RegistrationsController
 
   prepend_before_filter :authenticate_scope!, only: [:edit, :update, :more_info, :hide_notice]
   before_filter :redirect_suspended_user
+  before_filter :_configure_permitted_parameters
 
   skip_before_filter :verify_authenticity_token, only: [:hide_notice]
   skip_around_filter :destroy_if_previously_invited # Avoid DeviseInvitable shit
 
   # POST /signup
   def create
-    build_resource
+    build_resource(sign_up_params)
     @user = resource
     @user.referrer_site_token = cookies[:r]
 
@@ -42,13 +43,10 @@ class UsersController < Devise::RegistrationsController
     self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
-    successfully_updated = if needs_password?(resource, params)
-      resource.update_with_password(params[resource_name])
+    successfully_updated = if _needs_password?(params)
+      resource.update_with_password(account_update_params)
     else
-      # remove the virtual current_password attribute update_without_password
-      # doesn't know how to ignore it
-      params[resource_name].delete(:current_password)
-      resource.update_without_password(params[resource_name])
+      resource.update_without_password(account_update_params)
     end
 
     if successfully_updated
@@ -88,10 +86,21 @@ class UsersController < Devise::RegistrationsController
 
   private
 
+  def _configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
+    devise_parameter_sanitizer.for(:account_update) do |u|
+      keys = [:email, :password, :name, :newsletter, :confirmation_comment,
+        :postal_code, :country, :use_personal, :use_company, :use_clients,
+        :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]
+      keys << :current_password if _needs_password?(params)
+      params[:user].permit(*keys)
+    end
+  end
+
   # check if we need password to update user data
   # ie if password or email was changed
   # extend this as needed
-  def needs_password?(user, params)
+  def _needs_password?(params)
     params[:user][:password].present?
   end
 

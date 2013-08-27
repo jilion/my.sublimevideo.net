@@ -29,7 +29,7 @@ MySublimeVideo::Application.routes.draw do
   # end
 
   # Redirect to subdomains
-  match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
+  get '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
   constraints SubdomainConstraint.new('admin') do
     # We put this block out of the following scope to avoid double admin_admin in url helpers...
@@ -53,6 +53,10 @@ MySublimeVideo::Application.routes.draw do
       end
 
       resources :sites, only: [:index, :show, :edit, :update] do
+        collection do
+          get :paying
+        end
+
         member do
           get :videos_infos
           get :invoices
@@ -93,6 +97,8 @@ MySublimeVideo::Application.routes.draw do
       resources :invoices,  only: [:index, :show, :edit] do
         collection do
           get :monthly
+          get :yearly
+          get :top_customers
         end
         member do
           put :retry_charging
@@ -210,8 +216,8 @@ MySublimeVideo::Application.routes.draw do
 
     scope 'assistant' do
       match 'new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
-      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
-      match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
+      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put, :patch]
+      match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put, :patch]
       get   ':site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
       match ':site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
     end
@@ -295,5 +301,4 @@ MySublimeVideo::Application.routes.draw do
 
   # Default url for specs, not reachable by the app because of the my subdomain
   get '/' => 'pages#show', page: 'terms' if Rails.env.test?
-
 end

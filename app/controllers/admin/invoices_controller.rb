@@ -3,6 +3,7 @@ class Admin::InvoicesController < Admin::AdminController
   respond_to :json, only: [:index]
 
   before_filter { |controller| require_role?('invoices') }
+  before_filter :_set_dates, only: [:monthly, :yearly, :top_customers]
 
   # filter
   has_scope :paid, type: :boolean
@@ -19,7 +20,7 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /invoices/:id
   def show
-    @invoice = Invoice.includes(:user).find_by_reference(params[:id])
+    @invoice = Invoice.includes(:user).where(reference: params[:id]).first!
     respond_with(@invoice) do |format|
       if @invoice
         format.html { render template: '/invoices/show', layout: 'invoices' }
@@ -31,18 +32,32 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /invoices/:id/edit
   def edit
-    @invoice = Invoice.includes(:user).find_by_reference(params[:id])
+    @invoice = Invoice.includes(:user).where(reference: params[:id]).first!
     respond_with(@invoice)
   end
 
   # PUT /invoices/:id/retry_charging
   def retry_charging
-    @invoice = Invoice.find_by_reference(params[:id])
+    @invoice = Invoice.where(reference: params[:id]).first!
     @invoice.retry
     respond_with(@invoice, location: [:admin, :invoices])
   end
 
   def monthly
+    @to = Time.now.utc.end_of_month
+  end
+
+  def yearly
+  end
+
+  def top_customers
+  end
+
+  private
+
+  def _set_dates
+    @from = Time.utc(2011, 3)
+    @to   = Time.now.utc.end_of_year
   end
 
 end

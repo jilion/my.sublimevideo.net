@@ -1,4 +1,5 @@
 require 'createsend'
+require 'rescue_me'
 
 class CampaignMonitorWrapper
 
@@ -21,91 +22,89 @@ class CampaignMonitorWrapper
     }
   }
 
+  def self.auth
+    @@auth ||= { api_key: ENV['CAMPAIGN_MONITOR_API_KEY'] }
+  end
+
   def self.list
     @@list ||= LIST[Rails.env]
   end
 
-  def initialize
-    CreateSend.api_key(ENV['CAMPAIGN_MONITOR_API_KEY'])
-  end
-
-  def subscribe(params = {})
-    custom_params = self.class._build_custom_params(segment: self.class.list[:segment], user_id: params[:id], beta: params[:beta], billable: params[:billable])
+  def self.subscribe(params = {})
+    custom_params = _build_custom_params(segment: self.list[:segment], user_id: params[:id], beta: params[:beta], billable: params[:billable])
 
     _request('subscribe') do
-      CreateSend::Subscriber.add(self.class.list[:list_id], params[:email], params[:name], custom_params, true)
+      CreateSend::Subscriber.add(self.auth, self.list[:list_id], params[:email], params[:name], custom_params, true)
     end
   end
 
-  def import(users = {})
+  def self.import(users = {})
     subscribers = users.reduce([]) do |memo, user|
-      custom_params = self.class._build_custom_params(segment: self.class.list[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
+      custom_params = _build_custom_params(segment: self.list[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
 
       memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
     end
 
     _request('import') do
-      CreateSend::Subscriber.import(self.class.list[:list_id], subscribers, false)
+      CreateSend::Subscriber.import(self.auth, self.list[:list_id], subscribers, false)
     end
   end
 
-  def unsubscribe(email)
+  def self.unsubscribe(email)
     _request('unsubscribe') do
-      CreateSend::Subscriber.new(self.class.list[:list_id], email).unsubscribe
+      CreateSend::Subscriber.new(self.auth, self.list[:list_id], email).unsubscribe
       true
     end
   end
 
-  def update(params = {})
+  def self.update(params = {})
     _request('update') do
-      if subscriber = CreateSend::Subscriber.new(self.class.list[:list_id], params.delete(:old_email))
+      if subscriber = CreateSend::Subscriber.new(self.auth, self.list[:list_id], params.delete(:old_email))
         subscriber.update(params[:email], params[:name], [], params[:newsletter])
       end
     end
   end
 
-  def subscriber(email)
+  def self.subscriber(email)
     _request('subscriber_lookup') do
-      CreateSend::Subscriber.get(self.class.list[:list_id], email)
+      CreateSend::Subscriber.get(self.auth, self.list[:list_id], email)
     end
   end
 
   private
 
-  def _request(method)
-    result = yield
-    self.class._increment_librato(method)
+  def self._request(method)
+    result = _with_rescue_and_retry(7) do
+      yield
+    end
+    _increment_librato(method)
     result
   rescue CreateSend::BadRequest => ex
-    self.class._log_bad_request(ex)
+    _log_bad_request(ex)
     false
   end
 
-  class << self
-
-    %w[subscribe import unsubscribe update subscriber].each do |method_name|
-      define_method method_name do |*args|
-        new.send(method_name, *args)
-      end
+  def self._with_rescue_and_retry(times)
+    rescue_and_retry(times, CreateSend::Unauthorized) do
+      yield
     end
+  end
 
-    def _build_custom_params(hash)
-      custom_params = []
-      hash.map do |k, v|
-        { Key: k.to_s, Value: v }
-      end
+  def self._build_custom_params(hash)
+    custom_params = []
+    hash.map do |k, v|
+      { Key: k.to_s, Value: v }
     end
+  end
 
-    def _log_bad_request(ex)
-      Rails.logger.error "Campaign Monitor Bad request: #{ex}"
-      Rails.logger.error "Error Code:    #{ex.data.Code}"
-      Rails.logger.error "Error Message: #{ex.data.Message}"
-    end
+  def self._log_bad_request(ex)
+    Rails.logger.error "Campaign Monitor Bad request: #{ex}"
+    Rails.logger.error "Error Code:    #{ex.data.Code}"
+    Rails.logger.error "Error Message: #{ex.data.Message}"
+  end
 
-    def _increment_librato(method)
-      Librato.increment "newsletter.#{method}", source: 'campaign_monitor'
-    end
-
+  def self._increment_librato(method)
+    Librato.increment "newsletter.#{method}", source: 'campaign_monitor'
   end
 
 end

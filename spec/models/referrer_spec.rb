@@ -3,10 +3,6 @@ require 'spec_helper'
 describe Referrer do
 
   describe "Validations" do
-    [:token, :url, :hits].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     it { should validate_presence_of(:url) }
     it { should validate_presence_of(:token) }
 
@@ -27,7 +23,7 @@ describe Referrer do
       Referrer.create_or_update_from_trackers!(@trackers)
     end
 
-    let(:site) { Site.find_by_token('ibvjcopp') }
+    let(:site) { Site.where(token: 'ibvjcopp').first }
 
     it { Referrer.count.should eq 2 }
 
@@ -58,4 +54,5 @@ describe Referrer do
       end
     end
   end
+
 end

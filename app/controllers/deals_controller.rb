@@ -1,8 +1,8 @@
 class DealsController < ApplicationController
   respond_to :html
 
-  prepend_before_filter :set_cookie
-  before_filter :find_deal_by_token!
+  prepend_before_filter :_set_cookie
+  before_filter :_set_deal
 
   def show
     deal_activation = current_user.deal_activations.build(deal_id: @deal.id)
@@ -15,7 +15,7 @@ class DealsController < ApplicationController
 
 private
 
-  def set_cookie
+  def _set_cookie
     if params[:id]
       cookies[:d] = {
         value: params[:id],
@@ -26,8 +26,8 @@ private
     end
   end
 
-  def find_deal_by_token!
-    @deal = Deal.find_by_token!(params[:id])
+  def _set_deal
+    @deal = Deal.where(token: params[:id]).first!
   end
 
 end

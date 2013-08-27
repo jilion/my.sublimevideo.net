@@ -1,6 +1,5 @@
 class FeedbacksController < ApplicationController
-
-  before_filter :_find_user
+  before_filter :_set_user
 
   # GET /feedback
   def new
@@ -11,7 +10,7 @@ class FeedbacksController < ApplicationController
 
   # POST /feedback
   def create
-    @feedback = Feedback.new_trial_feedback(@user, params[:feedback])
+    @feedback = Feedback.new_trial_feedback(@user, _feedback_params)
     @feedback.user_id = current_user.id
 
     respond_to do |format|
@@ -25,8 +24,12 @@ class FeedbacksController < ApplicationController
 
   private
 
-  def _find_user
+  def _set_user
     @user = User.find(current_user.id)
+  end
+
+  def _feedback_params
+    params.require(:feedback).permit(:next_player, :comment, :reason)
   end
 
 end

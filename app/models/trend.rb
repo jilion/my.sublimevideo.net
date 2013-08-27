@@ -22,7 +22,7 @@ module Trend
       json_trends = if from.present?
         between(d: from..(to || Time.now.utc.midnight))
       else
-        scoped
+        all
       end
 
       json_trends.order_by(d: 1).to_json(only: self.json_fields)

@@ -1,7 +1,6 @@
 class Admin::AdminController < ApplicationController
   skip_before_filter :authenticate_user!
   before_filter :authenticate_admin!
-
   layout 'admin'
 
   def require_role?(role)
@@ -12,5 +11,4 @@ class Admin::AdminController < ApplicationController
     admin_signed_in? && current_admin.has_role?(role)
   end
   helper_method :has_role?
-
 end

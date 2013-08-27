@@ -1,11 +1,11 @@
 class KitsController < ApplicationController
   respond_to :js, only: [:fields, :process_custom_logo]
 
-  before_filter :redirect_suspended_user, :find_site_by_token!
-  before_filter :find_design, only: [:new, :create, :edit, :update, :process_custom_logo, :fields]
-  before_filter :find_kit, only: [:show, :edit, :update, :set_as_default]
-  before_filter :find_or_build_kit, only: [:process_custom_logo, :fields]
-  before_filter :find_sites_or_redirect_to_new_site, only: [:index, :new, :create, :show, :edit, :update]
+  before_filter :redirect_suspended_user, :_set_site
+  before_filter :_set_design, only: [:new, :create, :edit, :update, :process_custom_logo, :fields]
+  before_filter :_set_kit_and_design, only: [:show, :edit, :update, :set_as_default]
+  before_filter :_set_kit, only: [:process_custom_logo, :fields]
+  before_filter :_set_sites_or_redirect_to_new_site, only: [:index, :new, :create, :show, :edit, :update]
   skip_before_filter :verify_authenticity_token, only: [:process_custom_logo]
 
   # GET /sites/:site_id/players
@@ -23,7 +23,7 @@ class KitsController < ApplicationController
   # POST /sites/:site_id/players
   def create
     @kit = exhibit(@site.kits.build)
-    KitManager.new(@kit).save(params[:kit])
+    KitManager.new(@kit).save(_kit_params)
 
     respond_with(@kit, location: [@site, :kits])
   end
@@ -41,7 +41,7 @@ class KitsController < ApplicationController
 
   # PUT /sites/:site_id/players/:id
   def update
-    KitManager.new(@kit).save(params[:kit])
+    KitManager.new(@kit).save(_kit_params)
 
     respond_with(@kit, location: [@site, :kits])
   end
@@ -49,7 +49,7 @@ class KitsController < ApplicationController
   # PUT /sites/:site_id/players/:id/set_as_default
   def set_as_default
     @site.touch(:settings_updated_at)
-    @site.update_attributes(default_kit_id: @kit.id)
+    @site.update(default_kit_id: @kit.id)
     SettingsGenerator.delay.update_all!(@site.id)
 
     redirect_to [@site, :kits]
@@ -70,21 +70,25 @@ class KitsController < ApplicationController
 
   private
 
-  def find_or_build_kit
-    @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
+  def _set_kit
+    @kit = exhibit(@site.kits.where(identifier: params[:id])).first!
   rescue ActiveRecord::RecordNotFound
     @kit = exhibit(@site.kits.build(design_id: @design.id))
   end
 
-  def find_kit
-    @kit    = exhibit(@site.kits.find_by_identifier!(params[:id]))
+  def _set_kit_and_design
+    @kit    = exhibit(@site.kits.where(identifier: params[:id])).first!
     @design = @kit.design
   rescue ActiveRecord::RecordNotFound
     redirect_to [@site, :kits]
   end
 
-  def find_design
+  def _set_design
     @design = params[:design_id] ? Design.find(params[:design_id]) : Design.get('classic')
+  end
+
+  def _kit_params
+    params.require(:kit).permit(:name, :design_id).merge(settings: params[:kit][:settings])
   end
 
 end

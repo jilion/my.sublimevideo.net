@@ -23,7 +23,7 @@ module Stat::Video
   # ====================
 
   def site
-    Site.find_by_token(st)
+    Site.where(token: st).first
   end
 
   def site_token
@@ -37,6 +37,10 @@ module Stat::Video
   # =================
   # = Class Methods =
   # =================
+
+  def self.site_token_field
+    :st
+  end
 
   # Returns the sum of all the usage for the given token(s) (optional) and between the given dates (optional).
   #

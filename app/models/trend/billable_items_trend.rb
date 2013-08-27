@@ -1,4 +1,3 @@
-# encoding: utf-8
 class BillableItemsTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -20,7 +19,7 @@ class BillableItemsTrend
 
   def self.trend_hash(day)
     hash = {
-      d: day.to_time
+      d: day.utc
     }
 
     BillableItem::STATES.each do |state|

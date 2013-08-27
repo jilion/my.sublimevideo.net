@@ -22,8 +22,6 @@ class Site < ActiveRecord::Base
 
   attr_accessor :last_transaction, :remote_ip
 
-  attr_accessible :hostname, :extra_hostnames, :staging_hostnames, :dev_hostnames, :path, :wildcard, :remote_ip, :default_kit_id
-
   serialize :last_30_days_billable_video_views_array, Array
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
@@ -38,7 +36,7 @@ class Site < ActiveRecord::Base
 
   # Invoices
   has_many :invoices, class_name: '::Invoice'
-  has_one  :last_invoice, class_name: '::Invoice', order: 'created_at DESC'
+  has_one  :last_invoice, -> { order(created_at: :desc) }, class_name: '::Invoice'
 
   # Addons
   has_many :billable_items
@@ -47,7 +45,7 @@ class Site < ActiveRecord::Base
   has_many :addons, through: :addon_plans
   has_many :plugins, through: :addons
 
-  has_many :billable_item_activities, order: 'created_at ASC'
+  has_many :billable_item_activities, -> { order('billable_item_activities.created_at ASC') }
 
   has_many :kits
 
@@ -140,49 +138,47 @@ class Site < ActiveRecord::Base
   # ==========
 
   # state
-  scope :active,       -> { where { state == 'active' } }
-  scope :inactive,     -> { where { state != 'active' } }
-  scope :suspended,    -> { where { state == 'suspended' } }
-  scope :archived,     -> { where { state == 'archived' } }
-  scope :not_archived, -> { where { state != 'archived' } }
+  scope :active,       -> { where(state: 'active') }
+  scope :inactive,     -> { where.not(state: 'active') }
+  scope :suspended,    -> { where(state: 'suspended') }
+  scope :archived,     -> { where(state: 'archived') }
+  scope :not_archived, -> { where.not(state: 'archived') }
 
   # attributes queries
   scope :with_wildcard,              -> { where(wildcard: true) }
-  scope :with_path,                  -> { where { (path != nil) & (path != '') & (path != ' ') } }
-  scope :with_extra_hostnames,       -> { where { (extra_hostnames != nil) & (extra_hostnames != '') } }
+  scope :with_path,                  -> { where.not(path: [nil, '', ' ']) }
+  scope :with_extra_hostnames,       -> { where.not(extra_hostnames: [nil, '']) }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
-  scope :without_hostnames, ->(hostnames = []) do
-    where { (hostname != nil) & (hostname != '') }.
-    where { hostname << hostnames }
+  scope :with_paid_invoices,         -> { joins(:invoices).merge(::Invoice.with_state('paid')).where(refunded_at: nil) }
+  scope :without_hostnames,          ->(hostnames = []) { where.not(hostname: [nil, ''] + hostnames) }
+
+  class << self
+    %w[created_on first_billable_plays_on_week].each do |method_name|
+      define_method(method_name) do |timestamp|
+        timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
+        attr_name = method_name.sub(/_on.*/, '_at')
+        timerange = method_name =~ /week/ ? timestamp.all_week : timestamp.all_day
+        where(:"#{attr_name}" => timerange)
+      end
+    end
   end
-  scope :created_on, ->(timestamp) do
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where(created_at: timestamp.all_day)
-  end
+
   scope :created_after, ->(timestamp) do
     timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where { created_at > timestamp }
+    where('sites.created_at > ?', timestamp)
   end
+
   scope :not_tagged_with, ->(tag) do
-    tagged_with(tag, exclude: true)
-  end
-  scope :first_billable_plays_on_week, ->(timestamp) do
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where(first_billable_plays_at: timestamp.all_week)
+    tagged_with(tag, exclude: true).references(:taggings)
   end
 
   # addons
-  scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
-  scope :paying_ids, -> do
-    active.select('DISTINCT(sites.id)').joins('INNER JOIN billable_items ON billable_items.site_id = sites.id')
-    .merge(BillableItem.subscribed).merge(BillableItem.paid)
-  end
-  scope :free, -> { active.includes(:billable_items).where { id << Site.paying_ids } }
-  def self.with_addon_plan(full_addon_name)
+  scope :paying, -> { active.joins(:billable_items).where(billable_items: { state: 'subscribed' }).merge(BillableItem.paid) }
+  scope :free,   -> { active.includes(:billable_items).where.not(id: Site.paying.pluck(:id)) }
+  scope :with_addon_plan, ->(full_addon_name) {
     addon_plan = AddonPlan.get(*full_addon_name.split('-'))
-
-    active.includes(:billable_items).merge(BillableItem.with_item(addon_plan))
-  end
+    active.joins(:billable_items).merge(BillableItem.with_item(addon_plan))
+  }
 
   # admin
   scope :user_id, ->(user_id) { where(user_id: user_id) }
@@ -206,9 +202,9 @@ class Site < ActiveRecord::Base
     ELSE -1 END #{way}")
   }
 
-  def self.additional_or_conditions
+  def self.additional_or_conditions(q)
     %w[token hostname extra_hostnames staging_hostnames dev_hostnames].reduce([]) do |a, e|
-      a << ("lower(#{e}) =~ " + 'lower("%#{q}%")')
+      a << ("#{e} ILIKE '%#{q}%'")
     end
   end
 
@@ -246,6 +242,10 @@ class Site < ActiveRecord::Base
 
   def path=(attribute)
     write_attribute :path, attribute.respond_to?(:to_s) ? attribute.to_s.downcase.gsub(/^\/|\/$/, '') : ''
+  end
+
+  def production_hostnames
+    [hostname, extra_hostnames.to_s.split(/,\s*/)].flatten
   end
 
   def to_param

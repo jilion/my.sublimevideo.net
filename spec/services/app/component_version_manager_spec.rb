@@ -10,7 +10,7 @@ require 'wrappers/campfire_wrapper'
 require 'services/app/component_version_manager'
 
 describe App::ComponentVersionManager do
-  let(:app_component) { mock('App::Component') }
+  let(:app_component) { double('App::Component') }
   let(:app_component_version)   { Struct.new(:component_id, :stage, :name, :version).new(1234, 'beta', 'app', '1.0.0') }
   let(:other_component_version) { Struct.new(:component_id, :stage, :name, :version).new(4321, 'beta', 'foo', '1.0.0') }
   let(:service) { described_class.new(app_component_version) }

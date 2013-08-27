@@ -1,5 +1,4 @@
 class Oauth2Verifier < OauthToken
-
   attr_accessor :state
 
   validates :user, presence: true

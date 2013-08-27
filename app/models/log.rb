@@ -14,8 +14,6 @@ class Log
   index({ name: 1 }, unique: true)
   index({ created_at: 1, _type: 1 }, background: true) # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
 
-  attr_accessible :name
-
   mount_uploader :file, LogUploader, mount_on: :file_filename
 
   # ===============

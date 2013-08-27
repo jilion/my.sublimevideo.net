@@ -1,0 +1,17 @@
+%h2 Actual yearly revenues
+
+%table
+  %tr
+    %th Year
+    %th $$ (incl. VAT) from CH customers
+    %th $$ (excl. VAT) from not-CH customers
+    %th $$ Total
+  - year = @to
+  - while year >= @from
+    - invoices = Invoice.paid.paid_between(year.beginning_of_year, year.end_of_year)
+    %tr{ style: year.end_of_year > Time.now.utc ? "font-style:italic;" : "" }
+      %td= l year, format: :fullyear
+      %td= display_amount invoices.where(customer_country: 'CH').sum(:amount)
+      %td= display_amount invoices.where("customer_country = ? OR customer_country != ?", nil, 'CH').sum(:amount)
+      %td= display_amount invoices.sum(:amount)
+    - year -= 1.year

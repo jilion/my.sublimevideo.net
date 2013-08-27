@@ -1,35 +1,17 @@
-%h3 Invoices paid an grouped by PAID DATE
-%table
-  %tr
-    %th Month
-    %th Invoiced (CH, VAT incl)
-    %th Invoiced (not CH)
-    %th Invoiced (Total)
-  - from = DateTime.new(2011,3).utc
-  - to   = Time.now.utc.end_of_month
-  - while from <= to do
-    - invoices = Invoice.paid.between(paid_at: from..from.end_of_month)
-    %tr{ style: from.end_of_month > 30.days.ago ? "font-style:italic;" : "" }
-      %td= l from.end_of_month, format: :month_fullyear
-      %td= display_amount invoices.where { customer_country == 'CH' }.sum(:amount)
-      %td= display_amount invoices.where { (customer_country == nil) | (customer_country != 'CH') }.sum(:amount)
-      %td= display_amount invoices.sum(:amount)
-    - from = from + 1.month
+%h2 Actual monthly revenues
 
-%h3 Invoices paid an grouped by CREATED DATE
 %table
   %tr
     %th Month
-    %th Invoiced (CH, VAT incl)
-    %th Invoiced (not CH)
-    %th Invoiced (Total)
-  - from = DateTime.new(2011,3).utc
-  - to   = Time.now.utc.end_of_month
-  - while from <= to do
-    - invoices = Invoice.paid.between(created_at: from..from.end_of_month)
-    %tr{ style: from.end_of_month > 30.days.ago ? "font-style:italic;" : "" }
-      %td= l from.end_of_month, format: :month_fullyear
-      %td= display_amount invoices.where { customer_country == 'CH' }.sum(:amount)
-      %td= display_amount invoices.where { (customer_country == nil) | (customer_country != 'CH') }.sum(:amount)
+    %th $$ (incl. VAT) from CH customers
+    %th $$ (excl. VAT) from not-CH customers
+    %th $$ Total
+  - month = @to
+  - while month >= @from
+    - invoices = Invoice.paid.paid_between(month.beginning_of_month, month.end_of_month)
+    %tr{ style: month.end_of_month > 1.month.ago ? "font-style:italic;" : "" }
+      %td= l month.end_of_month, format: :month_fullyear
+      %td= display_amount invoices.where(customer_country: 'CH').sum(:amount)
+      %td= display_amount invoices.where("customer_country = ? OR customer_country != ?", nil, 'CH').sum(:amount)
       %td= display_amount invoices.sum(:amount)
-    - from = from + 1.month
+    - month -= 1.month

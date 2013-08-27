@@ -12,10 +12,6 @@ describe Feedback do
   describe 'Validations' do
     subject { create(:feedback) }
 
-    [:next_player, :reason, :comment].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-
     described_class::REASONS.each do |reason|
       it { should allow_value(reason).for(:reason) }
     end

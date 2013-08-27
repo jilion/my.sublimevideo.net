@@ -1,6 +1,6 @@
 <%= title_and_content_header("# of Employees per Company") %>
 <%
-employees = User.beta.select("company_employees, COUNT(*) as total").group(:company_employees).order("total DESC").map! { |u| [u.company_employees || "Not Available", u.total.to_i] }
+employees = User.select("company_employees, COUNT(*) as total").group(:company_employees).order("total DESC").map! { |u| [u.company_employees || "Not Available", u.total.to_i] }
 
 employee_with_wrong_label = employees.find { |e| e[0] == "Company size" }
 employee_not_available    = employees.find { |e| e[0] == "Not Available" }

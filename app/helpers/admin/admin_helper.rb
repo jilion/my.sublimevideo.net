@@ -6,7 +6,7 @@ module Admin::AdminHelper
     raw "<strong>Current UTC time:</strong> #{l(Time.now.utc, format: :seconds_timezone)}"
   end
 
-  def distance_of_time_in_words_to_now(from_time, include_seconds = false)
+  def distance_of_time_in_words_to_now(from_time, include_seconds_or_options = {})
     if from_time > Time.now.utc.to_date
       "#{super} from now"
     else

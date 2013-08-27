@@ -1,8 +1,7 @@
 class Admin::EnthusiastsController < Admin::AdminController
   respond_to :js, :html
 
-  has_scope :by_date, :by_email, :by_starred, :by_confirmed, :by_interested_in_beta, :by_invited
-  has_scope :confirmed, :not_confirmed, :interested_in_beta, :starred, :invited, :not_invited, type: :boolean
+  has_scope :by_email, :by_created_at, :by_invited_at
   has_scope :search
 
   # GET /enthusiasts

@@ -15,7 +15,7 @@ describe CampaignMonitorWrapper do
     Librato.stub(:increment)
   end
 
-  let(:subscribe_user) { OpenStruct.new(id: 12, beta: true, newsletter?: true, email: 'user_subscribe3@example.org', name: 'User Subscribe') }
+  let(:subscribe_user) { OpenStruct.new(id: 12, beta?: true, newsletter?: true, email: 'user_subscribe3@example.org', name: 'User Subscribe') }
 
   describe '.subscribe' do
 
@@ -24,26 +24,26 @@ describe CampaignMonitorWrapper do
         described_class.subscribe(
           list_id: described_class.list[:list_id],
           segment: described_class.list[:segment],
-          user: { id: subscribe_user.id, email: subscribe_user.email, name: subscribe_user.name, beta: subscribe_user.beta }
+          user: { id: subscribe_user.id, email: subscribe_user.email, name: subscribe_user.name, beta: subscribe_user.beta? }
         ).should be_true
       end
     end
   end
 
   describe '.import' do
-    let(:user1) { OpenStruct.new(id: 13, beta: true, billable: false, email: 'user_import1@example.org', name: 'User Import #1') }
-    let(:user2) { OpenStruct.new(id: 14, beta: false, billable: true, email: 'user_import2@example.org', name: 'User Import #2') }
+    let(:user1) { OpenStruct.new(id: 13, beta?: true, billable: false, email: 'user_import1@example.org', name: 'User Import #1') }
+    let(:user2) { OpenStruct.new(id: 14, beta?: false, billable: true, email: 'user_import2@example.org', name: 'User Import #2') }
 
     use_vcr_cassette 'campaign_monitor_wrapper/import'
 
     it 'subscribes a list of user' do
       described_class.import([
-        { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta, billable: user1.billable },
-        { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta, billable: user2.billable }
+        { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?, billable: user1.billable },
+        { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta?, billable: user2.billable }
       ]).should be_true
 
       # user 1
-      subscriber = CreateSend::Subscriber.get(described_class.list[:list_id], user1.email)
+      subscriber = CreateSend::Subscriber.get(described_class.auth, described_class.list[:list_id], user1.email)
       subscriber['EmailAddress'].should eq user1.email
       subscriber['Name'].should         eq user1.name
       subscriber['State'].should        eq 'Active'
@@ -52,7 +52,7 @@ describe CampaignMonitorWrapper do
       subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq 'true'
       subscriber['CustomFields'].find { |h| h.values.include?('billable') }['Value'].should eq 'false'
       # user 2
-      subscriber = CreateSend::Subscriber.get(described_class.list[:list_id], user2.email)
+      subscriber = CreateSend::Subscriber.get(described_class.auth, described_class.list[:list_id], user2.email)
       subscriber['EmailAddress'].should eq user2.email
       subscriber['Name'].should         eq user2.name
       subscriber['State'].should        eq 'Active'
@@ -130,7 +130,7 @@ describe CampaignMonitorWrapper do
         subscriber['State'].should        eq 'Active'
         subscriber['CustomFields'].find { |h| h.values.include?('segment') }['Value'].should eq described_class.list[:segment]
         subscriber['CustomFields'].find { |h| h.values.include?('user_id') }['Value'].should eq subscribe_user.id.to_s
-        subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq subscribe_user.beta.to_s
+        subscriber['CustomFields'].find { |h| h.values.include?('beta') }['Value'].should eq subscribe_user.beta?.to_s
       end
     end
 

@@ -8,7 +8,7 @@ class Admin::SitesController < Admin::AdminController
     end
   end
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :_find_site_by_token!, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
+  before_filter :_set_site, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -20,9 +20,16 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites
   def index
     @sites = apply_scopes(Site.includes(:user, :billable_items))
-    @tags  = Site.tag_counts.order { tags.name }
+    @tags  = Site.tag_counts.order('tags.name')
 
     respond_with(@sites, per_page: 50)
+  end
+
+  # GET /sites/paying
+  def paying
+    @sites = apply_scopes(Site.with_paid_invoices.includes(:user))
+
+    respond_with(@sites, per_page: 100, paginate: true, layout: false)
   end
 
   # GET /sites/:id
@@ -32,7 +39,7 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites/:id/edit
   def edit
-    @tags = Site.tag_counts.order { tags.name }
+    @tags = Site.tag_counts.order('tags.name')
 
     respond_with(@site)
   end
@@ -40,7 +47,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     params[:site].delete(:accessible_stage) unless has_role?('god')
-    @site.update_attributes(params[:site], without_protection: true)
+    @site.update(_site_params)
 
     _respond_for_site_with_notice('Site has been successfully updated.')
   end
@@ -80,21 +87,22 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/update_design_subscription
   def update_design_subscription
-    @design = Design.find(params[:design_id])
-    _update_design_subscription(@design)
-
-    _respond_for_site_with_notice(t('flash.sites.update_design_subscription.notice', design_title: @design.title, state: params[:state].presence || 'subscribed'))
+    _update_billable_item_subscription('design')
   end
 
   # PUT /sites/:id/update_addon_plan_subscription
   def update_addon_plan_subscription
-    @addon_plan = AddonPlan.find(params[:addon_plan_id])
-    _update_addon_plan_subscription(@addon_plan)
-
-    _respond_for_site_with_notice(t('flash.sites.update_addon_plan_subscription.notice', addon_plan_title: @addon_plan.title, state: params[:state].presence || 'subscribed'))
+    _update_billable_item_subscription('addon_plan')
   end
 
   private
+
+  def _update_billable_item_subscription(type)
+    @item = type.classify.constantize.find(params[:"#{type}_id"])
+    send("_update_#{type}_subscription", @item)
+
+    _respond_for_site_with_notice(t("flash.sites.update_#{type}_subscription.notice", :"#{type}_title" => @item.title, state: params[:state].presence || 'subscribed'))
+  end
 
   def _set_default_scopes
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
@@ -108,8 +116,12 @@ class Admin::SitesController < Admin::AdminController
     end
   end
 
-  def _find_site_by_token!
-    @site = Site.find_by_token!(params[:id])
+  def _set_site
+    @site = Site.where(token: params[:id]).first!
+  end
+
+  def _site_params
+    params.require(:site).permit!
   end
 
   def _update_design_subscription(design)

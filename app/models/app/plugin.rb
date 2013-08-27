@@ -5,8 +5,6 @@ class App::Plugin < ActiveRecord::Base
 
   serialize :condition, Hash
 
-  attr_accessible :addon, :design, :component, :token, :name, as: :admin
-
   belongs_to :addon
   belongs_to :design
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
