@@ -34,7 +34,7 @@ gem 'chartkick'
 # Auth / invitations
 gem 'devise', '~> 3.0.0'
 # Until 1.1.9
-gem 'devise_invitable', github: 'scambra/devise_invitable'
+gem 'devise_invitable'
 gem 'devise-async'
 
 # API
@@ -42,7 +42,6 @@ gem 'oauth'
 gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4 support
 
 # Internals
-gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
@@ -60,7 +59,6 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
-gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
@@ -96,7 +94,6 @@ gem 'rack-status'
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
 gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
-# gem 'addressabler'
 
 # Stats
 gem 'crack'
@@ -111,7 +108,6 @@ gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
-# gem 'eco'
 gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
