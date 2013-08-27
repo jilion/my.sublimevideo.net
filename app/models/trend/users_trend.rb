@@ -1,4 +1,3 @@
-# encoding: utf-8
 class UsersTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -23,7 +22,7 @@ class UsersTrend
 
   def self.trend_hash(day)
     {
-      d: day.to_time,
+      d:  day.utc,
       be: 0,
       fr: User.free.count,
       pa: User.paying.count,

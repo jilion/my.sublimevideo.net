@@ -1,4 +1,3 @@
-# encoding: utf-8
 class SiteStatsTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -22,10 +21,10 @@ class SiteStatsTrend
   end
 
   def self.trend_hash(day)
-    site_stats = Stat::Site::Day.where(d: day.to_time).all
+    site_stats = Stat::Site::Day.where(d: day.utc).all
 
     {
-      d:  day.to_time,
+      d:  day.utc,
       pv: hashes_values_sum(site_stats, :pv),
       vv: hashes_values_sum(site_stats, :vv),
       bp: hashes_values_sum(site_stats, :bp),

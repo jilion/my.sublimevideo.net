@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature "Sticky notices" do
-  context "no notice" do
+  context "nothing to say to the user" do
     background do
       sign_in_as :user
       @site = build(:site, user: @current_user)

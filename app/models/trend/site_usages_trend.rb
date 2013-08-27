@@ -1,4 +1,3 @@
-# encoding: utf-8
 class SiteUsagesTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -23,10 +22,10 @@ class SiteUsagesTrend
   end
 
   def self.trend_hash(day)
-    site_usages = SiteUsage.where(day: day.to_time)
+    site_usages = SiteUsage.where(day: day.utc)
 
     {
-      d:  day.to_time,
+      d:  day.utc,
       lh: loader_hits_hash(site_usages),
       ph: player_hits_hash(site_usages),
       fh: site_usages.sum(:flash_hits).to_i,

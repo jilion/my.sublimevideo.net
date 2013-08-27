@@ -1,4 +1,3 @@
-# encoding: utf-8
 class TailorMadePlayerRequestsTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -32,7 +31,7 @@ class TailorMadePlayerRequestsTrend
 
   def self.trend_hash(day)
     hash = {
-      d: day.to_time,
+      d: day.utc,
       n: Hash.new(0)
     }
 

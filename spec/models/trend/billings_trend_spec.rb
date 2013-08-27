@@ -40,8 +40,8 @@ describe BillingsTrend do
         create(:addon_plan_invoice_item, item: @support_addon_plan_2, invoice: i, amount: 5)
         create(:design_invoice_item, item: @twit_design, invoice: i, amount: 2)
       }.save
-      # useful records
 
+      # useful records
       build(:paid_invoice, paid_at: Time.now.utc.midnight, site: site, renew: false).tap { |i|
         create(:addon_plan_invoice_item, item: @support_addon_plan_2, invoice: i, amount: 4)
       }.save

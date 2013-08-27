@@ -1,4 +1,3 @@
-# encoding: utf-8
 class BillingsTrend
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -22,7 +21,7 @@ class BillingsTrend
   def self.trend_hash(day)
     invoices = Invoice.includes(:invoice_items).paid.paid_between(day.beginning_of_day, day.end_of_day).references(:invoice_items)
     hash = {
-      d: day.to_time,
+      d: day.utc,
       ne: Hash.new { |h, k| h[k] = Hash.new(0) },
       re: Hash.new { |h, k| h[k] = Hash.new(0) }
     }

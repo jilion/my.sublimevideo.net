@@ -1,10 +1,9 @@
-# encoding: utf-8
 class RevenuesTrend
   include Mongoid::Document
   include Mongoid::Timestamps
   include Trend
 
-  field :r, type: Hash # design revenue { "design" => { "html5" => { 999 } }, "logo" => { "custom" => 999 } }
+  field :r, type: Hash # revenues hash: { "design" => { "html5" => { 999 } }, "logo" => { "custom" => 999 } }
 
   def self.json_fields
     [:r]
@@ -20,13 +19,12 @@ class RevenuesTrend
 
   def self.trend_hash(day)
     hash = {
-      d: day.to_time,
+      d: day.utc,
       r: Hash.new { |h, k| h[k] = Hash.new(0) }
     }
 
     ::Site.not_archived.find_each do |site|
-      invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site, price_per_day_of_year: true)
-
+      invoice_service = InvoiceCreator.build_for_period(day.utc.all_day, site, price_per_day_of_year: true)
       invoice_service.invoice.invoice_items.each do |invoice_item|
         hash[:r][_second_key_for_hash(invoice_item)][invoice_item.item.name] += invoice_item.amount
       end
