@@ -1,12 +1,12 @@
 GIT
-  remote: https://github.com/airblade/paper_trail.git
+  remote: git://github.com/airblade/paper_trail.git
   revision: b4e53f861a58ef46c698c42f0ec044535b100c3b
   specs:
     paper_trail (3.0.0.beta)
       activerecord (>= 3.0, < 5.0)
 
 GIT
-  remote: https://github.com/jilion/chosen-rails.git
+  remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
     chosen-rails (1.0.0)
@@ -16,7 +16,7 @@ GIT
       sass-rails (>= 3.2)
 
 GIT
-  remote: https://github.com/jilion/premailer-rails.git
+  remote: git://github.com/jilion/premailer-rails.git
   revision: 2903e08143415b09eedbd15002382ffd4fdfaf57
   branch: regru-premailer-dependency
   specs:
@@ -25,7 +25,7 @@ GIT
       regru-premailer (~> 1.7)
 
 GIT
-  remote: https://github.com/jilion/pusher-gem.git
+  remote: git://github.com/jilion/pusher-gem.git
   revision: 3b080047d13c54f40d92c04d1723fd5b06ae652e
   specs:
     pusher (0.11.1)
@@ -33,7 +33,7 @@ GIT
       signature (~> 0.1.6)
 
 GIT
-  remote: https://github.com/jilion/turbolinks.git
+  remote: git://github.com/jilion/turbolinks.git
   revision: 0a192f579ec837dd616623592dcdaaf2305a9583
   branch: ios_video_issue
   specs:
@@ -41,13 +41,13 @@ GIT
       coffee-rails
 
 GIT
-  remote: https://github.com/jilion/useragent.git
+  remote: git://github.com/jilion/useragent.git
   revision: 9fd0f887527850994c543caa7cf5327bd635dc02
   specs:
     useragent (0.2.3)
 
 GIT
-  remote: https://github.com/kolodovskyy/kaminari.git
+  remote: git://github.com/kolodovskyy/kaminari.git
   revision: 3047786adf33242d3a964b50491e584af52ce945
   specs:
     kaminari (0.14.1)
@@ -55,7 +55,7 @@ GIT
       activesupport (>= 3.0.0)
 
 GIT
-  remote: https://github.com/librato/librato-rails.git
+  remote: git://github.com/librato/librato-rails.git
   revision: 0774663f168be524437344ba148928b5bd2d10a9
   specs:
     librato-rails (0.10.0.pre1)
@@ -63,14 +63,14 @@ GIT
       rails (>= 3.0)
 
 GIT
-  remote: https://github.com/mbleigh/acts-as-taggable-on.git
+  remote: git://github.com/mbleigh/acts-as-taggable-on.git
   revision: 98aecdd86ddf447a88ae6351cc02ab420a78d0ec
   specs:
     acts-as-taggable-on (2.4.2.pre)
       rails (>= 3, < 5)
 
 GIT
-  remote: https://github.com/milgner/compass-rails.git
+  remote: git://github.com/milgner/compass-rails.git
   revision: c86e7fd9c2605c80816a2f64a3fb8b7c3a09e494
   branch: rails4
   specs:
@@ -78,7 +78,7 @@ GIT
       compass (>= 0.12.2, < 0.14)
 
 GIT
-  remote: https://github.com/mongoid/kiqstand.git
+  remote: git://github.com/mongoid/kiqstand.git
   revision: fdd5ea62293707fe044180a220670b0142314d04
   specs:
     kiqstand (1.2.0)
@@ -86,7 +86,7 @@ GIT
       moped (~> 1.4)
 
 GIT
-  remote: https://github.com/mongoid/mongoid.git
+  remote: git://github.com/mongoid/mongoid.git
   revision: d0fc225a81a27dfdd69f17134a564208bbe501c6
   specs:
     mongoid (4.0.0)
@@ -96,14 +96,14 @@ GIT
       tzinfo (~> 0.3.22)
 
 GIT
-  remote: https://github.com/nicoolas25/i18n-extra_translations.git
+  remote: git://github.com/nicoolas25/i18n-extra_translations.git
   revision: 88aa85da8e535aed2c01dd37291bfef1402cdf2e
   specs:
     i18n-extra_translations (0.0.5)
       i18n (~> 0.6)
 
 GIT
-  remote: https://github.com/rails/sprockets-rails.git
+  remote: git://github.com/rails/sprockets-rails.git
   revision: 18026870bb5fde945802674fb5b88be976ff6b94
   specs:
     sprockets-rails (2.0.0)
@@ -112,7 +112,7 @@ GIT
       sprockets (~> 2.8)
 
 GIT
-  remote: https://github.com/rymai/active_merchant.git
+  remote: git://github.com/rymai/active_merchant.git
   revision: 4dc159611a3ab12cb41dd6a4a5ae4e28962a1354
   branch: ogone-store-amount-option
   specs:
@@ -126,7 +126,7 @@ GIT
       nokogiri
 
 GIT
-  remote: https://github.com/scambra/devise_invitable.git
+  remote: git://github.com/scambra/devise_invitable.git
   revision: 7a7cb78f39c68ae5d565289ad1f097d6b76ab433
   specs:
     devise_invitable (1.2.1)
@@ -134,7 +134,7 @@ GIT
       devise (~> 3.0.0)
 
 GIT
-  remote: https://github.com/thibaudgg/voxel_hapi.git
+  remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 590c89b458e21be52825ea9f7532182c68310715
   branch: 1.9.2
   specs:
@@ -144,7 +144,7 @@ GIT
       xml-simple (~> 1.0.12)
 
 GIT
-  remote: https://github.com/tomhughes/oauth-plugin.git
+  remote: git://github.com/tomhughes/oauth-plugin.git
   revision: b60a8ebf2a94e2336333bfe65dcea4ad86b664d2
   branch: rails4
   specs:
