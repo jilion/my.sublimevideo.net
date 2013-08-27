@@ -1,7 +1,10 @@
 class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
+  template: JST['admin/trends/templates/date_pickers']
+
   initialize: ->
     $(document).bind 'click', this.close
     Mousetrap.bind 'esc', => this.close()
+    this.render()
 
   events: ->
     'click':               '_stopPropagation'
@@ -9,11 +12,14 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
     'click button.cancel': 'close'
 
   render: ->
-    if @$el.is(':visible')
+    @$el.html(this.template())
+    this
+
+  toggle: ->
+    if @$el.is(":visible")
       this.close()
     else
       this.show()
-
     this
 
   show: ->

@@ -41,4 +41,4 @@ class MSVStats.Views.TimeRangeTitleView extends Backbone.View
   #
   _toggleDatePicker: (event) ->
     event.stopPropagation()
-    MSVStats.datePickersView.render()
+    MSVStats.datePickersView.toggle()
