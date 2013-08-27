@@ -140,7 +140,7 @@ private
   end
 
   def _addon_plan_settings(template, kit_settings = nil)
-    template.reduce({}) do |hash, (key, value)|
+    template.deep_symbolize_keys.reduce({}) do |hash, (key, value)|
       kit_value = kit_settings && kit_settings[key]
       hash[key] = kit_value.nil? ? value[:default] : kit_value
       hash
@@ -148,7 +148,7 @@ private
   end
 
   def _addon_plan_allowed_settings(template)
-    template.reduce({}) do |hash, (key, value)|
+    template.deep_symbolize_keys.reduce({}) do |hash, (key, value)|
       hash[key] = value.slice(:values, :range)
       hash
     end

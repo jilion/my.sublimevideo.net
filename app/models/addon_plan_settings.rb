@@ -15,7 +15,7 @@ class AddonPlanSettings < ActiveRecord::Base
       end
     else
       Rails.cache.fetch [self, 'find_cached_by_addon_plan_and_plugin_name', addon_plan.name.dup, plugin_name.to_s.dup] do
-        addon_plan.settings.includes(:plugin).where(plugins: { name: plugin_name.to_s }).references(:plugins).first
+        addon_plan.settings.joins(:plugin).where(app_plugins: { name: plugin_name.to_s }).first
       end
     end
   end

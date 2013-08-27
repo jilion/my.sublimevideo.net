@@ -66,7 +66,7 @@ class Transaction < ActiveRecord::Base
 
   def self.charge_invoices_by_user_id(user_id)
     if user = User.active.find(user_id)
-      invoices = user.invoices.open_or_failed.load
+      invoices = user.invoices.open_or_failed.to_a
 
       invoices.each do |invoice|
         if invoice.transactions.failed.count >= 15
@@ -189,7 +189,7 @@ private
 
   # before_validation
   def reject_paid_invoices
-    self.invoices.reject! { |invoice| invoice.paid? }
+    self.invoices = invoices.reject { |invoice| invoice.paid? }
   end
 
   # before_validation
