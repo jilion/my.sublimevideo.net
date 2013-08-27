@@ -2,7 +2,6 @@
 #= require hamlcoffee
 #= require jquery.spin
 #
-#= require_tree ../templates
 #= require_tree ./trends
 
 window.spinOptions =
