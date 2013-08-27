@@ -4,9 +4,7 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 ruby '2.0.0'
 
 gem 'rails', '4.0.0'
-
-# until https://github.com/rails/sprockets-rails/pull/77 is merged
-gem 'sprockets-rails', github: 'johnmcdowall/sprockets-rails'
+gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
