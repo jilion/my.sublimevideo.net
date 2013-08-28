@@ -6,7 +6,7 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 - link_options = params.merge(page: current_page, format: nil)
-- html_options = { remote: true, class: 'remote', onclick: '$(document.body).animate({ scrollTop: 0 })' }
+- html_options = { onclick: '$(document.body).animate({ scrollTop: 0 })' }
 
 %span.page.first
   = link_to_unless current_page.first?, current_page, link_options, html_options
