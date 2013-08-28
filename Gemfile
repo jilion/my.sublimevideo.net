@@ -136,6 +136,7 @@ group :staging, :production do
   gem 'asset_sync'
   gem 'memcachier'
   gem 'dalli'
+  gem 'rails_12factor'
 end
 
 group :development do
