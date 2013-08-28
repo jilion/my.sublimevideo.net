@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/airblade/paper_trail.git
-  revision: b4e53f861a58ef46c698c42f0ec044535b100c3b
+  revision: 98848bb9b2db2bb4e1cbf18ba4a5a3b748451485
   specs:
     paper_trail (3.0.0.beta)
       activerecord (>= 3.0, < 5.0)
@@ -56,9 +56,9 @@ GIT
 
 GIT
   remote: git://github.com/librato/librato-rails.git
-  revision: 0774663f168be524437344ba148928b5bd2d10a9
+  revision: bd2aa590a0b9ff33e36d18b5a5c00b205afe369b
   specs:
-    librato-rails (0.10.0.pre1)
+    librato-rails (0.10.0)
       librato-rack (~> 0.4.2)
       rails (>= 3.0)
 
