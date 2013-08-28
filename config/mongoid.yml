@@ -85,7 +85,6 @@ staging:
   options:
     preload_models: true
     use_utc: true
-    skip_version_check: true
 production:
 <% if ARGV.join.include? 'assets:precompile' %>
   sessions:
@@ -111,5 +110,4 @@ production:
   options:
     preload_models: true
     use_utc: true
-    skip_version_check: true
 <% end %>
