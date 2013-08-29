@@ -23,7 +23,7 @@ after_fork do |server, worker|
   if defined?(ActiveRecord::Base)
     config = Rails.application.config.database_configuration[Rails.env]
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
-    config['pool']              = ENV['DB_POOL'] || 5
+    config['pool']              = ENV['DB_UNICORN_POOL'] || 5
     ActiveRecord::Base.establish_connection(config)
   end
 
