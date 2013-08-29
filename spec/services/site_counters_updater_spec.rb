@@ -56,7 +56,7 @@ describe SiteCountersUpdater do
       create(:site_day_stat, t: site.token, d: 30.days.ago.midnight, vv: { m: 2, e: 6, d: 10, i: 14, em: 18 })
       create(:site_day_stat, t: site.token, d: 1.days.ago.midnight, vv: { m: 3, e: 7, d: 11, i: 15, em: 19 })
       create(:site_day_stat, t: site.token, d: Time.now.utc.midnight, vv: { m: 4, e: 8, d: 12, i: 16, em: 20 })
-      VideoTag.stub(:count)
+      VideoTag.stub(:count) { 0 }
     end
 
     it 'updates site video tags counter from the last 30 days' do
@@ -70,6 +70,7 @@ describe SiteCountersUpdater do
     it 'updates site counters from last 30 days site stats' do
       described_class.new(site).update_last_30_days_counters
 
+      site.reload
       site.last_30_days_main_video_views.should    eq 5
       site.last_30_days_extra_video_views.should   eq 13
       site.last_30_days_dev_video_views.should     eq 21
