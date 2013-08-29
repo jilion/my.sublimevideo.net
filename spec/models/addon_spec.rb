@@ -56,6 +56,38 @@ describe Addon do
     it { described_class.with_paid_plans.should eq [@addon1, @addon2] }
   end
 
+  describe '.visible' do
+    before do
+      @addon1 = create(:addon)
+      create(:addon_plan, addon: @addon1, price: 0, availability: 'public')
+      create(:addon_plan, addon: @addon1, price: 995, availability: 'custom')
+
+      @addon2 = create(:addon)
+      create(:addon_plan, addon: @addon2, price: 995, availability: 'public')
+
+      @addon3 = create(:addon)
+      create(:addon_plan, addon: @addon3, price: 0, availability: 'hidden')
+    end
+
+    it { described_class.visible.should eq [@addon1, @addon2] }
+  end
+
+  describe '.not_custom' do
+    before do
+      @addon1 = create(:addon)
+      create(:addon_plan, addon: @addon1, price: 0, availability: 'hidden')
+      create(:addon_plan, addon: @addon1, price: 995, availability: 'public')
+
+      @addon2 = create(:addon)
+      create(:addon_plan, addon: @addon2, price: 995, availability: 'hidden')
+
+      @addon3 = create(:addon)
+      create(:addon_plan, addon: @addon3, price: 0, availability: 'custom')
+    end
+
+    it { described_class.not_custom.should eq [@addon1, @addon2] }
+  end
+
 end
 
 # == Schema Information

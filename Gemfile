@@ -189,4 +189,3 @@ group :test do
   gem 'factory_girl'
   gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
-
