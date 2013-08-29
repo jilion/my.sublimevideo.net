@@ -122,7 +122,7 @@ gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'milgner/compass-rails', branch: 'rails4'
 
 group :production do
-  gem 'rack-google-analytics'
+  gem 'rack-google-analytics', '~> 0.11.0'
 end
 
 group :staging, :production do
