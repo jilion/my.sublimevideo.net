@@ -30,7 +30,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
     cache_stored_file! unless cached?
 
     zip_path = current_path + '.zip'
-    Zip::ZipFile.open(zip_path, Zip::ZipFile::CREATE) do |zipfile|
+    Zip::File.open(zip_path, Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, current_path)
     end
     File.delete(current_path)

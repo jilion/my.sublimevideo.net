@@ -1,8 +1,8 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
-require 'carrierwave'
-require 'zip/zip'
 require 'fog'
+require 'zip'
+require 'carrierwave'
 require 'config/carrierwave'
 require 'support/fixtures_helpers'
 
@@ -30,6 +30,7 @@ describe StatsExportUploader do
   end
 
   it "has a secure url with S3 bucket path" do
+    p S3Wrapper.buckets[:stats_exports]
     uploader.file.stub(:authenticated_url) { "http://#{uploader.fog_directory}.s3.amazonaws.com/path" }
     uploader.secure_url.should eq "http://s3.amazonaws.com/#{uploader.fog_directory}/path"
   end
@@ -47,7 +48,7 @@ describe StatsExportUploader do
   end
 
   it "zipped properly" do
-    zip = Zip::ZipFile.open(uploader.file.path)
+    zip = Zip::File.open(uploader.file.path)
     zip.read(zip.first).should eq csv.read
   end
 

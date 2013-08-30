@@ -77,12 +77,12 @@ gem 'public_suffix'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 
-gem 'rubyzip', require: 'zip/zip'
+gem 'rubyzip'
 gem 'mime-types'
 gem 'countries'
 gem 'country_select'
 gem 'snail'
-gem 'PageRankr', require: 'page_rankr'
+gem 'PageRankr'
 gem 'twitter'
 gem 'array_stats'
 gem 'createsend' # Campaign Monitor

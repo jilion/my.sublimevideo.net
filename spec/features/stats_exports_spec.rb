@@ -47,7 +47,7 @@ feature 'StatsExport' do
     # Verify zip content
     tempzip = Tempfile.open(['temp', '.zip'])
     File.open(tempzip, 'w', encoding: 'ASCII-8BIT') { |f| f.write(StatsExport.last.file.file.read) }
-    zip = Zip::ZipFile.open(tempzip.path)
+    zip = Zip::File.open(tempzip.path)
     zip.read(zip.first).should eq <<-EOF
 uid,title,loads_count,views_count,embed_loads_count,embed_views_count
 video_uid,My Video,24,24,202,202

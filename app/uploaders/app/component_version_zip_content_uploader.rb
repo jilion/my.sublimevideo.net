@@ -10,7 +10,7 @@ class App::ComponentVersionZipContentUploader
   end
 
   def store_zip_content(zip_path)
-    Zip::ZipFile.foreach(zip_path) do |zipfile|
+    Zip::File.foreach(zip_path) do |zipfile|
       next if zipfile.name =~ /__MACOSX|.DS_Store/ || zipfile.directory?
 
       object_name  = upload_path.join(zipfile.name).to_s
