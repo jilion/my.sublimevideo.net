@@ -294,13 +294,13 @@ describe Transaction do
       before do
         user2    = create(:user)
         site3    = create(:site, user: user2)
-        @invoice1 = create(:invoice, site: site1, state: 'paid', renew: false) # first invoice
-        @invoice2 = create(:invoice, site: site1, state: 'failed', renew: true)
-        @invoice3 = create(:invoice, site: site1, state: 'open', renew: true)
-        @invoice4 = create(:invoice, site: site3, state: 'open', renew: true)
+        @invoice1 = create(:invoice, site: site1, state: 'paid') # first invoice
+        @invoice2 = create(:invoice, site: site1, state: 'failed')
+        @invoice3 = create(:invoice, site: site1, state: 'open')
+        @invoice4 = create(:invoice, site: site3, state: 'open')
       end
 
-      it "should delay invoice charging for open invoices which have the renew flag == true" do
+      it "delays invoice charging for failed & open invoices" do
         @invoice1.reload.should be_paid
         @invoice2.reload.should be_failed
         @invoice3.reload.should be_open
@@ -309,7 +309,7 @@ describe Transaction do
         Transaction.charge_invoices_by_user_id(user.id)
       end
 
-      it "should charge invoices" do
+      it "charges invoices" do
         @invoice1.reload.should be_paid
         @invoice2.reload.should be_failed
         @invoice3.reload.should be_open

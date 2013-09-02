@@ -14,17 +14,17 @@ class Transaction < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validate :at_least_one_invoice, :all_invoices_belong_to_same_user, :minimum_amount
+  validate :_at_least_one_invoice, :_all_invoices_belong_to_same_user, :_minimum_amount
 
   # =============
   # = Callbacks =
   # =============
 
-  before_validation :reject_paid_invoices, :set_amount
+  before_validation :_reject_paid_invoices, :_set_amount
 
-  before_save :set_fields_from_ogone_response
+  before_save :_set_fields_from_ogone_response
 
-  before_create :set_user_and_credit_card_info
+  before_create :_set_user_and_credit_card_info
 
   # =================
   # = State Machine =
@@ -36,11 +36,11 @@ class Transaction < ActiveRecord::Base
     event(:succeed)  { transition [:unprocessed, :waiting_d3d, :waiting] => :paid }
     event(:fail)     { transition [:unprocessed, :waiting_d3d, :waiting] => :failed }
 
-    before_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:set_fields_from_ogone_response]
-    after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:update_invoices]
+    before_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:_set_fields_from_ogone_response]
+    after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:_update_invoices]
 
-    after_transition on: :succeed, do: :send_charging_succeeded_email
-    after_transition on: :fail, do: :send_charging_failed_email
+    after_transition on: :succeed, do: :_send_charging_succeeded_email
+    after_transition on: :fail, do: :_send_charging_failed_email
   end
 
   # ==========
@@ -50,6 +50,8 @@ class Transaction < ActiveRecord::Base
   # state
   scope :failed, -> { where(state: 'failed') }
   scope :paid,   -> { where(state: 'paid') }
+
+  MAX_ATTEMPTS_BEFORE_SUSPEND = 15
 
   # =================
   # = Class Methods =
@@ -65,21 +67,12 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.charge_invoices_by_user_id(user_id)
-    if user = User.active.find(user_id)
-      invoices = user.invoices.open_or_failed.to_a
+    return unless user = User.active.find(user_id)
 
-      invoices.each do |invoice|
-        if invoice.transactions.failed.count >= 15
-          invoices.delete(invoice)
+    invoices = user.invoices.open_or_failed.to_a
+    chargeable = invoices.any? && _suspend_user_if_needed(invoices)
 
-          UserManager.new(invoice.user).suspend unless invoice.user.vip?
-
-          return
-        end
-      end
-
-      charge_by_invoice_ids(invoices.map(&:id).sort) if invoices.any?
-    end
+    charge_by_invoice_ids(invoices.map(&:id).sort) if chargeable
   end
 
   def self.charge_by_invoice_ids(invoice_ids, options = {})
@@ -96,11 +89,23 @@ class Transaction < ActiveRecord::Base
 
   def execute_payment(opts = {})
     begin
-      OgoneWrapper.purchase(amount, user.cc_alias, payment_options(opts))
+      OgoneWrapper.purchase(amount, user.cc_alias, _payment_options(opts))
     rescue => ex
       Notifier.send("Exception during charging: #{ex.message}", exception: ex)
       nil
     end
+  end
+
+  def self._suspend_user_if_needed(invoices)
+    invoices.each do |invoice|
+      if invoice.transactions.failed.count >= MAX_ATTEMPTS_BEFORE_SUSPEND
+        UserManager.new(invoice.user).suspend unless invoice.user.vip?
+
+        return false
+      end
+    end
+
+    true
   end
 
   # ====================
@@ -117,15 +122,13 @@ class Transaction < ActiveRecord::Base
     #   The payment has been accepted.
     #   An authorization code is available in the field "ACCEPTANCE".
     when '9'
-      Librato.increment 'payments.success', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-      self.succeed
+      _process_payment_success(payment_params)
 
     # STATUS == 51, Authorization waiting:
     #   The authorization will be processed offline.
     #   This is the standard response if the merchant has chosen offline processing in his account configuration
     when '51'
-      Librato.increment 'payments.waiting', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-      self.wait # add a waiting state for invoice & transaction
+      _process_payment_waiting(payment_params)
 
     # NCSTATUS == 5
     #   STATUS == 0, Invalid or incomplete:
@@ -144,23 +147,17 @@ class Transaction < ActiveRecord::Base
     # STATUS == 46, Waiting for identification (3-D Secure):
     # THIS SHOULD NEVER HAPPEN...
     when '0', '2', '46', '93'
-      Librato.increment 'payments.fail', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-      self.fail
+      _process_payment_fail(payment_params)
 
     # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
     #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
     #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
     when '52', '92'
-      Librato.increment 'payments.uncertain', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-      Notifier.send("Transaction ##{self.id} (PAYID: #{payment_params['PAYID']}) has an uncertain state, please investigate quickly!")
-
-      self.wait
+      _process_payment_uncertain(payment_params)
 
     else
-      Notifier.send("Transaction unknown status: #{payment_params['STATUS']}")
-
-      self.wait
+      _process_payment_unknown(payment_params)
     end
 
     self
@@ -172,7 +169,33 @@ class Transaction < ActiveRecord::Base
 
 private
 
-  def payment_options(options = {})
+  def _process_payment_success(payment_params)
+    Librato.increment 'payments.success', by: payment_params['amount'].to_i, source: payment_params['BRAND']
+    self.succeed
+  end
+
+  def _process_payment_waiting(payment_params)
+    Librato.increment 'payments.waiting', by: payment_params['amount'].to_i, source: payment_params['BRAND']
+    self.wait # add a waiting state for invoice & transaction
+  end
+
+  def _process_payment_fail(payment_params)
+    Librato.increment 'payments.fail', by: payment_params['amount'].to_i, source: payment_params['BRAND']
+    self.fail
+  end
+
+  def _process_payment_uncertain(payment_params)
+    Librato.increment 'payments.uncertain', by: payment_params['amount'].to_i, source: payment_params['BRAND']
+    Notifier.send("Transaction ##{self.id} (PAYID: #{payment_params['PAYID']}) has an uncertain state, please investigate quickly!")
+    self.wait
+  end
+
+  def _process_payment_unknown(payment_params)
+    Notifier.send("Transaction unknown status: #{payment_params['STATUS']}")
+    self.wait
+  end
+
+  def _payment_options(options = {})
     options.merge!({
       order_id: order_id,
       description: description.to(99),
@@ -188,34 +211,34 @@ private
   end
 
   # before_validation
-  def reject_paid_invoices
+  def _reject_paid_invoices
     self.invoices = invoices.reject { |invoice| invoice.paid? }
   end
 
   # before_validation
-  def set_amount
+  def _set_amount
     self.amount = invoices.map(&:amount).sum
   end
 
   # validates
-  def at_least_one_invoice
+  def _at_least_one_invoice
     self.errors.add(:base, :at_least_one_invoice) if invoices.empty?
   end
 
   # validates
-  def all_invoices_belong_to_same_user
+  def _all_invoices_belong_to_same_user
     if invoices.any? { |invoice| invoice.user != invoices.first.user }
       self.errors.add(:base, :all_invoices_must_belong_to_the_same_user)
     end
   end
 
   # validates
-  def minimum_amount
+  def _minimum_amount
     self.errors.add(:amount, :minimum_amount_not_reached) if amount < 100
   end
 
   # before_create
-  def set_user_and_credit_card_info
+  def _set_user_and_credit_card_info
     self.user           = invoices.first.user unless user_id?
     self.cc_type        = self.user.cc_type
     self.cc_last_digits = self.user.cc_last_digits
@@ -223,7 +246,7 @@ private
   end
 
   # before_transition on: [:succeed, :fail, :wait, :wait_d3d]
-  def set_fields_from_ogone_response
+  def _set_fields_from_ogone_response
     if @ogone_response_info.present?
       self.pay_id    = @ogone_response_info['PAYID']
       self.nc_status = @ogone_response_info['NCSTATUS'].to_i
@@ -233,7 +256,7 @@ private
   end
 
   # after_transition on: [:succeed, :fail, :wait, :wait_d3d]
-  def update_invoices
+  def _update_invoices
     action = case state
              when 'paid'
                'succeed'
@@ -247,12 +270,12 @@ private
   end
 
   # after_transition on: :succeed
-  def send_charging_succeeded_email
+  def _send_charging_succeeded_email
     BillingMailer.delay.transaction_succeeded(id)
   end
 
   # after_transition on: :fail
-  def send_charging_failed_email
+  def _send_charging_failed_email
     BillingMailer.delay.transaction_failed(id)
   end
 
