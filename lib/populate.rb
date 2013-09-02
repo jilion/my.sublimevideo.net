@@ -126,15 +126,20 @@ module Populate
       [Site.where(token: user_login_or_site_token).first]
     end
 
+    def _delete_files_and_directories(glob)
+      Dir[glob].each do |filename|
+        if File.file?(filename)
+          File.delete(filename)
+        elsif File.directory?(filename)
+          Dir.delete(filename)
+        end
+      end
+    end
+
     def _delete_file_in_public(path)
       print "Deleting all files and directories in /public/#{path}\n" if Rails.env.development?
       timed do
-        Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
-          File.delete(filename) if File.file?(filename)
-        end
-        Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
-          Dir.delete(filename) if File.directory?(filename)
-        end
+        _delete_files_and_directories("#{Rails.public_path}/#{path}/**/*")
       end
     end
 
