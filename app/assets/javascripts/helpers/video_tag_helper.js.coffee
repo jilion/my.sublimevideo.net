@@ -36,7 +36,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateLightboxCode: (opts = {}) ->
     options = {}
     _.extend(options, opts)
-    _.defaults(options, { addons: ['lightbox'], href: options['id'] })
+    _.defaults(options, { lightbox: true, addons: ['lightbox'], href: options['id'] })
 
     attributes = []
     attributes.push "href=\"##{options['href']}\""
@@ -74,7 +74,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataSettings: (opts = {}) ->
     options = {}
     _.extend(options, opts)
-    _.defaults(options, { kitReplacement: true, addons: ['player', 'videoPlayer', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+    _.defaults(options, { kitReplacement: true, lightbox: false, addons: ['player', 'videoPlayer', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
 
     if options['settings']?
       this.generateDataSettingsFromJSON(options)
@@ -82,7 +82,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
       this.generateDataSettingsFromDOM(options['addons'])
 
     this.replacePlayerKitSettingWithRealPreviewKitIdentifier() if options['kitReplacement']
-    this.setDataUID()
+    this.setDataUID() unless options['lightbox']
     this.setYouTubeID()
     this.setAutoresize()
     this.setAutoplay()
