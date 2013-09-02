@@ -30,7 +30,6 @@ describe StatsExportUploader do
   end
 
   it "has a secure url with S3 bucket path" do
-    p S3Wrapper.buckets[:stats_exports]
     uploader.file.stub(:authenticated_url) { "http://#{uploader.fog_directory}.s3.amazonaws.com/path" }
     uploader.secure_url.should eq "http://s3.amazonaws.com/#{uploader.fog_directory}/path"
   end
