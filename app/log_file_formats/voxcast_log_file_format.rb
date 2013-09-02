@@ -1,4 +1,3 @@
-# encoding: utf-8
 module VoxcastLogFileFormat
   extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
 
@@ -31,6 +30,15 @@ module VoxcastLogFileFormat
 
   def create(*args)
     self.new({ default: line_definition }, report_trackers)
+  end
+
+  def report_trackers_for(field, title = nil)
+    analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
+    analyze.frequency(field, title: title.presence || field,
+      category: ->(r) { [r[field], token_from(r)] },
+      if: ->(r) { countable_hit?(r) && gif_request?(r) && page_load_event?(r) && good_token?(r) }
+    )
+    analyze.trackers
   end
 
   def line_definition
