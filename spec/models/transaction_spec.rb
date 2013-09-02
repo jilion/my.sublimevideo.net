@@ -266,16 +266,25 @@ describe Transaction do
     describe ".charge_invoices" do
       let(:suspended_user) { create(:user, state: 'suspended') }
       before do
-        @site3    = create(:site, user: suspended_user)
-        @invoice1 = create(:invoice, state: 'open', site: site1, renew: true)
-        @invoice2 = create(:invoice, state: 'open', site: @site3, renew: false)
-        @invoice3 = create(:failed_invoice, site: site1)
-        @invoice4 = create(:failed_invoice, site: @site3)
-        @invoice5 = create(:paid_invoice, site: site1)
+        @site3     = create(:site, user: suspended_user)
+        @invoice1  = create(:invoice, state: 'open', site: site1)
+        @invoice11 = create(:invoice, state: 'open', site: site1) # second open invoice for the same user
+        @invoice2  = create(:invoice, state: 'open', site: @site3)
+        @invoice3  = create(:failed_invoice, site: site1)
+        @invoice4  = create(:failed_invoice, site: @site3) # user is not active
+        @invoice5  = create(:paid_invoice, site: site1)
       end
 
-      it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Transaction.should delay(:charge_invoices_by_user_id).with(@invoice1.site.user_id)
+      it "delays invoice charging for each active user (and only once!) with open or failed invoices" do
+        Transaction.should delay(:charge_invoices_by_user_id).with(site1.user.id)
+
+        Transaction.charge_invoices
+      end
+
+      it "delays invoice charging only once per user" do
+        Transaction.stub(:delay) { double(charge_invoices_by_user_id: true) }
+        Transaction.should_receive(:delay).once
+
         Transaction.charge_invoices
       end
     end # .charge_invoices
