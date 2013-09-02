@@ -31,18 +31,14 @@ class CampaignMonitorWrapper
   end
 
   def self.subscribe(params = {})
-    custom_params = _build_custom_params(segment: self.list[:segment], user_id: params[:id], beta: params[:beta], billable: params[:billable])
-
     _request('subscribe') do
-      CreateSend::Subscriber.add(self.auth, self.list[:list_id], params[:email], params[:name], custom_params, true)
+      CreateSend::Subscriber.add(self.auth, self.list[:list_id], params[:email], params[:name], _user_params_from_hash(params), true)
     end
   end
 
   def self.import(users = {})
     subscribers = users.reduce([]) do |memo, user|
-      custom_params = _build_custom_params(segment: self.list[:segment], user_id: user[:id], beta: user[:beta], billable: user[:billable])
-
-      memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
+      memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: _user_params_from_hash(user) }
     end
 
     _request('import') do
@@ -90,11 +86,15 @@ class CampaignMonitorWrapper
     end
   end
 
-  def self._build_custom_params(hash)
+  def self._params_for_api(hash)
     custom_params = []
     hash.map do |k, v|
       { Key: k.to_s, Value: v }
     end
+  end
+
+  def self._user_params_from_hash(hash)
+    _params_for_api(segment: self.list[:segment], user_id: hash[:id], beta: hash[:beta], billable: hash[:billable])
   end
 
   def self._log_bad_request(ex)
