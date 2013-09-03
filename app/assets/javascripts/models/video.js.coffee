@@ -83,6 +83,9 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     if addonSettings = this.get('settings')[addonName]
       if setting = addonSettings[settingName]
         return setting
+    else
+      if setting = this.get('settings')["#{addonName}_#{settingName}"]
+        return setting
 
     selectedKit.getSetting(addonName, settingName)
 

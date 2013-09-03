@@ -60,7 +60,8 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
       poster: MSVVideoCode.poster
       sources: MSVVideoCode.sources
       thumbnail: MSVVideoCode.thumbnail
-
+      settings: @video_tag.settings or {}
+      autoplay: (@video_tag.settings or {}).autoplay
 
   setupTestAssets: ->
     MSVVideoCode.poster.setDimensions(false, MSVVideoCode.testAssets['poster'], { width: 800, height: 450 })
