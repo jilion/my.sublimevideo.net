@@ -22,9 +22,9 @@ class VideoTagsController < ApplicationController
     by_last_90_days_starts
     by_last_365_days_starts
   ]
+
   # GET /sites/:site_id/videos
   def index
-    p _index_params
     @video_tags = VideoTag.all(_index_params)
 
     respond_with(@video_tags)
@@ -42,27 +42,19 @@ class VideoTagsController < ApplicationController
 private
 
   def _index_params
-    p = { _site_token: @site.token, with_valid_uid: true }
+    index_params = { _site_token: @site.token, with_valid_uid: true }
     if params[:filter].in?(FILTER_PARAMS)
-      p[params[:filter]] = true
+      index_params[params[:filter]] = true
     else
-      p[:last_30_days_active] = true
+      index_params[:last_30_days_active] = true
     end
     if sort_key = params.keys.detect { |k| k.in?(SORT_PARAMS) }
-      p[sort_key] = params[sort_key]
+      index_params[sort_key] = params[sort_key]
     else
-      p[:by_date] = 'desc'
+      index_params[:by_date] = 'desc'
     end
-    p[:search] = params[:search] if params.key?(:search)
-    p
+    [:search, :page].each { |p| index_params[p] = params[p] if params.key?(p) }
+    index_params
   end
-
-  # def apply_filter(video_tags)
-  #   if FILTER_PARAMS.include?(params[:filter])
-  #     @video_tags.send(params[:filter])
-  #   else
-  #     @video_tags.last_30_days_active
-  #   end
-  # end
 
 end
