@@ -24,7 +24,7 @@ gem 'display_case'
 gem 'rails_autolink'
 gem 'regru-premailer'
 gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'regru-premailer-dependency'
-gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
+gem 'turbolinks'
 gem 'google-analytics-turbolinks'
 
 # Admin charts
@@ -33,7 +33,6 @@ gem 'chartkick'
 
 # Auth / invitations
 gem 'devise', '~> 3.0.0'
-# Until 1.1.9
 gem 'devise_invitable'
 gem 'devise-async'
 
@@ -50,7 +49,7 @@ gem 'libxml-ruby', require: 'libxml'
 gem 'oj'
 
 gem 'state_machine'
-gem 'paper_trail', github: 'airblade/paper_trail' # Rails 4 support
+gem 'paper_trail', '3.0.0.beta1'
 gem 'uniquify'
 gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on' # Need > 2.4.1
 gem 'paranoia'
@@ -88,7 +87,7 @@ gem 'createsend' # Campaign Monitor
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
-gem 'librato-rails', github: 'librato/librato-rails'
+gem 'librato-rails'
 gem 'rack-status'
 
 # Highest version change the query_values method behavior
@@ -97,7 +96,7 @@ gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 
 # Stats
 gem 'crack'
-gem 'pusher', github: 'jilion/pusher-gem'
+gem 'pusher'
 gem 'redis'
 
 # Tickets
@@ -144,7 +143,7 @@ group :development do
 
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+  gem 'i18n-extra_translations', require: false
 
   # gem 'em-http-request' # async pusher in populate
   # gem 'letter_opener'
