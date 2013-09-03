@@ -4,9 +4,10 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     @selectedSiteToken    = options['selectedSiteToken']
     @kits                 = options['kits']
     @defaultKitIdentifier = options['defaultKitIdentifier']
+    @video_tag            = options['video_tag'] or null
 
-    this.initModels()
-    this.initViews()
+    @initModels()
+    @initViews()
     new MySublimeVideo.UI.DependantInputs
 
     sublime.load()
@@ -28,9 +29,40 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCode.playerModels = [MSVVideoCode.kits, MSVVideoCode.video, MSVVideoCode.poster, MSVVideoCode.sources, MSVVideoCode.thumbnail]
 
-    this.setTestAssets()
+    @setupVideo()
 
-  setTestAssets: ->
+  setupVideo: ->
+    if @video_tag?
+      @setupRealAssets()
+    else
+      @setupTestAssets()
+
+  setupRealAssets: ->
+    dimensions = @video_tag.size.split('x')
+    MSVVideoCode.poster.setDimensions(false, @video_tag.poster_url, { width: dimensions[0], height: dimensions[1] })
+    sources = []
+    _.each @video_tag.sources, (attributes) =>
+      source = new MySublimeVideo.Models.Source(_.extend(attributes,
+        src: attributes['url']
+        format: attributes['family']
+        video: MSVVideoCode.video))
+      source.setDimensions(attributes['url'], { sourceWidth: dimensions[0], sourceHeight: dimensions[1], width: dimensions[0], height: dimensions[1], ratio: dimensions[1] / dimensions[0] })
+      sources.push source
+    MSVVideoCode.sources.reset(sources, silent: true)
+
+    # Lightbox specific models
+    MSVVideoCode.thumbnail.setDimensions(false, @video_tag.poster_url, { width: dimensions[0] / 3, height: dimensions[1] / 3 })
+
+    MSVVideoCode.video.set
+      origin: 'own'
+      uid: @video_tag.uid
+      title: @video_tag.title
+      poster: MSVVideoCode.poster
+      sources: MSVVideoCode.sources
+      thumbnail: MSVVideoCode.thumbnail
+
+
+  setupTestAssets: ->
     MSVVideoCode.poster.setDimensions(false, MSVVideoCode.testAssets['poster'], { width: 800, height: 450 })
     sources = []
     _.each MSVVideoCode.testAssets['sources'], (attributes) =>

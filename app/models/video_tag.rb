@@ -28,7 +28,7 @@ class VideoTag
 
   def self.find(*args)
     super(*args)
-  rescue URI::InvalidURIError => ex
+  rescue URI::InvalidURIError, Faraday::Error::ResourceNotFound => ex
     raise ActiveRecord::RecordNotFound, ex
   end
 end

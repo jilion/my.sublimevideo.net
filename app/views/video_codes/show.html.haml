@@ -1,14 +1,8 @@
-- title("Generate Video Code for #{@video_tag.name}")
+- title("Edit Video Code for '#{@video_tag.title}'")
 = render '/layouts/site_header'
-
-.wrap
-  .duration
-    %small= duration_string(@video_tag.duration)
-  .thumbnail= playable_lightbox(@video_tag, size: '96x54')
-  %h3.name= @video_tag.name
-  %p= link_to hostname_or_token(@site), site_video_tags_path(@site)
-
-.spacer
 .big_break
 
-= render 'form'
+#video_code
+  %h3= raw "Edit Video Code for &#8220;#{@video_tag.title}&#8221;"
+  = form_tag url_for, id: 'video_code_form' do
+    = render 'form', site: @site, video_tag: @video_tag, get_code_button: true

@@ -95,7 +95,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
 
   _setTestAssets: (oldOrigin) ->
     if oldOrigin is 'youtube' or this._allAssetsEmpty() or confirm('All fields will be overwritten, continue?')
-      MSVVideoCode.builderRouter.setTestAssets()
+      MSVVideoCode.builderRouter.setupTestAssets()
       this._initUIHelpers()
       true
     else

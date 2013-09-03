@@ -48,7 +48,8 @@ module VideoTagsHelper
                         # TO DO USE SSL PROXY (data.sv.net)
                         poster: video_tag.poster_url,
                         width: 640, height: 360,
-                        data: { name: video_tag.name, uid: video_tag.uid },
+                        title: video_tag.title,
+                        data: { uid: video_tag.uid },
                         preload: 'none',
                         style: 'display:none') do
       sources = video_tag.sources.map do |source|
