@@ -1,17 +1,19 @@
 - title("Videos for #{hostname_or_token(@site)}")
 = render '/layouts/site_header'
 
+.big_break
 #site.video_tags
-
   #video_tags_filter
     -# TODO Octave Search / Filter form design
     = form_tag site_video_tags_path, method: :get, id: 'js-video_tags_filter_form' do
       - (params.keys & VideoTagsController::SORT_PARAMS).each do |sort_param|
         = hidden_field_tag sort_param, params[sort_param], class: 'js-video_tags_sort_param'
-      = text_field_tag :search, params[:search], size: 20, placeholder: "Search", autocomplete: 'off', id: 'js-video_tags_filter_search'
-      = select_tag :filter, videos_table_filter_options_for_select, id: 'js-video_tags_filter_select'
+      .entry.search{ style: "display:inline-block;margin-right:10px"}
+        = label_tag :search, 'Search', class: 'icon'
+        = text_field_tag :search, params[:search], size: 20, placeholder: "Search", autocomplete: 'off', id: 'js-video_tags_filter_search', class: "text", style: "width:260px"
+      .entry.select{ style: "display:inline"}= select_tag :filter, videos_table_filter_options_for_select, id: 'js-video_tags_filter_select'
 
-  = link_to 'Publish video', new_site_video_code_path(@site), class: "add_a_video green_button"
+  = link_to '+ Publish video', new_site_video_code_path(@site), class: "add_a_video green_button"
 
   .spacer
 
