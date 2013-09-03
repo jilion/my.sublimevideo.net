@@ -27,7 +27,8 @@
     - if @video_tags.present?
       = render @video_tags
     - else
-      %p no videos
+      %tr
+        %td.video_tag{ colspan: 4 } No videos
 
 .pagination_wrap
   = paginate @video_tags
