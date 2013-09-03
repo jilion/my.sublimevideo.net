@@ -1,4 +1,6 @@
 class MimeTypeGuesser
+  DEFAULT_RESPONSE = { 'content-type' => 'invalid' }
+
   def self.guess(url)
     head(url)['content-type']
   end
@@ -6,7 +8,6 @@ class MimeTypeGuesser
   private
 
   def self.head(uri_str)
-    default_response = { 'content-type' => 'invalid' }
     uri  = URI.parse(URI.escape(uri_str))
     opts = { use_ssl: uri.scheme == 'https', read_timeout: 3 }
 
@@ -18,9 +19,9 @@ class MimeTypeGuesser
     when Net::HTTPSuccess, Net::HTTPRedirection
       response
     else
-      default_response
+      DEFAULT_RESPONSE
     end
   rescue => ex
-    default_response
+    DEFAULT_RESPONSE
   end
 end
