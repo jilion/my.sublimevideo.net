@@ -266,16 +266,25 @@ describe Transaction do
     describe ".charge_invoices" do
       let(:suspended_user) { create(:user, state: 'suspended') }
       before do
-        @site3    = create(:site, user: suspended_user)
-        @invoice1 = create(:invoice, state: 'open', site: site1, renew: true)
-        @invoice2 = create(:invoice, state: 'open', site: @site3, renew: false)
-        @invoice3 = create(:failed_invoice, site: site1)
-        @invoice4 = create(:failed_invoice, site: @site3)
-        @invoice5 = create(:paid_invoice, site: site1)
+        @site3     = create(:site, user: suspended_user)
+        @invoice1  = create(:invoice, state: 'open', site: site1)
+        @invoice11 = create(:invoice, state: 'open', site: site1) # second open invoice for the same user
+        @invoice2  = create(:invoice, state: 'open', site: @site3)
+        @invoice3  = create(:failed_invoice, site: site1)
+        @invoice4  = create(:failed_invoice, site: @site3) # user is not active
+        @invoice5  = create(:paid_invoice, site: site1)
       end
 
-      it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Transaction.should delay(:charge_invoices_by_user_id).with(@invoice1.site.user_id)
+      it "delays invoice charging for each active user (and only once!) with open or failed invoices" do
+        Transaction.should delay(:charge_invoices_by_user_id).with(site1.user.id)
+
+        Transaction.charge_invoices
+      end
+
+      it "delays invoice charging only once per user" do
+        Transaction.stub(:delay) { double(charge_invoices_by_user_id: true) }
+        Transaction.should_receive(:delay).once
+
         Transaction.charge_invoices
       end
     end # .charge_invoices
@@ -285,13 +294,13 @@ describe Transaction do
       before do
         user2    = create(:user)
         site3    = create(:site, user: user2)
-        @invoice1 = create(:invoice, site: site1, state: 'paid', renew: false) # first invoice
-        @invoice2 = create(:invoice, site: site1, state: 'failed', renew: true)
-        @invoice3 = create(:invoice, site: site1, state: 'open', renew: true)
-        @invoice4 = create(:invoice, site: site3, state: 'open', renew: true)
+        @invoice1 = create(:invoice, site: site1, state: 'paid') # first invoice
+        @invoice2 = create(:invoice, site: site1, state: 'failed')
+        @invoice3 = create(:invoice, site: site1, state: 'open')
+        @invoice4 = create(:invoice, site: site3, state: 'open')
       end
 
-      it "should delay invoice charging for open invoices which have the renew flag == true" do
+      it "delays invoice charging for failed & open invoices" do
         @invoice1.reload.should be_paid
         @invoice2.reload.should be_failed
         @invoice3.reload.should be_open
@@ -300,7 +309,7 @@ describe Transaction do
         Transaction.charge_invoices_by_user_id(user.id)
       end
 
-      it "should charge invoices" do
+      it "charges invoices" do
         @invoice1.reload.should be_paid
         @invoice2.reload.should be_failed
         @invoice3.reload.should be_open

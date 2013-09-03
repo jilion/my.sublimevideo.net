@@ -16,7 +16,7 @@ describe VoxcastReferrersLogFileFormat do
     end
 
     it "should parse and return loader tracker" do
-      tracker = @trackers.find { |t| t.options[:title] == :referrers }
+      tracker = @trackers.find { |t| t.options[:title] == :referrer }
       tracker.categories.should == {
         ["http://www.sublimevideo.net/demo", "ibvjcopp"] => 1,
         ["http://sublimevideo.net/demo", "ibvjcopp"] => 2

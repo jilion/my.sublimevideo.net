@@ -1,8 +1,8 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
-require 'carrierwave'
-require 'zip/zip'
 require 'fog'
+require 'zip'
+require 'carrierwave'
 require 'config/carrierwave'
 require 'support/fixtures_helpers'
 
@@ -47,7 +47,7 @@ describe StatsExportUploader do
   end
 
   it "zipped properly" do
-    zip = Zip::ZipFile.open(uploader.file.path)
+    zip = Zip::File.open(uploader.file.path)
     zip.read(zip.first).should eq csv.read
   end
 

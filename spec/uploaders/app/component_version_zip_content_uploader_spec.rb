@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-require 'zip/zip'
+require 'zip'
 require 'rails/railtie'
 require 'fog'
 require 'config/carrierwave' # for fog_mock

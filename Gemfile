@@ -75,12 +75,12 @@ gem 'public_suffix'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser' # hosted on gemfury
 
-gem 'rubyzip', require: 'zip/zip'
+gem 'rubyzip'
 gem 'mime-types'
 gem 'countries'
 gem 'country_select'
 gem 'snail'
-gem 'PageRankr', require: 'page_rankr'
+gem 'PageRankr'
 gem 'twitter'
 gem 'array_stats'
 gem 'createsend' # Campaign Monitor
@@ -118,7 +118,7 @@ gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'milgner/compass-rails', branch: 'rails4'
 
 group :production do
-  gem 'rack-google-analytics'
+  gem 'rack-google-analytics', '~> 0.11.0'
 end
 
 group :staging, :production do
@@ -185,4 +185,3 @@ group :test do
   gem 'factory_girl'
   gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
-

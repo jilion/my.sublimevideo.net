@@ -4,7 +4,7 @@ module SitesTasks
       LoaderGenerator.delay(queue: 'high').update_all_stages!(site_id) if options[:loaders]
       SettingsGenerator.delay(queue: 'high').update_all!(site_id) if options[:settings]
     end
-    puts 'Important sites scheduled...'
+    puts 'Important sites scheduled...' if Rails.env.development?
 
     scheduled = 0
     Site.active.order(last_30_days_main_video_views: :desc).pluck(:id).each do |site_id|

@@ -19,28 +19,31 @@ module Populate
 
     def plans
       PopulateHelpers.empty_tables(Plan)
+      keys = [:name, :cycle, :video_views, :stats_retention_days, :price, :support_level]
       plans_attributes = [
-        { name: "free",       cycle: "none",  video_views: 0,          stats_retention_days: 0,   price: 0,     support_level: 0 },
-        { name: "sponsored",  cycle: "none",  video_views: 0,          stats_retention_days: nil, price: 0,     support_level: 0 },
-        { name: "trial",      cycle: "none",  video_views: 0,          stats_retention_days: nil, price: 0,     support_level: 2 },
-        { name: "plus",       cycle: "month", video_views: 200_000,    stats_retention_days: 365, price: 990,   support_level: 1 },
-        { name: "premium",    cycle: "month", video_views: 1_000_000,  stats_retention_days: nil, price: 4990,  support_level: 2 },
-        { name: "plus",       cycle: "year",  video_views: 200_000,    stats_retention_days: 365, price: 9900,  support_level: 1 },
-        { name: "premium",    cycle: "year",  video_views: 1_000_000,  stats_retention_days: nil, price: 49900, support_level: 2 },
-        { name: "custom - 1", cycle: "year",  video_views: 10_000_000, stats_retention_days: nil, price: 99900, support_level: 2 }
+        ["free",       "none",  0,          0,   0,     0],
+        ["sponsored",  "none",  0,          nil, 0,     0],
+        ["trial",      "none",  0,          nil, 0,     2],
+        ["plus",       "month", 200_000,    365, 990,   1],
+        ["premium",    "month", 1_000_000,  nil, 4990,  2],
+        ["plus",       "year",  200_000,    365, 9900,  1],
+        ["premium",    "year",  1_000_000,  nil, 49900, 2],
+        ["custom - 1", "year",  10_000_000, nil, 99900, 2]
       ]
-      plans_attributes.each { |attributes| Plan.create!(attributes) }
+
+      plans_attributes.each { |attrs| Plan.create!(Hash[keys.zip(attrs)]) }
       puts "#{plans_attributes.size} plans created!"
     end
 
     def deals
       PopulateHelpers.empty_tables(DealActivation, Deal)
+      keys = [:token, :name, :description, :kind, :value, :availability_scope, :started_at, :ended_at]
       deals_attributes = [
-        { token: 'rts1', name: 'Real-Time Stats promotion #1', description: 'Exclusive Newsletter Promotion: Save 20% on all yearly plans', kind: 'yearly_plans_discount', value: 0.2, availability_scope: 'newsletter', started_at: Time.now.utc.midnight, ended_at: Time.utc(2012, 2, 29).end_of_day },
-        { token: 'rts2', name: 'Premium promotion #1', description: '30% discount on the Premium plan', kind: 'premium_plan_discount', value: 0.3, availability_scope: 'newsletter', started_at: 3.weeks.from_now.midnight, ended_at: 5.weeks.from_now.end_of_day }
+        ['rts1', 'Real-Time Stats promotion #1', 'Exclusive Newsletter Promotion: Save 20% on all yearly plans', 'yearly_plans_discount', 0.2, 'newsletter', Time.now.utc.midnight, Time.utc(2012, 2, 29).end_of_day],
+        ['rts2', 'Premium promotion #1', '30% discount on the Premium plan', 'premium_plan_discount', 0.3, 'newsletter', 3.weeks.from_now.midnight, 5.weeks.from_now.end_of_day]
       ]
 
-      deals_attributes.each { |attributes| Deal.create!(attributes) }
+      deals_attributes.each { |attrs| Deal.create!(Hash[keys.zip(attrs)]) }
       puts "#{deals_attributes.size} deals created!"
     end
 
@@ -75,7 +78,7 @@ module Populate
     def sites
       Populate.users if User.all.empty?
       Populate.plans if Plan.all.empty?
-      delete_all_files_in_public('uploads/settings', 'uploads/loaders')
+      _delete_all_files_in_public('uploads/settings', 'uploads/loaders')
       SitesPopulator.new.execute
     end
 
@@ -88,21 +91,13 @@ module Populate
     end
 
     def video_tags(user_login_or_site_token)
-      sites = User.where(email: "#{user_login_or_site_token}@jilion.com").first!.sites
-    rescue
-      sites = [Site.where(token: user_login_or_site_token).first]
-    ensure
-      sites.compact.each do |site|
+      _sites_from_user_login_or_site_token(user_login_or_site_token).each do |site|
         SiteCountersUpdater.new(site).update_last_30_days_video_tags_counters
       end
     end
 
     def stats(user_login_or_site_token)
-      sites = User.where(email: "#{user_login_or_site_token}@jilion.com").first!.sites
-    rescue
-      sites = [Site.where(token: user_login_or_site_token).first]
-    ensure
-      sites.compact.each do |site|
+      _sites_from_user_login_or_site_token(user_login_or_site_token).each do |site|
         StatsPopulator.new.execute(site)
       end
     end
@@ -125,19 +120,32 @@ module Populate
 
     private
 
-    def delete_all_files_in_public(*paths)
-      paths.each do |path|
-        if path.gsub('.', '') =~ /\w+/ # don't remove all files and directories in /public ! ;)
-          print "Deleting all files and directories in /public/#{path}\n" if Rails.env.development?
-          timed do
-            Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
-              File.delete(filename) if File.file?(filename)
-            end
-            Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
-              Dir.delete(filename) if File.directory?(filename)
-            end
-          end
+    def _sites_from_user_login_or_site_token(user_login_or_site_token)
+      User.where(email: "#{user_login_or_site_token}@jilion.com").first!.sites
+    rescue
+      [Site.where(token: user_login_or_site_token).first]
+    end
+
+    def _delete_files_and_directories(glob)
+      Dir[glob].each do |filename|
+        if File.file?(filename)
+          File.delete(filename)
+        elsif File.directory?(filename)
+          Dir.delete(filename)
         end
+      end
+    end
+
+    def _delete_file_in_public(path)
+      print "Deleting all files and directories in /public/#{path}\n" if Rails.env.development?
+      timed do
+        _delete_files_and_directories("#{Rails.public_path}/#{path}/**/*")
+      end
+    end
+
+    def _delete_all_files_in_public(*paths)
+      paths.each do |path|
+        _delete_file_in_public(path) unless ['.', '..'].include?(path)
       end
     end
 
