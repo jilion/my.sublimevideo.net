@@ -499,7 +499,6 @@ GEM
       redis (>= 3.0.4)
       redis-namespace
     signature (0.1.7)
-    silent-postgres (0.1.1)
     simple_oauth (0.2.0)
     slop (3.4.6)
     snail (1.1.0)
@@ -690,7 +689,6 @@ DEPENDENCIES
   shoulda-matchers
   show_me_the_cookies
   sidekiq
-  silent-postgres
   snail
   solve
   sprockets-rails!

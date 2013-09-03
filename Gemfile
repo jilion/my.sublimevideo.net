@@ -136,7 +136,6 @@ end
 
 group :development do
   gem 'rack-livereload'
-  gem 'silent-postgres'
   gem 'launchy'
   gem 'quiet_assets'
   gem 'bullet'
