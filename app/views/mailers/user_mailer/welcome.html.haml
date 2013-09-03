@@ -27,9 +27,14 @@
           %td{ width: "156", align: "center" }
             = image_tag asset_url('emails/stats_icon.png')
           %td{ width: "364" }
-            %p.bigger{ color: "#7e8ea7" }= raw "Once you've added SublimeVideo to your site you'll be able to see stats about your video traffic! Check out a #{link_to "live demo", site_stats_url('demo')} of SublimeVideo's Universal Real-Time Statistics add-on to see for yourself."
+            %p.bigger{ color: "#7e8ea7" }
+              Check out a
+              = link_to "live demo", site_stats_url('demo')
+              of the Real-Time Statistics add-on and
+              = succeed '.' do
+                = link_to 'try it for yourself', addon_url('stats', p: 'realtime')
   %tr
-    %td{width:"100%"}
+    %td{ width:"100%" }
       %table.inner_table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0" }
         %tr
           %td{ width: "126", align: "center" }
@@ -38,13 +43,11 @@
             %h3{ color: "#4e5a6c" }= "Need help?"
             %p.small{ color: "#7e8ea7" }= "Don't worry if you're having trouble; we're here to help."
   %tr
-    %td{width:"100%"}
+    %td{ width:"100%" }
       %table.inner_table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0" }
         %tr
           %td{ width: "100%" }
             %ul.small
               %li{ color: "#7e8ea7" }= raw "Visit our #{link_to "FAQ", page_url('faq', subdomain: 'docs')} & #{link_to "Troubleshooting", page_url('troubleshooting', subdomain: 'docs')} pages to find answers to common questions."
               %li{ color: "#7e8ea7" }= raw "Visit the #{link_to "Community forum", 'https://getsatisfaction.com/sublimevideo'} to ask our support team about a specific issue."
-              %li{ color: "#7e8ea7" }= raw "You also have access for free to #{link_to "direct email support", layout_url('help')}."
               %li{ color: "#7e8ea7" }= raw "Subscribe to #{link_to "our blog", "http://blog.jilion.com"} to stay tuned about SublimeVideo news."
-
