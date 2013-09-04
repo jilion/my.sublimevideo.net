@@ -42,7 +42,7 @@ class VideoTagsController < ApplicationController
 private
 
   def _index_params
-    index_params = { _site_token: @site.token, with_valid_uid: true }
+    index_params = { _site_token: @site.token, with_valid_uid: true, per: 10 }
     if params[:filter].in?(FILTER_PARAMS)
       index_params[params[:filter]] = true
     else
