@@ -5,7 +5,7 @@
         - if video_tag.poster_url?
           = proxied_image_tag(video_tag.poster_url, size: '84x47')
         - else
-          = 'default img'
+          = image_tag "video_tag/no-poster.png", alt: "no poster", size: '84x47'
         .duration= duration_string(video_tag.duration)
       .name= video_tag.title
       .hosted_on
