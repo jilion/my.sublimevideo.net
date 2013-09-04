@@ -358,6 +358,7 @@ GEM
       json
     hpricot (0.8.6)
     htmlentities (4.3.1)
+    http_content_type (0.0.1)
     http_parser.rb (0.5.3)
     httparty (0.11.0)
       multi_json (~> 1.0)
@@ -675,6 +676,7 @@ DEPENDENCIES
   has_scope
   honeybadger
   hpricot
+  http_content_type
   i18n-extra_translations!
   kaminari!
   kiqstand!

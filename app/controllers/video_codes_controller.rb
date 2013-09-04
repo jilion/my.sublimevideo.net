@@ -15,7 +15,7 @@ class VideoCodesController < ApplicationController
 
   # GET /mime-type-check
   def mime_type_check
-    render text: ContentTypeChecker.new(params[:url]).actual_content_type, layout: false
+    render text: HttpContentType::Checker.new(params[:url]).content_type, layout: false
   end
 
   private
