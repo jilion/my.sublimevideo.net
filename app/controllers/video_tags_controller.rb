@@ -1,4 +1,6 @@
 class VideoTagsController < ApplicationController
+  include VideoTagsHelper
+
   skip_before_filter :authenticate_user!, if: :demo_site?
   before_filter :redirect_suspended_user
   before_filter :require_video_early_access, only: [:index]
@@ -18,9 +20,7 @@ class VideoTagsController < ApplicationController
   SORT_PARAMS = %w[
     by_date
     by_title
-    by_last_30_days_starts
-    by_last_90_days_starts
-    by_last_365_days_starts
+    by_last_days_starts
   ]
 
   # GET /sites/:site_id/videos
@@ -49,7 +49,12 @@ private
       index_params[:last_30_days_active] = true
     end
     if sort_key = params.keys.detect { |k| k.in?(SORT_PARAMS) }
-      index_params[sort_key] = params[sort_key]
+      if sort_key == 'by_last_days_starts'
+        days = last_starts_days
+        index_params["by_last_#{days}_days_starts"] = params[sort_key]
+      else
+        index_params[sort_key] = params[sort_key]
+      end
     else
       index_params[:by_date] = 'desc'
     end

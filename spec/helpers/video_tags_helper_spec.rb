@@ -1,5 +1,6 @@
 require 'fast_spec_helper'
 require 'action_view'
+require 'active_support/core_ext'
 
 require 'helpers/video_tags_helper'
 
@@ -49,6 +50,58 @@ describe VideoTagsHelper do
     end
     it "renders ?:??:?? if duration is nil" do
       Helper.duration_string(nil).should eq "?:??:??"
+    end
+  end
+
+  describe "#last_starts_days" do
+    before { Helper.stub(:params) { params } }
+
+    context "no filter" do
+      let(:params) { { } }
+
+      it "returns 30" do
+        expect(Helper.last_starts_days).to eq 30
+      end
+    end
+
+    context "filter is last_30_days_active" do
+      let(:params) { { filter: 'last_30_days_active' } }
+
+      it "returns 30" do
+        expect(Helper.last_starts_days).to eq 30
+      end
+    end
+
+    context "filter is last_90_days_active" do
+      let(:params) { { filter: 'last_90_days_active' } }
+
+      it "returns 90" do
+        expect(Helper.last_starts_days).to eq 90
+      end
+    end
+
+    context "filter is last_365_days_active" do
+      let(:params) { { filter: 'last_365_days_active' } }
+
+      it "returns 365" do
+        expect(Helper.last_starts_days).to eq 365
+      end
+    end
+
+    context "filter is all" do
+      let(:params) { { filter: 'all' } }
+
+      it "returns 365" do
+        expect(Helper.last_starts_days).to eq 365
+      end
+    end
+
+    context "filter is inactive" do
+      let(:params) { { filter: 'inactive' } }
+
+      it "returns 365" do
+        expect(Helper.last_starts_days).to eq 365
+      end
     end
   end
 

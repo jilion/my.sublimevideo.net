@@ -11,6 +11,12 @@ module VideoTagsHelper
       (params[:filter] || :last_30_days_active)
   end
 
+  def last_starts_days
+    return 90 if params[:filter].in?(%w[last_90_days_active])
+    return 365 if params[:filter].in?(%w[last_365_days_active all inactive])
+    30
+  end
+
   def duration_string(duration)
     return '?:??:??' if duration.blank?
 
