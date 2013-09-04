@@ -83,6 +83,7 @@ gem 'PageRankr'
 gem 'twitter'
 gem 'array_stats'
 gem 'createsend' # Campaign Monitor
+gem 'http_content_type'
 
 gem 'honeybadger'
 gem 'prowl'
