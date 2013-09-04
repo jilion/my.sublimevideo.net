@@ -1,14 +1,17 @@
 %tr{ id: dom_id(video_tag), data: { video_tag_uid: video_tag.uid }, class: cycle('', 'alt') }
   %td.video_tag
     .wrap
-      .duration= duration_string(video_tag.duration)
-      - if video_tag.poster_url?
-        .thumbnail= proxied_image_tag(video_tag.poster_url, size: '60x40')
-      - else
-        .thumbnail= 'default img'
+      .poster
+        - if video_tag.poster_url?
+          = proxied_image_tag(video_tag.poster_url, size: '84x47')
+        - else
+          = 'default img'
+        .duration= duration_string(video_tag.duration)
       .name= video_tag.title
       .hosted_on= "Hosted on: xxx"
-      .uid= video_tag.uid
+      .uid
+        uid:
+        %strong= video_tag.uid
   = render 'td_usage', site: @site, video_tag: video_tag
   %td.code
     .wrap
