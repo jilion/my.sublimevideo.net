@@ -52,4 +52,8 @@ module VideoTagsHelper
     image_tag(url, options)
   end
 
+  def video_tag_thumbnail(video_tag, options = {})
+    image_tag(video_tag.poster_url, size: options[:size])
+  end
+
 end
