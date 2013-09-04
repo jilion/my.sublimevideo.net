@@ -7,11 +7,9 @@
       - else
         .thumbnail= 'default img'
       .name= video_tag.title
+      .hosted_on= "Hosted on: xxx"
       .uid= video_tag.uid
-      .date= video_tag.created_at
-  %td.usage
-    .wrap
-      -#= render 'td_usage', site: site
+  = render 'td_usage', site: @site, video_tag: video_tag
   %td.code
     .wrap
       = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
