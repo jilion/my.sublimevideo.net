@@ -1,9 +1,8 @@
--# plays = video_tag.starts.last(last_starts_days)
-- plays = video_tag.starts.last(30)
+- starts = last_grouped_starts(video_tag.starts, last_starts_days)
 
 .sparkline{ id: "usage_sparkline_#{video_tag.uid}" }
   :coffee
-    $('#usage_sparkline_#{video_tag.uid}').sparkline #{plays},
+    $('#usage_sparkline_#{video_tag.uid}').sparkline #{starts},
       width:    '100%'
       height:   '28px'
       lineColor: '#00ff18'

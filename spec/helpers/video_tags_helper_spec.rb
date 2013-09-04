@@ -105,6 +105,34 @@ describe VideoTagsHelper do
     end
   end
 
+  describe "last_grouped_starts" do
+    let(:starts) { 365.times.map { 1 } }
+
+    context "with 30 days" do
+      let(:days) { 30 }
+
+      it "returns last 30" do
+        expect(Helper.last_grouped_starts(starts, days)).to eq 30.times.map { 1 }
+      end
+    end
+
+    context "with 90 days" do
+      let(:days) { 90 }
+
+      it "returns last 90 stats grouped by 2" do
+        expect(Helper.last_grouped_starts(starts, days)).to eq 45.times.map { 2 }
+      end
+    end
+
+    context "with 365 days" do
+      let(:days) { 365 }
+
+      it "returns last 365 starts grouped by 5" do
+        expect(Helper.last_grouped_starts(starts, days)).to eq 73.times.map { 5 }
+      end
+    end
+  end
+
   describe "#proxied_image_tag" do
     it "returns image tag via images.weserv.nl" do
       Helper.proxied_image_tag('http://sublimevideo.net/image.jpg').should eq(
