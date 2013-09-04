@@ -17,6 +17,15 @@ module VideoTagsHelper
     30
   end
 
+  def last_grouped_starts(starts, days)
+    starts = starts.last(days)
+    case days
+    when 30 then starts
+    when 90 then starts.each_slice(2).map { |s| s.sum }
+    when 365 then starts.each_slice(5).map { |s| s.sum }
+    end
+  end
+
   def duration_string(duration)
     return '?:??:??' if duration.blank?
 
@@ -41,6 +50,10 @@ module VideoTagsHelper
       url += "&w=#{dimension[0]}&h=#{dimension[1]}"
     end
     image_tag(url, options)
+  end
+
+  def video_tag_thumbnail(video_tag, options = {})
+    image_tag(video_tag.poster_url, size: options[:size])
   end
 
 end
