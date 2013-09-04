@@ -8,7 +8,9 @@
           = 'default img'
         .duration= duration_string(video_tag.duration)
       .name= video_tag.title
-      .hosted_on= "Hosted on: #{video_tag.hosted_by || 'unknown domain'}"
+      .hosted_on
+        = "Hosted on"
+        %em= video_tag.hosted_by || 'unknown domain'
       .uid
         uid:
         %strong= video_tag.uid
