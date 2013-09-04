@@ -11,6 +11,13 @@
 
 .big_break
 
+%p.notice
+  This assistant will help you update your video's assets and settings. Once you're happy with the result,
+  %strong
+    make sure to replace the
+    %code &lt;video&gt;
+    element in your page with the one generated when you press the "Get the Code" button.
+
 #video_code
   = form_tag url_for, id: 'video_code_form' do
     = render 'form', site: @site, video_tag: @video_tag, get_code_button: true
