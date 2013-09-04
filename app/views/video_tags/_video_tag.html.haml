@@ -7,7 +7,7 @@
       - else
         .thumbnail= 'default img'
       .name= video_tag.title
-      .hosted_on= "Hosted on: xxx"
+      .hosted_on= "Hosted on: #{video_tag.hosted_by || 'unknown domain'}"
       .uid= video_tag.uid
   = render 'td_usage', site: @site, video_tag: video_tag
   %td.code
