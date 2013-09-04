@@ -14,15 +14,4 @@
     .wrap
       = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
 
-  %td.status
-    .wrap
-      - if video_tag.sources.any? { |source| source[:issues].include?('not-found') }
-        = tooltip_box href: site_invoices_path(@site), class: 'source_not_found' do
-          %span.p= t 'video_tag.status.not-found'
-      - elsif video_tag.sources.any? { |source| source[:issues].include?('content-type-error') }
-        = tooltip_box href: site_invoices_path(@site), class: 'wrong_content_type' do
-          %span.p= raw t('video_tag.status.content-type-error', href: docs_url('troubleshooting#videos-wont-play'))
-      - else
-        .completed
-          = tooltip_box class: 'ok' do
-            %span.p= t 'video_tag.status.ok'
+  = render 'td_status', site: @site, video_tag: video_tag

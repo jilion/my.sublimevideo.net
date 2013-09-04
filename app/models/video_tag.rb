@@ -31,4 +31,8 @@ class VideoTag
   rescue URI::InvalidURIError, Faraday::Error::ResourceNotFound => ex
     raise ActiveRecord::RecordNotFound, ex
   end
+
+  def any_source_with_issue?(issue)
+    sources.any? { |source| source[:issues].include?(issue) }
+  end
 end
