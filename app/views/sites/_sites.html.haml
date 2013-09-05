@@ -6,7 +6,7 @@
       %col.odd
       %col
       %col.odd
-      - cache [params, @sites.count, current_user_early_access] do
+      - cache [params, @sites.count, early_access?('video')] do
         %tr
           %th.site
             .wrap
