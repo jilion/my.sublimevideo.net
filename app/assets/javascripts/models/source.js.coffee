@@ -36,12 +36,12 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
       dataType: 'text'
       context: document.body
       success: (data, textStatus, jqXHR) =>
-        if data is 'not-found'
-          this.set(found: false)
-          this.set(currentMimeType: '')
-        else
-          this.set(currentMimeType: data)
-          this.set(found: true)
+        this.set(found: data isnt 'not-found')
+        switch data
+          when 'error', 'not-found'
+            this.set(currentMimeType: '')
+          else
+            this.set(currentMimeType: data)
 
   extension: ->
     this.get('src').slice(this.get('src').lastIndexOf('.') + 1)
