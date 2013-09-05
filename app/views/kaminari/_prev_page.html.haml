@@ -6,7 +6,7 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 - link_options = params.merge(page: current_page - 1, format: nil)
-- html_options = { class: 'prev', rel: 'prev', onclick: '$(document.body).animate({ scrollTop: 0 })' }
+- html_options = { class: 'prev', rel: 'prev', onclick: 'SublimeVideo.UI.Table.showSpinner(); $(document.body).animate({ scrollTop: 0 });' }
 
 %span.prev{ class: current_page.first? ? 'disabled' : '' }
   = link_to_unless current_page.first?, raw(t 'views.pagination.previous'), link_options, html_options
