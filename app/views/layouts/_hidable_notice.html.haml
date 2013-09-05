@@ -1,5 +1,6 @@
-.notice.hidable_notice{ id: "hidable_notice_#{notice_id}", "data-notice-id" => notice_id }
-  = raw notice_content
-  = form_tag "/notice/#{notice_id}", method: 'delete' do
-    %button.close
-      %span= "close"
+- unless current_user.notice_hidden?(notice_id)
+  .notice.hidable_notice{ id: "hidable_notice_#{notice_id}", data: { notice_id: notice_id } }
+    = raw notice_content
+    = form_tag "/notice/#{notice_id}", method: 'delete' do
+      %button.close
+        %span= "close"
