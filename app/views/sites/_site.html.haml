@@ -1,7 +1,7 @@
-- cache site do
-  - site = exhibit(site)
-  - assistant = SiteSetupAssistant.new(site)
-  %tr{ id: dom_id(site), data: { site_token: site.token }, class: cycle('', 'alt') }
+%tr{ id: dom_id(site), data: { site_token: site.token }, class: cycle('', 'alt') }
+  - cache site do
+    - site = exhibit(site)
+    - assistant = SiteSetupAssistant.new(site)
     = render 'sites/td_hostname', site: site
     = render 'sites/td_usage', site: site
     = render 'sites/td_videos', site: site, assistant: assistant
