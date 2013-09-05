@@ -1,22 +1,25 @@
 %tr{ id: dom_id(video_tag), data: { video_tag_uid: video_tag.uid }, class: cycle('', 'alt') }
-  %td.video_tag
-    .wrap
-      .poster
-        - if video_tag.poster_url?
-          = proxied_image_tag(video_tag.poster_url, size: '84x47')
-        - else
-          = image_tag "video_tag/no-poster.png", alt: "no poster", size: '84x47'
-        .duration= duration_string(video_tag.duration)
-      .name= video_tag.title
-      .hosted_on
-        = "Hosted on"
-        %em= video_tag.hosted_by || 'unknown domain'
-      .uid
-        uid:
-        %strong= video_tag.uid
-  = render 'td_usage', site: @site, video_tag: video_tag
-  %td.code
-    .wrap
-      = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
-
-  = render 'td_status', site: @site, video_tag: video_tag
+  - cache [video_tag, last_starts_days] do
+    - cache [video_tag, 'info'] do
+      %td.video_tag
+        .wrap
+          .poster
+            - if video_tag.poster_url?
+              = proxied_image_tag(video_tag.poster_url, size: '84x47')
+            - else
+              = image_tag "video_tag/no-poster.png", alt: "no poster", size: '84x47'
+            .duration= duration_string(video_tag.duration)
+          .name= video_tag.title
+          .hosted_on
+            = "Hosted on"
+            %em= video_tag.hosted_by || 'unknown domain'
+          .uid
+            uid:
+            %strong= video_tag.uid
+    - cache [video_tag, last_starts_days, 'td_usage'] do
+      = render 'td_usage', site: @site, video_tag: video_tag
+    - cache [video_tag, 'code_and_status'] do
+      %td.code
+        .wrap
+          = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
+      = render 'td_status', site: @site, video_tag: video_tag
