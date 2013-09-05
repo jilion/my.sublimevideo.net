@@ -9,7 +9,13 @@
             - else
               = image_tag "video_tag/no-poster.png", alt: "no poster", size: '84x47'
             .duration= duration_string(video_tag.duration)
-          .name= video_tag.title
+          .title
+            - if video_tag.title?
+              = video_tag.title
+            - else
+              = tooltip_box href: docs_url('settings/player-settings#title'), class: 'warning' do
+                %span.p= t('video_tag.title.not_present')
+              = 'Untitled Video'
           .hosted_on
             = "Hosted on"
             %em= video_tag.hosted_by || 'unknown domain'
