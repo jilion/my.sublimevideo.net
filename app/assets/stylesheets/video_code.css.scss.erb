@@ -1,5 +1,48 @@
 @import "css3";
 
+.video_tag_header .poster {
+  width:130px;
+  height:75px;
+  margin:16px 15px 15px 0;
+  float:left;
+  position:relative;
+  border:1px solid rgba(0,0,0,0.9);
+  @include border-radius(4px);
+  @include box-shadow(rgba(255,255,255,0.5) 0 1px 0);
+}
+
+.video_tag_header .poster img {
+  @include border-radius(3px);
+}
+
+.video_tag_header .duration {
+  position:absolute;
+  top:0;
+  left:0;
+  padding:2px 3px;
+  color:#fff;
+  font-size:10px;
+  font-weight:600;
+  text-shadow:#000 0 1px 2px;
+  background:rgba(0,0,0,0.5);
+  @include border-radius(2px 0 4px 0);
+}
+
+.video_tag_header .name {
+  color:#1e3966;
+  font-size:26px;
+  font-weight:600;
+  padding-top:27px;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+}
+
+.video_tag_header .site {
+  font-size:14px;
+  color:#4a648e;
+  padding-top:3px;
+}
+
+
 #video_code {
   position:relative;
 }
