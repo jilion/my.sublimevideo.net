@@ -10,6 +10,8 @@ class VideoTagsController < ApplicationController
   respond_to :html, only: [:index]
   respond_to :json, only: [:show]
 
+  etag { current_user.id }
+
   FILTER_PARAMS = %w[
     last_30_days_active
     last_90_days_active
@@ -27,15 +29,19 @@ class VideoTagsController < ApplicationController
   def index
     @video_tags = VideoTag.all(_index_params)
 
-    respond_with(@video_tags)
+    if stale?(last_modified: @video_tags.map(&:updated_at).max, etag: @video_tags.map(&:id))
+      respond_with(@video_tags)
+    end
   end
 
   # GET /sites/:site_id/video_tags/:id
   def show
     @video_tag = VideoTag.find(params[:id], _site_token: @site.token)
 
-    respond_with(@video_tag) do |format|
-      format.json { render json: @video_tag.try(:backbone_data) }
+    if stale?(@video_tag)
+      respond_with(@video_tag) do |format|
+        format.json { render json: @video_tag.try(:backbone_data) }
+      end
     end
   end
 
