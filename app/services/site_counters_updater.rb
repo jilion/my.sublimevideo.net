@@ -31,7 +31,7 @@ class SiteCountersUpdater
   end
 
   def update_last_30_days_counters
-    columns = {}
+    columns = { updated_at: Time.now.utc }
     columns.merge!(_last_30_days_video_tags_counters_column)
     columns.merge!(_last_30_days_video_views_counters_columns)
     site.update_columns(columns)

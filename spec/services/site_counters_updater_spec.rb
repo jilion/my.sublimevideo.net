@@ -78,6 +78,10 @@ describe SiteCountersUpdater do
       site.last_30_days_embed_video_views.should   eq 37
       site.last_30_days_billable_video_views_array.should eq [26, [0]*28, 29].flatten
     end
+
+    it 'updates timestamp' do
+      expect { described_class.new(site).update_last_30_days_counters }.to change { site.updated_at }
+    end
   end
 
 end
