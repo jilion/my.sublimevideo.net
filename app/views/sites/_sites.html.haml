@@ -6,32 +6,31 @@
       %col.odd
       %col
       %col.odd
-      %tr
-        %th.site
-          .wrap
-            %strong
-              Site
-              = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
-            - unless @sites.one?
-              .sorting
-                = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
-                = link_to_sort :hostname
-        %th.usage
-          .wrap
-            - if @sites.one?
-              Plays (Last 30 Days)
-            - else
-              .sorting= link_to_sort :last_30_days_billable_video_views, default_way: 'desc', label: "Plays (Last 30 Days)"
-        %th.videos
-          .wrap
-            - if !early_access?('video') || @sites.one?
-              Videos
-            - else
-              .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"
-        -#%th.code
-        -#  .wrap Loader code
-        %th.status
-          .wrap Status
+      - cache [params, @sites.count, current_user_early_access] do
+        %tr
+          %th.site
+            .wrap
+              %strong
+                Site
+                = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
+              - unless @sites.one?
+                .sorting
+                  = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
+                  = link_to_sort :hostname
+          %th.usage
+            .wrap
+              - if @sites.one?
+                Plays (Last 30 Days)
+              - else
+                .sorting= link_to_sort :last_30_days_billable_video_views, default_way: 'desc', label: "Plays (Last 30 Days)"
+          %th.videos
+            .wrap
+              - if !early_access?('video') || @sites.one?
+                Videos
+              - else
+                .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"
+          %th.status
+            .wrap Status
       = render @sites
 
   .pagination_wrap
