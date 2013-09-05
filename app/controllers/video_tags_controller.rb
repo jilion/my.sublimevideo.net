@@ -29,7 +29,7 @@ class VideoTagsController < ApplicationController
   def index
     @video_tags = VideoTag.all(_index_params)
 
-    if stale?(last_modified: @video_tags.map(&:updated_at).max, etag: @video_tags.map(&:id))
+    if stale?(last_modified: @video_tags.map(&:updated_at).max, etag: @video_tags.map { |v| [v.id, v.updated_at] })
       respond_with(@video_tags)
     end
   end
