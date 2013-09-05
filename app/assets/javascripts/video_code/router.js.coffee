@@ -54,7 +54,8 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.thumbnail.setDimensions(false, @video_tag.poster_url, { width: dimensions[0] / 3, height: dimensions[1] / 3 })
 
     MSVVideoCode.video.set
-      origin: 'own'
+      origin: if @video_tag.sources_origin is 'youtube' then 'youtube' else 'own'
+      youTubeId: if @video_tag.sources_id? then @video_tag.sources_id else null
       uid: @video_tag.uid
       title: @video_tag.title
       poster: MSVVideoCode.poster
@@ -91,7 +92,6 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.thumbnail.reset()
     _.each MSVVideoCode.sources.models, (source) ->
       source.reset()
-    MSVVideoCode.video.clearUidAndTitle()
 
   initViews: ->
     MSVVideoCode.previewView = new MSVVideoCode.Views.Preview
