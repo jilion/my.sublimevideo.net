@@ -15,7 +15,7 @@ describe VideoTagsController do
 
     context "with last_90_days_active filter, by_last_days_starts sort and page params" do
       it "calls VideoTag.all with good params" do
-        expect(VideoTag).to receive(:all).with(hash_including("last_90_days_active" => true, "by_last_90_days_starts" => "desc", page: '2'))
+        expect(VideoTag).to receive(:all).with(hash_including("last_90_days_active" => true, "by_last_90_days_starts" => "desc", page: '2')) { [] }
         get :index, { site_id: site.token, filter: 'last_90_days_active', by_last_days_starts: 'desc', page: '2', early_access: 'video' }, format: :json
         expect(response).to be_success
       end
