@@ -180,7 +180,7 @@ GEM
     carrierwave-mongoid (0.1.0)
       carrierwave
       mongoid
-    celluloid (0.15.0)
+    celluloid (0.15.1)
       timers (~> 1.1.0)
     chartkick (1.2.0)
     chunky_png (1.2.8)
@@ -337,9 +337,9 @@ GEM
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
       multi_json
-    librato-rack (0.4.2)
+    librato-rack (0.4.3)
       librato-metrics (~> 1.1.1)
-    librato-rails (0.10.0)
+    librato-rails (0.10.1)
       librato-rack (~> 0.4.2)
       rails (>= 3.0)
     libxml-ruby (2.2.2)
@@ -396,7 +396,7 @@ GEM
     pg (0.16.0)
     phantomjs (1.8.1.1)
       poltergeist
-    poltergeist (1.4.0)
+    poltergeist (1.4.1)
       capybara (~> 2.1.0)
       cliver (~> 0.2.1)
       multi_json (~> 1.0)
