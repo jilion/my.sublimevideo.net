@@ -2,7 +2,6 @@
 #   sidekiq -C config.yml
 ---
 :verbose: false
-:concurrency: 25
 :require: '.'
 :timeout: 60
 :queues:
