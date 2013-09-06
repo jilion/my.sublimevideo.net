@@ -1,0 +1,12 @@
+%td.status
+  .wrap
+    - if video_tag.any_source_with_issue?('not-found')
+      = tooltip_box class: 'not-found' do
+        %span.p= t 'video_tag.status.not-found'
+    - elsif video_tag.any_source_with_issue?('content-type-error')
+      = tooltip_box href: docs_url('troubleshooting#videos-wont-play'), class: 'content-type-error' do
+        %span.p= raw t('video_tag.status.content-type-error')
+    - else
+      .completed
+        = tooltip_box class: 'ok' do
+          %span.p= t 'video_tag.status.ok'

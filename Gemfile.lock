@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/airblade/paper_trail.git
-  revision: 98848bb9b2db2bb4e1cbf18ba4a5a3b748451485
-  specs:
-    paper_trail (3.0.0.beta)
-      activerecord (>= 3.0, < 5.0)
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -25,22 +18,6 @@ GIT
       regru-premailer (~> 1.7)
 
 GIT
-  remote: git://github.com/jilion/pusher-gem.git
-  revision: 3b080047d13c54f40d92c04d1723fd5b06ae652e
-  specs:
-    pusher (0.11.1)
-      multi_json (~> 1.0)
-      signature (~> 0.1.6)
-
-GIT
-  remote: git://github.com/jilion/turbolinks.git
-  revision: 0a192f579ec837dd616623592dcdaaf2305a9583
-  branch: ios_video_issue
-  specs:
-    turbolinks (1.2.0)
-      coffee-rails
-
-GIT
   remote: git://github.com/jilion/useragent.git
   revision: 9fd0f887527850994c543caa7cf5327bd635dc02
   specs:
@@ -53,14 +30,6 @@ GIT
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-
-GIT
-  remote: git://github.com/librato/librato-rails.git
-  revision: bd2aa590a0b9ff33e36d18b5a5c00b205afe369b
-  specs:
-    librato-rails (0.10.0)
-      librato-rack (~> 0.4.2)
-      rails (>= 3.0)
 
 GIT
   remote: git://github.com/mbleigh/acts-as-taggable-on.git
@@ -87,20 +56,13 @@ GIT
 
 GIT
   remote: git://github.com/mongoid/mongoid.git
-  revision: cff9442936b471327ee9a4e87c66f35c555ee274
+  revision: 38de2e96edc8f64fbe3cdbe062f1d91e9feb388d
   specs:
     mongoid (4.0.0)
       activemodel (~> 4.0.0)
       moped (~> 1.5)
       origin (~> 1.0)
-      tzinfo (~> 0.3.22)
-
-GIT
-  remote: git://github.com/nicoolas25/i18n-extra_translations.git
-  revision: 88aa85da8e535aed2c01dd37291bfef1402cdf2e
-  specs:
-    i18n-extra_translations (0.0.5)
-      i18n (~> 0.6)
+      tzinfo (~> 0.3.37)
 
 GIT
   remote: git://github.com/rails/sprockets-rails.git
@@ -124,14 +86,6 @@ GIT
       json (>= 1.5.1)
       money
       nokogiri
-
-GIT
-  remote: git://github.com/scambra/devise_invitable.git
-  revision: 40000beee05f23635a5e46c18e1eea22b764bb07
-  specs:
-    devise_invitable (1.2.1)
-      actionmailer (>= 3.2.6, < 5)
-      devise (~> 3.0.0)
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
@@ -210,9 +164,6 @@ GEM
     builder (3.1.4)
     bullet (4.6.0)
       uniform_notifier
-    cache_digests (0.3.1)
-      actionpack (>= 3.2)
-      thread_safe
     capybara (2.1.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -229,12 +180,13 @@ GEM
     carrierwave-mongoid (0.1.0)
       carrierwave
       mongoid
-    celluloid (0.14.1)
-      timers (>= 1.0.0)
+    celluloid (0.15.1)
+      timers (~> 1.1.0)
     chartkick (1.2.0)
     chunky_png (1.2.8)
     climate_control (0.0.3)
       activesupport (>= 3.0)
+    cliver (0.2.1)
     cocaine (0.5.1)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.0.9)
@@ -272,6 +224,9 @@ GEM
       warden (~> 1.2.3)
     devise-async (0.7.0)
       devise (>= 2.2)
+    devise_invitable (1.2.1)
+      actionmailer (>= 3.2.6, < 5)
+      devise (~> 3.0.0)
     diff-lcs (1.2.4)
     display_case (0.0.9)
     dotenv (0.9.0)
@@ -301,8 +256,6 @@ GEM
       multi_json (~> 1.3)
     faraday_middleware (0.9.0)
       faraday (>= 0.7.4, < 0.9)
-    faye-websocket (0.4.7)
-      eventmachine (>= 0.12.0)
     ffaker (1.18.0)
     ffi (1.9.0)
     fog (1.15.0)
@@ -364,7 +317,10 @@ GEM
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
+    httpclient (2.3.4.1)
     i18n (0.6.5)
+    i18n-extra_translations (0.0.5)
+      i18n (~> 0.6)
     inflection (1.0.0)
     jquery-rails (3.0.4)
       railties (>= 3.0, < 5.0)
@@ -381,10 +337,13 @@ GEM
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
       multi_json
-    librato-rack (0.4.2)
+    librato-rack (0.4.3)
       librato-metrics (~> 1.1.1)
+    librato-rails (0.10.1)
+      librato-rack (~> 0.4.2)
+      rails (>= 3.0)
     libxml-ruby (2.2.2)
-    liquid (2.5.1)
+    liquid (2.5.2)
     listen (1.3.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -398,7 +357,7 @@ GEM
       treetop (~> 1.4.8)
     memcachier (0.0.2)
     method_source (0.8.2)
-    mime-types (1.24)
+    mime-types (1.25)
     mini_portile (0.5.1)
     minitest (4.7.5)
     money (5.1.1)
@@ -427,17 +386,21 @@ GEM
       multi_json (~> 1.0)
       multi_xml (~> 0.5)
       rack (~> 1.2)
+    oj (2.1.4)
     origin (1.1.0)
     orm_adapter (0.4.0)
+    paper_trail (3.0.0.beta1)
+      activerecord (>= 3.0, < 5.0)
     paranoia (2.0.0)
       activerecord (~> 4.0)
     pg (0.16.0)
     phantomjs (1.8.1.1)
       poltergeist
-    poltergeist (1.3.0)
+    poltergeist (1.4.1)
       capybara (~> 2.1.0)
-      faye-websocket (>= 0.4.4, < 0.5.0)
-      http_parser.rb (~> 0.5.3)
+      cliver (~> 0.2.1)
+      multi_json (~> 1.0)
+      websocket-driver (>= 0.2.0)
     polyglot (0.3.3)
     prowl (0.1.3)
     pry (0.9.12.2)
@@ -445,6 +408,10 @@ GEM
       method_source (~> 0.8)
       slop (~> 3.4)
     public_suffix (1.3.1)
+    pusher (0.12.0)
+      httpclient (~> 2.3.0)
+      multi_json (~> 1.0)
+      signature (~> 0.1.6)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rabl (0.8.6)
@@ -479,7 +446,7 @@ GEM
       activesupport (= 4.0.0)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    raindrops (0.11.0)
+    raindrops (0.12.0)
     rake (10.1.0)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.1)
@@ -582,6 +549,8 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
+    turbolinks (1.3.0)
+      coffee-rails
     twitter (4.8.1)
       faraday (~> 0.8, < 0.10)
       multi_json (~> 1.0)
@@ -608,11 +577,11 @@ GEM
     webmock (1.6.4)
       addressable (~> 2.2, > 2.2.5)
       crack (>= 0.1.7)
+    websocket-driver (0.2.3)
     xml-simple (1.0.16)
     xpath (2.0.0)
       nokogiri (~> 1.3)
-    yajl-ruby (1.1.0)
-    zendesk_api (1.0.2)
+    zendesk_api (1.0.3)
       faraday (>= 0.8.0)
       faraday_middleware (>= 0.8.7)
       hashie (>= 1.2)
@@ -635,7 +604,6 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bullet
-  cache_digests
   capybara
   capybara-email
   carrierwave
@@ -653,11 +621,10 @@ DEPENDENCIES
   database_cleaner
   devise (~> 3.0.0)
   devise-async
-  devise_invitable!
+  devise_invitable
   display_case
   dotenv-rails
   edge_cast
-  excon
   execjs
   factory_girl
   factory_girl_rails
@@ -676,11 +643,11 @@ DEPENDENCIES
   honeybadger
   hpricot
   http_content_type
-  i18n-extra_translations!
+  i18n-extra_translations
   kaminari!
   kiqstand!
   launchy
-  librato-rails!
+  librato-rails
   libxml-ruby
   liquid
   lograge
@@ -692,14 +659,15 @@ DEPENDENCIES
   newrelic_rpm
   oauth
   oauth-plugin!
-  paper_trail!
+  oj
+  paper_trail (= 3.0.0.beta1)
   paranoia
   pg
   poltergeist
   premailer-rails!
   prowl
   public_suffix
-  pusher!
+  pusher
   quiet_assets
   rabl
   rack-cache
@@ -733,7 +701,7 @@ DEPENDENCIES
   teaspoon
   timecop
   tinder
-  turbolinks!
+  turbolinks
   twitter
   typhoeus (~> 0.2.0)
   uglifier
@@ -743,5 +711,4 @@ DEPENDENCIES
   vcr (~> 1.10.3)
   voxel_hapi!
   webmock (~> 1.6.0)
-  yajl-ruby
   zendesk_api

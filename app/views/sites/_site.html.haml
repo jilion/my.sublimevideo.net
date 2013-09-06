@@ -1,5 +1,5 @@
 %tr{ id: dom_id(site), data: { site_token: site.token }, class: cycle('', 'alt') }
-  - cache site do
+  - cache [site, early_access?('video')] do
     - site = exhibit(site)
     - assistant = SiteSetupAssistant.new(site)
     = render 'sites/td_hostname', site: site

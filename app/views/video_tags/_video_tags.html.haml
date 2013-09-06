@@ -1,41 +1,37 @@
 .main_table_wrap
   %table.main
-    %col
-    %col.usage
-    %col
-    %col.odd
-    %tr
-      %th.video
-        .wrap
-          %strong
-            = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
-            Video
-          - unless @video_tags.one?
-            .sorting
-              = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
-              = link_to_sort :name
-              = link_to_sort :state, label: "! state"
-      %th.usage
-        .wrap
-          - if @video_tags.one?
-            -# TODO Octave (Last 30 Days icon)
-            Plays (!)
-          - else
-            -# TODO Thibaud sort with aggregation framework?
-            .sorting= link_to_sort :last_30_days_billable_views, default_way: 'desc', label: "! Plays (!)"
-      %th.code
-        .wrap
-          - if @video_tags.one?
-            Embed code
-          - else
-            -# TODO Thibaud enable sort
-            .sorting= link_to_sort :embed_code, label: "! embed code"
-      %th.status
-        .wrap= "Status"
+    - cache [params.except(:search, :utf8, :site_id), @video_tags.count] do
+      %col
+      %col.usage
+      %col
+      %col.odd
+      %tr
+        %th.video
+          .wrap
+            %strong
+              Video
+              = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
+            - unless @video_tags.one?
+              .sorting
+                = link_to_sort :date, default_way: 'desc', default: true, label: "latest"
+                = link_to_sort :title
+        %th.usage
+          .wrap
+            - days = last_starts_days
+            - title = "Plays (Last #{days} Days)"
+            - if @video_tags.one?
+              = title
+            - else
+              .sorting= link_to_sort "last_days_starts", default_way: 'desc', label: title
+        %th.code
+          .wrap= 'Embed code'
+        %th.status
+          .wrap= 'Status'
     - if @video_tags.present?
       = render @video_tags
     - else
-      %p no videos
+      %tr
+        %td.no_video_tag{ colspan: 4 } No videos
 
 .pagination_wrap
   = paginate @video_tags

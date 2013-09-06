@@ -1,5 +1,6 @@
 require 'fast_spec_helper'
 require 'action_view'
+require 'active_support/core_ext'
 
 require 'helpers/video_tags_helper'
 
@@ -52,11 +53,101 @@ describe VideoTagsHelper do
     end
   end
 
-  describe "#playable_lightbox" do
-    it "returns complete" do
-      Helper.playable_lightbox(video_tag, size: '96x54').should eq(
-        "<a class=\"sublime\" href=\"//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4\"><img alt=\"Ms 800\" height=\"54\" src=\"http://media.sublimevideo.net/vpa/ms_800.jpg\" width=\"96\" /></a><video class=\"sublime lightbox\" data-name=\"My Video\" data-uid=\"uid-token\" height=\"360\" poster=\"http://media.sublimevideo.net/vpa/ms_800.jpg\" preload=\"none\" style=\"display:none\" width=\"640\"><source src=\"http://media.sublimevideo.net/vpa/ms_360p.mp4\" /><source data-quality=\"hd\" src=\"http://media.sublimevideo.net/vpa/ms_720p.mp4\" /><source src=\"http://media.sublimevideo.net/vpa/ms_360p.webm\" /><source data-quality=\"hd\" src=\"http://media.sublimevideo.net/vpa/ms_720p.webm\" /></video>"
-      )
+  describe "#last_starts_days" do
+    before { Helper.stub(:params) { params } }
+
+    context "no filter" do
+      let(:params) { { } }
+
+      it "returns 30" do
+        expect(Helper.last_starts_days).to eq 30
+      end
+    end
+
+    context "filter is last_30_days_active" do
+      let(:params) { { filter: 'last_30_days_active' } }
+
+      it "returns 30" do
+        expect(Helper.last_starts_days).to eq 30
+      end
+    end
+
+    context "filter is last_90_days_active" do
+      let(:params) { { filter: 'last_90_days_active' } }
+
+      it "returns 90" do
+        expect(Helper.last_starts_days).to eq 90
+      end
+    end
+
+    context "filter is last_365_days_active" do
+      let(:params) { { filter: 'last_365_days_active' } }
+
+      it "returns 365" do
+        expect(Helper.last_starts_days).to eq 365
+      end
+    end
+
+    context "filter is all" do
+      let(:params) { { filter: 'all' } }
+
+      it "returns 365" do
+        expect(Helper.last_starts_days).to eq 365
+      end
+    end
+
+    context "filter is inactive" do
+      let(:params) { { filter: 'inactive' } }
+
+      it "returns 365" do
+        expect(Helper.last_starts_days).to eq 365
+      end
     end
   end
+
+  describe "last_grouped_starts" do
+    let(:starts) { 365.times.map { 1 } }
+
+    context "with 30 days" do
+      let(:days) { 30 }
+
+      it "returns last 30" do
+        expect(Helper.last_grouped_starts(starts, days)).to eq 30.times.map { 1 }
+      end
+    end
+
+    context "with 90 days" do
+      let(:days) { 90 }
+
+      it "returns last 90 stats grouped by 2" do
+        expect(Helper.last_grouped_starts(starts, days)).to eq 45.times.map { 2 }
+      end
+    end
+
+    context "with 365 days" do
+      let(:days) { 365 }
+
+      it "returns last 365 starts grouped by 5" do
+        expect(Helper.last_grouped_starts(starts, days)).to eq 73.times.map { 5 }
+      end
+    end
+  end
+
+  describe "#proxied_image_tag" do
+    it "returns image tag via images.weserv.nl" do
+      Helper.proxied_image_tag('http://sublimevideo.net/image.jpg').should eq(
+        "<img alt=\"Image\" src=\"https://images.weserv.nl?url=sublimevideo.net/image.jpg\" />")
+    end
+
+    it "returns image tag via images.weserv.nl with size options" do
+      Helper.proxied_image_tag('http://sublimevideo.net/image.jpg', size: '60x40').should eq(
+        "<img alt=\"Image\" height=\"40\" src=\"https://images.weserv.nl?url=sublimevideo.net/image.jpg&amp;w=60&amp;h=40\" width=\"60\" />")
+    end
+
+    it "returns image tag via images.weserv.nl with scheme less url" do
+      Helper.proxied_image_tag('sublimevideo.net/image.jpg', size: '60x40').should eq(
+        "<img alt=\"Image\" height=\"40\" src=\"https://images.weserv.nl?url=sublimevideo.net/image.jpg&amp;w=60&amp;h=40\" width=\"60\" />")
+    end
+  end
+
 end

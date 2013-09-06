@@ -13,8 +13,8 @@ describe EarlyAccessControllerHelper do
     before { Controller.stub(:current_user) { current_user } }
 
     context "in dev mode" do
-      before { Rails.stub_chain(:env, :development?) { true } }
-      after { Rails.stub_chain(:env, :development?) { false } }
+      before { Rails.stub_chain(:env, :production?) { false } }
+      after { Rails.stub_chain(:env, :production?) { true } }
 
       it "overwrites current_user_early_access with params[:early_access]" do
         current_user.stub(:early_access) { ['video'] }
@@ -30,7 +30,7 @@ describe EarlyAccessControllerHelper do
     end
 
     context "not in dev mode" do
-      before { Rails.stub_chain(:env, :development?) { false } }
+      before { Rails.stub_chain(:env, :production?) { true } }
 
       it "returns current_user_early_access" do
         current_user.should_receive(:try).with(:early_access) { ['video'] }

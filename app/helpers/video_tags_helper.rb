@@ -4,12 +4,26 @@ module VideoTagsHelper
     options_for_select [
         ['Last 30 days active', :last_30_days_active],
         ['Last 90 days active', :last_90_days_active],
-        ['Hosted on SublimeVideo', :hosted_on_sublimevideo],
-        ['Non-hosted on SublimeVideo', :not_hosted_on_sublimevideo],
-        ['Inactive only', :inactive],
-        ['Show all', :all] # inactive include
+        ['Last 365 days active', :last_365_days_active],
+        ['Show all', :all], # inactive include
+        ['Inactive only', :inactive]
       ],
       (params[:filter] || :last_30_days_active)
+  end
+
+  def last_starts_days
+    return 90 if params[:filter].in?(%w[last_90_days_active])
+    return 365 if params[:filter].in?(%w[last_365_days_active all inactive])
+    30
+  end
+
+  def last_grouped_starts(starts, days)
+    starts = starts.last(days)
+    case days
+    when 30 then starts
+    when 90 then starts.each_slice(2).map { |s| s.sum }
+    when 365 then starts.each_slice(5).map { |s| s.sum }
+    end
   end
 
   def duration_string(duration)
@@ -28,28 +42,18 @@ module VideoTagsHelper
     string.join(':')
   end
 
-  def playable_lightbox(video_tag, options = {})
-    tags = []
-    tags << link_to('//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4', class: 'sublime') do
-      # TO DO USE SSL PROXY (data.sv.net)
-      image_tag(video_tag.poster_url, size: options[:size])
+  def proxied_image_tag(source, options = {})
+    image_url = source.gsub(/^(http)?s?:?\/\//, '')
+    url = "https://images.weserv.nl?url=#{URI::escape(image_url)}"
+    if options[:size]
+      dimension = options[:size].split('x')
+      url += "&w=#{dimension[0]}&h=#{dimension[1]}"
     end
-    tags << content_tag(:video,
-                        class: 'sublime lightbox',
-                        # TO DO USE SSL PROXY (data.sv.net)
-                        poster: video_tag.poster_url,
-                        width: 640, height: 360,
-                        data: { name: video_tag.name, uid: video_tag.uid },
-                        preload: 'none',
-                        style: 'display:none') do
-      sources = video_tag.sources.map do |source|
-        options = { src: source[:url] }
-        options[:data] = { quality: 'hd' } if source[:quality] == 'hd'
-        tag('source', options)
-      end
-      sources.join.html_safe
-    end
-    tags.join.html_safe
+    image_tag(url, options)
+  end
+
+  def video_tag_thumbnail(video_tag, options = {})
+    image_tag(video_tag.poster_url, size: options[:size])
   end
 
 end

@@ -7,7 +7,7 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 - link_options = params.merge(page: page, format: nil)
-- html_options = { onclick: '$(document.body).animate({ scrollTop: 0 })' }
+- html_options = { onclick: 'SublimeVideo.UI.Table.showSpinner(); $(document.body).animate({ scrollTop: 0 });' }
 
 -  if page.current?
   %em.page.current

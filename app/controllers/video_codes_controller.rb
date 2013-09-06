@@ -11,6 +11,8 @@ class VideoCodesController < ApplicationController
 
   def show
     @video_tag = VideoTag.find(params[:id], _site_token: @site.token)
+  rescue ActiveRecord::RecordNotFound
+    redirect_to new_site_video_code_path(@site)
   end
 
   # GET /mime-type-check

@@ -50,7 +50,7 @@ class SiteCountersUpdater
   end
 
   def _last_30_days_video_tags_counters_column
-    video_tags_count = VideoTag.count(site_token: site.token, last_30_days_active: true)
+    video_tags_count = VideoTag.count(site_token: site.token, last_30_days_active: true, with_valid_uid: true)
     { last_30_days_video_tags: video_tags_count }
   end
 

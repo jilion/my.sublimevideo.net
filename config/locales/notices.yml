@@ -3,3 +3,5 @@ en:
     checkout_v2_news: "<p>Check out the new %{link_to_stats}!</p>"
     complete_more_info: "<p>Please take some time to <a href='account'>fill your account information</a>.</p>"
     horizon_maintenance: "<p>We will be performing maintenance on my.sublimevideo.net around <a href='http://everytimezone.com/#2012-12-5,-240,6be'>3:00AM EST</a> on December 13. The maintenance will last until December 14. Your SublimeVideo player will continue to work properly during that time.<br/>Please <a href='mailto:support@sublimevideo.net'>contact us</a> if you have any questions.</p>"
+    edit_video_tag: "<p>This assistant will help you update your video's assets and settings. Once you're happy with the result, <strong>make sure to replace the <code>&lt;video&gt;</code> element in your page with the one generated when you press the \"Get the Code\" button.</strong></p>"
+    # NEXT NOTICE ID IS 5 !!!!!!!!!!

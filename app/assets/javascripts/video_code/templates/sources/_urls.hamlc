@@ -10,28 +10,29 @@
     %table.sources
       - qualities = if format is 'mp4' then ['base', 'hd', 'mobile'] else ['base', 'hd']
       - for quality in qualities
+        - source = MSVVideoCode.video.get('sources').byFormatAndQuality([format, quality])
+        - src = if source? then source.get('src') else ''
         %tr
           %td.label
-            - source = MSVVideoCode.video.get('sources').byFormatAndQuality([format, quality])
 
-            - switch source.get('quality')
+            - switch quality
               - when 'base'
                 = "SD"
               - when 'hd'
                 = "HD"
               - else
-                = source.get('quality').titleize()
+                = quality.titleize()
           %td.field
-            .entry{ id: "#{source.formatQuality()}_box" }
-              %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} URL"
-              %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} URL", value: source.get('src') }
+            .entry{ id: "#{format}_#{quality}_box" }
+              %label.icon{ for: "#{format}_#{quality}_src" }= "#{MySublimeVideo.Models.Source.qualityTitle(quality)} URL"
+              %input.text.source{ type: "text", id: "#{format}_#{quality}_src", placeholder: "#{MySublimeVideo.Models.Source.qualityTitle(quality)} URL", value: src }
 
-              %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
+              %span.inline_alert{ id: "#{format}_#{quality}_src_invalid", style: "display:none" } Please provide a valid video URL
 
-              %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" } Please check your MIME Type
+              %span.inline_alert{ id: "#{format}_#{quality}_mime_type_invalid", style: "display:none" } Please check your MIME Type
 
-              %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist
+              %span.inline_alert{ id: "#{format}_#{quality}_not_found", style: "display:none" } This file doesn't seem to exist
           %td.notes
-            - if source.get('quality') is 'mobile'
+            - if quality is 'mobile'
               %small (lower resolution/bitrate)
 .spacer

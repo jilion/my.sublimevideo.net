@@ -243,7 +243,7 @@ header, header .shadow, header .lights {
   display:none;
   position:absolute;
   bottom:30px;
-  left:-54px;
+  left:-56px;
   z-index:10;
   width:130px;
   font-size:12px;
@@ -372,6 +372,14 @@ form label.text {
 
 form .entry.select select {
   max-width:432px;
+}
+
+form .entry.search label.icon {
+  width:20px;
+  height:21px;
+  background:url(<%= asset_path "fields/search_icon.png" %>) no-repeat;
+  top:12px;
+  left:10px;
 }
 
 .dark_box {

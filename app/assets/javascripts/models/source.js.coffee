@@ -7,6 +7,12 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
     quality: 'base'
     currentMimeType: ''
 
+  @qualityTitle = (quality) ->
+    switch quality
+      when 'base' then 'Standard Definition'
+      when 'hd' then 'High Definition'
+      else quality.charAt(0).toUpperCase() + quality.slice(1);
+
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
@@ -69,12 +75,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
       this.set(width: 0)  unless this.get('width')
       this.set(height: 0) unless this.get('height')
       this.set(ratio: 0)  unless this.get('ratio')
-
-  qualityTitle: ->
-    switch this.get('quality')
-      when 'base' then 'Standard Definition'
-      when 'hd' then 'High Definition'
-      else this.get('quality').charAt(0).toUpperCase() + this.get('quality').slice(1);
 
   formatQuality: ->
     "#{this.get('format')}_#{this.get('quality')}"

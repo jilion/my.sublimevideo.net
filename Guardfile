@@ -4,7 +4,7 @@ notification :gntp
 group :frontend do
 
   guard :pow do
-    watch(%r{^\.pow(rc|env)$})
+    watch(%r{^\.pow(rc|env)})
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
