@@ -7,9 +7,6 @@ class VideoStatsController < ApplicationController
   # GET /sites/:site_id/videos/:id/stats
   def index
     @stats = VideoStat.last_hours_stats(@video, 24)
-    puts params
-    puts 'FUCK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-    puts @stats
   end
 
   private

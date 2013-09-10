@@ -96,6 +96,7 @@ gem 'rack-status'
 gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 
 # Stats
+gem 'encrypted_strings' # for stsv /plays auth
 gem 'crack'
 gem 'pusher'
 gem 'redis'

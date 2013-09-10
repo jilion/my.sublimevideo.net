@@ -6,7 +6,7 @@
 
 = render 'video_tags/header', site: @site, video: @video
 
-.stats.video
+.stats.video{ data: { auth_token: URI::encode(auth_token) } }
 
   #top_videos
     %h3.title#top_videos_title Last 60 minutes
