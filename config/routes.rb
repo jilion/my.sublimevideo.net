@@ -242,7 +242,9 @@ MySublimeVideo::Application.routes.draw do
         put :retry, on: :collection
       end
 
-      resources :video_tags, only: [:index], path: 'videos'
+      resources :video_tags, only: [:index], path: 'videos' do
+        resources :video_stats, only: [:index], path: 'stats', as: :stats
+      end
       resources :video_tags, only: [:show]
 
       resource :video_code, only: [], path: 'publish-video' do

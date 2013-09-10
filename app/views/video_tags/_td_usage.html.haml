@@ -6,7 +6,7 @@
       .plays
         %strong= number_with_delimiter(plays)
         %span= 'plays'
-      = link_to 'View Stats', site_stats_url(site), class: 'view_stats'
+      = link_to 'View Stats', site_video_tag_stats_url(site, video_tag), class: 'view_stats'
     - else
       .fake_sparkline
       .plays

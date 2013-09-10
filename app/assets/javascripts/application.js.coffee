@@ -87,6 +87,10 @@ MySublimeVideo.UI.prepareVideoTagsTable = ->
       input: $('#js-video_tags_filter_search')
       select: $('#js-video_tags_filter_select')
 
+MySublimeVideo.Helpers.prepareStatsPoller = ->
+  if ($div = $('.stats2')).exists()
+    new MySublimeVideo.Helpers.StatsPoller($div)
+
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFakeSelectors()
   MySublimeVideo.UI.prepareFlashNotices()
@@ -102,6 +106,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFeedbackForm()
   MySublimeVideo.UI.prepareVideoTagsTable()
   MySublimeVideo.UI.TableSortLinks.setup()
+  MySublimeVideo.Helpers.prepareStatsPoller()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
