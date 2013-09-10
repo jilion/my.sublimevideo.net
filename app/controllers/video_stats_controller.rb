@@ -6,6 +6,8 @@ class VideoStatsController < ApplicationController
 
   # GET /sites/:site_id/videos/:id/stats
   def index
+    @video_tag = VideoTag.new(uid: 'foo')
+
     respond_to do |format|
       format.html
       format.js

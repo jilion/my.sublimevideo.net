@@ -239,6 +239,7 @@ GEM
     em-websocket (0.5.0)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.5.3)
+    encrypted_strings (0.3.3)
     erubis (2.7.0)
     eventmachine (1.0.3)
     excon (0.25.3)
@@ -625,6 +626,7 @@ DEPENDENCIES
   display_case
   dotenv-rails
   edge_cast
+  encrypted_strings
   execjs
   factory_girl
   factory_girl_rails
