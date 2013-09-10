@@ -23,7 +23,7 @@ module EarlyAccessControllerHelper
   end
 
   def current_user_early_access
-    if Rails.env.development? && params[:early_access]
+    if !Rails.env.production? && params[:early_access]
       [params[:early_access]]
     else
       current_user.try(:early_access) || []

@@ -24,7 +24,7 @@ gem 'display_case'
 gem 'rails_autolink'
 gem 'regru-premailer'
 gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'regru-premailer-dependency'
-gem 'turbolinks', github: 'jilion/turbolinks', branch: 'ios_video_issue'
+gem 'turbolinks'
 gem 'google-analytics-turbolinks'
 
 # Admin charts
@@ -33,8 +33,7 @@ gem 'chartkick'
 
 # Auth / invitations
 gem 'devise', '~> 3.0.0'
-# Until 1.1.9
-gem 'devise_invitable', github: 'scambra/devise_invitable'
+gem 'devise_invitable'
 gem 'devise-async'
 
 # API
@@ -42,16 +41,15 @@ gem 'oauth'
 gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4 support
 
 # Internals
-gem 'cache_digests'
 gem 'sidekiq'
 gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
-gem 'yajl-ruby', require: 'yajl' # json
+gem 'oj'
 
 gem 'state_machine'
-gem 'paper_trail', github: 'airblade/paper_trail' # Rails 4 support
+gem 'paper_trail', '3.0.0.beta1'
 gem 'uniquify'
 gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on' # Need > 2.4.1
 gem 'paranoia'
@@ -60,7 +58,6 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
-gem 'excon'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
@@ -91,17 +88,16 @@ gem 'http_content_type'
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
-gem 'librato-rails', github: 'librato/librato-rails'
+gem 'librato-rails'
 gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
 gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
-# gem 'addressabler'
 
 # Stats
 gem 'crack'
-gem 'pusher', github: 'jilion/pusher-gem'
+gem 'pusher'
 gem 'redis'
 
 # Tickets
@@ -112,7 +108,6 @@ gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
-# gem 'eco'
 gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
@@ -148,7 +143,7 @@ group :development do
 
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'i18n-extra_translations', github: 'nicoolas25/i18n-extra_translations', require: false
+  gem 'i18n-extra_translations', require: false
 
   # gem 'em-http-request' # async pusher in populate
   # gem 'letter_opener'

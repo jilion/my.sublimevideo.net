@@ -23,8 +23,7 @@ module LinksHelper
     class_up = 'up' if apply_up_class
 
     url_params = params.reject { |k, v| k =~ /by_.*|page/ }
-    link_to(url_for(url_params.merge("by_#{field}" => way)),
-            class: ['sort', field, class_active, class_up].join(' ')) do
+    link_to(url_for(url_params.merge("by_#{field}" => way)), class: ['sort', field, class_active, class_up].join(' ')) do
       content_tag(:span, options[:label], class: 'arrow', title: options[:title])
     end
   end

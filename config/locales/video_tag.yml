@@ -1,0 +1,8 @@
+en:
+  video_tag:
+    title:
+      not_present: 'Your video has no title. Click on the icon to learn how to set a title for your video.'
+    status:
+      ok: 'This video is ok!'
+      not-found: "Some of your video's sources couldn't be found."
+      content-type-error: "Some of your video's sources have a wrong Content Type."

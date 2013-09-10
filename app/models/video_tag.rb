@@ -14,11 +14,6 @@ class VideoTag
     end
   end
 
-  def self.site_tokens(params = {})
-    # get_raw mutates the params hash, so dup it before (so it won't break in case of a retry)
-    get_raw('/private_api/video_tags/site_tokens', params.dup)[:parsed_data][:data][:site_tokens]
-  end
-
   def self.backbone_attributes
     [:uid, :uid_origin, :title, :poster_url, :sources_id, :sources_origin]
   end
@@ -33,7 +28,11 @@ class VideoTag
 
   def self.find(*args)
     super(*args)
-  rescue URI::InvalidURIError => ex
+  rescue URI::InvalidURIError, Faraday::Error::ResourceNotFound => ex
     raise ActiveRecord::RecordNotFound, ex
+  end
+
+  def any_source_with_issue?(issue)
+    sources.any? { |source| source[:issues].include?(issue) }
   end
 end

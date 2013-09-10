@@ -1664,6 +1664,13 @@ ALTER TABLE ONLY versions
 
 
 --
+-- Name: billable_item_activities_big_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX billable_item_activities_big_index ON billable_item_activities USING btree (site_id, item_type, item_id, state, created_at);
+
+
+--
 -- Name: index_addon_plan_settings_on_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1937,6 +1944,13 @@ CREATE INDEX index_sites_on_hostname ON sites USING btree (hostname);
 
 
 --
+-- Name: index_sites_on_id_and_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sites_on_id_and_state ON sites USING btree (id, state);
+
+
+--
 -- Name: index_sites_on_last_30_days_dev_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2046,6 +2060,13 @@ CREATE INDEX index_users_on_current_sign_in_at ON users USING btree (current_sig
 --
 
 CREATE UNIQUE INDEX index_users_on_email_and_archived_at ON users USING btree (email, archived_at);
+
+
+--
+-- Name: index_users_on_id_and_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_users_on_id_and_state ON users USING btree (id, state);
 
 
 --
@@ -2309,3 +2330,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130603122845');
 INSERT INTO schema_migrations (version) VALUES ('20130605081105');
 
 INSERT INTO schema_migrations (version) VALUES ('20130821142238');
+
+INSERT INTO schema_migrations (version) VALUES ('20130829074156');

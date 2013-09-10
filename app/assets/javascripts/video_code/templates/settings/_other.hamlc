@@ -1,6 +1,6 @@
 %h4 Other
 
 .checkbox_wrap
-  %input#autoplay{ type: "checkbox", checked: MSVVideoCode.video.get('autoplay') }
+  %input#autoplay{ type: "checkbox", checked: MSVVideoCode.video.get('autoplay')? }
   %label{ for: "autoplay" } Autoplay (will automatically play the video when the player is loaded)
 .spacer

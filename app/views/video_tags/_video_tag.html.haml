@@ -1,19 +1,31 @@
 %tr{ id: dom_id(video_tag), data: { video_tag_uid: video_tag.uid }, class: cycle('', 'alt') }
-  %td.video_tag
-    .wrap
-      .duration= duration_string(video_tag.duration)
-      .thumbnail= playable_lightbox(video_tag, size: '96x54')
-      .name= video_tag.name
-  %td.usage
-    .wrap
-      -#= render 'td_usage', site: site
-  %td.code
-    .wrap
-      = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
-  %td.status
-    .wrap
-      = tooltip_box class: "in_progress" do
-        %span.p= t 'video_tag.status.in_progress'
-      .completed{ style: "display:none;" }
-        = tooltip_box class: "ok" do
-          %span.p= t 'video_tag.status.ok'
+  - cache [video_tag, last_starts_days] do
+    - cache [video_tag, 'info'] do
+      %td.video_tag
+        .wrap
+          .poster
+            - if video_tag.poster_url?
+              = proxied_image_tag(video_tag.poster_url, size: '84x47')
+            - else
+              = image_tag "video_tag/no-poster.png", alt: "no poster", size: '84x47'
+            .duration= duration_string(video_tag.duration)
+          .title
+            - if video_tag.title?
+              = video_tag.title
+            - else
+              = tooltip_box href: docs_url('settings/player-settings#title'), class: 'warning' do
+                %span.p= t('video_tag.title.not_present')
+              = 'Untitled Video'
+          .hosted_on
+            = "Hosted on"
+            %em= video_tag.hosted_by || 'unknown domain'
+          .uid
+            uid:
+            %strong= video_tag.uid
+    - cache [video_tag, last_starts_days, 'td_usage'] do
+      = render 'td_usage', site: @site, video_tag: video_tag
+    - cache [video_tag, 'code_and_status'] do
+      %td.code
+        .wrap
+          = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
+      = render 'td_status', site: @site, video_tag: video_tag

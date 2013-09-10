@@ -6,6 +6,7 @@
       selectedSiteToken: '#{@site.token}'
       kits: #{@site.kits.to_json}
       defaultKitIdentifier: '#{@site.default_kit.identifier}'
+      video_tag: #{@video_tag ? @video_tag.attributes.to_json : 'null'}
 
 .white_box
   %h4.title Preview
