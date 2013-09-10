@@ -27,5 +27,5 @@
     - cache [video_tag, 'code_and_status'] do
       %td.code
         .wrap
-          = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
+          = link_to "Video code", edit_site_video_code_path(@site, video_tag), class: 'embed_code'
       = render 'td_status', site: @site, video_tag: video_tag

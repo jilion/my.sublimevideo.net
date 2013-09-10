@@ -1,7 +1,7 @@
 class VideoCodesController < ApplicationController
   before_filter :redirect_suspended_user, only: [:new]
-  before_filter :_set_sites_or_redirect_to_new_site, :_redirect_to_first_site, :_set_site, only: [:new, :show]
-  before_filter :require_video_early_access, only: [:show]
+  before_filter :_set_sites_or_redirect_to_new_site, :_redirect_to_first_site, :_set_site, only: [:new, :edit]
+  before_filter :require_video_early_access, :_set_video, only: [:edit]
 
   # GET /sites/:site_id/publish-video
   ## Private page for users with early access to video:
@@ -9,10 +9,7 @@ class VideoCodesController < ApplicationController
   def new
   end
 
-  def show
-    @video_tag = VideoTag.find(params[:id], _site_token: @site.token)
-  rescue ActiveRecord::RecordNotFound
-    redirect_to new_site_video_code_path(@site)
+  def edit
   end
 
   # GET /mime-type-check

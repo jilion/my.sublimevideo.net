@@ -1,15 +1,15 @@
 class VideoStatsController < ApplicationController
-  skip_before_filter :authenticate_user!, if: :demo_site?
-  before_filter :redirect_suspended_user, :_set_site
-  before_filter :_redirect_user_without_stats_addon, unless: :demo_site?
-  before_filter :_set_sites_or_redirect_to_new_site, only: [:index], unless: :demo_site?
+  before_filter :redirect_suspended_user, :_set_site, :_set_video, only: [:index]
+  before_filter :_redirect_user_without_stats_addon, :_set_sites_or_redirect_to_new_site, only: [:index]
+
+  respond_to :html, :js
 
   # GET /sites/:site_id/videos/:id/stats
   def index
-    respond_to do |format|
-      format.html
-      format.js
-    end
+    @stats = VideoStat.last_hours_stats(@video, 24)
+    puts params
+    puts 'FUCK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+    puts @stats
   end
 
   private

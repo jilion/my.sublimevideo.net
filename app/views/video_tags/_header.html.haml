@@ -1,0 +1,8 @@
+.video_tag_header
+  .poster
+    = video_tag_thumbnail(video, size: '130x75')
+    .duration= duration_string(video.duration)
+  .name= video.title
+  .site= link_to "See all <em>#{hostname_or_token(site)}</em> videos".html_safe, site_video_tags_path(site), class: 'hl'
+  .spacer
+.big_break

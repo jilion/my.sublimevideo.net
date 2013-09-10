@@ -1,3 +1,78 @@
-- title("Stats for videos: TODO")
+- title("Video stats for '#{@video.title}'")
 
-.stats2.video
+= render 'video_codes/segmented_menu', site: @site, video: @video
+
+.spacer
+
+= render 'video_tags/header', site: @site, video: @video
+
+.stats.video
+
+  #top_videos
+    %h3.title#top_videos_title Last 60 minutes
+    #top_videos_content
+    #playable_video
+
+  .spacer
+  %p.days_period_note * Day periods are in UTC
+  #dates_range
+    %h3#time_range_title
+    #date_pickers
+  %ul#vv_chart_legend
+  .spacer
+  #vv
+    #vv_content
+      #vv_chart
+      %p.note Note: Plays and visits from embeds are not considered.
+
+  .spacer
+
+  #bp.graph_box
+    %h3.title Browser + OS
+    #bp_content.content
+      .content_wrap
+        - if @stats.empty?
+          %p.empty No page visits.
+        - else
+          %ul
+            - video_browser_and_os_stats(@stats).each do |browser_and_os, data|
+              %li{ class: video_browser_and_os_css_class(browser_and_os) }
+                %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
+                %span.wrap
+                  %span.browser
+                  %span.platform
+                  %span.title= video_browser_and_os_name(browser_and_os)
+                  %span.value
+                    %span.percent= display_percentage(data[:percent])
+                    %span.metric= "#{display_integer(data[:count])} visits"
+      -#- if @total > @limit
+      -#  - if @showAll
+      -#    .expander
+      -#      %a#show_less{ href: "#", onclick: "return false" }
+      -#        = "Show only top #{@limit}"
+      -#        %span.arrow.up
+      -#  - else
+      -#    .expander
+      -#      %a.down#show_all{ href: "#", onclick: "return false" }
+      -#        Show all
+      -#        %span.arrow.down
+
+  #md.graph_box
+    %h3.title Countries
+    #md_content.content
+      .content_wrap
+        - if @stats.empty?
+          %p.empty No page visits.
+        - else
+          %ul
+            - video_countries_stats(@stats).each do |country_code, data|
+              %li{ class: video_country_css_class(country_code) }
+                %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
+                %span.wrap
+                  %span.icon
+                  %span.title= Country[country_code].name
+                  %span.value
+                    %span.percent= display_percentage(data[:percent])
+                    %span.metric= "#{display_integer(data[:count])} visits"
+
+  .spacer
