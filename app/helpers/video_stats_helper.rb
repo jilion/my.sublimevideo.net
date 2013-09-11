@@ -8,17 +8,27 @@ module VideoStatsHelper
     _reduce_stats_for_field(stats, :co)
   end
 
-  def video_browser_and_os_css_class(browser_and_os_keywork)
-    bp = browser_and_os_keywork.split('-')
-    "b_#{bp[0]} p_#{bp[1]}"
+  def video_stats_browser_style(browser_and_platform)
+    bp = browser_and_platform.split('-')
+    icon = if bp[0] == 'saf' && bp[1].in?(%w[iph ipa])
+      'saf_mob'
+    else
+      bp[0]
+    end
+
+    "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
+  end
+
+  def video_stats_platform_style(browser_and_platform)
+    "background-image:url(#{asset_path "stats/icons/#{browser_and_platform.split('-')[1]}.png"});"
   end
 
   def video_stats_country_style(country_code)
     "background-image:url(#{asset_path "flags/#{country_code.upcase}.png"});"
   end
 
-  def video_browser_and_os_name(browser_and_os_keywork)
-    browser_and_os_keywork.split('-').map do |name|
+  def video_stats_browser_and_os_name(browser_and_platform)
+    browser_and_platform.split('-').map do |name|
       case name
       when 'fir' then 'Firefox'
       when 'chr' then 'Chrome'
