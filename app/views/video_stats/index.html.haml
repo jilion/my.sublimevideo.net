@@ -1,10 +1,10 @@
-- title("Video stats for '#{@video.title}'")
+- title("Video stats for '#{@video_tag.title}'")
 
-= render 'video_codes/segmented_menu', site: @site, video: @video
+= render 'video_codes/segmented_menu', site: @site, video_tag: @video_tag
 
 .spacer
 
-= render 'video_tags/header', site: @site, video: @video
+= render 'video_tags/header', site: @site, video_tag: @video_tag
 
 .stats.video{ data: { 'pusher-channel' => pusher_channel } }
 
@@ -15,5 +15,5 @@
   .spacer
 
   #timerange_stats
-    - cache [@site, @video, @stats, params] do
-      = render 'timerange_stats', site: @site, video: @video, stats: @stats
+    - cache [@site, @video_tag, @stats, params] do
+      = render 'timerange_stats', site: @site, video_tag: @video_tag, stats: @stats

@@ -1,7 +1,7 @@
 class VideoCodesController < ApplicationController
   before_filter :redirect_suspended_user, only: [:new]
   before_filter :_set_sites_or_redirect_to_new_site, :_redirect_to_first_site, :_set_site, only: [:new, :edit]
-  before_filter :require_video_early_access, :_set_video, only: [:edit]
+  before_filter :require_video_early_access, :_set_video_tag, only: [:edit]
 
   # GET /sites/:site_id/publish-video
   ## Private page for users with early access to video:

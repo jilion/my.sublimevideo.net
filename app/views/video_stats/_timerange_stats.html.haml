@@ -1,5 +1,5 @@
 #dates_range
-  = form_tag [site, video, :stats], method: :get, remote: true do
+  = form_tag [site, video_tag, :stats], method: :get, remote: true do
     = select_tag 'hours', video_stats_options_for_date_range_select, id: 'video_stats_hours_select'
     for
     = select_tag 'source', video_stats_options_for_source_select, id: 'video_stats_source_select'
