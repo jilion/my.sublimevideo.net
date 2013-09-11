@@ -33,6 +33,10 @@ module VideoStatsHelper
     _reduce_stats_for_field(stats, :co, source)
   end
 
+  def video_stats_devices_stats(stats, source = 'a')
+    _reduce_stats_for_field(stats, :de, source)
+  end
+
   def video_stats_browser_style(browser_and_platform)
     bp = browser_and_platform.split('-')
     icon = if bp[0] == 'saf' && bp[1].in?(%w[iph ipa])
@@ -113,7 +117,7 @@ module VideoStatsHelper
         nil
       end
 
-      [Time.parse(stat[:t]).to_i, total || 0]
+      [Time.parse(stat[:t]).to_i * 1000, total || 0]
     end
   end
 

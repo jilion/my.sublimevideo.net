@@ -19,6 +19,7 @@ describe VideoStatsHelper do
         t: Time.utc(2013, 9, 11, 7).to_s,
         bp: { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
         co: { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
+        de: { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
         lo: { 'w' => nil,'e' => 5 },
         st: { 'w' => 2, 'e' => 1 }
       },
@@ -27,47 +28,48 @@ describe VideoStatsHelper do
         t: Time.utc(2013, 9, 11, 8).to_s,
         bp: { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 2, 'iex-win' => 5 } },
         co: { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 2 } },
+        de: { 'w' => { 'd' => 5, 'm' => 2 }, 'e' => { 'd' => 5, 'm' => 1 } },
         lo: { 'w' => 4, 'e' => nil },
         st: { 'w' => 3, 'e' => 2 }
       }
     ]
   end
 
-  describe '#video_stats_hourly_loads_for_chart', :focus do
+  describe '#video_stats_hourly_loads_for_chart' do
     context 'source == "a"' do
-      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i, 5], [Time.utc(2013, 9, 11, 8).to_i, 4]] }
+      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i * 1000, 5], [Time.utc(2013, 9, 11, 8).to_i * 1000, 4]] }
 
       it { expect(Helper.video_stats_hourly_loads_for_chart(stats, 'a')).to eq expected_result }
     end
 
     context 'source == "w"' do
-      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i, 0], [Time.utc(2013, 9, 11, 8).to_i, 4]] }
+      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i * 1000, 0], [Time.utc(2013, 9, 11, 8).to_i * 1000, 4]] }
 
       it { expect(Helper.video_stats_hourly_loads_for_chart(stats, 'w')).to eq expected_result }
     end
 
     context 'source == "e"' do
-      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i, 5], [Time.utc(2013, 9, 11, 8).to_i, 0]] }
+      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i * 1000, 5], [Time.utc(2013, 9, 11, 8).to_i * 1000, 0]] }
 
       it { expect(Helper.video_stats_hourly_loads_for_chart(stats, 'e')).to eq expected_result }
     end
   end
 
-  describe '#video_stats_hourly_starts_for_chart', :focus do
+  describe '#video_stats_hourly_starts_for_chart' do
     context 'source == "a"' do
-      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i, 3], [Time.utc(2013, 9, 11, 8).to_i, 5]] }
+      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i * 1000, 3], [Time.utc(2013, 9, 11, 8).to_i * 1000, 5]] }
 
       it { expect(Helper.video_stats_hourly_starts_for_chart(stats, 'a')).to eq expected_result }
     end
 
     context 'source == "w"' do
-      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i, 2], [Time.utc(2013, 9, 11, 8).to_i, 3]] }
+      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i * 1000, 2], [Time.utc(2013, 9, 11, 8).to_i * 1000, 3]] }
 
       it { expect(Helper.video_stats_hourly_starts_for_chart(stats, 'w')).to eq expected_result }
     end
 
     context 'source == "e"' do
-      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i, 1], [Time.utc(2013, 9, 11, 8).to_i, 2]] }
+      let(:expected_result) { [[Time.utc(2013, 9, 11, 7).to_i * 1000, 1], [Time.utc(2013, 9, 11, 8).to_i * 1000, 2]] }
 
       it { expect(Helper.video_stats_hourly_starts_for_chart(stats, 'e')).to eq expected_result }
     end
@@ -113,6 +115,26 @@ describe VideoStatsHelper do
     end
   end
 
+  describe '#video_stats_devices_stats' do
+    context 'source == "a"' do
+      let(:expected_result) { { 'd' => { count: 20, percent: 0.8 }, 'm' => { count: 5, percent: 0.2 } } }
+
+      it { expect(Helper.video_stats_devices_stats(stats, 'a')).to eq expected_result }
+    end
+
+    context 'source == "w"' do
+      let(:expected_result) { { 'd' => { count: 10, percent: 10/13.to_f }, 'm' => { count: 3, percent: 3/13.to_f } } }
+
+      it { expect(Helper.video_stats_devices_stats(stats, 'w')).to eq expected_result }
+    end
+
+    context 'source == "e"' do
+      let(:expected_result) { { 'd' => { count: 10, percent: 10/12.to_f }, 'm' => { count: 2, percent: 2/12.to_f } } }
+
+      it { expect(Helper.video_stats_devices_stats(stats, 'e')).to eq expected_result }
+    end
+  end
+
   describe '#video_stats_browser_style' do
     it { expect(Helper.video_stats_browser_style('saf-osx')).to eq 'background-image:url(stats/icons/saf.png);' }
     it { expect(Helper.video_stats_browser_style('saf-iph')).to eq 'background-image:url(stats/icons/saf_mob.png);' }
@@ -126,7 +148,7 @@ describe VideoStatsHelper do
   end
 
   describe '#video_stats_country_style' do
-    it { expect(Helper.video_stats_country_style('fr')).to eq 'background-image:url(flags/shiny/32/FR.png);' }
+    it { expect(Helper.video_stats_country_style('fr')).to eq 'background-image:url(flags/FR.png);' }
   end
 
   describe '#video_stats_browser_and_os_name' do

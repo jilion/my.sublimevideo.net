@@ -5,13 +5,30 @@
     = select_tag 'source', video_stats_options_for_source_select, id: 'video_stats_source_select'
   %h3#time_range_title
   #date_pickers
+
+- video_stats_hourly_loads_for_chart = video_stats_hourly_loads_for_chart(stats)
+- video_stats_hourly_starts_for_chart = video_stats_hourly_starts_for_chart(stats)
+
 %ul#vv_chart_legend
+  %li.video_plays
+    = video_stats_hourly_starts_for_chart.sum { |a| a[1] }
+    %span.title video plays
+  %li.page_visits
+    = video_stats_hourly_loads_for_chart.sum { |a| a[1] }
+    %span.title page visits
 .spacer
+
 #vv
   #vv_content
     #video_loads_and_starts_chart
-      %p= video_stats_hourly_loads_for_chart(stats).inspect
-      %p= video_stats_hourly_starts_for_chart(stats).inspect
+      %p= video_stats_hourly_loads_for_chart.inspect
+      %p= video_stats_hourly_starts_for_chart.inspect
+      :coffee
+        MySublimeVideo.Helpers.VideoStatsChartsHelper.loadsAndStartsChart(
+          #{video_stats_hourly_loads_for_chart},
+          #{video_stats_hourly_starts_for_chart},
+          #{params[:hours]}
+        )
 
 .spacer
 
@@ -62,5 +79,24 @@
                 %span.value
                   %span.percent= display_percentage(data[:percent])
                   %span.metric= "#{display_integer(data[:count])} plays"
+
+#de.graph_box
+  %h3.title Mobile / Desktop
+  #de_content.content
+    .content_wrap
+      - if stats.empty?
+        %p.empty No plays.
+      - else
+        - video_stats_devices_stats = video_stats_devices_stats(stats)
+        #mobiles_and_desktops_chart
+        :coffee
+          MySublimeVideo.Helpers.VideoStatsChartsHelper.mobilesAndDesktopsChart([
+            { name: 'Mobile', y: #{video_stats_devices_stats['m'][:count]}, sliced: true, selected: true },
+            ['Desktop', #{video_stats_devices_stats['d'][:count]}]
+          ])
+
+        %ul
+          %li= "#{display_percentage(video_stats_devices_stats['m'][:percent])} Mobile"
+          %li= "#{display_percentage(video_stats_devices_stats['d'][:percent])} Desktop"
 
 .spacer
