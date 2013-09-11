@@ -1,8 +1,8 @@
 module StatsHelper
 
-  def auth_token
-    token = [@site.token, @video_tag.try(:uid)].join(':')
-    token.encrypt(:symmetric)
+  def pusher_channel
+    name = [@site.token, @video_tag.try(:uid)].compact.join('.')
+    "private-#{name}"
   end
 
 end

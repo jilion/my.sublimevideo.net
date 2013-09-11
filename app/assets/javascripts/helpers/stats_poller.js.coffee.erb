@@ -1,0 +1,12 @@
+
+class MySublimeVideo.Helpers.StatsPoller
+  constructor: (@div) ->
+    pusherChannelName = @div.data('pusher-channel')
+    console.log pusherChannelName
+
+
+    pusher = new Pusher('<%= PusherWrapper.key %>', encrypted: true)
+    pusherChannel = pusher.subscribe(pusherChannelName)
+
+    pusherChannel.bind 'play', (data) ->
+      console.log "play: #{data}"

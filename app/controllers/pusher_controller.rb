@@ -1,17 +1,14 @@
-class PusherController < ApplicationController
-  skip_before_filter :authenticate_user!
-  protect_from_forgery except: [:auth, :webhook]
+class PusherController < ActionController::Base
 
   # POST /pusher/auth
   def auth
     if PusherChannel.new(params[:channel_name]).accessible?(current_user)
       authenticated_response = PusherWrapper.authenticated_response(
         params[:channel_name],
-        params[:socket_id]
-      )
+        params[:socket_id])
       render json: authenticated_response
     else
-      render text: 'Not authorized', status: '403'
+      render text: 'Forbidden', status: '403'
     end
   end
 
