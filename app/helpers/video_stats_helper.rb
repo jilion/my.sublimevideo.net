@@ -13,8 +13,8 @@ module VideoStatsHelper
     "b_#{bp[0]} p_#{bp[1]}"
   end
 
-  def video_country_css_class(country_code)
-    "country_#{country_code}"
+  def video_stats_country_style(country_code)
+    "background-image:url(#{asset_path "flags/#{country_code.upcase}.png"});"
   end
 
   def video_browser_and_os_name(browser_and_os_keywork)
