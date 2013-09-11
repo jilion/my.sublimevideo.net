@@ -1,0 +1,66 @@
+#dates_range
+  = form_tag [site, video, :stats], method: :get, remote: true do
+    = select_tag 'hours', video_stats_options_for_date_range_select, id: 'video_stats_hours_select'
+    for
+    = select_tag 'source', video_stats_options_for_source_select, id: 'video_stats_source_select'
+  %h3#time_range_title
+  #date_pickers
+%ul#vv_chart_legend
+.spacer
+#vv
+  #vv_content
+    #video_loads_and_starts_chart
+      %p= video_stats_hourly_loads_for_chart(stats).inspect
+      %p= video_stats_hourly_starts_for_chart(stats).inspect
+
+.spacer
+
+#bp.graph_box
+  %h3.title Browser + OS
+  #bp_content.content
+    .content_wrap
+      - if stats.empty?
+        %p.empty No plays.
+      - else
+        %ul
+          - video_stats_browser_and_os_stats(stats, params[:source]).each do |browser_and_os, data|
+            %li
+              %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
+              %span.wrap
+                %span.browser{ style: video_stats_browser_style(browser_and_os) }
+                %span.platform{ style: video_stats_platform_style(browser_and_os) }
+                %span.title= video_stats_browser_and_os_name(browser_and_os)
+                %span.value
+                  %span.percent= display_percentage(data[:percent])
+                  %span.metric= "#{display_integer(data[:count])} plays"
+    -#- if @total > @limit
+    -#  - if @showAll
+    -#    .expander
+    -#      %a#show_less{ href: "#", onclick: "return false" }
+    -#        = "Show only top #{@limit}"
+    -#        %span.arrow.up
+    -#  - else
+    -#    .expander
+    -#      %a.down#show_all{ href: "#", onclick: "return false" }
+    -#        Show all
+    -#        %span.arrow.down
+
+#co.graph_box
+  %h3.title Countries
+  #co_content.content
+    .content_wrap
+      - if stats.empty?
+        %p.empty No plays.
+      - else
+        %ul
+          - video_stats_countries_stats(stats, params[:source]).each do |country_code, data|
+            %li
+              %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
+              %span.wrap
+                %span.icon{ style: video_stats_country_style(country_code) }
+                %span.title= Country[country_code].name
+                %span.value
+                  %span.percent= display_percentage(data[:percent])
+                  %span.metric= "#{display_integer(data[:count])} plays"
+
+.spacer

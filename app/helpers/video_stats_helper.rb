@@ -1,11 +1,36 @@
 module VideoStatsHelper
 
-  def video_browser_and_os_stats(stats)
-    _reduce_stats_for_field(stats, :bp)
+  def video_stats_options_for_date_range_select
+    options_for_select([
+      ['Last 24 hours', 24],
+      ['Last 30 days', 30*24],
+      ['Last 90 days', 90*24],
+      ['Last 365 days', 365*24],
+    ], params[:hours])
   end
 
-  def video_countries_stats(stats)
-    _reduce_stats_for_field(stats, :co)
+  def video_stats_options_for_source_select
+    options_for_select([
+      ['All sources', 'a'],
+      ['Your website', 'w'],
+      ['External sources', 'e']
+    ], params[:source])
+  end
+
+  def video_stats_hourly_loads_for_chart(stats, source = 'a')
+    _reduce_stats_for_field_by_hour(stats, :lo, source)
+  end
+
+  def video_stats_hourly_starts_for_chart(stats, source = 'a')
+    _reduce_stats_for_field_by_hour(stats, :st, source)
+  end
+
+  def video_stats_browser_and_os_stats(stats, source = 'a')
+    _reduce_stats_for_field(stats, :bp, source)
+  end
+
+  def video_stats_countries_stats(stats, source = 'a')
+    _reduce_stats_for_field(stats, :co, source)
   end
 
   def video_stats_browser_style(browser_and_platform)
@@ -55,22 +80,41 @@ module VideoStatsHelper
 
   private
 
-  def _reduce_stats_for_field(stats, field)
-    a = stats.map { |h| h[field] }.reduce(Hash.new(0)) do |memo, stat|
-      stat.each do |source, hash|
+  def _reduce_stats_for_field(stats, field, source)
+    source = source.to_sym
+
+    reduced_stats = stats.map { |h| h[field] }.reduce(Hash.new(0)) do |memo, stat|
+      stat.each do |src, hash|
+        next unless source.in?([:a, src.to_sym])
+
         hash.each do |key, value|
           memo[key] += value
         end
       end
       memo
     end
+    reduced_stats = Hash[reduced_stats.sort { |a, b| b[1] <=> a[1] }]
 
-    total = a.values.sum
-    a.map do |k, v|
-      a[k] = { count: v, percent: v / total.to_f }
+    total = reduced_stats.values.sum
+    reduced_stats.map do |k, v|
+      reduced_stats[k] = { count: v, percent: v / total.to_f }
     end
 
-    a
+    reduced_stats
+  end
+
+  def _reduce_stats_for_field_by_hour(stats, field, source)
+    source = source.to_s
+
+    stats.map do |stat|
+      total = if stat[field].present?
+        source == 'a' ? (stat[field]['w'] || 0) + (stat[field]['e'] || 0) : stat[field][source]
+      else
+        nil
+      end
+
+      [Time.parse(stat[:t]).to_i, total || 0]
+    end
   end
 
 end

@@ -11,6 +11,7 @@
 #
 #= require stats
 #= require video_code
+#= require video_stats
 #
 #= require google-analytics-turbolinks
 #= require turbolinks
@@ -110,6 +111,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareVideoTagsTable()
   MySublimeVideo.UI.TableSortLinks.setup()
   MySublimeVideo.Helpers.prepareStatsPoller()
+  MySublimeVideo.videoStatsReady()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->

@@ -4,9 +4,20 @@ class VideoStatsController < ApplicationController
 
   respond_to :html, :js
 
+  etag { current_user.id }
+
   # GET /sites/:site_id/videos/:id/stats
   def index
-    @stats = VideoStat.last_hours_stats(@video, 24)
+    params[:hours]  ||= 24
+    params[:source] ||= 'a'
+    @stats = VideoStat.last_hours_stats(@video, params[:hours])
+
+    if stale?(last_modified: @stats.map { |h| h[:updated_at] }.max, etag: "#{@video}_#{params[:hours]}")
+      respond_with(@stats) do |format|
+        format.html
+        format.js
+      end
+    end
   end
 
   private
