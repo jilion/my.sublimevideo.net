@@ -1,12 +1,49 @@
 
 class MySublimeVideo.Helpers.StatsPoller
-  constructor: (@div) ->
-    pusherChannelName = @div.data('pusher-channel')
-    console.log pusherChannelName
+  constructor: (@stats) ->
+    @subscribeToPusherChannel()
+    @lastMinute = @currentMinute()
+    @loopAndRefresh()
+
+  subscribeToPusherChannel: ->
+    channelName = @stats.data('pusher-channel')
+
+    @pusher = new Pusher('<%= PusherWrapper.key %>', encrypted: true)
+    channel = @pusher.subscribe(channelName)
+    channel.bind 'play', (data) => @refreshTopStatsPage()
+
+  loopAndRefresh: =>
+    if @isNewMinute()
+      @refreshTopStatsPage()
+      @refreshBottomStatsPage() if @isNewHours()
+    @timeout = setTimeout this.loopAndRefresh, 1000
+
+  refreshTopStatsPage: ->
+    if @isNewSecond()
+      console.log "refresh top stats page"
+
+  refreshBottomStatsPage: ->
+    console.log "refresh bottom stats page"
+
+  isNewSecond: ->
+    if @lastSecond != @currentSecond()
+      @lastSecond = @currentSecond()
+      true
+
+  isNewMinute: ->
+    if @lastMinute != @currentMinute()
+      @lastMinute = @currentMinute()
+      true
+
+  isNewHours: -> @currentMinute() == 0
+
+  currentMinute: -> new Date().getMinutes()
+  currentSecond: -> new Date().getSeconds()
+
+  teardown: ->
+    clearTimeout(@timeout)
+    @pusher.disconnect()
 
 
-    pusher = new Pusher('<%= PusherWrapper.key %>', encrypted: true)
-    pusherChannel = pusher.subscribe(pusherChannelName)
 
-    pusherChannel.bind 'play', (data) ->
-      console.log "play: #{data}"
+

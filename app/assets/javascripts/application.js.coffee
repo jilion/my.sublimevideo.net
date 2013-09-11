@@ -88,8 +88,11 @@ MySublimeVideo.UI.prepareVideoTagsTable = ->
       select: $('#js-video_tags_filter_select')
 
 MySublimeVideo.Helpers.prepareStatsPoller = ->
-  if ($div = $('.stats2')).exists()
-    new MySublimeVideo.Helpers.StatsPoller($div)
+  if MySublimeVideo.Helpers.statsPoller?
+    MySublimeVideo.Helpers.statsPoller.teardown()
+    delete MySublimeVideo.Helpers.statsPoller
+  if ($div = $('.stats.video')).exists()
+    MySublimeVideo.Helpers.statsPoller = new MySublimeVideo.Helpers.StatsPoller($div)
 
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFakeSelectors()
