@@ -1,7 +1,6 @@
 GIT
   remote: git://github.com/guard/guard.git
-  revision: a3288d9a3f0eb761f28f7fd1e540757af148f321
-  branch: v2.0
+  revision: 41f8801d63d0800e6c64154bb82d25fc89254a8e
   specs:
     guard (1.8.2)
       formatador (>= 0.2.4)
