@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   include RedirectionFiltersControllerHelper
   include EarlyAccessControllerHelper
   include SitesControllerHelper
+  include VideosControllerHelper
   include PaperTrailControllerHelper
   include CookiesControllerHelper
   include DealsControllerHelper

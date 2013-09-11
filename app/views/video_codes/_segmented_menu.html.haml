@@ -1,4 +1,3 @@
 %ul.segmented_menu.sticky
-  = li_menu_link 'Edit video code',  path: site_video_code_path(@site, video_tag), class: "first#{' last' unless @site.realtime_stats_active?}"
-  = li_menu_link 'Stats', path: 'stats', class: 'last' if @site.realtime_stats_active?
-  -#= li_menu_link 'Stats', path: video_site_stats_path(@site) if @site.realtime_stats_active?
+  = li_menu_link 'Edit video code',  path: edit_site_video_code_path(site, video), class: "first#{' last' unless site.realtime_stats_active?}"
+  = li_menu_link 'Stats', path: site_video_tag_stats_path(site, video), class: 'last' if site.realtime_stats_active?

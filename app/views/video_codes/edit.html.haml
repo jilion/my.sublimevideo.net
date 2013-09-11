@@ -1,0 +1,13 @@
+- title("Edit Video Code for '#{@video.title}'")
+
+= render 'segmented_menu', site: @site, video: @video
+
+.spacer
+
+= render 'video_tags/header', site: @site, video: @video
+
+= render 'layouts/hidable_notice', notice_id: 4, notice_content: t('notices.edit_video_tag')
+
+#video_code
+  = form_tag url_for, id: 'video_code_form' do
+    = render 'form', site: @site, video: @video, get_code_button: true
