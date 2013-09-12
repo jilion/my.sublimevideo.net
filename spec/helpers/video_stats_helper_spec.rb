@@ -75,23 +75,23 @@ describe VideoStatsHelper do
     end
   end
 
-  describe '#video_stats_browser_and_os_stats' do
+  describe '#video_stats_browsers_and_platforms_stats' do
     context 'source == "a"' do
       let(:expected_result) { { 'iex-win' => { count: 20, percent: 0.8 }, 'saf-osx' => { count: 5, percent: 0.2 } } }
 
-      it { expect(Helper.video_stats_browser_and_os_stats(stats, 'a')).to eq expected_result }
+      it { expect(Helper.video_stats_browsers_and_platforms_stats(stats, 'a')).to eq expected_result }
     end
 
     context 'source == "w"' do
       let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/12.to_f }, 'saf-osx' => { count: 2, percent: 2/12.to_f } } }
 
-      it { expect(Helper.video_stats_browser_and_os_stats(stats, 'w')).to eq expected_result }
+      it { expect(Helper.video_stats_browsers_and_platforms_stats(stats, 'w')).to eq expected_result }
     end
 
     context 'source == "e"' do
       let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/13.to_f }, 'saf-osx' => { count: 3, percent: 3/13.to_f } } }
 
-      it { expect(Helper.video_stats_browser_and_os_stats(stats, 'e')).to eq expected_result }
+      it { expect(Helper.video_stats_browsers_and_platforms_stats(stats, 'e')).to eq expected_result }
     end
   end
 

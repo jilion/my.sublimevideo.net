@@ -1,0 +1,16 @@
+%h3.title Mobile / Desktop
+#de_content.content
+  .content_wrap
+    - if stats.empty?
+      %p.empty No plays.
+    - else
+      #mobiles_and_desktops_chart
+      :coffee
+        MySublimeVideo.Helpers.VideoStatsChartsHelper.mobilesAndDesktopsChart([
+          { name: 'Mobile', y: #{stats.try_keys('m', :count) { 0 }}, sliced: true, selected: true },
+          ['Desktop', #{stats.try_keys('d', :count) { 0 }}]
+        ])
+
+      %ul
+        %li= "#{display_percentage(stats.try_keys('m', :percent) { 0 })} Mobile"
+        %li= "#{display_percentage(stats.try_keys('d', :percent) { 0 })} Desktop"

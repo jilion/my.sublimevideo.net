@@ -8,6 +8,15 @@ MySublimeVideo.prepareAutoSubmitForHoursSelect = ->
     $('#vv, #bp .content_wrap, #co .content_wrap').spin()
     MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
 
+  $('#bp .expander a, #co .expander a').on 'click', (event) ->
+    $link = $(event.currentTarget)
+    $arrow = $link.find('span.arrow')
+    $expander = $link.parent()
+
+    $arrow.toggleClass('up down')
+    $link.find('span.text').text(if $arrow.hasClass('up') then "Show only top #{$expander.data('limit')}" else 'Show all')
+    $expander.siblings().find('li.overflow').toggleClass('hidden')
+
 class MySublimeVideo.Helpers.VideoStatsChartsHelper
 
   @sparkline: (el, serie, options = {}) ->

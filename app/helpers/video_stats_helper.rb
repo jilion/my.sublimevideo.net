@@ -25,7 +25,7 @@ module VideoStatsHelper
     _reduce_stats_for_field_by_hour(stats, :st, source)
   end
 
-  def video_stats_browser_and_os_stats(stats, source = 'a')
+  def video_stats_browsers_and_platforms_stats(stats, source = 'a')
     _reduce_stats_for_field(stats, :bp, source)
   end
 
@@ -52,8 +52,16 @@ module VideoStatsHelper
     "background-image:url(#{asset_path "stats/icons/#{browser_and_platform.split('-')[1]}.png"});"
   end
 
+  def video_stats_country_name(country_code)
+    country_code = 'gb' if country_code == 'uk'
+
+    Country[country_code].try(:name) || country_code.upcase
+  end
+
   def video_stats_country_style(country_code)
-    "background-image:url(#{asset_path "flags/#{country_code.upcase}.png"});"
+    country_code = 'gb' if country_code == 'uk'
+
+    "background-image:url(#{asset_path("flags/#{country_code.upcase}.png")});"
   end
 
   def video_stats_browser_and_os_name(browser_and_platform)
@@ -86,8 +94,8 @@ module VideoStatsHelper
 
   def _reduce_stats_for_field(stats, field, source)
     source = source.to_sym
-
-    reduced_stats = stats.map { |h| h[field] }.reduce(Hash.new(0)) do |memo, stat|
+    Rails.logger.info stats.map { |s| s.send(field) }
+    reduced_stats = stats.map { |s| s.send(field) }.compact.reduce(Hash.new(0)) do |memo, stat|
       stat.each do |src, hash|
         next unless source.in?([:a, src.to_sym])
 
@@ -111,8 +119,8 @@ module VideoStatsHelper
     source = source.to_s
 
     stats.map do |stat|
-      total = if stat[field].present?
-        source == 'a' ? (stat[field]['w'] || 0) + (stat[field]['e'] || 0) : stat[field][source]
+      total = if stat.send(field).present?
+        source == 'a' ? (stat.send(field)['w'] || 0) + (stat.send(field)['e'] || 0) : stat.send(field)[source]
       else
         nil
       end
