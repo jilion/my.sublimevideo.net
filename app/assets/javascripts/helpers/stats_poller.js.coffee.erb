@@ -23,7 +23,7 @@ class MySublimeVideo.Helpers.StatsPoller
       console.log "refresh top stats page"
 
   refreshBottomStatsPage: ->
-    console.log "refresh bottom stats page"
+    MySublimeVideo.videoStats.refreshBottomStats()
 
   isNewSecond: ->
     if @lastSecond != @currentSecond()

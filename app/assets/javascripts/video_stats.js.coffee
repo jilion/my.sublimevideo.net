@@ -1,11 +1,16 @@
-MySublimeVideo.videoStatsReady = ->
-  MySublimeVideo.prepareAutoSubmitForHoursSelect()
+MySublimeVideo.videoStats ||= {}
 
-MySublimeVideo.prepareAutoSubmitForHoursSelect = ->
+MySublimeVideo.videoStatsReady = ->
+  MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect()
+
+MySublimeVideo.videoStats.refreshBottomStats = ($select) ->
+  $('#video_stats_dates_range_and_source_selector').submit()
+  $('#vv, #bp .content_wrap, #co .content_wrap').spin()
+
+MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect = ->
   $('#video_stats_hours_select, #video_stats_source_select').on 'change', (event) ->
     $select = $(event.target)
-    $select.parent('form').submit()
-    $('#vv, #bp .content_wrap, #co .content_wrap').spin()
+    MySublimeVideo.videoStats.refreshBottomStats($select)
     MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
 
   $('#bp .expander a, #co .expander a').on 'click', (event) ->
