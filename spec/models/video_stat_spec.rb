@@ -12,7 +12,7 @@ describe VideoStat do
   describe ".last_hours_stats" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/video_stats/#{video_uid}/last_hours_stats") { |env|
+        stub.get("/private_api/sites/#{site_token}/videos/#{video_uid}/video_stats") { |env|
           [200, {}, { stats: [
             'st' => { 'w' => 1, 'e' => 1 }, 'co' => { 'w' => { 'us' => 12, 'fr' => 42 }, 'e' => { 'us' => 13, 'fr' => 43 } }
           ] }.to_json]
@@ -21,9 +21,7 @@ describe VideoStat do
     end
 
     it "returns stats array" do
-      described_class.last_hours_stats(video_tag, 24).should eq [
-        { st: { w: 1, e: 1 }, co: { w: { us: 12, fr: 42 }, e: { us: 13, fr: 43 } } }
-      ]
+      described_class.last_hours_stats(video_tag, 24)[0].attributes.should eq({ 'st' => { 'w' => 1, 'e' => 1 }, 'co' => { 'w' => { 'us' => 12, 'fr' => 42 }, 'e' => { 'us' => 13, 'fr' => 43 } } })
     end
   end
 end

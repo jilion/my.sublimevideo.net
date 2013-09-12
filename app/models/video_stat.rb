@@ -3,9 +3,10 @@ require 'sublime_video_private_api'
 class VideoStat
   include SublimeVideoPrivateApi::Model
   uses_private_api :stats
-  collection_path '/private_api/sites/:site_token/video_stats'
+  parse_root_in_json :stat, format: :active_model_serializers
+  collection_path '/private_api/sites/:site_token/videos/:video_uid/video_stats'
 
   def self.last_hours_stats(video_tag, hours)
-    find(video_tag.uid, _site_token: video_tag.site_token, hours: hours)[:stats]
+    all(_site_token: video_tag.site_token, _video_uid: video_tag.uid, hours: hours)
   end
 end
