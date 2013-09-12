@@ -28,7 +28,7 @@ class AdminSublimeVideo.Views.PeriodSelectorView extends Backbone.View
       newStart = _.max([newStart, AdminSublimeVideo.period.endTime() - (newStartScale * preset[1])])
       AdminSublimeVideo.period.set(start: new Date(newStart))
 
-    AdminSublimeVideo.trendsRouter.updateUrl('p', "#{newStart}-#{newEnd.getTime()}")
+    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl('p', "#{newStart}-#{newEnd.getTime()}")
     AdminSublimeVideo.graphView.render()
 
     false

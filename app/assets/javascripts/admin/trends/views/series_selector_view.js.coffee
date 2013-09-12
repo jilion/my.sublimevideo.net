@@ -23,7 +23,7 @@ class AdminSublimeVideo.Views.SeriesSelectorView extends Backbone.View
     if selection.length > 0
       this.toggleSubCategory(selection[0], _.rest(selection))
       this.toggleFilterStyle($clickedFilter)
-      AdminSublimeVideo.trendsRouter.updateUrl(null, serie)
+      MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl(null, serie)
 
       AdminSublimeVideo.graphView.render()
 

@@ -3,8 +3,10 @@ MySublimeVideo.videoStatsReady = ->
 
 MySublimeVideo.prepareAutoSubmitForHoursSelect = ->
   $('#video_stats_hours_select, #video_stats_source_select').on 'change', (event) ->
-    $(event.target).parent('form').submit()
-    $('#vv, #bp, #co').spin()
+    $select = $(event.target)
+    $select.parent('form').submit()
+    $('#vv, #bp .content_wrap, #co .content_wrap').spin()
+    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
 
 class MySublimeVideo.Helpers.VideoStatsChartsHelper
 

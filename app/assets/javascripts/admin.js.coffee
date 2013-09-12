@@ -6,7 +6,10 @@
 #= require chosen-jquery
 #
 #= require_self
+#
+#= require_tree ./helpers
 #= require_tree ./ui
+#
 #= require_tree ./admin/form
 #= require_tree ./admin/app
 #= require admin/trends
@@ -16,6 +19,7 @@
 
 window.MySublimeVideo =
   UI: {}
+  Helpers: {}
 
 window.AdminSublimeVideo =
   UI: {}

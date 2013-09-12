@@ -238,7 +238,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           redraw: (event) ->
             newStart = parseInt @xAxis[0].getExtremes()['min']
             newEnd   = parseInt @xAxis[0].getExtremes()['max']
-            AdminSublimeVideo.trendsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
+            MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl('p', "#{newStart}-#{newEnd}")
             newStartDate = new Date(newStart)
             newEndDate   = new Date(newEnd)
             AdminSublimeVideo.period.set(start: newStartDate, end: newEndDate)
