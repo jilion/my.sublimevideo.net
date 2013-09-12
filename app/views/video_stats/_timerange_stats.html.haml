@@ -36,11 +36,12 @@
   %h3.title Browser + OS
   #bp_content.content
     .content_wrap
-      - if stats.empty?
+      - video_stats_browser_and_os_stats = video_stats_browser_and_os_stats(stats, params[:source])
+      - if video_stats_browser_and_os_stats.empty?
         %p.empty No plays.
       - else
         %ul
-          - video_stats_browser_and_os_stats(stats, params[:source]).each do |browser_and_os, data|
+          - video_stats_browser_and_os_stats.each do |browser_and_os, data|
             %li
               %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
               %span.wrap
@@ -66,11 +67,12 @@
   %h3.title Countries
   #co_content.content
     .content_wrap
-      - if stats.empty?
+      - video_stats_countries_stats = video_stats_countries_stats(stats, params[:source])
+      - if video_stats_countries_stats.empty?
         %p.empty No plays.
       - else
         %ul
-          - video_stats_countries_stats(stats, params[:source]).each do |country_code, data|
+          - video_stats_countries_stats.each do |country_code, data|
             %li
               %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
               %span.wrap
@@ -84,19 +86,19 @@
   %h3.title Mobile / Desktop
   #de_content.content
     .content_wrap
-      - if stats.empty?
+      - video_stats_devices_stats = video_stats_devices_stats(stats)
+      - if video_stats_devices_stats.empty?
         %p.empty No plays.
       - else
-        - video_stats_devices_stats = video_stats_devices_stats(stats)
         #mobiles_and_desktops_chart
         :coffee
           MySublimeVideo.Helpers.VideoStatsChartsHelper.mobilesAndDesktopsChart([
-            { name: 'Mobile', y: #{video_stats_devices_stats['m'][:count]}, sliced: true, selected: true },
-            ['Desktop', #{video_stats_devices_stats['d'][:count]}]
+            { name: 'Mobile', y: #{video_stats_devices_stats.try_keys('m', :count) { 0 }}, sliced: true, selected: true },
+            ['Desktop', #{video_stats_devices_stats.try_keys('d', :count) { 0 }}]
           ])
 
         %ul
-          %li= "#{display_percentage(video_stats_devices_stats['m'][:percent])} Mobile"
-          %li= "#{display_percentage(video_stats_devices_stats['d'][:percent])} Desktop"
+          %li= "#{display_percentage(video_stats_devices_stats.try_keys('m', :percent) { 0 })} Mobile"
+          %li= "#{display_percentage(video_stats_devices_stats.try_keys('d', :percent) { 0 })} Desktop"
 
 .spacer
