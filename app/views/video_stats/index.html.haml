@@ -10,6 +10,12 @@
 
   #top_videos
     %h3.title#top_videos_title Last 60 minutes
+    %p
+      loads:
+      = @last_stats.map { |s| s.loads }
+    %p
+      starts:
+      = @last_stats.map { |s| s.starts }
     #top_videos_content
     #playable_video
   .spacer

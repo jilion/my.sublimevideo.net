@@ -11,6 +11,7 @@ class VideoStatsController < ApplicationController
     params[:hours]  ||= 24
     params[:source] ||= 'a'
     @stats = VideoStat.last_hours_stats(@video_tag, params[:hours])
+    @last_stats = LastVideoStat.last_stats(@video_tag)
 
     if stale?(last_modified: @stats.map { |h| h[:updated_at] }.max, etag: "#{@video_tag}_#{params[:hours]}")
       respond_with(@stats) do |format|
