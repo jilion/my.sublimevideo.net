@@ -13,10 +13,15 @@
     %p
       loads:
       = @last_stats.map { |s| s.loads }
+      loads sum:
+      = @last_stats.sum { |s| s.loads }
     %p
       starts:
       = @last_stats.map { |s| s.starts }
+      starts sum:
+      = @last_stats.sum { |s| s.starts }
     #top_videos_content
+
     #playable_video
   .spacer
 
