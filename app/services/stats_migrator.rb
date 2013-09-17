@@ -8,9 +8,9 @@ class StatsMigrator
   end
 
   def migrate(until_day = 1.day.ago.utc.beginning_of_day)
-    criteria = { t: site.token, d: { :$lte => until_day } }
-    Stat::Site::Day.where(criteria).each { |stat| _migrate_stat(stat) }
-    Stat::Video::Day.where(criteria).each { |stat| _migrate_stat(stat) }
+    criteria = { d: { :$lte => until_day } }
+    Stat::Site::Day.where(criteria.merge(t: site.token)).each { |stat| _migrate_stat(stat) }
+    Stat::Video::Day.where(criteria.merge(st: site.token)).each { |stat| _migrate_stat(stat) }
   end
 
   private
