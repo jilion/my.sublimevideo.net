@@ -114,7 +114,6 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         shadow: false
         fillColor: 'rgba(74,100,142,0.3)'
         color: '#596e8c'
-        lineColor: '#596e8c'
         marker:
           enabled: false # (hours <= 24)
         },{
@@ -129,7 +128,6 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
           width: 6
         fillColor: 'rgba(9,250,33,0.15)'
         color: '#00ff18'
-        lineColor: '#00ff18'
         marker:
           enabled: false # (hours <= 24)
           symbol: "url(<%= asset_path 'stats/graph_dot.png' %>)"
@@ -207,11 +205,12 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         pie:
           dataLabels:
             enabled: false
+          states:
+            hover:
+              enabled: false
       series: [{
         type: 'pie'
         name: 'Mobile / Desktop'
         data: data
         shadow: false
-        fillColor: 'rgba(74,100,142,0.3)'
-        color: '#596e8c'
       }]

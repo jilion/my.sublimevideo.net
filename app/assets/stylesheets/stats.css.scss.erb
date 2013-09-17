@@ -881,6 +881,14 @@ span.beta_badge {
   padding:20px 0 0 6px;
 }
 
+.stats .graph_box #bp_content li .title {
+  display:block;
+  float:left;
+  font-size:11px;
+  font-weight:600;
+  padding:17px 0 0 6px;
+}
+
 .stats .graph_box li li .title {
   padding:6px 0 0 6px;
 }
@@ -893,11 +901,27 @@ span.beta_badge {
   text-align:right;
 }
 
+.stats .graph_box #de_content .content_wrap {
+  height:334px;
+  padding-top:20px;
+}
+
+.stats .graph_box #de_content .values {
+  display:block;
+  text-align:center;
+  margin-top:5px;
+}
+
+.stats .graph_box #de_content .value {
+  display:block;
+  padding-bottom:15px;
+}
+
 .stats .graph_box li li .value {
   top:5px;
 }
 
-.stats .graph_box li .value .percent {
+.stats .graph_box li .value .percent, .stats .graph_box #de_content .value .percent {
   display:block;
   font-size:18px;
   font-weight:600;
@@ -907,8 +931,6 @@ span.beta_badge {
   font-size:13px;
   color:#465b7d;
 }
-
-.stats .graph_box li.html5 .value .metric, .stats .graph_box li.flash .value .metric {color:#1e3966;}
 
 .stats .graph_box li li .value .percent, .stats .graph_box li li .value .metric {
   display:inline;

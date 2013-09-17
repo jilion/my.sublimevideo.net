@@ -87,7 +87,7 @@ module VideoStatsHelper
       when 'otd' then 'Other (Desktop)'
       else name
       end
-    end.join(' - ')
+    end.join('<br />').html_safe
   end
 
   private
