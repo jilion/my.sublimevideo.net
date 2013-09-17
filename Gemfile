@@ -180,6 +180,7 @@ group :test do
   gem 'webmock',             '~> 1.6.0'
   gem 'typhoeus',            '~> 0.2.0'
   gem 'vcr',                 '~> 1.10.3'
+  gem 'codeclimate-test-reporter', require: false
 
   gem 'database_cleaner'
   gem 'factory_girl'
