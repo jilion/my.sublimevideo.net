@@ -189,6 +189,8 @@ GEM
     cliver (0.2.1)
     cocaine (0.5.1)
       climate_control (>= 0.0.3, < 1.0)
+    codeclimate-test-reporter (0.0.8)
+      simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.0.9)
     coffee-rails (4.0.0)
       coffee-script (>= 2.2.0)
@@ -501,6 +503,10 @@ GEM
       redis-namespace
     signature (0.1.7)
     simple_oauth (0.2.0)
+    simplecov (0.7.1)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.7.1)
+    simplecov-html (0.7.1)
     slop (3.4.6)
     snail (1.1.0)
       activesupport
@@ -611,6 +617,7 @@ DEPENDENCIES
   chartkick
   chosen-rails!
   cocaine
+  codeclimate-test-reporter
   coffee-rails
   compass-rails!
   countries
