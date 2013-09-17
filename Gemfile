@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid/mongoid' # Rails 4 support
+gem 'mongoid', github: 'mongoid' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -162,7 +162,7 @@ group :development, :test do
 
   # Guard
   gem 'ruby_gntp', require: false
-  gem 'guard', github: 'guard'
+  gem 'guard', github: 'guard', branch: 'listen2'
   gem 'guard-pow', require: false
   gem 'guard-livereload', require: false
   gem 'guard-rspec', require: false
