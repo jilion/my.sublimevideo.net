@@ -35,7 +35,7 @@ describe CampfireWrapper do
 
       it 'speaks to the room' do
         described_class.post(message, room: room_name)
-        described_class.new(room_name).room.recent(1).first.body.should eq message
+        described_class.new(room_name).room.recent(limit: 1).first.body.should eq message
       end
     end
 
@@ -45,7 +45,7 @@ describe CampfireWrapper do
 
       it 'speaks to the room' do
         described_class.post(message, room: room_name)
-        described_class.new(room_name).room.recent(1).first.body.should eq "[STAGING] #{message}"
+        described_class.new(room_name).room.recent(limit: 1).first.body.should eq "[STAGING] #{message}"
       end
     end
 
