@@ -8,18 +8,10 @@
 
 .stats.video{ data: { 'pusher-channel' => pusher_channel } }
 
-  #top_videos
-    %h3.title#top_videos_title Last 60 minutes
-    %p
-      loads:
-      = @last_stats.map { |s| s.loads }
-    %p
-      starts:
-      = @last_stats.map { |s| s.starts }
-    #top_videos_content
-    #playable_video
+  #last_stats_by_minute
+    = render 'last_stats_by_minute', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter
   .spacer
 
-  #timerange_stats
-    - cache [@site, @video_tag, @stats, params] do
-      = render 'timerange_stats', site: @site, video_tag: @video_tag, stats: @stats
+  #last_stats_by_hour
+    - cache [@site, @video_tag, @stats_presenter.last_stats_by_hour, params] do
+      = render 'last_stats_by_hour', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter

@@ -8,13 +8,16 @@ class VideoStatsController < ApplicationController
 
   # GET /sites/:site_id/videos/:id/stats
   def index
-    params[:hours]  ||= 24
-    params[:source] ||= 'a'
-    @stats = VideoStat.last_hours_stats(@video_tag, params[:hours])
-    @last_stats = LastVideoStat.last_stats(@video_tag)
+    @stats_presenter = VideoStatPresenter.new(@video_tag, params)
 
-    if stale?(last_modified: @stats.map { |h| h[:updated_at] }.max, etag: "#{@video_tag}_#{params[:hours]}")
-      respond_with(@stats) do |format|
+    stats_for_last_modified = if params[:last_stats_by_minute_only]
+      @stats_presenter.last_stats_by_minute
+    else
+      @stats_presenter.last_stats_by_hour
+    end
+
+    if stale?(last_modified: stats_for_last_modified.map { |h| h[:updated_at] }.max, etag: "#{@video_tag}_#{@stats_presenter.options[:hours]}")
+      respond_to do |format|
         format.html
         format.js
       end

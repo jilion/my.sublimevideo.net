@@ -9,12 +9,4 @@ class LastVideoStat
   def self.last_stats(video_tag)
     all(_site_token: video_tag.site_token, _video_uid: video_tag.uid)
   end
-
-  def loads
-    self['lo']
-  end
-
-  def starts
-    self['st']
-  end
 end

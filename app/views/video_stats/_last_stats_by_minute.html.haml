@@ -1,0 +1,25 @@
+%h3.title#top_videos_title Last 60 minutes
+
+#last_60_minutes_loads_and_starts
+  #last_60_minutes_loads
+    .sum
+      = stats_presenter.last_60_minutes_loads.sum { |a| a[1] }
+      loads
+    .sparkline
+  .spacer
+
+  #last_60_minutes_starts
+    .sum
+      = stats_presenter.last_60_minutes_starts.sum { |a| a[1] }
+      starts
+    .sparkline
+
+:coffee
+  MySublimeVideo.videoStats.initSparklines()
+  MySublimeVideo.Helpers.VideoStatsChartsHelper.sparkline($('#last_60_minutes_loads .sparkline'), #{stats_presenter.last_60_minutes_loads.map { |a| a[1] }},
+    width:  '100%'
+    height: '42px')
+
+  MySublimeVideo.Helpers.VideoStatsChartsHelper.sparkline($('#last_60_minutes_starts .sparkline'), #{stats_presenter.last_60_minutes_starts.map { |a| a[1] }},
+    width:  '100%'
+    height: '42px')
