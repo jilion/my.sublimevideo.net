@@ -508,6 +508,8 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
+    skylight (0.1.8)
+      activesupport (>= 3.0.0)
     slop (3.4.6)
     snail (1.1.0)
       activesupport
@@ -698,6 +700,7 @@ DEPENDENCIES
   shoulda-matchers
   show_me_the_cookies
   sidekiq
+  skylight
   snail
   solve
   sprockets-rails!

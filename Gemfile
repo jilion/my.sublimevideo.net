@@ -99,6 +99,7 @@ gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 gem 'crack'
 gem 'pusher'
 gem 'redis'
+gem 'skylight'
 
 # Tickets
 gem 'zendesk_api'
