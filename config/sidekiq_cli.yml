@@ -5,6 +5,7 @@
 :require: '.'
 :timeout: 60
 :queues:
+  - [stats_migration, 1]
   - [loader, 1]
   - [low, 1]
   - [mailer, 2]
