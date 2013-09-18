@@ -5,13 +5,13 @@ class VideoStatPresenter
   attr_reader :video_tag, :options
 
   DEFAULT_OPTIONS = {
-    hours: 24,
-    source: 'a'
+    source: 'a',
+    hours: 24
   }
 
   def initialize(video_tag, options = {})
     @video_tag = video_tag
-    @options = DEFAULT_OPTIONS.merge(options)
+    @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours))
   end
 
   def last_stats_by_hour
@@ -105,7 +105,7 @@ class VideoStatPresenter
 
     _fill_missing_values_for_last_stats(reduced_stats,
       period: :hour,
-      from: options[:hours].hours.ago.change(min: 0),
+      from: options[:hours].to_i.hours.ago.change(min: 0),
       to: 1.hour.ago.change(min: 0))
   end
 
