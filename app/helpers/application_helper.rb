@@ -14,7 +14,7 @@ module ApplicationHelper
     date ? l(date, format: options[:format]) : '–'
   end
 
-  def display_integer(number, options = { significant: false, precision: 2, delimiter: "'" })
+  def display_integer(number, options = { significant: false, precision: 2 })
     number_with_delimiter(number, options)
   end
 

@@ -44,7 +44,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
       fillColor: options.fillColor ? 'rgba(116,255,131,0.24)'
 
   @loadsAndStartsChart: (loads, starts, hours) ->
-    new Highcharts.Chart
+    new Highcharts.StockChart
       chart:
         renderTo: 'video_loads_and_starts_chart'
         backgroundColor: 'transparent'
@@ -61,6 +61,8 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         spacingLeft: 5
         height: 300
         width: 848
+      rangeSelector:
+        enabled: false
       credits:
         enabled: false
       title:
@@ -127,7 +129,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         fillColor: 'rgba(74,100,142,0.3)'
         color: '#596e8c'
         marker:
-          enabled: false # (hours <= 24)
+          enabled: (hours <= 24)
         },{
         type: 'areaspline'
         name: 'Video plays'
@@ -141,7 +143,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         fillColor: 'rgba(9,250,33,0.15)'
         color: '#00ff18'
         marker:
-          enabled: false # (hours <= 24)
+          enabled: (hours <= 24)
           symbol: "url(<%= asset_path 'stats/graph_dot.png' %>)"
       }]
       xAxis:
@@ -165,7 +167,8 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         startOnTick: false
         showFirstLabel: false
         labels:
-          align: 'right'
+          x: -30
+          y: 5
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"

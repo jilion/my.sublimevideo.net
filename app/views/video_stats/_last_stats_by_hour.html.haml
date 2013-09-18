@@ -1,39 +1,40 @@
-#dates_range_and_source
-  = form_tag [site, video_tag, :stats], method: :get, remote: true, id: 'video_stats_dates_range_and_source_selector' do
-    = select_tag 'hours', video_stats_options_for_date_range_select, id: 'video_stats_hours_select'
-    for
-    = select_tag 'source', video_stats_options_for_source_select, id: 'video_stats_source_select'
-  %h3#time_range_title
-  #date_pickers
+- cache [site, video_tag, params] do
+  #dates_range_and_source
+    = form_tag [site, video_tag, :stats], method: :get, remote: true, id: 'video_stats_dates_range_and_source_selector' do
+      = select_tag 'hours', video_stats_options_for_date_range_select, id: 'video_stats_hours_select'
+      for
+      = select_tag 'source', video_stats_options_for_source_select, id: 'video_stats_source_select'
+    %h3#time_range_title
+    #date_pickers
 
-%ul#vv_chart_legend
-  %li.video_plays
-    = stats_presenter.hourly_starts.sum { |a| a[1] }
-    %span.title video plays
-  %li.page_visits
-    = stats_presenter.hourly_loads.sum { |a| a[1] }
-    %span.title page visits
-.spacer
+  %ul#vv_chart_legend
+    %li.video_plays
+      = display_integer(stats_presenter.hourly_starts.sum { |a| a[1] })
+      %span.title video plays
+    %li.page_visits
+      = display_integer(stats_presenter.hourly_loads.sum { |a| a[1] })
+      %span.title page visits
+  .spacer
 
-#vv
-  #vv_content
-    #video_loads_and_starts_chart
-      :coffee
-        MySublimeVideo.Helpers.VideoStatsChartsHelper.loadsAndStartsChart(
-          #{stats_presenter.hourly_loads},
-          #{stats_presenter.hourly_starts},
-          #{params[:hours]}
-        )
+  #vv
+    #vv_content
+      #video_loads_and_starts_chart
+        :coffee
+          MySublimeVideo.Helpers.VideoStatsChartsHelper.loadsAndStartsChart(
+            #{stats_presenter.hourly_loads},
+            #{stats_presenter.hourly_starts},
+            #{params[:hours]}
+          )
 
-.spacer
+  .spacer
 
-#bp.graph_box
-  = render 'browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
+  #bp.graph_box
+    = render 'browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
 
-#co.graph_box
-  = render 'countries', stats: stats_presenter.countries_stats
+  #co.graph_box
+    = render 'countries', stats: stats_presenter.countries_stats
 
-#de.graph_box
-  = render 'mobile_desktop', stats: stats_presenter.devices_stats
+  #de.graph_box
+    = render 'mobile_desktop', stats: stats_presenter.devices_stats
 
-.spacer
+  .spacer

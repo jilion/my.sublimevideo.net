@@ -13,5 +13,4 @@
   .spacer
 
   #last_stats_by_hour
-    - cache [@site, @video_tag, @stats_presenter.last_stats_by_hour, params] do
-      = render 'last_stats_by_hour', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter
+    = render 'last_stats_by_hour', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter
