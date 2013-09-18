@@ -2,24 +2,26 @@ require 'fast_spec_helper'
 
 require 'presenters/video_stat_presenter'
 
-VideoStat = Struct.new(:t, :bp, :co, :de, :lo, :st) unless defined?(VideoStat)
-LastVideoStat = Struct.new(:t, :lo, :st) unless defined?(LastVideoStat)
-
 describe VideoStatPresenter do
+  FakeVideoStat = Struct.new(:t, :bp, :co, :de, :lo, :st)
+  FakeLastVideoStat = Struct.new(:t, :lo, :st)
+  before do
+    stub_const('VideoStat', Class.new)
+    stub_const('LastVideoStat', Class.new)
+  end
+
   let(:video_tag) { double('VideoTag') }
-
   let(:presenter) { described_class.new(video_tag) }
-
   let(:stats_by_hour) do
     [
-      VideoStat.new(
+      FakeVideoStat.new(
         2.hours.ago.change(min: 0).to_s,
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
         { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
         { 'w' => nil, 'e' => 5 },
         nil),
-      VideoStat.new(
+      FakeVideoStat.new(
         1.hour.ago.change(min: 0).to_s,
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 2, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 2 } },
@@ -31,8 +33,8 @@ describe VideoStatPresenter do
 
   let(:stats_by_minute) do
     [
-      LastVideoStat.new(2.minutes.ago.change(sec: 0).to_s, 5, nil),
-      LastVideoStat.new(1.minutes.ago.change(sec: 0).to_s, nil, 3)
+      FakeLastVideoStat.new(2.minutes.ago.change(sec: 0).to_s, 5, nil),
+      FakeLastVideoStat.new(1.minutes.ago.change(sec: 0).to_s, nil, 3)
     ]
   end
 
