@@ -7,8 +7,6 @@ LastVideoStat = Struct.new(:t, :lo, :st) unless defined?(LastVideoStat)
 
 describe VideoStatPresenter do
   let(:video_tag) { double('VideoTag') }
-  let(:partial_params) { { hours: 48 } }
-  let(:full_params) { { hours: 48, source: 'w' } }
 
   let(:presenter) { described_class.new(video_tag) }
 
@@ -50,7 +48,7 @@ describe VideoStatPresenter do
     end
 
     context 'with options given' do
-      let(:presenter) { described_class.new(video_tag, partial_params) }
+      let(:presenter) { described_class.new(video_tag, 'hours' => 48) }
 
       it 'merge given options with default options' do
         presenter.options.should eq({ hours: 48, source: 'a' })

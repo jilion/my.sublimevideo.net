@@ -18,8 +18,6 @@
 #vv
   #vv_content
     #video_loads_and_starts_chart
-      %p= stats_presenter.hourly_loads.inspect
-      %p= stats_presenter.hourly_starts.inspect
       :coffee
         MySublimeVideo.Helpers.VideoStatsChartsHelper.loadsAndStartsChart(
           #{stats_presenter.hourly_loads},

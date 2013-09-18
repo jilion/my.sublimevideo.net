@@ -13,6 +13,10 @@
 
       .values
         %span.value
-          %span.percent= "#{display_percentage(stats.try_keys('m', :percent) { 0 })} Mobile"
+          %span.percent
+            = display_percentage(stats.try_keys('m', :percent) { 0 })
+            Mobile
         %span.value
-          %span.percent= "#{display_percentage(stats.try_keys('d', :percent) { 0 })} Desktop"
+          %span.percent
+            = display_percentage(stats.try_keys('d', :percent) { 0 })
+            Desktop

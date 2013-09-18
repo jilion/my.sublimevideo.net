@@ -20,8 +20,8 @@ describe LastVideoStat do
 
     it "returns stats array" do
       stat = described_class.last_stats(video_tag)[0]
-      expect(stat.loads).to eq 2
-      expect(stat.starts).to eq 1
+      expect(stat.lo).to eq 2
+      expect(stat.st).to eq 1
     end
   end
 end

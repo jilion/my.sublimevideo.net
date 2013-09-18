@@ -14,5 +14,7 @@
               %span.title= video_stats_browser_and_os_name(browser_and_os)
               %span.value
                 %span.percent= display_percentage(data[:percent])
-                %span.metric= "#{display_integer(data[:count])} plays"
+                %span.metric
+                  = display_integer(data[:count])
+                  plays
   = render 'expander', stats: stats, limit: 6
