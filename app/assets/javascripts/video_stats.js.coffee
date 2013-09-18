@@ -3,6 +3,18 @@ MySublimeVideo.videoStats ||= {}
 MySublimeVideo.videoStatsReady = ->
   MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect()
 
+MySublimeVideo.videoStats.initSparklines = ->
+  $.fn.sparkline.defaults.line.disableHighlight = true
+  $.fn.sparkline.defaults.line.disableTooltips  = true
+  $.fn.sparkline.defaults.line.spotRadius       = 0
+  $.fn.sparkline.defaults.line.lineWidth        = 0
+  $.fn.sparkline.defaults.line.spotColor        = false
+  $.fn.sparkline.defaults.line.minSpotColor     = false
+  $.fn.sparkline.defaults.line.maxSpotColor     = false
+  $.fn.sparkline.defaults.line.drawNormalOnTop  = true
+  $.fn.sparkline.defaults.line.chartRangeClip   = true
+  $.fn.sparkline.defaults.line.chartRangeMin    = 0
+
 MySublimeVideo.videoStats.refreshBottomStats = ($select) ->
   $('#video_stats_dates_range_and_source_selector').submit()
   $('#vv, #bp .content_wrap, #co .content_wrap').spin()
@@ -28,8 +40,8 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
     el.sparkline serie,
       width: options.width
       height: options.height
-      lineColor: options.lineColor ? (if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)')
-      fillColor: options.fillColor ? (if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)')
+      lineColor: options.lineColor ? 'rgba(97,255,114,0.7)'
+      fillColor: options.fillColor ? 'rgba(116,255,131,0.24)'
 
   @loadsAndStartsChart: (loads, starts, hours) ->
     new Highcharts.Chart

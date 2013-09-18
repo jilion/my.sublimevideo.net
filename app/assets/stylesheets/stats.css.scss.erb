@@ -727,6 +727,46 @@ span.beta_badge {
   background:url(<%= asset_path "stats/expand_videos_arrow_up.png" %>) no-repeat;
 }
 
+#last_stats_by_minute {
+  height:200px;
+  margin-bottom:40px;
+}
+
+#last_60_minutes_loads_and_starts {
+  float:left;
+  width:39%;
+  margin:35px auto 5px auto;
+}
+
+#last_60_minutes_loads, #last_60_minutes_starts {
+  height:80px;
+}
+
+#last_stats_by_minute .sum {
+  float:left;
+  width:90px;
+  padding-top:15px;
+  font-weight:600;
+}
+
+#last_stats_by_minute .sparkline {
+  float:left;
+  width:200px;
+  height:50px;
+  border: 1px solid #596e8c;
+  text-align:center;
+  color:#d5e5ff;
+  text-shadow:#000 0 -1px 0;
+  @include border-radius(5px);
+}
+
+#last_plays {
+  float:right;
+  width:59%;
+  height:200px;
+  margin-bottom:40px;
+}
+
 .stats .graph_box {
   float:left;
   width:260px;
