@@ -1,4 +1,4 @@
 collection @kits
 cache @kits
 
-extends('private_api/kits/show')
+extends 'private_api/kits/show'
