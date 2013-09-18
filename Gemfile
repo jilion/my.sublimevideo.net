@@ -162,7 +162,7 @@ group :development, :test do
 
   # Guard
   gem 'ruby_gntp', require: false
-  gem 'guard', github: 'guard', branch: 'listen2'
+  gem 'guard', '2.0.0.pre.2'
   gem 'guard-pow', require: false
   gem 'guard-livereload', require: false
   gem 'guard-rspec', require: false
