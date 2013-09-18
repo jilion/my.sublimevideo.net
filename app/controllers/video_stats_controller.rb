@@ -16,7 +16,7 @@ class VideoStatsController < ApplicationController
       @stats_presenter.last_stats_by_hour
     end
 
-    if stale?(last_modified: stats_for_last_modified.map { |h| h[:updated_at] }.max, etag: "#{@video_tag}_#{@stats_presenter.options[:hours]}")
+    if stale?(last_modified: stats_for_last_modified.map { |h| h[:updated_at] }.max, etag: "#{@video_tag.uid}_#{@stats_presenter.options}")
       respond_to do |format|
         format.html
         format.js
