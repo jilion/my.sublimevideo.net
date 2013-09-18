@@ -1,6 +1,7 @@
 # coding: utf-8
 
 module ApplicationHelper
+
   def display_bool(boolean)
     boolean == 0 || boolean.blank? || !boolean ? '–' : '✓'
   end
@@ -77,6 +78,12 @@ module ApplicationHelper
   def asset_url(asset)
     host = request ? '' : ActionController::Base.asset_host
     "#{host}#{asset_path(asset)}"
+  end
+
+  def url_host(url)
+    URI.parse(url).host
+  rescue
+    url
   end
 
 end
