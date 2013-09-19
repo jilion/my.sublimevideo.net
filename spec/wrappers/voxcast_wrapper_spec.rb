@@ -5,21 +5,24 @@ require 'wrappers/voxcast_wrapper'
 
 describe VoxcastWrapper do
 
-  describe 'purge' do
-    before { Librato.stub(:increment) }
+  describe '.purge' do
+    let(:voxel_hapi) { double('VoxelHAPI', voxel_voxcast_ondemand_content_purge_file: true) }
+    before do
+      described_class.stub(:_client) { voxel_hapi }
+      Librato.stub(:increment)
+    end
 
-    it 'calls purge_path if a file path is given' do
-      described_class.should_receive(:purge_path).with('/filepath.js')
+    it 'calls voxel_voxcast_ondemand_content_purge_file if a file path is given' do
+      voxel_hapi.should_receive(:voxel_voxcast_ondemand_content_purge_file).with(device_id: ENV['VOXCAST_DEVICE_ID'], paths: '/filepath.js')
       described_class.purge('/filepath.js')
     end
 
-    it 'calls purge_dir if a directory path is given' do
-      described_class.should_receive(:purge_dir).with('/dir/path')
+    it 'calls voxel_voxcast_ondemand_content_purge_directory if a directory path is given' do
+      voxel_hapi.should_receive(:voxel_voxcast_ondemand_content_purge_directory).with(device_id: ENV['VOXCAST_DEVICE_ID'], paths: '/dir/path')
       described_class.purge('/dir/path')
     end
 
     it 'increments metrics' do
-      described_class.stub(:purge_path)
       Librato.should_receive(:increment).with('cdn.purge', source: 'voxcast')
       described_class.purge('/filepath.js')
     end
