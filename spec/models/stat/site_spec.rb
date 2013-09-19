@@ -36,72 +36,69 @@ describe Stat::Site do
 
     describe "with seconds period (missing value not filled)" do
       before { Timecop.travel(@second) }
-      subject { JSON.parse(Stat::Site.json(site.token, period: 'seconds')) }
+      let(:stats) { JSON.parse(Stat::Site.json(site.token, period: 'seconds')) }
 
-      its(:size) { should eql(3) }
-      it { subject[0]['vv'].should eql(2) }
-      it { subject[1]['vv'].should eql(3) }
-      it { subject[2]['vv'].should eql(4) }
-
-      it { subject[0]['id'].should eql((@second - 61.seconds).to_i) }
-      it { subject[2]['id'].should eql((@second - 2.second).to_i) }
+      it { expect(stats).to have(3).items }
+      it { stats[0]['vv'].should eq(2) }
+      it { stats[1]['vv'].should eq(3) }
+      it { stats[2]['vv'].should eq(4) }
+      it { stats[0]['id'].should eq((@second - 61.seconds).to_i) }
+      it { stats[2]['id'].should eq((@second - 2.second).to_i) }
     end
 
     describe "with minutes period" do
       before { Timecop.freeze }
-      subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
+      let(:stats) { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
 
-      its(:size) { should eql(60) }
-      it { subject[0]['vv'].should eql(3) }
-      it { subject[1]['vv'].should eql(nil) }
-      it { subject[58]['vv'].should eql(4) }
-      it { subject[59]['vv'].should eql(5) }
-
-      it { subject[0]['id'].should eql(59.minutes.ago.change(sec: 0).to_i) }
-      it { subject[1]['id'].should eql(58.minutes.ago.change(sec: 0).to_i) }
-      it { subject[59]['id'].should eql(Time.now.utc.change(sec: 0).to_i) }
+      it { expect(stats).to have(60).items }
+      it { stats[0]['vv'].should eq(3) }
+      it { stats[1]['vv'].should eq(nil) }
+      it { stats[58]['vv'].should eq(4) }
+      it { stats[59]['vv'].should eq(5) }
+      it { stats[0]['id'].should eq(59.minutes.ago.change(sec: 0).to_i) }
+      it { stats[1]['id'].should eq(58.minutes.ago.change(sec: 0).to_i) }
+      it { stats[59]['id'].should eq(Time.now.utc.change(sec: 0).to_i) }
     end
 
     describe "with hours period" do
       before { Timecop.freeze }
-      subject { JSON.parse(Stat::Site.json(site.token, period: 'hours')) }
+      let(:stats) { JSON.parse(Stat::Site.json(site.token, period: 'hours')) }
 
-      its(:size) { should eql(24) }
-      it { subject[0]['vv'].should eql(47) }
-      it { subject[1]['vv'].should eql(48) }
-      it { subject[2]['vv'].should eql(nil) }
-      it { subject[23]['vv'].should eql(49) }
-
-      it { subject[0]['id'].should eql(24.hours.ago.change(min: 0, sec: 0).to_i) }
-      it { subject[2]['id'].should eql(22.hours.ago.change(min: 0, sec: 0).to_i) }
-      it { subject[23]['id'].should eql(1.hours.ago.change(min: 0, sec: 0).to_i) }
+      it { expect(stats).to have(24).items }
+      it { stats[0]['vv'].should eq(47) }
+      it { stats[1]['vv'].should eq(48) }
+      it { stats[2]['vv'].should eq(nil) }
+      it { stats[23]['vv'].should eq(49) }
+      it { stats[0]['id'].should eq(24.hours.ago.change(min: 0, sec: 0).to_i) }
+      it { stats[2]['id'].should eq(22.hours.ago.change(min: 0, sec: 0).to_i) }
+      it { stats[23]['id'].should eq(1.hours.ago.change(min: 0, sec: 0).to_i) }
     end
 
     describe "with days period" do
       before { Timecop.freeze }
-      subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
+      let(:stats) { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
-      its(:size) { should eql(400) }
-      it { subject[0]['vv'].should eql(100) }
-      it { subject[1]['vv'].should eql(nil) }
-      it { subject[397]['vv'].should eql(101) }
-      it { subject[399]['vv'].should eql(102) }
-      it { subject[0]['id'].should eql(400.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-      it { subject[1]['id'].should eql(399.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-      it { subject[399]['id'].should eql(1.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      it { expect(stats).to have(400).items }
+      it { stats[0]['vv'].should eq(100) }
+      it { stats[1]['vv'].should eq(nil) }
+      it { stats[397]['vv'].should eq(101) }
+      it { stats[399]['vv'].should eq(102) }
+      it { stats[0]['id'].should eq(400.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      it { stats[1]['id'].should eq(399.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      it { stats[399]['id'].should eq(1.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
     end
 
     describe "with days period (less than 365 days stats)" do
       before { @day400.delete }
       before { Timecop.freeze }
-      subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
+      let(:stats) { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
-      its(:size) { should eql(365) }
-      it { subject[0]['vv'].should eql(nil) }
-      it { subject[1]['vv'].should eql(nil) }
-      it { subject[364]['vv'].should eql(102) }
-      it { subject[0]['id'].should eql(365.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-      it { subject[364]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      it { expect(stats).to have(365).items }
+      it { stats[0]['vv'].should eq(nil) }
+      it { stats[1]['vv'].should eq(nil) }
+      it { stats[364]['vv'].should eq(102) }
+      it { stats[0]['id'].should eq(365.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      it { stats[364]['id'].should eq(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
     end
   end
 end
@@ -164,7 +161,6 @@ describe Stat::Site::Day do
   end
 
   describe ".last_stats" do
-
     let(:site1) { create(:site) }
     let(:site2) { create(:site) }
     before { Timecop.freeze }
@@ -231,18 +227,6 @@ describe Stat::Site::Day do
             it { subject.last['d'].to_time.should eql Time.now.utc.midnight.to_time }
             it { subject.last['vv']['m'].should eq 12 }
           end
-        end
-      end
-
-      describe ":stats" do
-        describe "accepts an ActiveRecord::Relation" do
-          subject { described_class.last_stats(stats: described_class.where(t: site1.token), fill_missing_days: false) }
-
-          its(:size) { should eql(2) }
-          it { subject.first['d'].to_time.should eql 30.days.ago.midnight.to_time }
-          it { subject.first['vv']['m'].should eql(2) }
-          it { subject.second['d'].to_time.should eql Time.now.utc.midnight.to_time }
-          it { subject.second['vv']['m'].should eql(4) }
         end
       end
 
