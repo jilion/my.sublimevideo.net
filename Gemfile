@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid/mongoid' # Rails 4 support
+gem 'mongoid', github: 'mongoid' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -141,13 +141,14 @@ group :development do
   gem 'launchy'
   gem 'quiet_assets'
   gem 'bullet'
+  gem 'annotate'
 
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'i18n-extra_translations', require: false
 
   # gem 'em-http-request' # async pusher in populate
-  # gem 'letter_opener'
+  gem 'letter_opener'
 end
 
 group :development, :test do

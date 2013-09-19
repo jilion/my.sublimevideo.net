@@ -147,6 +147,8 @@ GEM
       tzinfo (~> 0.3.37)
     addressable (2.2.8)
     aggregate (0.2.2)
+    annotate (2.5.0)
+      rake
     arel (4.0.0)
     array_stats (0.6.0)
     asset_sync (1.0.0)
@@ -335,6 +337,8 @@ GEM
     kgio (2.8.1)
     launchy (2.1.0)
       addressable (~> 2.2.6)
+    letter_opener (1.0.0)
+      launchy (>= 2.0.4)
     librato-metrics (1.1.1)
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
@@ -606,6 +610,7 @@ DEPENDENCIES
   activemerchant!
   acts-as-taggable-on!
   addressable (~> 2.2.8)
+  annotate
   array_stats
   asset_sync
   backbone-rails
@@ -656,6 +661,7 @@ DEPENDENCIES
   kaminari!
   kiqstand!
   launchy
+  letter_opener
   librato-rails
   libxml-ruby
   liquid
