@@ -130,7 +130,6 @@ class Site < ActiveRecord::Base
 
   # state
   scope :active,       -> { where(state: 'active') }
-  scope :inactive,     -> { where.not(state: 'active') }
   scope :suspended,    -> { where(state: 'suspended') }
   scope :archived,     -> { where(state: 'archived') }
   scope :not_archived, -> { where.not(state: 'archived') }

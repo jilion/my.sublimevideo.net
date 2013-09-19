@@ -596,10 +596,6 @@ describe User do
         @user_last_credit_card_expiration_notice = create(:user, last_credit_card_expiration_notice_sent_at: 30.days.ago)
       end
 
-      describe ".without_cc" do
-        specify { User.without_cc.should =~ [@user_no_cc] }
-      end
-
       describe ".with_cc" do
         specify { User.with_cc.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
       end
@@ -637,17 +633,6 @@ describe User do
       describe ".paying" do
         specify { User.paying.should =~ [site6.user] }
       end
-    end
-
-    describe ".newsletter" do
-      before do
-        @user1 = create(:user, newsletter: true)
-        @user2 = create(:user, newsletter: false)
-      end
-
-      specify { User.newsletter.should eq [@user1] }
-      specify { User.newsletter(true).should eq [@user1] }
-      specify { User.newsletter(false).should eq [@user2] }
     end
 
     describe ".created_on" do
@@ -705,19 +690,6 @@ describe User do
       end
 
       specify { User.with_page_loads_in_the_last_30_days.should =~ [user1, user2] }
-    end
-
-    describe ".with_stats_realtime_addon_or_invalid_video_tag_data_uid", :addons do
-      let!(:site1) { create(:site) }
-      let!(:site2) { create(:site) }
-      let!(:site3) { create(:site) }
-
-      before {
-        create(:billable_item, site: site1, item: @stats_addon_plan_2, state: 'subscribed')
-        VideoTag.should_receive(:site_tokens).with(with_invalid_uid: true) { [site2.token] }
-      }
-
-      specify { User.with_stats_realtime_addon_or_invalid_video_tag_data_uid.should =~ [site1.user, site2.user] }
     end
   end # Scopes
 

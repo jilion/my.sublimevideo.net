@@ -347,10 +347,6 @@ describe Site, :addons do
         specify { Site.active.should =~ [@site_active] }
       end
 
-      describe ".inactive" do
-        specify { Site.inactive.should =~ [@site_archived, @site_suspended] }
-      end
-
       describe ".suspended" do
         specify { Site.suspended.should =~ [@site_suspended] }
       end
