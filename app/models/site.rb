@@ -58,21 +58,12 @@ class Site < ActiveRecord::Base
     designs_components
   end
 
-  # Mongoid associations
-  def usages
-    SiteUsage.where(site_id: id)
-  end
-
   def referrers
     Referrer.where(token: token)
   end
 
   def day_stats
     Stat::Site::Day.where(t: token)
-  end
-
-  def views
-    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   # ===============
@@ -252,8 +243,8 @@ class Site < ActiveRecord::Base
     token
   end
 
-  def unmemoize_all
-    unmemoize_all_usages
+  def views
+    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   def delay_update_loaders_and_settings
