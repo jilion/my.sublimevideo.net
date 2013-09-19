@@ -192,7 +192,7 @@ describe Scheduler do
       described_class.schedule_hourly_tasks
     end
     it "schedules TweetsSyncerWorker.perform_async" do
-      TweetsSyncerWorker.should receive(:perform_async)
+      TweetsSyncerWorker.should receive(:perform_in)
       described_class.schedule_hourly_tasks
     end
   end

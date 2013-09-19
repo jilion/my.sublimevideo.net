@@ -44,7 +44,7 @@ module Scheduler
 
   def self.schedule_hourly_tasks
     Tweet::KEYWORDS.each { |keyword| TweetsSaverWorker.perform_async(keyword) }
-    TweetsSyncerWorker.perform_async(at: 5.minutes.from_now.to_i)
+    TweetsSyncerWorker.perform_in(5.minutes.from_now)
   end
 
   def self.schedule_frequent_tasks
