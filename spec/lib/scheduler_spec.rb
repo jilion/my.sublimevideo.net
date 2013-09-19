@@ -188,7 +188,7 @@ describe Scheduler do
 
   describe ".schedule_hourly_tasks" do
     it "schedules TweetsSaverWorker.perform_async" do
-      TweetsSaverWorker.should receive(:perform_async).with('rymai')
+      Tweet::KEYWORDS.each { |k| TweetsSaverWorker.should receive(:perform_async).with(k) }
       described_class.schedule_hourly_tasks
     end
     it "schedules TweetsSyncerWorker.perform_async" do
