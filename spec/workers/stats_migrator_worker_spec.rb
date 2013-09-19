@@ -12,6 +12,6 @@ describe StatsMigratorWorker do
   end
 
   it "delays job in stats (stsv) queue" do
-    StatsMigratorWorker.get_sidekiq_options['queue'].should eq 'stats'
+    StatsMigratorWorker.get_sidekiq_options['queue'].should eq 'stats-migration'
   end
 end
