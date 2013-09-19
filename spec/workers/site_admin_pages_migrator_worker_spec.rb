@@ -4,13 +4,15 @@ require 'config/sidekiq'
 require 'site_admin_pages_migrator_worker'
 
 describe SiteAdminPagesMigratorWorker do
+
   it "performs async job" do
     expect {
-      SiteAdminPagesMigratorWorker.perform_async('site_token', {})
-    }.to change(SiteAdminPagesMigratorWorker.jobs, :size).by(1)
+      described_class.perform_async('site_token', {})
+    }.to change(described_class.jobs, :size).by(1)
   end
 
   it "delays job in stats (stsv) queue" do
-    SiteAdminPagesMigratorWorker.get_sidekiq_options['queue'].should eq 'stats-migration'
+    described_class.get_sidekiq_options['queue'].should eq 'stats-migration'
   end
+
 end

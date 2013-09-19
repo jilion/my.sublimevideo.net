@@ -16,17 +16,17 @@ describe SiteCounterIncrementerWorker do
 
   it "performs async job" do
     expect {
-      SiteCounterIncrementerWorker.perform_async(*params)
-    }.to change(SiteCounterIncrementerWorker.jobs, :size).by(1)
+      described_class.perform_async(*params)
+    }.to change(described_class.jobs, :size).by(1)
   end
 
   it "delays job in default (mysv) queue" do
-    expect(SiteCounterIncrementerWorker.get_sidekiq_options['queue']).to eq 'default'
+    expect(described_class.get_sidekiq_options['queue']).to eq 'default'
   end
 
   it "increments site counter" do
     expect(site).to receive(:increment!).with('last_30_days_video_tags')
-    SiteCounterIncrementerWorker.new.perform(*params)
+    described_class.new.perform(*params)
   end
 
 end

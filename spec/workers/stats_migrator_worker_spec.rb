@@ -7,11 +7,12 @@ describe StatsMigratorWorker do
 
   it "performs async job" do
     expect {
-      StatsMigratorWorker.perform_async('Stat::Site::Day', {})
-    }.to change(StatsMigratorWorker.jobs, :size).by(1)
+      described_class.perform_async('Stat::Site::Day', {})
+    }.to change(described_class.jobs, :size).by(1)
   end
 
   it "delays job in stats (stsv) queue" do
-    StatsMigratorWorker.get_sidekiq_options['queue'].should eq 'stats-migration'
+    described_class.get_sidekiq_options['queue'].should eq 'stats-migration'
   end
+
 end

@@ -82,59 +82,76 @@ describe Tweet do
     end
   end
 
-  describe "Class Methods" do
-    describe ".save_new_tweets_and_sync_favorite_tweets" do
-      before do
-        # fake keywords to not fill the cassette...
-        described_class.send(:remove_const, :KEYWORDS)
-        described_class::KEYWORDS = %w[rymai]
-      end
-      use_vcr_cassette "twitter/save_new_tweets_and_sync_favorite_tweets"
+  describe '.create_from_twitter_tweet!' do
+    let(:twitter_tweet) do
+      double(
+        id: 42,
+        user: double(id: 1, profile_image_url_https: 'https://twitter.com/image.jpg'),
+        from_user_id: 12,
+        from_user: 'foo',
+        to_user_id: 2,
+        to_user: 'bar',
+        lang: 'fr',
+        source: 'twitter',
+        text: 'foo bar sublimevideo',
+        created_at: Time.now.utc
+      )
+    end
 
-      it "should create new tweets" do
-        expect { described_class.save_new_tweets_and_sync_favorite_tweets }.to change(Tweet, :count)
-      end
+    it 'saves the tweet from a real tweet' do
+      described_class.create_from_twitter_tweet!(twitter_tweet)
 
-      it "should not create new tweets if they're all already saved" do
-        expect { described_class.save_new_tweets_and_sync_favorite_tweets }.to change(Tweet, :count)
-        expect { described_class.save_new_tweets_and_sync_favorite_tweets }.to_not change(Tweet, :count)
-      end
+      tweet = Tweet.last
+      expect(tweet.tweet_id).to eq          twitter_tweet.id
+      expect(tweet.keywords).to eq          ['sublimevideo']
+      expect(tweet.from_user_id).to eq      twitter_tweet.from_user_id
+      expect(tweet.from_user).to eq         twitter_tweet.from_user
+      expect(tweet.to_user_id).to eq        twitter_tweet.to_user_id
+      expect(tweet.to_user).to eq           twitter_tweet.to_user
+      expect(tweet.iso_language_code).to eq twitter_tweet.lang
+      expect(tweet.profile_image_url).to eq twitter_tweet.user.profile_image_url_https
+      expect(tweet.source).to eq            twitter_tweet.source
+      expect(tweet.content).to eq           twitter_tweet.text
+      expect(tweet.tweeted_at.to_i).to eq   twitter_tweet.created_at.to_i
+    end
 
-      it "should call sync_favorite_tweets" do
-        described_class.should_receive(:sync_favorite_tweets)
+    context 'twitter tweet has no from_user_id' do
+      before { twitter_tweet.stub(from_user_id: nil) }
 
-        described_class.save_new_tweets_and_sync_favorite_tweets
+      it 'uses tweet.user.id instead of tweet.from_user_id' do
+        described_class.create_from_twitter_tweet!(twitter_tweet)
+
+        tweet = Tweet.last
+        expect(tweet.from_user_id).to eq twitter_tweet.user.id
       end
     end
   end
 
-  describe "Instance Methods" do
-    describe "#favorite!" do
-      subject { create(:tweet, tweet_id: 56351930166935552) }
+  describe "#favorite!" do
+    subject { create(:tweet, tweet_id: 56351930166935552) }
 
-      describe "favorite" do
-        use_vcr_cassette "twitter/favorite"
+    describe "favorite" do
+      use_vcr_cassette "twitter/favorite"
 
-        it "should favorite locally and on Twitter itself" do
-          subject.should_not be_favorited
-          subject.favorite!
-          subject.should be_favorited
-          TwitterWrapper.status(56351930166935552).favorited.should be_true
-        end
+      it "should favorite locally and on Twitter itself" do
+        subject.should_not be_favorited
+        subject.favorite!
+        subject.should be_favorited
+        TwitterWrapper.status(56351930166935552).favorited.should be_true
       end
+    end
 
-      describe "un-favorite" do
-        use_vcr_cassette "twitter/unfavorite"
+    describe "un-favorite" do
+      use_vcr_cassette "twitter/unfavorite"
 
-        it "should un-favorite locally and on Twitter if already favorited" do
-          subject.should_not be_favorited
-          subject.favorite!
-          subject.should be_favorited
-          TwitterWrapper.status(56351930166935552).favorited.should be_true
-          subject.favorite!
-          subject.should_not be_favorited
-          TwitterWrapper.status(56351930166935552).favorited.should be_false
-        end
+      it "should un-favorite locally and on Twitter if already favorited" do
+        subject.should_not be_favorited
+        subject.favorite!
+        subject.should be_favorited
+        TwitterWrapper.status(56351930166935552).favorited.should be_true
+        subject.favorite!
+        subject.should_not be_favorited
+        TwitterWrapper.status(56351930166935552).favorited.should be_false
       end
     end
   end

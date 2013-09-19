@@ -12,6 +12,8 @@ require 'services/invoice_creator'
 require 'services/site_counters_updater'
 require 'services/credit_card_expiration_notifier'
 require 'services/new_inactive_user_notifier'
+require 'workers/tweets_saver_worker'
+require 'workers/tweets_syncer_worker'
 require 'scheduler'
 
 Transaction = Class.new unless defined?(Transaction)
@@ -27,8 +29,10 @@ SiteUsagesTrend = Class.new unless defined?(SiteUsagesTrend)
 TweetsTrend = Class.new unless defined?(TweetsTrend)
 TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
 Tweet = Class.new unless defined?(Tweet)
+Tweet::KEYWORDS = ['rymai'] unless defined?(Tweet::KEYWORDS)
 Log = Class.new unless defined?(Log)
 Log::Voxcast = Class.new unless defined?(Log::Voxcast)
+
 
 describe Scheduler do
 
@@ -183,11 +187,12 @@ describe Scheduler do
   end
 
   describe ".schedule_hourly_tasks" do
-    it "schedules Tweet.save_new_tweets_and_sync_favorite_tweets" do
-      Tweet.should delay(:save_new_tweets_and_sync_favorite_tweets,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: 'low'
-      )
+    it "schedules TweetsSaverWorker.perform_async" do
+      TweetsSaverWorker.should receive(:perform_async).with('rymai')
+      described_class.schedule_hourly_tasks
+    end
+    it "schedules TweetsSyncerWorker.perform_async" do
+      TweetsSyncerWorker.should receive(:perform_async)
       described_class.schedule_hourly_tasks
     end
   end

@@ -15,12 +15,12 @@ describe VideoStatsMergerWorker do
 
   it "performs async job" do
     expect {
-      VideoStatsMergerWorker.perform_async(*params)
-    }.to change(VideoStatsMergerWorker.jobs, :size).by(1)
+      described_class.perform_async(*params)
+    }.to change(described_class.jobs, :size).by(1)
   end
 
   it "delays job in low (mysv) queue" do
-    VideoStatsMergerWorker.get_sidekiq_options['queue'].should eq 'low'
+    described_class.get_sidekiq_options['queue'].should eq 'low'
   end
 
   it "merges video stats" do
@@ -28,12 +28,12 @@ describe VideoStatsMergerWorker do
       mock.should_receive(:merge!)
       mock
     }
-    VideoStatsMergerWorker.new.perform(*params)
+    described_class.new.perform(*params)
   end
 
   it "increments Librato 'video_stats.merge' metric" do
     Librato.should_receive(:increment).once.with('video_stats.merge')
-    VideoStatsMergerWorker.new.perform(*params)
+    described_class.new.perform(*params)
   end
 
 end

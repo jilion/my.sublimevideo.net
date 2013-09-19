@@ -43,12 +43,8 @@ module Scheduler
   end
 
   def self.schedule_hourly_tasks
-    options = {
-      at: 1.hour.from_now.change(min: 0).to_i,
-      queue: 'low'
-    }
-
-    Tweet.delay(options).save_new_tweets_and_sync_favorite_tweets
+    Tweet::KEYWORDS.each { |keyword| TweetsSaverWorker.perform_async(keyword) }
+    TweetsSyncerWorker.perform_async(at: 5.minutes.from_now.to_i)
   end
 
   def self.schedule_frequent_tasks
