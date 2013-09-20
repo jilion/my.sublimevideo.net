@@ -5,7 +5,5 @@
 :require: '.'
 :timeout: 60
 :queues:
-  - [log, 1]
-  - [log_high, 10]
   - ['my-logs', 1]
   - ['my-logs_high', 10]
