@@ -116,7 +116,7 @@ describe Scheduler do
     it "schedules UsersTrend.create_trends" do
       UsersTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -124,7 +124,7 @@ describe Scheduler do
     it "schedules SitesTrend.create_trends" do
       SitesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -132,7 +132,7 @@ describe Scheduler do
     it "schedules BillingsTrend.create_trends" do
       BillingsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -140,7 +140,7 @@ describe Scheduler do
     it "schedules RevenuesTrend.create_trends" do
       RevenuesTrend.should delay(:create_trends,
         at: (Time.now.utc.tomorrow.midnight + 3.hours).to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -148,7 +148,7 @@ describe Scheduler do
     it "schedules BillingsTrend.create_trends" do
       BillableItemsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -156,7 +156,7 @@ describe Scheduler do
     it "schedules SiteStatsTrend.create_trends" do
       SiteStatsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -164,7 +164,7 @@ describe Scheduler do
     it "schedules SiteUsagesTrend.create_trends" do
       SiteUsagesTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -172,7 +172,7 @@ describe Scheduler do
     it "schedules TweetsTrend.create_trends" do
       TweetsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -180,7 +180,7 @@ describe Scheduler do
     it "schedules TailorMadePlayerRequestsTrend.create_trends" do
       TailorMadePlayerRequestsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'low'
+        queue: 'my-low'
       )
       described_class.schedule_daily_tasks
     end
@@ -202,7 +202,7 @@ describe Scheduler do
       Timecop.freeze do
         10.times do |i|
           Log::Voxcast.should delay(:download_and_create_new_logs,
-            queue: 'high',
+            queue: 'my-high',
             at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
           )
         end

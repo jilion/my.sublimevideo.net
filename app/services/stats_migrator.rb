@@ -15,7 +15,7 @@ class StatsMigrator
 
   def self.migrate_all(until_day = nil)
     Site.select(:id).all.find_in_batches do |site|
-      self.delay(queue: 'stats_migration').migrate(site.id, until_day)
+      self.delay(queue: 'my-stats_migration').migrate(site.id, until_day)
     end
   end
 

@@ -56,7 +56,7 @@ GIT
 
 GIT
   remote: git://github.com/mongoid/mongoid.git
-  revision: b84b811d47778b9d9f1a6ebc5e084aac7b9c0b63
+  revision: b2381109a58b0b49fc0c06e9a425f39cf83bc19b
   specs:
     mongoid (4.0.0)
       activemodel (~> 4.0.0)
@@ -188,10 +188,10 @@ GEM
     chunky_png (1.2.8)
     climate_control (0.0.3)
       activesupport (>= 3.0)
-    cliver (0.2.1)
+    cliver (0.2.2)
     cocaine (0.5.1)
       climate_control (>= 0.0.3, < 1.0)
-    codeclimate-test-reporter (0.0.8)
+    codeclimate-test-reporter (0.0.11)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.0.9)
     coffee-rails (4.0.0)
@@ -429,7 +429,7 @@ GEM
     rack-google-analytics (0.11.0)
     rack-livereload (0.3.15)
       rack
-    rack-ssl-enforcer (0.2.5)
+    rack-ssl-enforcer (0.2.6)
     rack-status (1.0.0)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -488,7 +488,7 @@ GEM
     ruby-hmac (0.4.0)
     ruby_gntp (0.3.4)
     rubyzip (1.0.0)
-    safe_yaml (0.9.6)
+    safe_yaml (0.9.7)
     sass (3.2.10)
     sass-rails (4.0.0)
       railties (>= 4.0.0.beta, < 5.0)

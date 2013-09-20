@@ -248,8 +248,8 @@ class Site < ActiveRecord::Base
 
   def delay_update_loaders_and_settings
     # Delay for 5 seconds to be sure that commit transaction is done.
-    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
-    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
+    LoaderGenerator.delay(queue: 'my', at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
+    SettingsGenerator.delay(queue: 'my', at: 5.seconds.from_now.to_i).update_all!(id)
   end
 
 end

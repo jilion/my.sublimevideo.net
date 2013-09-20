@@ -55,11 +55,11 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id/generate_loader
   def generate_loader
     if params[:stage] == 'all'
-      LoaderGenerator.delay.update_all_stages!(@site.id)
-      CampfireWrapper.delay.post("Update all loaders for #{@site.hostname} (#{@site.token}).")
+      LoaderGenerator.delay(queue: 'my').update_all_stages!(@site.id)
+      CampfireWrapper.delay(queue: 'my').post("Update all loaders for #{@site.hostname} (#{@site.token}).")
     else
-      LoaderGenerator.delay.update_stage!(@site.id, params[:stage])
-      CampfireWrapper.delay.post("Update #{params[:stage]} loader for #{@site.hostname} (#{@site.token}).")
+      LoaderGenerator.delay(queue: 'my').update_stage!(@site.id, params[:stage])
+      CampfireWrapper.delay(queue: 'my').post("Update #{params[:stage]} loader for #{@site.hostname} (#{@site.token}).")
     end
 
     _respond_for_site_with_notice("#{params[:stage].titleize} loader(s) will be regenerated.")
@@ -67,8 +67,8 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/generate_settings
   def generate_settings
-    SettingsGenerator.delay.update_all!(@site.id)
-    CampfireWrapper.delay.post("Update settings for #{@site.hostname} (#{@site.token}).")
+    SettingsGenerator.delay(queue: 'my').update_all!(@site.id)
+    CampfireWrapper.delay(queue: 'my').post("Update settings for #{@site.hostname} (#{@site.token}).")
 
     _respond_for_site_with_notice('Settings will be regenerated.')
   end

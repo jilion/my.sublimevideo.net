@@ -111,9 +111,9 @@ class SiteManager
   end
 
   def _delay_jobs(*jobs)
-    LoaderGenerator.delay.update_all_stages!(site.id) if jobs.include?(:loader)
-    SettingsGenerator.delay.update_all!(site.id) if jobs.include?(:settings)
-    RankSetter.delay(queue: 'low').set_ranks(site.id) if jobs.include?(:rank)
+    LoaderGenerator.delay(queue: 'my').update_all_stages!(site.id) if jobs.include?(:loader)
+    SettingsGenerator.delay(queue: 'my').update_all!(site.id) if jobs.include?(:settings)
+    RankSetter.delay(queue: 'my-low').set_ranks(site.id) if jobs.include?(:rank)
   end
 
   def _create_default_kit!

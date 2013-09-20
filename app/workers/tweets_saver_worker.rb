@@ -1,6 +1,6 @@
 class TweetsSaverWorker
   include Sidekiq::Worker
-  sidekiq_options queue: 'low'
+  sidekiq_options queue: 'my-low'
 
   def perform(keyword)
     max_id = nil

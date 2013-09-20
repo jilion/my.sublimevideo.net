@@ -7,7 +7,7 @@ module CDN
   # Works for file & directory
   def self.purge(path)
     wrappers.each do |wrapper|
-      wrapper.delay.purge(path)
+      wrapper.delay(queue: 'my').purge(path)
     end
   end
 

@@ -26,7 +26,7 @@ class TrialHandler
   def send_trial_will_expire_emails
     BusinessModel.days_before_trial_end.each do |days_before_trial_end|
       _subscriptions_exiting_trial_on(days_before_trial_end.days.from_now).each do |subscription|
-        BillingMailer.delay.trial_will_expire(subscription.id)
+        BillingMailer.delay(queue: 'my-mailer').trial_will_expire(subscription.id)
       end
     end
   end
@@ -39,7 +39,7 @@ class TrialHandler
     SiteManager.new(site).update_billable_items(new_subscriptions[:designs], new_subscriptions[:addon_plans])
 
     emails.each do |email|
-      BillingMailer.delay.trial_has_expired(site.id, email[:item_class], email[:item_id])
+      BillingMailer.delay(queue: 'my-mailer').trial_has_expired(site.id, email[:item_class], email[:item_id])
     end
   end
 

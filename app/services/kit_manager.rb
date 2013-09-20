@@ -13,7 +13,7 @@ class KitManager
       kit.save!
       kit.site.touch(:settings_updated_at)
     end
-    SettingsGenerator.delay.update_all!(kit.site_id)
+    SettingsGenerator.delay(queue: 'my').update_all!(kit.site_id)
     Librato.increment 'kits.events', source: 'update'
     true
   rescue ActiveRecord::RecordInvalid

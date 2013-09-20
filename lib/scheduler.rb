@@ -16,7 +16,7 @@ module Scheduler
   end
 
   def self.schedule_daily_light_tasks
-    options = { at: Time.now.utc.tomorrow.midnight.to_i }
+    options = { queue: 'my', at: Time.now.utc.tomorrow.midnight.to_i }
 
     TrialHandler.delay(options).send_trial_will_expire_emails
     TrialHandler.delay(options).activate_billable_items_out_of_trial
@@ -25,7 +25,7 @@ module Scheduler
     CreditCardExpirationNotifier.delay(options).send_emails
     NewInactiveUserNotifier.delay(options).send_emails
 
-    options.merge!(queue: 'low')
+    options.merge!(queue: 'my-low')
     UsersTrend.delay(options).create_trends
     SitesTrend.delay(options).create_trends
     BillingsTrend.delay(options).create_trends
@@ -37,9 +37,9 @@ module Scheduler
   end
 
   def self.schedule_daily_heavy_tasks
-    InvoiceCreator.delay(at: (Time.now.utc.tomorrow.midnight + 30.minutes).to_i).create_invoices_for_month
-    RevenuesTrend.delay(at: (Time.now.utc.tomorrow.midnight + 3.hours).to_i, queue: 'low').create_trends
-    Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i).charge_invoices
+    InvoiceCreator.delay(queue: 'my', at: (Time.now.utc.tomorrow.midnight + 30.minutes).to_i).create_invoices_for_month
+    RevenuesTrend.delay(queue: 'my', at: (Time.now.utc.tomorrow.midnight + 3.hours).to_i, queue: 'my-low').create_trends
+    Transaction.delay(queue: 'my', at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i).charge_invoices
   end
 
   def self.schedule_hourly_tasks
@@ -50,7 +50,7 @@ module Scheduler
   def self.schedule_frequent_tasks
     10.times do |i|
       at = (i + 1).minutes.from_now.change(sec: 0).to_i + 5.seconds.to_i # let the log file to be present on Voxcast
-      Log::Voxcast.delay(queue: 'high', at: at).download_and_create_new_logs
+      Log::Voxcast.delay(queue: 'my-high', at: at).download_and_create_new_logs
     end
   end
 end

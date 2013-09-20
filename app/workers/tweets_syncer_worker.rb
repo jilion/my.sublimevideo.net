@@ -1,6 +1,6 @@
 class TweetsSyncerWorker
   include Sidekiq::Worker
-  sidekiq_options queue: 'low'
+  sidekiq_options queue: 'my-low'
 
   # This method synchronize the locals favorites tweets with the favorites tweets of @sublimevideo on Twitter
   # It will never favorite/un-favorite tweets on Twitter

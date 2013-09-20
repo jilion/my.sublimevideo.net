@@ -7,8 +7,8 @@ class UserManager
 
   def create
     user.save!
-    # UserMailer.delay.welcome(user.id) # Temporary until we rewrite the email content
-    NewsletterSubscriptionManager.delay.sync_from_service(user.id)
+    # UserMailer.delay(queue: 'my-mailer').welcome(user.id) # Temporary until we rewrite the email content
+    NewsletterSubscriptionManager.delay(queue: 'my').sync_from_service(user.id)
     _increment_librato('create')
 
     true
@@ -23,7 +23,7 @@ class UserManager
           user.send("#{method_name}!")
           send("_#{method_name}_all_sites")
         end
-        UserMailer.delay.send("account_#{method_name}ed", user.id)
+        UserMailer.delay(queue: 'my-mailer').send("account_#{method_name}ed", user.id)
         _increment_librato(method_name)
 
         true
@@ -38,8 +38,8 @@ class UserManager
 
     _archive_site_and_save_feedback(options)
 
-    NewsletterSubscriptionManager.delay.unsubscribe(user.id)
-    UserMailer.delay.account_archived(user.id)
+    NewsletterSubscriptionManager.delay(queue: 'my').unsubscribe(user.id)
+    UserMailer.delay(queue: 'my-mailer').account_archived(user.id)
     _increment_librato('archive')
 
     true

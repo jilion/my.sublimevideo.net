@@ -10,14 +10,14 @@ class SiteCountersUpdater
   # =====================
   def self.set_first_billable_plays_at_for_not_archived_sites
     Site.not_archived.where(first_billable_plays_at: nil).select(:id).find_each do |site|
-      delay(queue: 'low')._set_first_billable_plays_at(site.id)
+      delay(queue: 'my-low')._set_first_billable_plays_at(site.id)
     end
   end
 
   def self.update_last_30_days_counters_for_not_archived_sites
     Site.not_archived.select(:id).find_each do |site|
       at = rand(10_000).seconds.from_now.to_i
-      delay(queue: 'low', at: at)._update_last_30_days_counters(site.id)
+      delay(queue: 'my-low', at: at)._update_last_30_days_counters(site.id)
     end
   end
 

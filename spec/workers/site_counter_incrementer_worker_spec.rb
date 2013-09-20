@@ -21,7 +21,7 @@ describe SiteCounterIncrementerWorker do
   end
 
   it "delays job in default (mysv) queue" do
-    expect(described_class.get_sidekiq_options['queue']).to eq 'default'
+    expect(described_class.get_sidekiq_options['queue']).to eq 'my'
   end
 
   it "increments site counter" do

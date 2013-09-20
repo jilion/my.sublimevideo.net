@@ -15,7 +15,7 @@ describe TweetsSaverWorker do
   end
 
   it 'delays job in low (mysv) queue' do
-    described_class.get_sidekiq_options['queue'].should eq 'low'
+    described_class.get_sidekiq_options['queue'].should eq 'my-low'
   end
 
   describe 'actual work' do

@@ -19,7 +19,7 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
   # DELETE /tailor_made_player_requests/:id
   def destroy
     # Recalculate trends..., move it to wwsv once trends are out of mysv
-    TailorMadePlayerRequestsTrend.delay(at: 1.minute.from_now.to_i).update_trends(@tailor_made_player_request.created_at)
+    TailorMadePlayerRequestsTrend.delay(queue: 'my', at: 1.minute.from_now.to_i).update_trends(@tailor_made_player_request.created_at)
     @tailor_made_player_request.destroy
     respond_with @tailor_made_player_request, location: [:admin, :tailor_made_player_requests]
   end

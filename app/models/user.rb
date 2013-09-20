@@ -193,9 +193,9 @@ class User < ActiveRecord::Base
     return unless newsletter_changed?
 
     if newsletter?
-      NewsletterSubscriptionManager.delay.subscribe(self.id)
+      NewsletterSubscriptionManager.delay(queue: 'my').subscribe(self.id)
     else
-      NewsletterSubscriptionManager.delay.unsubscribe(self.id)
+      NewsletterSubscriptionManager.delay(queue: 'my').unsubscribe(self.id)
     end
   end
 
@@ -204,7 +204,7 @@ class User < ActiveRecord::Base
     return unless newsletter?
 
     if email_changed? || name_changed?
-      NewsletterSubscriptionManager.delay.update(self.id, email_was || email)
+      NewsletterSubscriptionManager.delay(queue: 'my').update(self.id, email_was || email)
     end
   end
 
@@ -212,7 +212,7 @@ class User < ActiveRecord::Base
   def _zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
       updated_field = email_changed? ? { email: email } : { name: name }
-      ZendeskWrapper.delay(queue: 'low').update_user(zendesk_id, updated_field)
+      ZendeskWrapper.delay(queue: 'my-low').update_user(zendesk_id, updated_field)
     end
   end
 

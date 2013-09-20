@@ -25,7 +25,7 @@ module Administration
 
     def _deliver(users)
       users.each do |user|
-        MailMailer.delay(queue: 'mailer').send_mail_with_template(user.id, template.id)
+        MailMailer.delay(queue: 'my-mailer').send_mail_with_template(user.id, template.id)
       end
     end
 

@@ -45,29 +45,29 @@ class LoaderGenerator
     component = App::Component.find(component_id)
     component.clear_caches # force cache clearance
 
-    delay(queue: 'high').update_important_sites
+    delay(queue: 'my-high').update_important_sites
 
     sites = _sites_non_important(component: component, stage: stage)
-    CampfireWrapper.delay.post("Start updating all loaders for #{sites.count} sites with the #{stage} stage accessible")
+    CampfireWrapper.delay(queue: 'my').post("Start updating all loaders for #{sites.count} sites with the #{stage} stage accessible")
     sites.find_each do |site|
-      delay(queue: 'loader').update_all_stages!(site.id)
+      delay(queue: 'my-loader').update_all_stages!(site.id)
     end
     notify_when_loader_queue_is_empty
   end
 
   def self.update_important_sites
     sites = Site.where(token: (::SiteToken.tokens + IMPORTANT_SITE_TOKENS))
-    CampfireWrapper.delay.post("Start updating all loaders for #{sites.count} *important* sites")
+    CampfireWrapper.delay(queue: 'my').post("Start updating all loaders for #{sites.count} *important* sites")
     sites.pluck(:id).each do |site_id|
-      delay(queue: 'high').update_all_stages!(site_id)
+      delay(queue: 'my-high').update_all_stages!(site_id)
     end
   end
 
   def self.notify_when_loader_queue_is_empty
     if Sidekiq::Queue.new(:loader).size.zero?
-      CampfireWrapper.delay.post('All loaders updated!')
+      CampfireWrapper.delay(queue: 'my').post('All loaders updated!')
     else
-      delay(at: 1.minute.from_now.change(min: 0).to_i, queue: 'low').notify_when_loader_queue_is_empty
+      delay(queue: 'my-low', at: 1.minute.from_now.change(min: 0).to_i).notify_when_loader_queue_is_empty
     end
   end
 

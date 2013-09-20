@@ -50,7 +50,7 @@ class KitsController < ApplicationController
   def set_as_default
     @site.touch(:settings_updated_at)
     @site.update(default_kit_id: @kit.id)
-    SettingsGenerator.delay.update_all!(@site.id)
+    SettingsGenerator.delay(queue: 'my').update_all!(@site.id)
 
     redirect_to [@site, :kits]
   end

@@ -90,7 +90,7 @@ describe SiteManager do
     end
 
     it 'delays the calculation of google and alexa ranks' do
-      RankSetter.should delay(:set_ranks, queue: 'low').with(site.id)
+      RankSetter.should delay(:set_ranks, queue: 'my-low').with(site.id)
 
       service.create.should be_true
     end
