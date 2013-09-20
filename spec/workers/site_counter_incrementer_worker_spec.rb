@@ -11,7 +11,7 @@ describe SiteCounterIncrementerWorker do
   let(:site) { double(Site) }
 
   before {
-    Site.stub_chain(:where, :first!) { site }
+    Site.stub_chain(:where, :first) { site }
   }
 
   it "performs async job" do
@@ -21,7 +21,7 @@ describe SiteCounterIncrementerWorker do
   end
 
   it "delays job in default (mysv) queue" do
-    expect(described_class.get_sidekiq_options['queue']).to eq 'my'
+    expect(described_class.get_sidekiq_options['queue']).to eq 'my-low'
   end
 
   it "increments site counter" do

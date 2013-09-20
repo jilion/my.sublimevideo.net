@@ -24,7 +24,7 @@ module SitesTasks
     Site.active.find_each do |site|
       next if site.addon_plans.where(billable_items: { item_type: 'AddonPlan', item_id: addon_plan }).exists?
 
-      SiteManager.delay(queue: 'my-one_time').subscribe_site_to_addon(site.id, addon_name, addon_plan.id)
+      SiteManager.delay(queue: 'my').subscribe_site_to_addon(site.id, addon_name, addon_plan.id)
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
     end
@@ -42,7 +42,7 @@ module SitesTasks
     # 2. Delays SiteManager.update_billable_items for all non-archived sites
     scheduled = 0
     Site.not_archived.pluck(:id).each do |site_id|
-      ExitBetaHandler.delay(queue: 'my-one_time').exit_beta(site_id)
+      ExitBetaHandler.delay(queue: 'my').exit_beta(site_id)
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
     end

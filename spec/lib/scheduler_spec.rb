@@ -59,6 +59,7 @@ describe Scheduler do
   describe ".schedule_daily_tasks" do
     it "schedules InvoiceCreator.create_invoices_for_month" do
       InvoiceCreator.should delay(:create_invoices_for_month,
+        queue: 'my',
         at: (Time.now.utc.tomorrow.midnight + 30.minutes).to_i
       )
       described_class.schedule_daily_tasks
@@ -66,6 +67,7 @@ describe Scheduler do
 
     it "schedules TrialHandler.send_trial_will_expire_emails" do
       TrialHandler.should delay(:send_trial_will_expire_emails,
+        queue: 'my',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -73,6 +75,7 @@ describe Scheduler do
 
     it "schedules TrialHandler.activate_billable_items_out_of_trial" do
       TrialHandler.should delay(:activate_billable_items_out_of_trial,
+        queue: 'my',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -80,6 +83,7 @@ describe Scheduler do
 
     it "schedules SiteCountersUpdater.set_first_billable_plays_at_for_not_archived_sites" do
       SiteCountersUpdater.should delay(:set_first_billable_plays_at_for_not_archived_sites,
+        queue: 'my',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -87,6 +91,7 @@ describe Scheduler do
 
     it "schedules SiteCountersUpdater.update_last_30_days_counters_for_not_archived_sites" do
       SiteCountersUpdater.should delay(:update_last_30_days_counters_for_not_archived_sites,
+        queue: 'my',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -94,6 +99,7 @@ describe Scheduler do
 
     it "schedules Transaction.charge_invoices" do
       Transaction.should delay(:charge_invoices,
+        queue: 'my',
         at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i
       )
       described_class.schedule_daily_tasks
@@ -101,6 +107,7 @@ describe Scheduler do
 
     it "schedules User.send_emails" do
       CreditCardExpirationNotifier.should delay(:send_emails,
+        queue: 'my',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -108,6 +115,7 @@ describe Scheduler do
 
     it "schedules NewInactiveUserNotifier.send_emails" do
       NewInactiveUserNotifier.should delay(:send_emails,
+        queue: 'my',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks

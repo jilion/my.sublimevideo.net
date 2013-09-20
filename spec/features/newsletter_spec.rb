@@ -13,7 +13,7 @@ feature "Newsletter subscription" do
       fill_in 'user[email]',    with: user.email
       fill_in 'user[password]', with: '123456'
 
-      NewsletterSubscriptionManager.should delay(:subscribe).with(user.id)
+      NewsletterSubscriptionManager.should delay(:subscribe, queue: 'my').with(user.id)
 
       click_button 'Log In'
 
@@ -30,7 +30,7 @@ feature "Newsletter subscription" do
     end
 
     scenario 'subscribed to the newsletter after log-in' do
-      NewsletterSubscriptionManager.should delay(:subscribe).with(@current_user.id)
+      NewsletterSubscriptionManager.should delay(:subscribe, queue: 'my').with(@current_user.id)
 
       go 'my', '/newsletter/subscribe'
 
