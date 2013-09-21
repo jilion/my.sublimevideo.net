@@ -7,7 +7,7 @@ class InvoiceCreator
 
   def self.create_invoices_for_month(date = 1.month.ago)
     Site.not_archived.find_each(batch_size: 100) do |site|
-      delay(queue: 'my')._create_for_month(date, site.id)
+      delay(queue: 'my-low')._create_for_month(date, site.id)
     end
   end
 
