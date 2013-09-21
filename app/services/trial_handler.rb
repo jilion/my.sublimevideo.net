@@ -10,13 +10,13 @@ class TrialHandler
   # =====================
   def self.send_trial_will_expire_emails
     _sites_with_subscriptions_in_trial.find_each do |site|
-      delay._send_trial_will_expire_emails(site.id)
+      delay(queue: 'my')._send_trial_will_expire_emails(site.id)
     end
   end
 
   def self.activate_billable_items_out_of_trial
     _sites_with_subscriptions_in_trial.find_each do |site|
-      delay._activate_billable_items_out_of_trial(site.id)
+      delay(queue: 'my')._activate_billable_items_out_of_trial(site.id)
     end
   end
 

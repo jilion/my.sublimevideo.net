@@ -5,9 +5,10 @@
 :require: '.'
 :timeout: 60
 :queues:
+  - ['default', 1]
+  - ['low', 1]
   - ['my-stats_migration', 1]
   - ['my-loader', 1]
-  - ['low', 1]
   - ['my-low', 1]
   - ['my-mailer', 2]
   - ['my', 5]
