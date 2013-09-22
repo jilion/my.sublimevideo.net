@@ -5,7 +5,6 @@
 :require: '.'
 :timeout: 60
 :queues:
-  - ['default', 1]
   - ['my-stats_migration', 1]
   - ['my-loader', 1]
   - ['my-low', 1]
