@@ -64,7 +64,7 @@ class LoaderGenerator
   end
 
   def self.notify_when_loader_queue_is_empty
-    if Sidekiq::Queue.new(:loader).size.zero?
+    if Sidekiq::Queue.new('my-loader').size.zero?
       CampfireWrapper.delay(queue: 'my').post('All loaders updated!')
     else
       delay(queue: 'my-low', at: 1.minute.from_now.change(min: 0).to_i).notify_when_loader_queue_is_empty
