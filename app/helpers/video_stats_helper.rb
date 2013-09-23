@@ -63,29 +63,33 @@ module VideoStatsHelper
   end
 
   def video_stats_browser_and_os_name(browser_and_platform)
-    browser_and_platform.split('-').map do |name|
-      case name
-      when 'fir' then 'Firefox'
-      when 'chr' then 'Chrome'
-      when 'iex' then 'IE'
-      when 'saf' then 'Safari'
-      when 'and' then 'Android'
-      when 'rim' then 'BlackBerry'
-      when 'weo' then 'webOS'
-      when 'ope' then 'Opera'
-      when 'win' then 'Windows'
-      when 'osx' then 'Macintosh'
-      when 'ipa' then 'iPad'
-      when 'iph' then 'iPhone'
-      when 'ipo' then 'iPod'
-      when 'lin' then 'Linux'
-      when 'wip' then 'Windows Phone'
-      when 'oth' then 'Other'
-      when 'otm' then 'Other (Mobile)'
-      when 'otd' then 'Other (Desktop)'
-      else name
-      end
+    browser_and_platform.split('-').map do |code|
+      video_stats_browser_or_os_name(code)
     end.join('<br />').html_safe
+  end
+
+  def video_stats_browser_or_os_name(code)
+    case code
+    when 'fir' then 'Firefox'
+    when 'chr' then 'Chrome'
+    when 'iex' then 'IE'
+    when 'saf' then 'Safari'
+    when 'and' then 'Android'
+    when 'rim' then 'BlackBerry'
+    when 'weo' then 'webOS'
+    when 'ope' then 'Opera'
+    when 'win' then 'Windows'
+    when 'osx' then 'Macintosh'
+    when 'ipa' then 'iPad'
+    when 'iph' then 'iPhone'
+    when 'ipo' then 'iPod'
+    when 'lin' then 'Linux'
+    when 'wip' then 'Windows Phone'
+    when 'oth' then 'Other'
+    when 'otm' then 'Other (Mobile)'
+    when 'otd' then 'Other (Desktop)'
+    else code
+    end
   end
 
 end

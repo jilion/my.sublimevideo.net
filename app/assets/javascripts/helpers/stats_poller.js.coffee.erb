@@ -20,22 +20,22 @@ class MySublimeVideo.Helpers.StatsPoller
 
   refreshTopStatsPage: ->
     if @isNewSecond()
-      console.log "refresh top stats page"
+      MySublimeVideo.videoStats.refreshTopStats()
 
   refreshBottomStatsPage: ->
     MySublimeVideo.videoStats.refreshBottomStats()
 
   isNewSecond: ->
-    if @lastSecond != @currentSecond()
+    if @lastSecond isnt @currentSecond()
       @lastSecond = @currentSecond()
       true
 
   isNewMinute: ->
-    if @lastMinute != @currentMinute()
+    if @lastMinute isnt @currentMinute()
       @lastMinute = @currentMinute()
       true
 
-  isNewHours: -> @currentMinute() == 0
+  isNewHours: -> @currentMinute() is 0
 
   currentMinute: -> new Date().getMinutes()
   currentSecond: -> new Date().getSeconds()

@@ -12,7 +12,7 @@ class VideoStatsController < ApplicationController
   def index
     @stats_presenter = VideoStatPresenter.new(@video_tag, params)
 
-    stats_for_last_modified = if params[:last_stats_by_minute_only]
+    stats_for_last_modified = if params[:since]
       @stats_presenter.last_stats_by_minute
     else
       @stats_presenter.last_stats_by_hour

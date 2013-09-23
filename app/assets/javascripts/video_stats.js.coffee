@@ -16,14 +16,20 @@ MySublimeVideo.videoStats.initSparklines = ->
   $.fn.sparkline.defaults.line.chartRangeClip   = true
   $.fn.sparkline.defaults.line.chartRangeMin    = 0
 
-MySublimeVideo.videoStats.refreshBottomStats = ($select) ->
+MySublimeVideo.videoStats.refreshTopStats = ->
+  since = $('#last_plays li').first().data('time')
+  $.ajax
+    url: MySublimeVideo.Helpers.HistoryHelper.currentUrlWithNewQuery('since', since)
+    dataType: 'script'
+
+MySublimeVideo.videoStats.refreshBottomStats = ->
   $('#video_stats_dates_range_and_source_selector').submit()
   $('#vv, #bp .content_wrap, #co .content_wrap').spin()
 
 MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect = ->
   $('#video_stats_hours_select, #video_stats_source_select').on 'change', (event) ->
     $select = $(event.target)
-    MySublimeVideo.videoStats.refreshBottomStats($select)
+    MySublimeVideo.videoStats.refreshBottomStats()
     MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
 
 MySublimeVideo.videoStats.prepareCSVExportButton = ->

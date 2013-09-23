@@ -7,8 +7,8 @@
       #mobiles_and_desktops_chart
       :coffee
         MySublimeVideo.Helpers.VideoStatsChartsHelper.mobilesAndDesktopsChart([
-          { name: 'Mobile', y: #{stats.try_keys('m', :count) { 0 }}, sliced: true, selected: true, color: 'rgba(9,250,33,0.45)', borderWidth: 2, borderColor: '#00ff18' },
-          { name: 'Desktop', y: #{stats.try_keys('d', :count) { 0 }}, color: 'rgba(74,100,142,0.6)', borderWidth: 2, borderColor: '#596e8c' }
+          { name: 'Mobile', y: #{stats.try_keys('m', :count) { 0 }}, sliced: true, selected: true, color: 'rgba(9,250,33,0.45)', borderWidth: 2, borderColor: 'rgba(9,250,33,0.75)' },
+          { name: 'Desktop', y: #{stats.try_keys('d', :count) { 0 }}, color: 'rgba(74,100,142,0.6)', borderWidth: 2, borderColor: 'rgba(74,100,142,0.9)' }
         ])
 
       .values

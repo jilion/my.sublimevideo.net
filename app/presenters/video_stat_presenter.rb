@@ -11,7 +11,7 @@ class VideoStatPresenter
 
   def initialize(video_tag, options = {})
     @video_tag = video_tag
-    @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours))
+    @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours, :since))
   end
 
   def last_stats_by_hour
@@ -23,7 +23,7 @@ class VideoStatPresenter
   end
 
   def last_plays
-    @last_plays ||= LastVideoPlay.last_plays(video_tag)
+    @last_plays ||= LastVideoPlay.last_plays(video_tag, options[:since])
   end
 
   def browsers_and_platforms_stats
