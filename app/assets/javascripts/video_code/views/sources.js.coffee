@@ -47,7 +47,12 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   # BINDINGS
   #
   _listenToModelsEvents: ->
-    this.listenTo(MSVVideoCode.sources, 'change:src change:currentMimeType change:found', this.render)
+    this.listenTo(MSVVideoCode.sources, 'change:src change:currentMimeType change:found', this.updateUidAndRender)
+
+  updateUidAndRender: ->
+    if MSVVideoCode.video.viewable() and MSVVideoCode.video.get('uid') is ''
+      MSVVideoCode.video.setDefaultDataUID()
+    this.render()
 
   render: ->
     @$el.html this.template()
@@ -74,7 +79,6 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   renderAdditionalInformation: ->
     $('.no_usable_source').hide()
     $('.mime_type_invalid').hide()
-
     $('.no_usable_source').show() unless MSVVideoCode.video.viewable()
 
     _.each MSVVideoCode.sources.allUsedNotEmpty(), (source) ->

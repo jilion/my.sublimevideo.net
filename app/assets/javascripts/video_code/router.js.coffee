@@ -92,6 +92,7 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.thumbnail.reset()
     _.each MSVVideoCode.sources.models, (source) ->
       source.reset()
+    MSVVideoCode.video.clearUidAndTitle()
 
   initViews: ->
     MSVVideoCode.previewView = new MSVVideoCode.Views.Preview
