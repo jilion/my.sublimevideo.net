@@ -19,17 +19,35 @@ module VideoStatsHelper
 
   def video_stats_browser_style(browser_and_platform)
     bp = browser_and_platform.split('-')
-    icon = if bp[0] == 'saf' && bp[1].in?(%w[iph ipa])
+    browser = if bp[0] == 'saf' && bp[1].in?(%w[iph ipa ipo])
       'saf_mob'
     else
       bp[0]
+    end
+    icon = case browser
+    when 'rim'
+      'bro'
+    else
+      browser
     end
 
     "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
   end
 
   def video_stats_platform_style(browser_and_platform)
-    "background-image:url(#{asset_path "stats/icons/#{browser_and_platform.split('-')[1]}.png"});"
+    platform = browser_and_platform.split('-')[1]
+    icon = case platform
+    when 'ipo'
+      'iph'
+    when 'wip'
+      'win'
+    when 'rim', 'otd', 'otm'
+      'oth'
+    else
+      platform
+    end
+
+    "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
   end
 
   def video_stats_country_name(country_code)

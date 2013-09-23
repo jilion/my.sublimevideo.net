@@ -2,6 +2,7 @@ MySublimeVideo.videoStats ||= {}
 
 MySublimeVideo.videoStatsReady = ->
   MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect()
+  MySublimeVideo.videoStats.prepareCSVExportButton()
 
 MySublimeVideo.videoStats.initSparklines = ->
   $.fn.sparkline.defaults.line.disableHighlight = true
@@ -25,14 +26,15 @@ MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect = ->
     MySublimeVideo.videoStats.refreshBottomStats($select)
     MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
 
-  $('#bp .expander a, #co .expander a').on 'click', (event) ->
-    $link = $(event.currentTarget)
-    $arrow = $link.find('span.arrow')
-    $expander = $link.parent()
+MySublimeVideo.videoStats.prepareCSVExportButton = ->
+  $('#csv_export').on 'click', (event) ->
+    event.preventDefault()
+    currentLocation = document.location
+    csvLocation = "#{currentLocation.protocol}//#{currentLocation.hostname}#{currentLocation.pathname}.csv#{currentLocation.search}"
+    window.open(csvLocation)
 
-    $arrow.toggleClass('up down')
-    $link.find('span.text').text(if $arrow.hasClass('up') then "Show only top #{$expander.data('limit')}" else 'Show all')
-    $expander.siblings().find('li.overflow').toggleClass('hidden')
+    false
+
 
 class MySublimeVideo.Helpers.VideoStatsChartsHelper
 

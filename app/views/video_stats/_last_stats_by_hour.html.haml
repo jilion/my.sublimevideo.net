@@ -26,6 +26,7 @@
             #{params[:hours]}
           )
 
+  = link_to 'Export as CSV', url_for(format: 'csv'), id: 'csv_export'
   .spacer
 
   #bp.graph_box
