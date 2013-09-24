@@ -1,5 +1,20 @@
 %h3.title#top_videos_title{style: "padding-top:10px"} Last 60 minutes
 
+
+#last_60_minutes_loads_and_starts
+  #last_60_minutes_loads
+    .sum
+      %strong= stats_presenter.last_60_minutes_loads.sum { |a| a[1] }
+      loads
+    .sparkline
+  .spacer
+
+  #last_60_minutes_starts
+    .sum
+      %strong= stats_presenter.last_60_minutes_starts.sum { |a| a[1] }
+      starts
+    .sparkline
+
 #last_plays.graph_box
   %h4.title Last plays
   .content_wrap{ style: 'overflow:hidden' }
@@ -7,21 +22,7 @@
       %p.empty No plays.
     - else
       %ul= render partial: 'last_play', collection: stats_presenter.last_plays
-
-#last_60_minutes_loads_and_starts
-  #last_60_minutes_loads
-    .sum
-      = stats_presenter.last_60_minutes_loads.sum { |a| a[1] }
-      loads
-    .sparkline
-  .spacer
-
-  #last_60_minutes_starts
-    .sum
-      = stats_presenter.last_60_minutes_starts.sum { |a| a[1] }
-      starts
-    .sparkline
-
+.spacer
 :coffee
   MySublimeVideo.videoStats.initSparklines()
   MySublimeVideo.Helpers.VideoStatsChartsHelper.sparkline($('#last_60_minutes_loads .sparkline'), #{stats_presenter.last_60_minutes_loads.map { |a| a[1] }},

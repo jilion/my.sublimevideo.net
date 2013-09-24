@@ -729,7 +729,7 @@ span.beta_badge {
 }
 
 #last_stats_by_minute {
-  height:200px;
+//  height:200px;
   margin-bottom:40px;
 }
 
@@ -741,12 +741,19 @@ span.beta_badge {
 
 #last_60_minutes_loads, #last_60_minutes_starts {
   height:80px;
+  padding:8px 0;
 }
 
 #last_stats_by_minute .sum {
   float:left;
-  width:90px;
-  padding-top:15px;
+  width:100px;
+  font-weight:600;
+  text-align:center;
+}
+
+#last_stats_by_minute .sum strong {
+  display:block;
+  font-size:23px;
   font-weight:600;
 }
 
@@ -754,7 +761,6 @@ span.beta_badge {
   float:left;
   width:200px;
   height:50px;
-  border: 1px solid #596e8c;
   text-align:center;
   color:#d5e5ff;
   text-shadow:#000 0 -1px 0;
@@ -764,14 +770,20 @@ span.beta_badge {
 #last_plays {
   float:right;
   width:59%;
-  height:200px;
+//  height:200px;
   margin-bottom:40px;
+}
+
+#last_plays h4.title {
+  padding-bottom:8px;
+  font-size:16px;
+  font-weight:600;
 }
 
 .stats .graph_box {
   float:left;
   width:260px;
-  margin-bottom:40px;
+//  margin-bottom:40px;
 }
 
 .stats #bp.graph_box, .stats #co.graph_box {
