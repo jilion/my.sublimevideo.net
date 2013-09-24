@@ -218,9 +218,7 @@ class SiteManager
   end
 
   def _new_billable_item_state(design_or_addon, options = {})
-    if options[:suspended]
-      'suspended'
-    elsif options[:force]
+    if options[:force]
       if design_or_addon.beta? || !design_or_addon.free?
         options[:force]
       else
