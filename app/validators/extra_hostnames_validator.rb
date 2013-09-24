@@ -1,12 +1,10 @@
 require 'active_model'
 require 'hostname_handler'
 
-class ExtraHostnamesValidator < ActiveModel::EachValidator
+class ExtraHostnamesValidator < HostnameValidator
 
   def validate_each(record, attribute, hostnames)
-    if hostnames.present? and error = HostnameHandler.detect_error(record, hostnames, :wildcard, :extra_invalid, :duplicate, :include_hostname)
-      record.errors.add(attribute, error, default: options[:message])
-    end
+    validate_hostnames(record, attribute, hostnames, :wildcard, :extra_invalid, :duplicate, :include_hostname)
   end
 
 end

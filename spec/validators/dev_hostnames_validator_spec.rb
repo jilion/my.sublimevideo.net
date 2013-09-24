@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'fast_spec_helper'
+require 'validators/hostname_validator'
 require 'validators/dev_hostnames_validator'
 require 'support/shared_contexts/shared_contexts_for_hostname_validators'
 require 'support/shared_examples/shared_examples_for_hostname_validators'
