@@ -15,7 +15,7 @@ unless defined? ActiveRecord
 end
 
 describe StatsMigrator do
-  let(:site) { double('Site', token: 'site_token') }
+  let(:site) { double('Site', token: 'site_token', subscribed_to?: true) }
   let(:migrator) { StatsMigrator.new(site) }
 
   describe "#migrate" do
@@ -47,7 +47,8 @@ describe StatsMigrator do
         time: 'time',
         app_loads: 'page_visits',
         stages: 'stages',
-        ssl: 'ssl')
+        ssl: 'ssl',
+        sa: true)
       StatsMigratorWorker.should_receive(:perform_async).with(
         'Stat::Video::Day',
         site_token: 'site_token',
@@ -56,8 +57,36 @@ describe StatsMigrator do
         loads: 'video_loads',
         starts: 'video_views',
         player_mode_and_device: 'player_mode_and_device',
-        browser_and_platform: 'browser_and_platform')
+        browser_and_platform: 'browser_and_platform',
+        sa: true)
       migrator.migrate
     end
+
+    context "with site not subscribed to realtime stats addon" do
+      before { site.stub(:subscribed_to?) { false } }
+
+      it "delays site_stat & video_stat to StatsMigratorWorker" do
+        StatsMigratorWorker.should_receive(:perform_async).with(
+          'Stat::Site::Day',
+          site_token: 'site_token',
+          time: 'time',
+          app_loads: 'page_visits',
+          stages: 'stages',
+          ssl: 'ssl',
+          sa: false)
+        StatsMigratorWorker.should_receive(:perform_async).with(
+          'Stat::Video::Day',
+          site_token: 'site_token',
+          video_uid: 'video_uid',
+          time: 'time',
+          loads: 'video_loads',
+          starts: 'video_views',
+          player_mode_and_device: 'player_mode_and_device',
+          browser_and_platform: 'browser_and_platform',
+          sa: false)
+        migrator.migrate
+      end
+    end
+
   end
 end

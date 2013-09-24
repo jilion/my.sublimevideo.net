@@ -41,7 +41,8 @@ class StatsMigrator
         time: stat.d,
         app_loads: stat.pv,
         stages: stat.st,
-        ssl: stat.s }
+        ssl: stat.s,
+        sa: _subscribed_to_realtime_stat_addon? }
     when 'Stat::Video::Day'
       { site_token: stat.st,
         video_uid: stat.u,
@@ -49,7 +50,13 @@ class StatsMigrator
         loads: stat.vl,
         starts: stat.vv,
         player_mode_and_device: stat.md,
-        browser_and_platform: stat.bp }
+        browser_and_platform: stat.bp,
+        sa: _subscribed_to_realtime_stat_addon? }
     end
   end
+
+  def _subscribed_to_realtime_stat_addon?
+    @_subscribed ||= site.subscribed_to?(AddonPlan.get('stats', 'realtime')).present?
+  end
+
 end
