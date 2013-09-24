@@ -5,7 +5,7 @@
     %span.icon{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
     %span.title
       On
-      = link_to url_host(last_play.du), url_with_protocol(last_play.du), class: "hl"
+      = link_to url_host(last_play.du), url_with_protocol(last_play.du), title: last_play.du, class: "hl"
       = '[external]' if last_play.ex?
 
       - if last_play.ru?
