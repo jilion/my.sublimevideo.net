@@ -29,21 +29,11 @@ module Addons
     end
 
     def width
-      size[0].to_i
+      _size[0].to_i
     end
 
     def height
-      size[1].to_i
-    end
-
-    def size
-      line = Cocaine::CommandLine.new('identify', ':source')
-      @size ||= begin
-        line.run(source: File.expand_path(file.path)).split(' ')[2].split('x')
-      rescue Cocaine::ExitStatusError => e
-        Rails.logger.info e.message
-        nil
-      end
+      _size[1].to_i
     end
 
     def path
@@ -51,6 +41,16 @@ module Addons
     end
 
     private
+
+    def _size
+      line = Cocaine::CommandLine.new('identify', ':source')
+      @_size ||= begin
+        line.run(source: File.expand_path(file.path)).split(' ')[2].split('x')
+      rescue Cocaine::ExitStatusError => e
+        Rails.logger.info e.message
+        nil
+      end
+    end
 
     def generate_file
       processed_file = Tempfile.new('logo-custom@2x.png', Rails.root.join('tmp'))
