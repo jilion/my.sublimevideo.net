@@ -1,20 +1,31 @@
 module VideoStatsHelper
 
-  def video_stats_options_for_date_range_select
+  def video_stats_options_for_date_range_select(selected_hours)
     options_for_select([
       ['Last 24 hours', 24],
       ['Last 30 days', 30*24],
       ['Last 90 days', 90*24],
       ['Last 365 days', 365*24],
-    ], params[:hours])
+    ], selected_hours.to_s)
   end
 
-  def video_stats_options_for_source_select
+  def video_stats_options_for_source_select(selected_source)
     options_for_select([
       ['All sources', 'a'],
       ['Your website', 'w'],
-      ['External sources', 'e']
-    ], params[:source])
+      ['External websites', 'e']
+    ], selected_source)
+  end
+
+  def video_stats_sources_for_export_text(source)
+    case source
+    when 'a'
+      'anywhere (on your website and external websites altogether)'
+    when 'w'
+      'on your website only'
+    when 'e'
+      'on external websites only'
+    end
   end
 
   def video_stats_browser_style(browser_and_platform)

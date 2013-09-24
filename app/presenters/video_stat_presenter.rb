@@ -12,6 +12,7 @@ class VideoStatPresenter
   def initialize(video_tag, options = {})
     @video_tag = video_tag
     @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours, :since))
+    @options[:hours] = @options[:hours].to_i
   end
 
   def last_stats_by_hour

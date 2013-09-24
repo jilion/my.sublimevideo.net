@@ -10,6 +10,6 @@
 
       - if last_play.ru?
         coming from
-        = last_play.ru
+        = link_to url_host(last_play.ru), last_play.ru, title: last_play.ru, class: "hl"
       - else
         from direct traffic

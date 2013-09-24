@@ -24,6 +24,7 @@ MySublimeVideo.videoStats.refreshTopStats = ->
 
 MySublimeVideo.videoStats.refreshBottomStats = ->
   $('#video_stats_dates_range_and_source_selector').submit()
+  $('#video_stats_hours_select, #video_stats_source_select').prop('disabled', true)
   $('#vv, #bp .content_wrap, #co .content_wrap').spin()
 
 MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect = ->
@@ -40,7 +41,6 @@ MySublimeVideo.videoStats.prepareCSVExportButton = ->
     window.open(csvLocation)
 
     false
-
 
 class MySublimeVideo.Helpers.VideoStatsChartsHelper
 
@@ -131,7 +131,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
               lineWidth: 2
       series: [{
         type: 'areaspline'
-        name: 'Page visits'
+        name: 'Loads'
         data: loads
         shadow: false
         fillColor: 'rgba(74,100,142,0.3)'
@@ -140,7 +140,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
           enabled: false
         },{
         type: 'areaspline'
-        name: 'Video plays'
+        name: 'Plays'
         data: starts
         shadow:
           color: 'rgb(116, 255, 131)'
@@ -220,7 +220,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
           textShadow: 'rgba(0,0,0,0.8) 0 -1px 0'
           WebkitFontSmoothing: "antialiased"
         formatter: ->
-          "<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.name}</span> #{Highcharts.numberFormat(@point.y, 0)} hits"
+          "<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.name}</span> #{Highcharts.numberFormat(@point.y, 0)} plays"
       scrollbar:
         enabled: false
       plotOptions:
