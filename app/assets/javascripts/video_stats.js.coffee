@@ -191,8 +191,8 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         plotBackgroundColor: null
         animation: false
         plotShadow: false
-        height: 250
-        width: 250
+        height: 260
+        width: 260
       credits:
         enabled: false
       title:
