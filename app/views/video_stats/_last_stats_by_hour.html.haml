@@ -4,7 +4,6 @@
       = select_tag 'hours', video_stats_options_for_date_range_select, id: 'video_stats_hours_select'
       for
       = select_tag 'source', video_stats_options_for_source_select, id: 'video_stats_source_select'
-    %h3#time_range_title
     #date_pickers
 
   %ul#vv_chart_legend
@@ -26,7 +25,6 @@
             #{params[:hours]}
           )
 
-  = link_to 'Export as CSV', url_for(format: 'csv'), id: 'csv_export'
   .spacer
 
   #bp.graph_box
@@ -39,3 +37,11 @@
     = render 'mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
+  .big_break
+  #export
+    =link_to url_for(format: 'csv'), id: 'csv_export' do
+      %span.icon Export Data
+  -# %p.desc!= "Export \"loads\" and \"plays\" data for the currently selected period (<strong>#{Highcharts.dateFormat('%Y/%m/%e', @period.startTime())}</strong>–<strong>#{Highcharts.dateFormat('%Y/%m/%e', @period.endTime())}</strong>) in CSV format. The exported file includes separate data for \"embeds\"."
+
+
+  -# = link_to 'Export as CSV', url_for(format: 'csv'), id: 'csv_export'

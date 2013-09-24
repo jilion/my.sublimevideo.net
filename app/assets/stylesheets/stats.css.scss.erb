@@ -402,7 +402,8 @@ span.beta_badge {
   margin:10px 20px 10px 15px;
 }
 
-.stats #export button {
+.stats #export button, .stats #export a {
+  display:inline-block;
   border: 1px solid #5e75a2;
   font-family:inherit;
   font-size:14px;
@@ -416,16 +417,16 @@ span.beta_badge {
   @include box-shadow((inset rgba(255,255,255,0.6) 0 1px 0, rgba(255,255,255,0.2) 0 1px 0))
 }
 
-.stats #export button:active {
+.stats #export button:active, .stats #export a:active {
   @include gradient(rgba(255,255,255,0), rgba(255,255,255,0.25), transparent);
 }
 
-.stats #export button:disabled {
+.stats #export button:disabled, .stats #export a:disabled {
   cursor:default;
   opacity:0.5;
 }
 
-.stats #export button span.icon {
+.stats #export button span.icon, .stats #export a span.icon {
   padding:2px 0 2px 18px;
   background:url(<%= asset_path "stats/export_icon.png" %>) no-repeat 0 50%;
 }
@@ -728,15 +729,10 @@ span.beta_badge {
   background:url(<%= asset_path "stats/expand_videos_arrow_up.png" %>) no-repeat;
 }
 
-#last_stats_by_minute {
-//  height:200px;
-  margin-bottom:40px;
-}
-
 #last_60_minutes_loads_and_starts {
   float:left;
   width:39%;
-  margin:35px auto 5px auto;
+  margin:35px 0 0;
 }
 
 #last_60_minutes_loads, #last_60_minutes_starts {
@@ -771,7 +767,7 @@ span.beta_badge {
   float:right;
   width:59%;
 //  height:200px;
-  margin-bottom:40px;
+//  margin-bottom:40px;
 }
 
 #last_plays h4.title {
@@ -783,7 +779,11 @@ span.beta_badge {
 .stats .graph_box {
   float:left;
   width:260px;
-//  margin-bottom:40px;
+  margin-bottom:40px;
+}
+
+.stats #last_plays .graph_box {
+  margin-bottom:0;
 }
 
 .stats #bp.graph_box, .stats #co.graph_box {
@@ -999,6 +999,18 @@ span.beta_badge {
 
 .stats .graph_box li li .value .percent {
   font-size:14px;
+}
+
+#last_stats_by_hour {
+  padding-top:10px;
+}
+
+#dates_range_and_source {
+  float:left;
+}
+
+#last_stats_by_hour #vv_chart_legend {
+  padding-top:0;
 }
 
 body.my.stats_demo {
