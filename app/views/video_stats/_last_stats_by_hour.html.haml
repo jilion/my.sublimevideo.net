@@ -36,13 +36,14 @@
     = render 'mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
-  .big_break
-  #export
-    = link_to url_for(format: 'csv'), id: 'csv_export' do
-      %span.icon Export Data
-  %p.desc
-    Export "loads" and "plays" data for the last
-    = stats_presenter.options[:hours] > 24 ? "#{stats_presenter.options[:hours] / 24} days" : "#{stats_presenter.options[:hours]} hours"
-    in CSV format. The exported file includes "loads" and "plays" data that happened
-    = succeed '.' do
-      = video_stats_sources_for_export_text(stats_presenter.options[:source])
+  #export_wrap
+    .big_break
+    #export
+      = link_to url_for(format: 'csv'), id: 'csv_export' do
+        %span.icon Export Data
+    %p.desc
+      Export "loads" and "plays" data for the last
+      = stats_presenter.options[:hours] > 24 ? "#{stats_presenter.options[:hours] / 24} days" : "#{stats_presenter.options[:hours]} hours"
+      in CSV format. The exported file includes "loads" and "plays" data that happened
+      = succeed '.' do
+        = video_stats_sources_for_export_text(stats_presenter.options[:source])
