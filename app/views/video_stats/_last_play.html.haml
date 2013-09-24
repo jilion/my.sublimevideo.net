@@ -5,9 +5,14 @@
     = link_to url_host(last_play.du), url_with_protocol(last_play.du)
     = '[external]' if last_play.ex?
 
+    %br
+
     - if last_play.ru?
       coming from
       = last_play.ru
+    - else
+      from direct traffic
+
     %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
     %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
     %span.icon{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
