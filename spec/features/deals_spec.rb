@@ -5,7 +5,7 @@ feature 'Deal activation' do
   background do
     create(:deal, token: 'rts1', availability_scope: 'vip')
     create(:deal, token: 'rts2', availability_scope: 'vip(false)')
-    create(:deal, token: 'rts3', availability_scope: 'newsletter(true)')
+    create(:deal, token: 'rts3', availability_scope: 'with_cc')
   end
 
   context 'user is not logged-in' do
@@ -42,7 +42,11 @@ feature 'Deal activation' do
 
       expect { click_button 'Sign Up' }.to_not change(DealActivation, :count)
 
-      User.last.update_column(:newsletter, true)
+      User.last.update_columns(
+        cc_expire_on: 2.years.from_now,
+        cc_last_digits: '1234',
+        cc_type: 'visa'
+      )
 
       current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
       get_me_the_cookie('d')[:value].should eq 'rts3'

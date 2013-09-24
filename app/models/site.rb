@@ -58,21 +58,12 @@ class Site < ActiveRecord::Base
     designs_components
   end
 
-  # Mongoid associations
-  def usages
-    SiteUsage.where(site_id: id)
-  end
-
   def referrers
     Referrer.where(token: token)
   end
 
   def day_stats
     Stat::Site::Day.where(t: token)
-  end
-
-  def views
-    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   # ===============
@@ -139,7 +130,6 @@ class Site < ActiveRecord::Base
 
   # state
   scope :active,       -> { where(state: 'active') }
-  scope :inactive,     -> { where.not(state: 'active') }
   scope :suspended,    -> { where(state: 'suspended') }
   scope :archived,     -> { where(state: 'archived') }
   scope :not_archived, -> { where.not(state: 'archived') }
@@ -252,14 +242,14 @@ class Site < ActiveRecord::Base
     token
   end
 
-  def unmemoize_all
-    unmemoize_all_usages
+  def views
+    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   def delay_update_loaders_and_settings
     # Delay for 5 seconds to be sure that commit transaction is done.
-    LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
-    SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all!(id)
+    LoaderGenerator.delay(queue: 'my', at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
+    SettingsGenerator.delay(queue: 'my', at: 5.seconds.from_now.to_i).update_all!(id)
   end
 
 end

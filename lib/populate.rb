@@ -39,8 +39,8 @@ module Populate
       PopulateHelpers.empty_tables(DealActivation, Deal)
       keys = [:token, :name, :description, :kind, :value, :availability_scope, :started_at, :ended_at]
       deals_attributes = [
-        ['rts1', 'Real-Time Stats promotion #1', 'Exclusive Newsletter Promotion: Save 20% on all yearly plans', 'yearly_plans_discount', 0.2, 'newsletter', Time.now.utc.midnight, Time.utc(2012, 2, 29).end_of_day],
-        ['rts2', 'Premium promotion #1', '30% discount on the Premium plan', 'premium_plan_discount', 0.3, 'newsletter', 3.weeks.from_now.midnight, 5.weeks.from_now.end_of_day]
+        ['rts1', 'Real-Time Stats promotion #1', 'Exclusive Newsletter Promotion: Save 20% on all yearly plans', 'yearly_plans_discount', 0.2, 'with_cc', Time.now.utc.midnight, Time.utc(2012, 2, 29).end_of_day],
+        ['rts2', 'Premium promotion #1', '30% discount on the Premium plan', 'premium_plan_discount', 0.3, 'with_cc', 3.weeks.from_now.midnight, 5.weeks.from_now.end_of_day]
       ]
 
       deals_attributes.each { |attrs| Deal.create!(Hash[keys.zip(attrs)]) }

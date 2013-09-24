@@ -3,7 +3,7 @@ require 'sites_tasks'
 namespace :sites do
   desc "Reset sites caches"
   task reset_caches: :environment do
-    timed { Site.all.each { |site| site.delay(queue: 'low').reset_caches! } }
+    timed { Site.all.each { |site| site.delay(queue: 'my-low').reset_caches! } }
   end
 
   desc "Parse all unparsed user_agents logs"
@@ -12,7 +12,7 @@ namespace :sites do
     skip  = 0
     while skip < count
       ids = Log::Voxcast.where(user_agents_parsed_at: nil).only(:id).limit(1000).skip(skip).map(&:id)
-      ids.each { |id| Log::Voxcast.delay(queue: 'log', at: 1.minute.from_now.to_i).parse_log_for_user_agents(id) }
+      ids.each { |id| Log::Voxcast.delay(queue: 'my-logs', at: 1.minute.from_now.to_i).parse_log_for_user_agents(id) }
       skip += 1000
     end
   end

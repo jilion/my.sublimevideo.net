@@ -1720,6 +1720,13 @@ CREATE UNIQUE INDEX index_admins_on_reset_password_token ON admins USING btree (
 
 
 --
+-- Name: index_app_component_versions_on_deleted_at_and_app_component_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_component_versions_on_deleted_at_and_app_component_id ON app_component_versions USING btree (deleted_at, app_component_id);
+
+
+--
 -- Name: index_app_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2332,3 +2339,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130605081105');
 INSERT INTO schema_migrations (version) VALUES ('20130821142238');
 
 INSERT INTO schema_migrations (version) VALUES ('20130829074156');
+
+INSERT INTO schema_migrations (version) VALUES ('20130918152449');

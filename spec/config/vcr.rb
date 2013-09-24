@@ -1,6 +1,5 @@
 require 'vcr'
 
-WebMock.disable_net_connect!(allow: "codeclimate.com")
 
 VCR.config do |config|
   config.stub_with :webmock, :typhoeus
@@ -9,6 +8,7 @@ VCR.config do |config|
   config.ignore_localhost         = true
   config.default_cassette_options = { record: :new_episodes }
 end
+WebMock.disable_net_connect!(allow: "codeclimate.com")
 
 RSpec.configure do |config|
   config.extend VCR::RSpec::Macros

@@ -1,3 +1,3 @@
 collection @kits
 
-extends('private_api/kits/show')
+extends 'private_api/kits/show'

@@ -10,7 +10,7 @@ describe SiteModules::Usage do
     after { Timecop.return }
 
     before do
-      @site.unmemoize_all
+      @site.unmemoize_all_usages
       create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 4 })
       create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 3 })
       create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 2 })
@@ -33,7 +33,7 @@ describe SiteModules::Usage do
     before do
       @site = create(:site)
       @site.reload
-      @site.unmemoize_all
+      @site.unmemoize_all_usages
       create(:site_day_stat, t: @site.token, d: 1.month.ago.midnight, vv: { m: 3, e: 7, d: 10, i: 0, em: 0 })
       create(:site_day_stat, t: @site.token, d: Time.now.utc.midnight, vv: { m: 11, e: 15, d: 10, i: 0, em: 0 })
       create(:site_day_stat, t: @site.token, d: 1.month.from_now.midnight, vv: { m: 19, e: 23, d: 10, i: 0, em: 0 })

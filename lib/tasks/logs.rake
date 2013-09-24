@@ -9,7 +9,7 @@ namespace :logs do
 
       months_logs = Log.where(started_at: { :$gte => beginning_of_month })
       months_logs_ids = months_logs.map(&:id)
-      puts LogsTasks.delay(queue: 'log').parse_logs(months_logs_ids)
+      puts LogsTasks.delay(queue: 'my-logs').parse_logs(months_logs_ids)
       puts "Delayed logs parsing from #{beginning_of_month}"
     end
   end
@@ -22,7 +22,7 @@ namespace :logs do
 
       months_logs = Log::Voxcast.where(started_at: { :$gte => beginning_of_month })
       months_logs_ids = months_logs.map(&:id)
-      puts LogsTasks.delay(queue: 'log').parse_logs_for_user_agents(months_logs_ids)
+      puts LogsTasks.delay(queue: 'my-logs').parse_logs_for_user_agents(months_logs_ids)
       puts "Delayed Voxcast logs parsing for user agent from #{beginning_of_month}"
     end
   end
@@ -32,7 +32,7 @@ namespace :logs do
     skip  = 0
     while skip < count
       ids = Log::Voxcast.where(parsed_at: nil).only(:id).limit(1000).skip(skip).map(&:id)
-      ids.each { |id| Log.delay(queue: 'log').parse_log(id) }
+      ids.each { |id| Log.delay(queue: 'my-logs').parse_log(id) }
       skip += 1000
     end
   end
@@ -41,7 +41,7 @@ namespace :logs do
     VoxcastWrapper.logs_list(VoxcastWrapper.hostname).each do |log|
       log_name = log['content']
       unless Log::Voxcast.where(name: log_name).exists?
-        Log::Voxcast.delay.safely_create(name: log_name)
+        Log::Voxcast.delay(queue: 'my').safely_create(name: log_name)
         puts "#{log_name} was missing."
       end
     end

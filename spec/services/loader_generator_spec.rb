@@ -224,7 +224,7 @@ describe LoaderGenerator, :fog_mock do
       end
 
       it "delays important sites update" do
-        described_class.should delay(:update_important_sites, queue: 'high')
+        described_class.should delay(:update_important_sites, queue: 'my-high')
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
 
@@ -233,7 +233,7 @@ describe LoaderGenerator, :fog_mock do
       end
 
       it "delays update_all_stages! on loader queue" do
-        described_class.should delay(:update_all_stages!, queue: 'loader').with(site.id)
+        described_class.should delay(:update_all_stages!, queue: 'my-loader').with(site.id)
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
     end
@@ -245,12 +245,12 @@ describe LoaderGenerator, :fog_mock do
       end
 
       it "delays important sites update" do
-        described_class.should delay(:update_important_sites, queue: 'high')
+        described_class.should delay(:update_important_sites, queue: 'my-high')
         described_class.update_all_dependant_sites(component.id, 'beta')
       end
 
       it "delays update_all_stages! on loader queue" do
-        described_class.should delay(:update_all_stages!, queue: 'loader').with(site.id)
+        described_class.should delay(:update_all_stages!, queue: 'my-loader').with(site.id)
         described_class.update_all_dependant_sites(component.id, 'beta')
       end
     end

@@ -1,4 +1,5 @@
 object @kit
+cache @kit
 
 attributes :identifier, :name, :settings, :created_at, :updated_at
 

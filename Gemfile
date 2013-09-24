@@ -99,6 +99,7 @@ gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 gem 'crack'
 gem 'pusher'
 gem 'redis'
+gem 'skylight'
 
 # Tickets
 gem 'zendesk_api'
@@ -140,13 +141,14 @@ group :development do
   gem 'launchy'
   gem 'quiet_assets'
   gem 'bullet'
+  gem 'annotate'
 
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'i18n-extra_translations', require: false
 
   # gem 'em-http-request' # async pusher in populate
-  # gem 'letter_opener'
+  gem 'letter_opener'
 end
 
 group :development, :test do

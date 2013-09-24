@@ -26,7 +26,7 @@ class NewsletterSubscriptionManager
       users_to_import = users.reduce([]) do |a, user|
         a << { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s, billable: user.billable?.to_s }
       end
-      CampaignMonitorWrapper.delay.import(users_to_import)
+      CampaignMonitorWrapper.delay(queue: 'my').import(users_to_import)
     end
 
     def sync_from_service(user_id)

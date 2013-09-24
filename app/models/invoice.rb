@@ -89,7 +89,6 @@ class Invoice < ActiveRecord::Base
   scope :open_or_failed, -> { where(state: %w[open failed]) }
   scope :not_canceled,   -> { where.not(state: 'canceled') }
   scope :not_paid,       -> { where(state: %w[open waiting failed]) }
-  scope :renew,          ->(bool = true) { where(renew: bool) }
   scope :site_id,        ->(site_id) { where(site_id: site_id) }
   scope :user_id,        ->(user_id) { joins(:user).where(user: { id: user_id }) }
 

@@ -1,3 +1,3 @@
 collection @sites
 
-extends('private_api/sites/show')
+extends 'private_api/sites/show'

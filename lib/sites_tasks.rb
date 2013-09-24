@@ -1,15 +1,15 @@
 module SitesTasks
   def self.regenerate_templates(options = {})
     Site.where(token: SiteToken.tokens).pluck(:id).each do |site_id|
-      LoaderGenerator.delay(queue: 'high').update_all_stages!(site_id) if options[:loaders]
-      SettingsGenerator.delay(queue: 'high').update_all!(site_id) if options[:settings]
+      LoaderGenerator.delay(queue: 'my-high').update_all_stages!(site_id) if options[:loaders]
+      SettingsGenerator.delay(queue: 'my-high').update_all!(site_id) if options[:settings]
     end
     puts 'Important sites scheduled...' if Rails.env.development?
 
     scheduled = 0
     Site.active.order(last_30_days_main_video_views: :desc).pluck(:id).each do |site_id|
-      LoaderGenerator.delay(queue: 'loader').update_all_stages!(site_id) if options[:loaders]
-      SettingsGenerator.delay(queue: 'low').update_all!(site_id) if options[:settings]
+      LoaderGenerator.delay(queue: 'my-loader').update_all_stages!(site_id) if options[:loaders]
+      SettingsGenerator.delay(queue: 'my-low').update_all!(site_id) if options[:settings]
 
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
@@ -24,7 +24,7 @@ module SitesTasks
     Site.active.find_each do |site|
       next if site.addon_plans.where(billable_items: { item_type: 'AddonPlan', item_id: addon_plan }).exists?
 
-      SiteManager.delay(queue: 'one_time').subscribe_site_to_addon(site.id, addon_name, addon_plan.id)
+      SiteManager.delay(queue: 'my').subscribe_site_to_addon(site.id, addon_name, addon_plan.id)
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
     end
@@ -42,7 +42,7 @@ module SitesTasks
     # 2. Delays SiteManager.update_billable_items for all non-archived sites
     scheduled = 0
     Site.not_archived.pluck(:id).each do |site_id|
-      ExitBetaHandler.delay(queue: 'one_time').exit_beta(site_id)
+      ExitBetaHandler.delay(queue: 'my').exit_beta(site_id)
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
     end
