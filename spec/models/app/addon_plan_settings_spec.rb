@@ -5,17 +5,6 @@ describe AddonPlanSettings do
     it { should belong_to(:addon_plan) }
     it { should belong_to(:plugin).class_name('App::Plugin') }
   end
-
-  describe '.get' do
-    before do
-      @addon = create(:addon, name: 'foo')
-      @addon_plan = create(:addon_plan, name: 'bar', addon: @addon)
-      @app_plugin = create(:app_plugin, addon: @addon, name: 'foo_bar')
-      @addon_plan_settings = create(:addon_plan_settings, addon_plan: @addon_plan, plugin: @app_plugin)
-    end
-
-    it { described_class.get(@addon_plan, 'foo_bar').should eq @addon_plan_settings }
-  end
 end
 
 # == Schema Information
