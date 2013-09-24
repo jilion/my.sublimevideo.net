@@ -137,7 +137,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         fillColor: 'rgba(74,100,142,0.3)'
         color: '#596e8c'
         marker:
-          enabled: (hours <= 24)
+          enabled: false
         },{
         type: 'areaspline'
         name: 'Video plays'
@@ -151,8 +151,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         fillColor: 'rgba(9,250,33,0.15)'
         color: '#00ff18'
         marker:
-          enabled: (hours <= 24)
-          symbol: "url(<%= asset_path 'stats/graph_dot.png' %>)"
+          enabled: false
       }]
       xAxis:
         lineWidth: 0
