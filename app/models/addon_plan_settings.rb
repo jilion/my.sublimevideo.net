@@ -4,33 +4,7 @@ class AddonPlanSettings < ActiveRecord::Base
   belongs_to :addon_plan
   belongs_to :plugin, class_name: 'App::Plugin', foreign_key: 'app_plugin_id'
 
-  after_save :clear_caches
-
   validates :addon_plan_id, uniqueness: { scope: :app_plugin_id }
-
-  def self.find_cached_by_addon_plan_and_plugin_name(addon_plan, plugin_name = nil)
-    if plugin_name.blank?
-      Rails.cache.fetch [self, 'find_cached_by_addon_plan', addon_plan.name.dup] do
-        addon_plan.settings.first
-      end
-    else
-      Rails.cache.fetch [self, 'find_cached_by_addon_plan_and_plugin_name', addon_plan.name.dup, plugin_name.to_s.dup] do
-        addon_plan.settings.joins(:plugin).where(app_plugins: { name: plugin_name.to_s }).first
-      end
-    end
-  end
-
-  class << self
-    alias_method :get, :find_cached_by_addon_plan_and_plugin_name
-  end
-
-  private
-
-  def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_addon_plan', addon_plan]
-    Rails.cache.clear [self.class, 'find_cached_by_addon_plan_and_plugin_name', addon_plan, plugin.try(:name)]
-  end
-
 end
 
 # == Schema Information

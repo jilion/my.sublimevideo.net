@@ -113,19 +113,21 @@ module UserModules::CreditCard
     def process_credit_card_authorization_response(auth)
       @d3d_html = nil
       reset_credit_card
-
-      if OgoneWrapper.status.keys.include?(auth['STATUS'])
-        send("_handle_auth_#{OgoneWrapper.status[auth['STATUS']]}", auth)
-        _increment_librato(OgoneWrapper.status[auth['STATUS']], auth['BRAND'].gsub(/\s/, '_'))
-      else
-        _set_notice('unknown', :alert)
-        Notifier.send("Credit card authorization unknown status: #{auth["STATUS"]}")
-      end
-
-      _set_last_failed_cc_authorize_fields!(auth) unless auth['STATUS'] == '5'
+      _handle_authorization_response(auth['STATUS'], auth)
     end
 
     private
+
+    def _handle_authorization_response(status, authorization)
+      if OgoneWrapper.status.keys.include?(status)
+        send("_handle_auth_#{OgoneWrapper.status[status]}", authorization)
+        _increment_librato(OgoneWrapper.status[status], authorization['BRAND'].gsub(/\s/, '_'))
+      else
+        _set_notice('unknown', :alert)
+        Notifier.send("Credit card authorization unknown status: #{status}")
+      end
+      _set_last_failed_cc_authorize_fields!(authorization) unless OgoneWrapper.status[status] == :authorized
+    end
 
     def _custom_errors_handling(attribute, errors)
       case attribute
