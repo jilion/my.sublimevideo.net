@@ -13,3 +13,5 @@
         = link_to url_host(last_play.ru), last_play.ru, title: last_play.ru, class: "hl"
       - else
         from direct traffic
+
+      %abbr{ class: 'timeago', title: last_play.t }= l(Time.parse(last_play.t), format: :seconds_timezone_y)

@@ -1,8 +1,11 @@
+#= require jquery.timeago
+
 MySublimeVideo.videoStats ||= {}
 
 MySublimeVideo.videoStatsReady = ->
   MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect()
   MySublimeVideo.videoStats.prepareCSVExportButton()
+  $('abbr.timeago').timeago()
 
 MySublimeVideo.videoStats.initSparklines = ->
   $.fn.sparkline.defaults.line.disableHighlight = true
