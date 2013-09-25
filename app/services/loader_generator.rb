@@ -89,12 +89,7 @@ class LoaderGenerator
   end
 
   def template_file
-    app_component_versions_for_stage = App::Component.app_component.versions_for_stage(stage)
-    if app_component_versions_for_stage.detect { |v| v.solve_version >= self.class._new_loader_threshold_version }
-      "new-loader-#{stage}.js.erb"
-    else
-      "loader-#{stage}.js.erb"
-    end
+    "loader-#{stage}.js.erb"
   end
 
   def cdn_file
@@ -112,10 +107,6 @@ class LoaderGenerator
   end
 
   private
-
-  def self._new_loader_threshold_version
-    @@_new_loader_threshold_version ||= Solve::Version.new('2.5.0-alpha')
-  end
 
   def self._sites_non_important(args = {})
     initial_scope = args[:component].app_component? ? Site : args[:component].sites
