@@ -23,7 +23,7 @@ class Admin::AdminsController < Admin::AdminController
     respond_with(@admin, location: [:admin, :admins])
   end
 
-  # PUT /admins/:id/reset_auth_token
+  # PATCH /admins/:id/reset_auth_token
   def reset_auth_token
     @admin.reset_authentication_token!
     respond_with(@admin, location: [:edit, :admin, @admin])
@@ -34,7 +34,7 @@ class Admin::AdminsController < Admin::AdminController
     respond_with(@admin, location: [:admin, :admins])
   end
 
-private
+  private
 
   def load_admin
     @admin = Admin.find(params[:id])

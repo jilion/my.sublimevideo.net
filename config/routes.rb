@@ -61,10 +61,10 @@ MySublimeVideo::Application.routes.draw do
           get :videos_infos
           get :invoices
           get :active_pages
-          put :generate_loader
-          put :generate_settings
-          put :update_design_subscription
-          put :update_addon_plan_subscription
+          patch :generate_loader
+          patch :generate_settings
+          patch :update_design_subscription
+          patch :update_addon_plan_subscription
         end
       end
       resources :plans, only: [:index]
@@ -88,7 +88,7 @@ MySublimeVideo::Application.routes.draw do
       resources :enthusiast_sites, only: []
       resources :admins, only: [:index, :edit, :update, :destroy] do
         member do
-          put :reset_auth_token
+          patch :reset_auth_token
         end
       end
       resources :feedbacks, only: [:index]
@@ -99,9 +99,6 @@ MySublimeVideo::Application.routes.draw do
           get :monthly
           get :yearly
           get :top_customers
-        end
-        member do
-          put :retry_charging
         end
       end
 
@@ -123,7 +120,7 @@ MySublimeVideo::Application.routes.draw do
       end
       resources :tweets, only: [:index] do
         member do
-          put :favorite
+          patch :favorite
         end
       end
 

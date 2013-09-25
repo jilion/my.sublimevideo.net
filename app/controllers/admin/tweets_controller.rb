@@ -14,7 +14,7 @@ class Admin::TweetsController < Admin::AdminController
     respond_with(@tweets, per_page: 50)
   end
 
-  # PUT /tweets/:id/favorite
+  # PATCH /tweets/:id/favorite
   def favorite
     @tweet = Tweet.find(params[:id])
     @tweet.favorite!

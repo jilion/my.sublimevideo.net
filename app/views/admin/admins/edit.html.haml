@@ -5,6 +5,9 @@
 .spacer
 
 %h3 Authentication token (?auth_token=...)
-%p= @admin.authentication_token || "None, please reset it if you need one."
 
-= button_to "reset auth_token!", reset_auth_token_admin_admin_path(@admin), method: :put, data: { confirm: "Are you sure? The current will be overwritten."}
+%p
+  Current auth token:
+  = @admin.authentication_token || 'None, please reset it if you need one.'
+
+= button_to 'Reset auth token', reset_auth_token_admin_admin_path(@admin), method: :patch, data: { confirm: 'Are you sure? The current will be overwritten.' }
