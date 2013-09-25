@@ -7,12 +7,12 @@
     #date_pickers
 
   %ul#vv_chart_legend
-    %li.page_visits
-      = display_integer(stats_presenter.hourly_loads.sum { |a| a[1] })
-      %span.title loads
     %li.video_plays
       = display_integer(stats_presenter.hourly_starts.sum { |a| a[1] })
       %span.title plays
+    %li.page_visits
+      = display_integer(stats_presenter.hourly_loads.sum { |a| a[1] })
+      %span.title loads
   .spacer
 
   #vv

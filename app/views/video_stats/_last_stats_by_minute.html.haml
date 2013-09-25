@@ -2,17 +2,17 @@
 
 
 #last_60_minutes_loads_and_starts
-  #last_60_minutes_loads
-    .sum
-      %strong= stats_presenter.last_60_minutes_loads.sum { |a| a[1] }
-      loads
-    .sparkline
-  .spacer
-
   #last_60_minutes_starts
     .sum
       %strong= stats_presenter.last_60_minutes_starts.sum { |a| a[1] }
       plays
+    .sparkline
+  .spacer
+
+  #last_60_minutes_loads
+    .sum
+      %strong= stats_presenter.last_60_minutes_loads.sum { |a| a[1] }
+      loads
     .sparkline
 
 #last_plays.graph_box
