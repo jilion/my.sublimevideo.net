@@ -226,125 +226,6 @@ describe SettingsGenerator, :addons do
       its(:default_kit) { should eq('1') }
 
       describe 'cdn_files' do
-        describe 'old settings' do
-          it 'has good content' do
-            expected = <<-CONTENT.gsub(/^ {12}/, '')
-            sublime_.iu("ko",[],
-              function() {
-              var a;return a= {
-              kr: {
-              "ku":["test.com"],
-              "kw":[],
-              "kv":["127.0.0.1","localhost"],
-              "kz":null,"ia":null,"ib":"beta"},
-              sa: {
-              "kf": {
-              "ko": {
-              "iv":true,"tn":false},
-              "kp": {
-              "iv": {
-              "ih":[true]},
-              "tn": {
-              "ih":[false]}}}},
-              ks: {
-              "1": {
-              "kb": {
-              "kn":"sa.sb.sc"},
-              "ka": {
-              "ke": {
-              "ka": {
-              "ki": {
-              "ko": {
-              "iv":true,"type":"sv","visibility":"autohide","position":"bottom-right","ij":"","ik":null},
-              "kp": {
-              "iv": {
-              "ih":[true]},
-              "type": {
-              "ih":["sv"]},
-              "visibility": {
-              "ih":["autohide","visible"]},
-              "position": {
-              "ih":["bottom-right"]},
-              "ij": {
-              },
-              "ik": {
-              }},
-              "kn":"sa.sh.sp"},
-              "kg": {
-              "ko": {
-              "iv":true,"visibility":"autohide"},
-              "kp": {
-              "iv": {
-              "ih":[true,false]},
-              "visibility": {
-              "ih":["autohide","visible"]}},
-              "kn":"sa.sh.sq"},
-              "kh": {
-              "ko": {
-              "it":true,"tr":"autofade","tg":"#000"},
-              "kp": {
-              "it": {
-              "ih":[true,false]},
-              "tr": {
-              "ih":["autofade","visible"]},
-              "tg": {
-              "ih":["#000"]}},
-              "kn":"sa.sh.sv"},
-              "tw": {
-              "ko": {
-              "iv":true,"type":"manual","tx":"640"},
-              "kp": {
-              "iv": {
-              "ih":[true,false]},
-              "type": {
-              "ih":["manual"]},
-              "tx": {
-              }},
-              "kn":"sa.sh.ub"}},
-              "ko": {
-              "te":true,"td":true,"tb":"screen","tc":"nothing"},
-              "kp": {
-              "te": {
-              "ih":[true,false]},
-              "td": {
-              "ih":[true,false]},
-              "tb": {
-              "ih":["screen","window"]},
-              "tc": {
-              "ih":["nothing","replay","stop"]}},
-              "kn":"sa.sh.si"},
-              "kd": {
-              "ko": {
-              "kj":"play","tg":"#000","th":0.7,"il":true,"ti":"autohide","tl":"left"},
-              "kp": {
-              "kj": {
-              "ih":["nothing","play"]},
-              "tg": {
-              "ih":["#000"]},
-              "th": {
-              "ii":[0.1,1]},
-              "il": {
-              "ih":[true,false]},
-              "ti": {
-              "ih":["autohide","visible"]},
-              "tl": {
-              "ih":["left","right"]}},
-              "kn":"sa.sl.sm"},
-              "kc": {
-              "ko": {
-              },
-              "kp": {
-              },
-              "kn":"sa.sn.so"}}}},
-              kt:"1"},
-              [a]})
-            CONTENT
-            File.open(subject.cdn_files[0].file) do |f|
-              f.read.gsub(/\{/, " {\n  ").gsub(/(\},|\],)/, "\\1\n  ").should eq expected
-            end
-          end
-        end
-
         describe 'new settings' do
           it 'has good content' do
             expected = <<-CONTENT.gsub(/^ {12}/, '')
@@ -464,7 +345,7 @@ describe SettingsGenerator, :addons do
               defaultKit:"1"},
               t.exports=i,t.exports||e});;sublime_.component('settings');})();
 CONTENT
-            File.open(subject.cdn_files[1].file) do |f|
+            File.open(subject.cdn_files[0].file) do |f|
               f.read.gsub(/\{/, " {\n  ").gsub(/(\},|\],)/, "\\1\n  ").should eq expected.strip
             end
           end
