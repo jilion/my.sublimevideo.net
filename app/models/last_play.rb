@@ -1,6 +1,6 @@
 require 'sublime_video_private_api'
 
-class LastVideoPlay
+class LastPlay
   include SublimeVideoPrivateApi::Model
   uses_private_api :stats
   parse_root_in_json :play, format: :active_model_serializers

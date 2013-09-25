@@ -20,11 +20,11 @@ class VideoStatPresenter
   end
 
   def last_stats_by_minute
-    @last_stats_by_minute ||= LastVideoStat.last_stats(video_tag)
+    @last_stats_by_minute ||= LastVideoStat.last_stats(video_tag, options[:since])
   end
 
   def last_plays
-    @last_plays ||= LastVideoPlay.last_plays(video_tag, options[:since])
+    @last_plays ||= LastPlay.last_plays(video_tag, options[:since])
   end
 
   def browsers_and_platforms_stats

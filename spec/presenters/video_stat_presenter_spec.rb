@@ -68,7 +68,7 @@ describe VideoStatPresenter do
 
   describe '#last_stats_by_minute' do
     it 'delegates to VideoStat.last_stats' do
-      expect(LastVideoStat).to receive(:last_stats).with(video_tag) { stats_by_minute }
+      expect(LastVideoStat).to receive(:last_stats).with(video_tag, presenter.options[:since]) { stats_by_minute }
 
       presenter.last_stats_by_minute.should eq stats_by_minute
     end
