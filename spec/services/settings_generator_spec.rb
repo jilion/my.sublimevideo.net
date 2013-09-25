@@ -77,22 +77,8 @@ describe SettingsGenerator, :fog_mock do
   end
 
   describe 'cdn_files' do
-    describe 'old settings' do
-      let(:cdn_file) { described_class.new(site).cdn_files[0] }
-
-      it 'has old path' do
-        cdn_file.path.should eq "s/abcd1234.js"
-      end
-
-      it 'has mangled content' do
-        File.open(cdn_file.file) do |f|
-          f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:\"1\"},[a]})\n"
-        end
-      end
-    end
-
     describe 'new settings' do
-      let(:cdn_file) { described_class.new(site).cdn_files[1] }
+      let(:cdn_file) { described_class.new(site).cdn_files[0] }
 
       it 'has new path' do
         cdn_file.path.should eq "s2/abcd1234.js"
