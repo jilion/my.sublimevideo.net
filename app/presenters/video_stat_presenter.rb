@@ -39,12 +39,12 @@ class VideoStatPresenter
     _reduce_stats_for_field(:de)
   end
 
-  def hourly_loads
-    _reduce_stats_for_field_by_hour(:lo)
+  def loads
+    _reduce_stats_for_field_by_period(:lo)
   end
 
-  def hourly_plays
-    _reduce_stats_for_field_by_hour(:st)
+  def plays
+    _reduce_stats_for_field_by_period(:st)
   end
 
   def last_60_minutes_loads
@@ -60,7 +60,7 @@ class VideoStatPresenter
   def _last_60_minutes_hits(field)
     stats = last_stats_by_minute.map { |s| [Time.parse(s.t).to_i * 1000, s[field]] }
 
-    _fill_missing_values_for_last_stats(stats,
+    _group_and_fill_missing_values_for_last_stats(stats,
       period: :minute,
       from: 59.minutes.ago.change(sec: 0),
       to: Time.now.utc.change(sec: 0))
@@ -87,8 +87,8 @@ class VideoStatPresenter
     reduced_stats
   end
 
-  def _reduce_stats_for_field_by_hour(field)
     reduced_stats = last_stats_by_hour.map do |stat|
+  def _reduce_stats_for_field_by_period(field)
       stat_for_field = stat.send(:[], field)
       total = if stat_for_field.present?
         if options[:source] == 'a'
@@ -103,18 +103,18 @@ class VideoStatPresenter
       [Time.parse(stat.t).to_i * 1000, total || 0]
     end
 
-    _fill_missing_values_for_last_stats(reduced_stats,
       period: :hour,
-      from: options[:hours].to_i.hours.ago.change(min: 0),
+    _group_and_fill_missing_values_for_last_stats(reduced_stats.to_a,
+      from: options[:hours].hours.ago.change(min: 0),
       to: 1.hour.ago.change(min: 0))
   end
 
-  def _fill_missing_values_for_last_stats(stats, options = {})
     options = options.symbolize_keys.reverse_merge(default_value: 0)
 
     if !options[:from] && !options[:to]
       options[:from] = stats.first[0] || Time.now
       options[:to]   = stats.last[0] || (Time.now - 1.second)
+  def _group_and_fill_missing_values_for_last_stats(stats, opts = {})
     end
 
     filled_stats, step = [], 1.send(options[:period])

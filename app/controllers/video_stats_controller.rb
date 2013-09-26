@@ -41,8 +41,8 @@ class VideoStatsController < ApplicationController
     tempfile = Tempfile.new(['export', '.csv'])
     CSV.open(tempfile, 'wb') do |csv|
       csv << %w[time loads plays]
-      @stats_presenter.hourly_loads.each_with_index do |(time, loads), i|
-        csv << [Time.at(time / 1000), loads, @stats_presenter.hourly_plays[i].last]
+      @stats_presenter.loads.each_with_index do |(time, loads), i|
+        csv << [Time.at(time / 1000), loads, @stats_presenter.plays[i].last]
       end
     end
     tempfile

@@ -11,4 +11,8 @@ class LastVideoStat
 
     all(params)
   end
+
+  def time
+    Time.parse(t)
+  end
 end

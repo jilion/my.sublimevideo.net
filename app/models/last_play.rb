@@ -16,5 +16,4 @@ class LastPlay
   def time
     Time.parse(t)
   end
-
 end

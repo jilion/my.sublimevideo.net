@@ -10,14 +10,14 @@
 
   %ul#plays_and_loads_graph_legend
     %li.video_plays
-      = display_integer(stats_presenter.hourly_plays.sum { |a| a[1] })
+      = display_integer(stats_presenter.plays.sum { |a| a[1] })
       %span.title plays
     %li.page_visits
-      = display_integer(stats_presenter.hourly_loads.sum { |a| a[1] })
+      = display_integer(stats_presenter.loads.sum { |a| a[1] })
       %span.title loads
   .spacer
 
-  #plays_and_loads{ data: { plays: stats_presenter.hourly_plays, loads: stats_presenter.hourly_loads, hours: stats_presenter.options[:hours] } }
+  #plays_and_loads{ data: { plays: stats_presenter.plays, loads: stats_presenter.loads, hours: stats_presenter.options[:hours] } }
     #plays_and_loads_graph
   .spacer
 

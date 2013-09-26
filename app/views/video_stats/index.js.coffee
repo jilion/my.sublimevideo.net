@@ -26,7 +26,7 @@ $('#last_plays ul li').each (index, el) ->
 
 <% else %>
 
-$('#last_stats_by_hour').html("<%= j(render 'last_stats_by_hour', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter) %>")
+$('#last_stats_by_hour_or_day').html("<%= j(render 'last_stats_by_hour_or_day', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter) %>")
 
 <% end %>
 

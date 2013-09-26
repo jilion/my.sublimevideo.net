@@ -3,8 +3,8 @@ require 'fast_spec_helper'
 require 'presenters/video_stat_presenter'
 
 describe VideoStatPresenter do
-  FakeVideoStat = Struct.new(:t, :bp, :co, :de, :lo, :st)
-  FakeLastVideoStat = Struct.new(:t, :lo, :st)
+  FakeVideoStat = Struct.new(:time, :bp, :co, :de, :lo, :st)
+  FakeLastVideoStat = Struct.new(:time, :lo, :st)
   before do
     stub_const('VideoStat', Class.new)
     stub_const('LastVideoStat', Class.new)
@@ -15,14 +15,14 @@ describe VideoStatPresenter do
   let(:stats_by_hour) do
     [
       FakeVideoStat.new(
-        2.hours.ago.change(min: 0).to_s,
+        2.hours.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
         { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
         { 'w' => nil, 'e' => 5 },
         nil),
       FakeVideoStat.new(
-        1.hour.ago.change(min: 0).to_s,
+        1.hour.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 2, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 2 } },
         { 'w' => { 'd' => 5, 'm' => 2 }, 'e' => { 'd' => 5, 'm' => 1 } },
@@ -33,8 +33,8 @@ describe VideoStatPresenter do
 
   let(:stats_by_minute) do
     [
-      FakeLastVideoStat.new(2.minutes.ago.change(sec: 0).to_s, 5, nil),
-      FakeLastVideoStat.new(1.minutes.ago.change(sec: 0).to_s, nil, 3)
+      FakeLastVideoStat.new(2.minutes.ago.change(sec: 0), 5, nil),
+      FakeLastVideoStat.new(1.minutes.ago.change(sec: 0), nil, 3)
     ]
   end
 
@@ -74,20 +74,20 @@ describe VideoStatPresenter do
     end
   end
 
-  describe '#hourly_loads' do
+  describe '#loads' do
     before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       it 'has 24 items' do
-        expect(presenter.hourly_loads).to have(24).items
+        expect(presenter.loads).to have(24).items
       end
 
       it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
       end
 
       it 'has right values for present hours' do
-        expect(presenter.hourly_loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
+        expect(presenter.loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
       end
     end
 
@@ -95,15 +95,15 @@ describe VideoStatPresenter do
       let(:presenter) { described_class.new(video_tag, source: 'w') }
 
       it 'has 24 items' do
-        expect(presenter.hourly_loads).to have(24).items
+        expect(presenter.loads).to have(24).items
       end
 
       it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
       end
 
       it 'has right values for present hours' do
-        expect(presenter.hourly_loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 0]
       end
     end
 
@@ -111,33 +111,33 @@ describe VideoStatPresenter do
       let(:presenter) { described_class.new(video_tag, source: 'e') }
 
       it 'has 24 items' do
-        expect(presenter.hourly_loads).to have(24).items
+        expect(presenter.loads).to have(24).items
       end
 
       it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
       end
 
       it 'has right values for present hours' do
-        expect(presenter.hourly_loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
+        expect(presenter.loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
       end
     end
   end
 
-  describe '#hourly_plays' do
+  describe '#plays' do
     before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       it 'has 24 items' do
-        expect(presenter.hourly_plays).to have(24).items
+        expect(presenter.plays).to have(24).items
       end
 
       it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
       end
 
       it 'has right values for present hours' do
-        expect(presenter.hourly_plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
+        expect(presenter.plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
       end
     end
 
@@ -145,15 +145,15 @@ describe VideoStatPresenter do
       let(:presenter) { described_class.new(video_tag, source: 'w') }
 
       it 'has 24 items' do
-        expect(presenter.hourly_plays).to have(24).items
+        expect(presenter.plays).to have(24).items
       end
 
       it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
       end
 
       it 'has right values for present hours' do
-        expect(presenter.hourly_plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
+        expect(presenter.plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
       end
     end
 
@@ -161,15 +161,15 @@ describe VideoStatPresenter do
       let(:presenter) { described_class.new(video_tag, source: 'e') }
 
       it 'has 24 items' do
-        expect(presenter.hourly_plays).to have(24).items
+        expect(presenter.plays).to have(24).items
       end
 
       it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
       end
 
       it 'has right values for present hours' do
-        expect(presenter.hourly_plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 0]
+        expect(presenter.plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 0]
       end
     end
   end
