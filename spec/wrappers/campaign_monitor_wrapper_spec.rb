@@ -4,9 +4,9 @@ require 'ostruct'
 
 require 'wrappers/campaign_monitor_wrapper'
 
-describe CampaignMonitorWrapper do
+describe CampaignMonitorWrapper, :vcr do
 
-  specify { ENV['CAMPAIGN_MONITOR_API_KEY'].should eq '8844ec1803ffbe6501c3d7e9cfa23bf3' }
+  specify { ENV['CAMPAIGN_MONITOR_API_KEY'].should eq '8844ec1803ffbe65bf192aa910e53d18' }
   specify { described_class.list[:list_id].should eq 'a064dfc4b8ccd774252a2e9c9deb9244' }
   specify { described_class.list[:segment].should eq 'test' }
 
@@ -20,21 +20,20 @@ describe CampaignMonitorWrapper do
   describe '.subscribe' do
 
     it 'subscribes a user' do
-      subscriber = VCR.use_cassette 'campaign_monitor_wrapper/subscribe' do
-        described_class.subscribe(
-          list_id: described_class.list[:list_id],
-          segment: described_class.list[:segment],
-          user: { id: subscribe_user.id, email: subscribe_user.email, name: subscribe_user.name, beta: subscribe_user.beta? }
-        ).should be_true
-      end
+      described_class.subscribe(
+        list_id: described_class.list[:list_id],
+        segment: described_class.list[:segment],
+        id: subscribe_user.id,
+        email: subscribe_user.email,
+        name: subscribe_user.name,
+        beta: subscribe_user.beta?
+      ).should be_true
     end
   end
 
   describe '.import' do
     let(:user1) { OpenStruct.new(id: 13, beta?: true, billable: false, email: 'user_import1@example.org', name: 'User Import #1') }
     let(:user2) { OpenStruct.new(id: 14, beta?: false, billable: true, email: 'user_import2@example.org', name: 'User Import #2') }
-
-    use_vcr_cassette 'campaign_monitor_wrapper/import'
 
     it 'subscribes a list of user' do
       described_class.import([
@@ -66,65 +65,55 @@ describe CampaignMonitorWrapper do
   describe '.unsubscribe' do
     let(:user) { OpenStruct.new(id: 13, email: 'user_unsubscribe@example.org', name: 'User Unsubscribe') }
 
-    use_vcr_cassette 'campaign_monitor_wrapper/unsubscribe'
-
     before do
       described_class.subscribe(
         list_id: described_class.list[:list_id],
         segment: described_class.list[:segment],
-        user: { id: user.id, email: user.email, name: user.name }
+        id: user.id,
+        email: user.email,
+        name: user.name
       ).should be_true
     end
 
     it 'should unsubscribe an existing subscribed user' do
-      described_class.unsubscribe(
-        list_id: described_class.list[:list_id],
-        email: user.email
-      ).should be_true
+      described_class.unsubscribe(user.email).should be_true
 
       described_class.subscriber(user.email)['State'].should eq 'Unsubscribed'
     end
   end
 
   describe '.update' do
-    let(:user) { OpenStruct.new(id: 13, email: 'user_update5@example.org', name: 'User Update') }
+    let(:user) { OpenStruct.new(id: 15, email: 'update_update15@super.com', name: 'User Update') }
 
-    before do
-      VCR.use_cassette 'campaign_monitor_wrapper/update_1' do
-        described_class.subscribe(
-          list_id: described_class.list[:list_id],
-          segment: described_class.list[:segment],
-          user: { id: user.id, email: user.email, name: user.name }
-        ).should be_true
-        described_class.unsubscribe(
-          list_id: described_class.list[:list_id],
-          email: user.email
-        ).should be_true
-        subscriber = described_class.subscriber(user.email)
-        subscriber['State'].should eq 'Unsubscribed'
-      end
-    end
+    before {
+      described_class.subscribe(
+        list_id: described_class.list[:list_id],
+        segment: described_class.list[:segment],
+        id: user.id,
+        email: user.email,
+        name: user.name
+      )
+      described_class.unsubscribe(user.email)
+      @subscriber = described_class.subscriber(user.email)
+    }
 
     it 'works' do
-      VCR.use_cassette 'campaign_monitor_wrapper/update_2' do
-        described_class.update(
-          old_email: user.email, email: 'user_update6@example.org', name: 'John Doe', newsletter: true
-        ).should be_true
+      @subscriber['State'].should eq 'Unsubscribed'
+      described_class.update(
+        old_email: user.email, email: 'user_update16@example.org', name: 'John Doe', newsletter: true
+      ).should be_true
 
-        subscriber = described_class.subscriber('user_update6@example.org')
-        subscriber['EmailAddress'].should eq 'user_update6@example.org'
-        subscriber['Name'].should eq 'John Doe'
-        subscriber['State'].should eq 'Active'
-      end
+      subscriber = described_class.subscriber('user_update16@example.org')
+      subscriber['EmailAddress'].should eq 'user_update16@example.org'
+      subscriber['Name'].should eq 'John Doe'
+      subscriber['State'].should eq 'Active'
     end
   end
 
   describe '.subscriber' do
     context 'exists' do
       it 'retrieve the subscriber' do
-        subscriber = VCR.use_cassette 'campaign_monitor_wrapper/subscribe' do
-          described_class.subscriber(subscribe_user.email)
-        end
+        subscriber = described_class.subscriber(subscribe_user.email)
         subscriber['EmailAddress'].should eq subscribe_user.email
         subscriber['Name'].should         eq subscribe_user.name
         subscriber['State'].should        eq 'Active'
@@ -134,9 +123,7 @@ describe CampaignMonitorWrapper do
       end
     end
 
-    context 'doesn\'t exist' do
-      use_vcr_cassette 'campaign_monitor_wrapper/subscriber_doesnt_exist'
-
+    context "doesn't exist" do
       it 'returns nil' do
         described_class.subscriber('foo@example.org').should be_false
       end
