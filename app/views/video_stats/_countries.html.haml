@@ -12,6 +12,4 @@
             %span.title= truncate(video_stats_country_name(country_code), length: 23)
             %span.value
               %span.percent= display_percentage(data[:percent])
-              %span.metric
-                = display_integer(data[:count])
-                plays
+              %span.metric= formatted_pluralize(data[:count], 'play')

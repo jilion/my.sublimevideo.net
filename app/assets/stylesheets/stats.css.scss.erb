@@ -497,6 +497,10 @@ span.beta_badge {
   padding:35px 0 10px;
 }
 
+.stats h3.title.first {
+  padding-top:0;
+}
+
 .stats #top_videos_content {
   min-height:100px;
 }
@@ -729,7 +733,7 @@ span.beta_badge {
   background:url(<%= asset_path "stats/expand_videos_arrow_up.png" %>) no-repeat;
 }
 
-#last_60_minutes_loads_and_plays {
+#last_60_minutes_plays_and_loads {
   float:left;
   width:39%;
   margin:35px 0 0;
@@ -740,20 +744,20 @@ span.beta_badge {
   padding:8px 0;
 }
 
-#last_stats_by_minute .sum {
+#last_60_minutes_plays_and_loads .sum {
   float:left;
   width:100px;
   font-weight:600;
   text-align:center;
 }
 
-#last_stats_by_minute .sum strong {
+#last_60_minutes_plays_and_loads .sum strong {
   display:block;
   font-size:23px;
   font-weight:600;
 }
 
-#last_stats_by_minute .sparkline {
+#last_60_minutes_plays_and_loads .sparkline {
   float:left;
   width:200px;
   height:50px;
@@ -766,8 +770,6 @@ span.beta_badge {
 #last_plays {
   float:right;
   width:59%;
-//  height:200px;
-//  margin-bottom:40px;
 }
 
 #last_plays h4.title {
@@ -935,6 +937,9 @@ span.beta_badge {
 }
 
 .stats .graph_box li .title abbr.timeago {
+  position:absolute;
+  top:6px;
+  right:10px;
   font-size:9px;
 }
 

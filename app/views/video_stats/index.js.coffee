@@ -1,6 +1,6 @@
 <% if params[:since] %>
 
-$('#last_60_minutes_loads_and_plays').html("<%= j(render 'last_60_minutes_loads_and_plays', stats_presenter: @stats_presenter) %>")
+$('#last_60_minutes_plays_and_loads').html("<%= j(render 'last_60_minutes_plays_and_loads', stats_presenter: @stats_presenter) %>")
 
 lisToRemove = []
 <% @stats_presenter.last_plays.reverse.each_with_index do |play, i| %>

@@ -17,6 +17,10 @@ module VideoStatsHelper
     ], selected_source)
   end
 
+  def video_stats_hours_or_days(hours)
+    hours > 24 ? "#{hours / 24} days" : "#{hours} hours"
+  end
+
   def video_stats_sources_for_export_text(source)
     case source
     when 'a'

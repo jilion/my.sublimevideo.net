@@ -38,7 +38,7 @@
         %span.icon Export Data
     %p.desc
       Export "loads" and "plays" data for the last
-      = stats_presenter.options[:hours] > 24 ? "#{stats_presenter.options[:hours] / 24} days" : "#{stats_presenter.options[:hours]} hours"
+      = video_stats_hours_or_days(stats_presenter.options[:hours])
       in CSV format. The exported file includes "loads" and "plays" data that happened
       = succeed '.' do
         = video_stats_sources_for_export_text(stats_presenter.options[:source])
