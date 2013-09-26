@@ -31,7 +31,7 @@ module App
     end
 
     def _current_app_component_version
-      @_current_app_component_version ||= ::App::Component.app_component.versions_for_stage(@stage)
+      @_current_app_component_version ||= ::App::Component.app_component.versions_for_stage(@stage).first
     end
 
     def _current_component_version(component)
