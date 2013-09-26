@@ -1,0 +1,386 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/rooms.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:01 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '1307'
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      Etag:
+      - '"01d8a3989eb7b699e5a60cc67b3603fc"'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      Set-Cookie:
+      - _campfire_session=BAh7BzoPc2Vzc2lvbl9pZCIlOGI5ZjI3NjdhNWI2NTJkZjUyNzdjZmQ1MjgyMjllNzk6CWF1dGh7BiILamlsaW9uewY6DHVzZXJfaWRpA6PjDw%3D%3D--56d6a9132f60bc372c143902f0b13be90d15b21a;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:00 GMT; secure
+      X-Throttle-Count:
+      - '2'
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      X-Runtime:
+      - '20'
+      X-Throttle-Max:
+      - '500'
+      X-Request-Id:
+      - eafe7d30a5f8f94451f941e6b80d22f0
+      Strict-Transport-Security:
+      - max-age=31536000
+    body:
+      encoding: UTF-8
+      string: '{"rooms":[{"locked":false,"id":448517,"name":"SV Dev","topic":"","membership_limit":12,"created_at":"2011/10/27
+        18:49:54 +0000","updated_at":"2011/11/03 12:56:16 +0000"},{"locked":false,"id":448665,"name":"Jilion","topic":"","membership_limit":12,"created_at":"2011/10/28
+        06:17:19 +0000","updated_at":"2011/10/28 06:17:19 +0000"},{"locked":false,"id":449620,"name":"Aelios","topic":"","membership_limit":12,"created_at":"2011/11/01
+        13:49:44 +0000","updated_at":"2011/11/10 22:49:27 +0000"},{"locked":false,"id":449918,"name":"SV
+        Support","topic":"","membership_limit":12,"created_at":"2011/11/02 07:56:35
+        +0000","updated_at":"2011/11/02 07:56:35 +0000"},{"locked":false,"id":450247,"name":"SV
+        Player","topic":"","membership_limit":12,"created_at":"2011/11/03 09:06:06
+        +0000","updated_at":"2011/11/03 09:06:06 +0000"},{"locked":false,"id":450249,"name":"Aelios
+        Monitoring","topic":"","membership_limit":12,"created_at":"2011/11/03 09:07:28
+        +0000","updated_at":"2011/11/03 09:07:28 +0000"},{"locked":false,"id":450283,"name":"SV","topic":"","membership_limit":12,"created_at":"2011/11/03
+        12:57:16 +0000","updated_at":"2011/11/03 12:57:16 +0000"},{"locked":false,"id":548173,"name":"SV
+        Sales","topic":"","membership_limit":12,"created_at":"2013/01/22 15:21:48
+        +0000","updated_at":"2013/01/22 15:24:12 +0000"}]}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:01 GMT
+- request:
+    method: post
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/room/448665/speak.json
+    body:
+      encoding: UTF-8
+      string: '{"message":{"body":"Hello I am a test message","type":"TextMessage"}}'
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:01 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '177'
+      Connection:
+      - keep-alive
+      Status:
+      - 201 Created
+      Cache-Control:
+      - no-cache
+      Location:
+      - https://jilion.campfirenow.com/room/448665
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      X-Json:
+      - '1064477266'
+      X-Throttle-Max:
+      - '500'
+      X-Throttle-Count:
+      - '3'
+      X-Request-Id:
+      - 59370c6f328fa69d65b67cc15f68f571
+      X-Runtime:
+      - '27'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Set-Cookie:
+      - _campfire_session=BAh7CDoPc2Vzc2lvbl9pZCIlNDE1OWM1MDkwMzlkYmI2NjMzMTUwMmE5ZDNhNTRmNTM6EGlkZW50aXR5X2lkMDoJYXV0aHsGIgtqaWxpb257BjoMdXNlcl9pZGkDo%2BMP--bc1dd8cacca72d6348a8350cd2c54c882941d1e6;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:01 GMT; secure
+    body:
+      encoding: UTF-8
+      string: '{"message":{"type":"TextMessage","created_at":"2013/09/26 12:44:01
+        +0000","room_id":448665,"starred":false,"id":1064477266,"body":"Hello I am
+        a test message","user_id":1041315}}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:01 GMT
+- request:
+    method: get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/rooms.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:02 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '1307'
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Throttle-Count:
+      - '4'
+      X-Runtime:
+      - '22'
+      X-Request-Id:
+      - 03ea4eddbe61591c8d40d2020df73b9f
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      Set-Cookie:
+      - _campfire_session=BAh7BzoPc2Vzc2lvbl9pZCIlNTAzN2RmYjU5NTY3NTM2ZDI1NjdkMjJiMTIyYTcwMTk6CWF1dGh7BiILamlsaW9uewY6DHVzZXJfaWRpA6PjDw%3D%3D--baaa0893e977fbbc6d346dc59269acdcdcd3a785;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:02 GMT; secure
+      Strict-Transport-Security:
+      - max-age=31536000
+      Etag:
+      - '"e250c4f60a81254f5054a9f7ff197712"'
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      X-Throttle-Max:
+      - '500'
+    body:
+      encoding: UTF-8
+      string: '{"rooms":[{"created_at":"2011/10/27 18:49:54 +0000","topic":"","name":"SV
+        Dev","id":448517,"membership_limit":12,"locked":false,"updated_at":"2011/11/03
+        12:56:16 +0000"},{"created_at":"2011/10/28 06:17:19 +0000","topic":"","name":"Jilion","id":448665,"membership_limit":12,"locked":false,"updated_at":"2011/10/28
+        06:17:19 +0000"},{"created_at":"2011/11/01 13:49:44 +0000","topic":"","name":"Aelios","id":449620,"membership_limit":12,"locked":false,"updated_at":"2011/11/10
+        22:49:27 +0000"},{"created_at":"2011/11/02 07:56:35 +0000","topic":"","name":"SV
+        Support","id":449918,"membership_limit":12,"locked":false,"updated_at":"2011/11/02
+        07:56:35 +0000"},{"created_at":"2011/11/03 09:06:06 +0000","topic":"","name":"SV
+        Player","id":450247,"membership_limit":12,"locked":false,"updated_at":"2011/11/03
+        09:06:06 +0000"},{"created_at":"2011/11/03 09:07:28 +0000","topic":"","name":"Aelios
+        Monitoring","id":450249,"membership_limit":12,"locked":false,"updated_at":"2011/11/03
+        09:07:28 +0000"},{"created_at":"2011/11/03 12:57:16 +0000","topic":"","name":"SV","id":450283,"membership_limit":12,"locked":false,"updated_at":"2011/11/03
+        12:57:16 +0000"},{"created_at":"2013/01/22 15:21:48 +0000","topic":"","name":"SV
+        Sales","id":548173,"membership_limit":12,"locked":false,"updated_at":"2013/01/22
+        15:24:12 +0000"}]}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:02 GMT
+- request:
+    method: get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/room/448665/recent.json?limit=1&since_message_id=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:02 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '180'
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      Set-Cookie:
+      - _campfire_session=BAh7BzoPc2Vzc2lvbl9pZCIlNDYzNjIzNThhYzNmNWI3ODRiYjc2YWJlMTUzMmRlYzU6CWF1dGh7BiILamlsaW9uewY6DHVzZXJfaWRpA6PjDw%3D%3D--74dbbcdb4a97c165e2f53ba3a24390dc3fb88392;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:02 GMT; secure
+      Etag:
+      - '"16ea3ae028ecf4a4418d4a195ac14394"'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Request-Id:
+      - 80fdc929f3edcf4d1531de21788cf110
+      X-Throttle-Count:
+      - '5'
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      X-Throttle-Max:
+      - '500'
+      X-Runtime:
+      - '8'
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"type":"TextMessage","user_id":1041315,"starred":false,"room_id":448665,"body":"Hello
+        I am a test message","created_at":"2013/09/26 12:44:01 +0000","id":1064477266}]}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:02 GMT
+- request:
+    method: get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/room/448665.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:03 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '859'
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      X-Runtime:
+      - '164'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      X-Throttle-Max:
+      - '500'
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Throttle-Count:
+      - '6'
+      X-Request-Id:
+      - 9519add895672db55abe4e00ec8ab3d8
+      Etag:
+      - '"4dafb1ac95ad0d6b1838051384139b92"'
+      Set-Cookie:
+      - _campfire_session=BAh7BzoPc2Vzc2lvbl9pZCIlYjViMDhhODFhZWNiNTJlYWM0ZjJmYWZkNzIwZTkzNmY6CWF1dGh7BiILamlsaW9uewY6DHVzZXJfaWRpA6PjDw%3D%3D--32d0a45f8cff761d4f82732e97134a6a9f9d9a88;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:03 GMT; secure
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJyb29tIjp7Im5hbWUiOiJKaWxpb24iLCJmdWxsIjpmYWxzZSwibG9ja2Vk
+        IjpmYWxzZSwidG9waWMiOiIiLCJtZW1iZXJzaGlwX2xpbWl0IjoxMiwidXNl
+        cnMiOlt7InR5cGUiOiJNZW1iZXIiLCJlbWFpbF9hZGRyZXNzIjoidGhpYmF1
+        ZEBqaWxpb24uY29tIiwiYXZhdGFyX3VybCI6Imh0dHA6Ly9kZ2U5cm1ncWpz
+        OG0xLmNsb3VkZnJvbnQubmV0L2dsb2JhbC8yNTgwMmQ2YWViZmVlZmIwZmE4
+        ZmRlZTAzOTg1YTZlN2EzZTk3NGY5L2F2YXRhci5naWY/cj0zIiwiaWQiOjEw
+        NDA4NDcsImFkbWluIjp0cnVlLCJuYW1lIjoiVGhpYmF1ZCBHdWlsbGF1bWUt
+        R2VudGlsIiwiY3JlYXRlZF9hdCI6IjIwMTEvMTAvMjcgMTg6NDk6NTQgKzAw
+        MDAifSx7InR5cGUiOiJNZW1iZXIiLCJlbWFpbF9hZGRyZXNzIjoicmVteUBy
+        eW1haS5tZSIsImF2YXRhcl91cmwiOiJodHRwOi8vZGdlOXJtZ3FqczhtMS5j
+        bG91ZGZyb250Lm5ldC9nbG9iYWwvOWUxYjgyOTcxZjkwNWM0MTYyYjczYWMy
+        MmIxZjZjOWNkMDlkYWJhNDRmYjcyY2VlODQxZDIyNWRkODBhMjZmY2ExZjBl
+        YTkxOTNjYzU0Mzk3N2E2MzA1NGNjMWYzYTk5ZjM1ZjRkNzA3ZDFkNzZjYzRh
+        MjI1MWI0YmE4NjY1MGE2NmY2OTJlZjRiNmQzZjc2ZGI5NWVkMzI4ODUxZGZm
+        Ny9hdmF0YXIuZ2lmP3I9MyIsImlkIjoxMDQwODczLCJhZG1pbiI6dHJ1ZSwi
+        bmFtZSI6IlLDqW15IENvdXRhYmxlIiwiY3JlYXRlZF9hdCI6IjIwMTEvMTAv
+        MjcgMTk6MTI6NTMgKzAwMDAifV0sImlkIjo0NDg2NjUsInVwZGF0ZWRfYXQi
+        OiIyMDExLzEwLzI4IDA2OjE3OjE5ICswMDAwIiwib3Blbl90b19ndWVzdHMi
+        OmZhbHNlLCJjcmVhdGVkX2F0IjoiMjAxMS8xMC8yOCAwNjoxNzoxOSArMDAw
+        MCJ9fQ==
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:03 GMT
+- request:
+    method: get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/users/1041315.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:04 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '259'
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      X-Runtime:
+      - '16'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      X-Throttle-Max:
+      - '500'
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Throttle-Count:
+      - '7'
+      X-Request-Id:
+      - 3dca17d70850a833585ef42d887bdfec
+      Etag:
+      - '"b181094257cfa8f2ea63271e88922c35"'
+      Set-Cookie:
+      - _campfire_session=BAh7BzoPc2Vzc2lvbl9pZCIlOGQ5MjQ0NTRhNThjM2VhMzY5ZjU0NTM1MzY0YmU4YTM6CWF1dGh7BiILamlsaW9uewY6DHVzZXJfaWRpA6PjDw%3D%3D--44978892ff5ea8251a838ac4f1563e8bc674e732;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:04 GMT; secure
+    body:
+      encoding: UTF-8
+      string: '{"user":{"type":"Member","email_address":"jilion@jilion.com","avatar_url":"http://dge9rmgqjs8m1.cloudfront.net/global/e1182c69dac3113a1c7a87e1cf3988179f777da6/avatar.gif?r=3","id":1041315,"admin":true,"name":"Jilion","created_at":"2011/10/28
+        06:29:22 +0000"}}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:04 GMT
+recorded_with: VCR 2.6.0

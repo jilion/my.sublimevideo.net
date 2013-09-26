@@ -1,0 +1,74 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com/rooms.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.8.8
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 26 Sep 2013 12:44:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '1307'
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Request-Id:
+      - 20397d26e8bb7689a25229427e722906
+      X-Throttle-Max:
+      - '500'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Throttle-Count:
+      - '1'
+      X-Runtime:
+      - '25'
+      X-Throttle-Horizon:
+      - '2013-09-26T12:44:10Z'
+      Set-Cookie:
+      - _campfire_session=BAh7BzoPc2Vzc2lvbl9pZCIlODQ2Zjc0ZTgyYTg4MjgzMDQ0NzEzNGM2NTQyMjIzMWI6CWF1dGh7BiILamlsaW9uewY6DHVzZXJfaWRpA6PjDw%3D%3D--f638dc416ec460fd0dcc6bcfe36995de0dc83271;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Mon, 26-Sep-2033 12:44:00 GMT; secure
+      Etag:
+      - '"380cf54e8993ff98a13e117ce6847f56"'
+    body:
+      encoding: UTF-8
+      string: '{"rooms":[{"membership_limit":12,"updated_at":"2011/11/03 12:56:16
+        +0000","name":"SV Dev","locked":false,"id":448517,"created_at":"2011/10/27
+        18:49:54 +0000","topic":""},{"membership_limit":12,"updated_at":"2011/10/28
+        06:17:19 +0000","name":"Jilion","locked":false,"id":448665,"created_at":"2011/10/28
+        06:17:19 +0000","topic":""},{"membership_limit":12,"updated_at":"2011/11/10
+        22:49:27 +0000","name":"Aelios","locked":false,"id":449620,"created_at":"2011/11/01
+        13:49:44 +0000","topic":""},{"membership_limit":12,"updated_at":"2011/11/02
+        07:56:35 +0000","name":"SV Support","locked":false,"id":449918,"created_at":"2011/11/02
+        07:56:35 +0000","topic":""},{"membership_limit":12,"updated_at":"2011/11/03
+        09:06:06 +0000","name":"SV Player","locked":false,"id":450247,"created_at":"2011/11/03
+        09:06:06 +0000","topic":""},{"membership_limit":12,"updated_at":"2011/11/03
+        09:07:28 +0000","name":"Aelios Monitoring","locked":false,"id":450249,"created_at":"2011/11/03
+        09:07:28 +0000","topic":""},{"membership_limit":12,"updated_at":"2011/11/03
+        12:57:16 +0000","name":"SV","locked":false,"id":450283,"created_at":"2011/11/03
+        12:57:16 +0000","topic":""},{"membership_limit":12,"updated_at":"2013/01/22
+        15:24:12 +0000","name":"SV Sales","locked":false,"id":548173,"created_at":"2013/01/22
+        15:21:48 +0000","topic":""}]}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:44:00 GMT
+recorded_with: VCR 2.6.0
