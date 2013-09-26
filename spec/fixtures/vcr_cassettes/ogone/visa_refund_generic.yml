@@ -1,0 +1,46 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=RFD&PAYID=23934745&PSPID=jilion&PSWD=WWQMNC89&SHASign=A3B08642CAFEE27F3266EEBDB5CE8664D29D49A0E461E9C58A7756C8E19A39540D040DC9C9B0056F8B603334328AC7A39EDDDAAB18E3C2C71DC559FBAD44954A&USERID=sublime&amount=1000&currency=USD
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 26 Sep 2013 12:24:23 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '227'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Thu, 26 Sep 2013 12:23:23 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_4218234546_0=1869019443_1711174;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"bc00f6c1a219679873279a67fb35f8\"\r\nPAYID=\"23934745\"\r\nPAYIDSUB=\"1\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nNCERRORPLUS=\"!\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"81\"\r\namount=\"10\"\r\ncurrency=\"USD\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:24:23 GMT
+recorded_with: VCR 2.6.0

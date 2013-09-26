@@ -4,7 +4,7 @@ require 'config/vcr'
 
 require 'wrappers/ogone_wrapper'
 
-describe OgoneWrapper do
+describe OgoneWrapper, :vcr do
 
   context 'with visa credit card' do
     let(:cc) {
@@ -21,7 +21,6 @@ describe OgoneWrapper do
 
     describe '.store' do
       describe 'store of $0.01 with alias' do
-        use_vcr_cassette 'ogone/visa_authorize_1_alias'
         subject { described_class.store(cc, currency: 'USD', billing_id: 'sublime_33') }
 
         it { should be_success }
@@ -31,7 +30,6 @@ describe OgoneWrapper do
 
     describe '.purchase' do
       describe 'payment of $10' do
-        use_vcr_cassette 'ogone/visa_payment_generic'
         subject { described_class.purchase(1000, cc, currency: 'USD') }
 
         it { should be_success }
@@ -39,7 +37,6 @@ describe OgoneWrapper do
       end
 
       describe 'payment of $20 via alias' do
-        use_vcr_cassette 'ogone/visa_payment_2000_alias'
         subject { described_class.purchase(2000, 'sublime_33', currency: 'USD') }
 
         it { should be_success }
@@ -47,7 +44,6 @@ describe OgoneWrapper do
       end
 
       describe 'payment of $9999' do
-        use_vcr_cassette 'ogone/visa_payment_9999'
         subject { described_class.purchase(999900, cc, currency: 'USD') }
 
         it { should_not be_success }
@@ -55,7 +51,6 @@ describe OgoneWrapper do
       end
 
       describe 'payment of €20' do
-        use_vcr_cassette 'ogone/visa_payment_20_euros'
         subject { described_class.purchase(2000, cc, currency: 'EUR') }
 
         it { should_not be_success }
@@ -63,7 +58,6 @@ describe OgoneWrapper do
       end
 
       describe 'payment of $10000' do
-        use_vcr_cassette 'ogone/visa_payment_10000'
         subject { described_class.purchase(1000000, cc, currency: 'USD') }
 
         it { should_not be_success }
@@ -73,22 +67,14 @@ describe OgoneWrapper do
 
     describe '.refund' do
       describe 'refund of $10 via a transaction pay_id that succeeds' do
-        before do
-          VCR.use_cassette 'ogone/visa_payment_generic' do
-            @purchase = described_class.purchase(1000, cc, currency: 'USD')
-          end
-        end
+        before { @purchase = described_class.purchase(1000, cc, currency: 'USD') }
         subject { described_class.refund(1000, @purchase.authorization) }
 
         it { VCR.use_cassette('ogone/visa_refund_generic') { subject.should be_success } }
       end
 
       describe 'refund of $10 via a transaction pay_id that fails' do
-        before do
-          VCR.use_cassette 'ogone/visa_payment_generic' do
-            @purchase = described_class.purchase(1000, cc, currency: 'USD')
-          end
-        end
+        before { @purchase = described_class.purchase(1000, cc, currency: 'USD') }
         subject { described_class.refund(3000, @purchase.authorization) } # amount bigger than the original sale
 
         it { VCR.use_cassette('ogone/visa_refund_failed') { subject.should_not be_success } }
@@ -111,7 +97,6 @@ describe OgoneWrapper do
 
     describe '.purchase' do
       describe 'payment of $100' do
-        use_vcr_cassette 'ogone/master_100'
         subject { described_class.purchase(10000, cc, currency: 'USD') }
 
         it { should be_success }
@@ -135,7 +120,6 @@ describe OgoneWrapper do
 
     describe '.purchase' do
       describe 'payment of $100' do
-        use_vcr_cassette 'ogone/american_express_100'
         subject { described_class.purchase(10000, cc, currency: 'USD') }
 
         it { should be_success }

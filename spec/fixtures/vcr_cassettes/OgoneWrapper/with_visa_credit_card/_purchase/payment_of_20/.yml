@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/orderdirect.asp
+    body:
+      encoding: UTF-8
+      string: CARDNO=4111111111111111&CN=John+Doe&CVC=111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=70EC61281FB75E99BA55A4B71FED7DE4F88AA8EB16DF00B20E7525E578FAB5BB5B98C89BA9BE2233522D8506374D1E744CFD76D2DC9DA0521B778E9C83D8597C&USERID=sublime&amount=2000&currency=EUR&orderID=583f897f5d7cd4dac1e24c4e20dff4
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 26 Sep 2013 12:29:58 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '304'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Thu, 26 Sep 2013 12:28:58 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_4218234546_0=1869034039_1711509;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\n\t\t\t\r\norderID=\"583f897f5d7cd4dac1e24c4e20dff4\"\r\nPAYID=\"0\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"50001122\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"0\"\r\nECI=\"7\"\r\namount=\"20\"\r\ncurrency=\"EUR\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nNCERRORPLUS=\"The
+        currency is not accepted by the merchant:EUR\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 12:29:58 GMT
+recorded_with: VCR 2.6.0
