@@ -19,11 +19,9 @@ class MySublimeVideo.Helpers.StatsPoller
     @timeout = setTimeout this.loopAndRefresh, 1000
 
   refreshTopStatsPage: ->
-    console.log 'refreshTopStatsPage'
     MySublimeVideo.videoStats.refreshTopStats()
 
   refreshBottomStatsPage: ->
-    console.log 'refreshBottomStatsPage'
     MySublimeVideo.videoStats.refreshBottomStats()
 
   isNewSecond: ->

@@ -1,5 +1,3 @@
-#= require jquery.timeago
-
 MySublimeVideo.videoStats ||= {}
 
 MySublimeVideo.videoStatsReady = ->
@@ -51,7 +49,7 @@ MySublimeVideo.videoStats.refreshTopStats = ->
 MySublimeVideo.videoStats.refreshBottomStats = ->
   $('#video_stats_dates_range_and_source_selector').submit()
   $('#video_stats_hours_select, #video_stats_source_select').prop('disabled', true)
-  $('#plays_and_loads, #browsers_and_platforms .content_wrap, #countries .content_wrap').spin()
+  $('#plays_and_loads, #browsers_and_platforms .content_wrap, #countries .content_wrap, #mobile_desktop .content_wrap').spin()
 
 MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect = ->
   $('#video_stats_hours_select, #video_stats_source_select').on 'change', (event) ->

@@ -2,6 +2,7 @@
 #= require underscore
 #= require highstock/highstock
 #= require mousetrap.min
+#= require jquery.timeago
 #= require backbone
 #
 #= require_self

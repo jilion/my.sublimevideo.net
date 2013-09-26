@@ -206,10 +206,10 @@ describe VideoStatPresenter do
     end
   end
 
-  describe '#_fill_missing_values_for_last_stats' do
+  describe '#_group_and_fill_missing_values_for_last_stats' do
     it 'fills missing minutes with 0' do
       stats = [[Time.utc(2013, 9, 11, 7).to_i * 1000, 13], [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]]
-      filled_stats = presenter.send(:_fill_missing_values_for_last_stats, stats, field: :lo, from: Time.utc(2013, 9, 11, 6), to: Time.utc(2013, 9, 11, 9), period: :hour)
+      filled_stats = presenter.send(:_group_and_fill_missing_values_for_last_stats, stats, field: :lo, from: Time.utc(2013, 9, 11, 6), to: Time.utc(2013, 9, 11, 9), period: :hour)
 
       filled_stats[0].should eq [Time.utc(2013, 9, 11, 6).to_i * 1000, 0]
       filled_stats[1].should eq [Time.utc(2013, 9, 11, 7).to_i * 1000, 13]
