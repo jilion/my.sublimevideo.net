@@ -29,8 +29,10 @@ module ZendeskWrapper
 
   def self.update_user(user_id, params)
     if params[:email]
-      user(user_id).identities.create(type: 'email', value: params[:email], verified: true)
-      user(user_id).identities.last.make_primary
+      user(user_id).identities.create(type: 'email', value: params[:email])
+      identity = user(user_id).identities.last
+      identity.verify
+      identity.make_primary
     end
 
     if params[:name]
@@ -75,7 +77,7 @@ module ZendeskWrapper
   #
   def self.save_ticket_with_uploads!(ticket, uploads)
     uploads.each do |upload|
-      ticket.comment.uploads << { file: upload.path, filename: upload.original_filename }
+      ticket.comment.uploads << upload
     end
 
     ticket.save!

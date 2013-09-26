@@ -1,0 +1,185 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com/api/v2/tickets
+    body:
+      encoding: UTF-8
+      string: '{"ticket":{"subject":"SUBJECT","comment":{"value":"DESCRIPTION"},"tags":["email-support"],"requester":{"name":"Remy","email":"user@example.com"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - ZendeskAPI API 1.0.5
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - nginx/1.4.2
+      Date:
+      - Thu, 26 Sep 2013 11:55:02 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '2644'
+      Connection:
+      - keep-alive
+      Status:
+      - 201 Created
+      Cache-Control:
+      - no-cache
+      X-Zendesk-Api-Version:
+      - v2
+      Location:
+      - https://sublimevideo.zendesk.com/api/v2/tickets/4541.json
+      X-Runtime:
+      - '279'
+      X-Zendesk-Origin-Server:
+      - app33.pod1.ord.zdsys.com
+      X-Zendesk-User-Id:
+      - '15308267'
+      X-Zendesk-Request-Id:
+      - ab8baa656d500cfd8387
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"ticket":{"url":"https://sublimevideo.zendesk.com/api/v2/tickets/4541.json","id":4541,"external_id":null,"via":{"channel":"api","source":{"from":{},"to":{},"rel":null}},"created_at":"2013-09-26T11:55:02Z","updated_at":"2013-09-26T11:55:02Z","type":null,"subject":"SUBJECT","description":"DESCRIPTION","priority":null,"status":"new","recipient":null,"requester_id":206335892,"submitter_id":206335892,"assignee_id":null,"organization_id":null,"group_id":88332,"collaborator_ids":[],"forum_topic_id":null,"problem_id":null,"has_incidents":false,"due_at":null,"tags":["email-support"],"custom_fields":[],"satisfaction_rating":null,"sharing_agreement_ids":[],"fields":[]},"audit":{"id":17622470757,"ticket_id":4541,"created_at":"2013-09-26T11:55:02Z","author_id":15308267,"via":{"channel":"api","source":{"from":{},"to":{},"rel":null}},"metadata":{"system":{"client":"ZendeskAPI
+        API 1.0.5","ip_address":"178.38.109.251","location":"Geneve, 07, Switzerland","latitude":46.19560000000001,"longitude":6.1480999999999995},"custom":{}},"events":[{"id":17622470787,"type":"Comment","author_id":206335892,"body":"DESCRIPTION","html_body":"<p>DESCRIPTION</p>","public":true,"trusted":true,"attachments":[]},{"id":17622470807,"type":"Create","value":"SUBJECT","field_name":"subject"},{"id":17622470827,"type":"Create","value":["email-support"],"field_name":"tags"},{"id":17622470837,"type":"Create","value":206335892,"field_name":"requester_id"},{"id":17622470847,"type":"Create","value":"new","field_name":"status"},{"id":17622470857,"type":"Create","value":null,"field_name":"priority"},{"id":17622470867,"type":"Create","value":null,"field_name":"type"},{"id":17622470877,"type":"Create","value":88332,"field_name":"group_id"},{"id":17622470887,"type":"Notification","via":{"channel":"rule","source":{"to":{},"from":{"id":24675318,"title":"Notify
+        requester of received support request (sent through support form)"},"rel":"trigger"}},"subject":"[SublimeVideo]
+        Request received: {{ticket.title}} (#{{ticket.id}})","body":"Your request
+        has been received.\n\nPlease note our support team is available during central
+        Europe business hours: 9am - 6pm CET.\n\n{{ticket.comments_formatted}}","recipients":[206335892]},{"id":17622470897,"type":"External","via":{"channel":"rule","source":{"to":{},"from":{"id":24569717,"title":"Notify
+        Campfire of new ticket"},"rel":"trigger"}},"resource":"20007171","body":"[NEW]
+        #{{ticket.id}} \"{{ticket.title}}\" by {{ticket.requester.name}} <{{ticket.requester.email}}>
+        (via {{ticket.via}})\nStatus: {{ticket.status}} | Tags: {{ticket.tags}}\nhttps://sublimevideo.zendesk.com/agent/#/tickets/{{ticket.id}}","success":null}]}}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 11:55:02 GMT
+- request:
+    method: get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com/api/v2/tickets/4541?page=1&per_page=100
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - ZendeskAPI API 1.0.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.2
+      Date:
+      - Thu, 26 Sep 2013 11:55:03 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Zendesk-Api-Version:
+      - v2
+      X-Runtime:
+      - '50'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      X-Zendesk-Origin-Server:
+      - app19.pod1.ord.zdsys.com
+      X-Zendesk-User-Id:
+      - '15308267'
+      X-Zendesk-Request-Id:
+      - fa3f0d33e74e65b4afe6
+      X-Content-Type-Options:
+      - nosniff
+      Content-Encoding:
+      - gzip
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA4VRO2/bMBD+L5xly5biwNHYJEMytEXjLi0K4Uyd5EsokiWP
+        bpPA/71HCzU0FOhE3ON73Md3xaRfkFXzrlIwqlEHZh+bsoxpb2jEI3Xolm9o
+        O4wvS+3GEjyVx6qccLG82lytl8/RWVUo6lST60Lhb8ZgwbS5ZZMxhToSZBV9
+        AGsxKwmRYKJLQWOe9MGN8p4KxW56Q97L6JM0dUBg7FoQs6parevF6mZRXe/W
+        62azaVbVNyFLvvvvDr96kZs8yZHPqDPh09cPj/e3O+GQQ3UgzyQnNeru/un2
+        y8Pn3cOnjzLzgVwgfr3gGThFWbP4S8YBNXlCK4QTf8CfCaNEcc6hWl3X9WZ7
+        U8nVaT8S/2MAMdJgEWfBuTCApTfIjmbtIbjkz/V2W9fCqZ0xsHcB2GU9sfX9
+        R6F6F9LYsvOkZ2Af3N7gOOscILZktXy3ZYH2YCJKGAnPgU/nMAyZVeEIZBYx
+        ee8CKxHRKbIb257Q/NWN4jf2oM+uxRPZ4ZLaAYKULQwBcRS9mdsLw+n0B7TJ
+        EaOcAgAA
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 11:55:03 GMT
+- request:
+    method: get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com/api/v2/users/206335892
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - ZendeskAPI API 1.0.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.2
+      Date:
+      - Thu, 26 Sep 2013 11:55:04 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Zendesk-Api-Version:
+      - v2
+      X-Runtime:
+      - '54'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      X-Zendesk-Origin-Server:
+      - app21.pod1.ord.zdsys.com
+      X-Zendesk-User-Id:
+      - '15308267'
+      X-Zendesk-Request-Id:
+      - 8ba2a5dd2c7aa487e6c4
+      X-Content-Type-Options:
+      - nosniff
+      Content-Encoding:
+      - gzip
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA21Sy1LDMAz8F5/bJk0JAz4xfAKPCwzjEYlITf0ItpzpY/rv
+        yElbeuBm2dpd7coHkSIGIQ9Ct0JW5e1qVd/dVzORghFSrIn6KIsipk+jLQ66
+        Rb/Yo2sxbhaNtwX0uhiqIpPE4gJffEfvxEw4sMgsT2h3XKEFnUlz8wNuwfYG
+        Mwk/NQGBsFVA/F6Vy2pe1vNy+bKsZL2UdfnGPalv/+9ZyRtuG3uIh1R777Lq
+        I4Y8Q78eS5eMGQvy58L4BgyqbHx6nS4Yim7++sxYHzpweg+kvbvqC95kAY5h
+        PqY3EwMG/aWRmSgkZKtbYnUwVyCCLgr5/jETYDTwcdKEhvTAbBMuriFkli8w
+        kWmmUkGHjoM5XRqIpIzvtBvjmmii7hxQChenLRKnfZFxnvBSNCmStyrbuBrQ
+        +hYDkOffcFIi3WyQVMBIQfOcvFMpAv4kvuApOR9ndqoPeuDFKN6k5TlZ5QQ/
+        4/JeJwcnkyn2+Qv9+cwpKs7PtIw+HI/HXwLi8nGXAgAA
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 11:55:04 GMT
+recorded_with: VCR 2.6.0
