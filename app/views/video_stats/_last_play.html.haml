@@ -7,7 +7,7 @@
       On
       = link_to url_host(last_play.du), url_with_protocol(last_play.du), title: last_play.du, class: "hl"
       = '[external]' if last_play.ex?
-
+      %br
       - if last_play.ru?
         coming from
         = link_to url_host(last_play.ru), last_play.ru, title: last_play.ru, class: "hl"

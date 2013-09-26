@@ -43,29 +43,28 @@ class VideoStatPresenter
     _reduce_stats_for_field_by_hour(:lo)
   end
 
-  def hourly_starts
+  def hourly_plays
     _reduce_stats_for_field_by_hour(:st)
   end
 
   def last_60_minutes_loads
-    stats = last_stats_by_minute.map { |s| [Time.parse(s.t).to_i * 1000, s.lo] }
-
-    _fill_missing_values_for_last_stats(stats,
-      period: :minute,
-      from: 59.minutes.ago.change(sec: 0),
-      to: Time.now.utc.change(sec: 0))
+    _last_60_minutes_hits(:lo)
   end
 
-  def last_60_minutes_starts
-    stats = last_stats_by_minute.map { |s| [Time.parse(s.t).to_i * 1000, s.st] }
-
-    _fill_missing_values_for_last_stats(stats,
-      period: :minute,
-      from: 59.minutes.ago.change(sec: 0),
-      to: Time.now.utc.change(sec: 0))
+  def last_60_minutes_plays
+    _last_60_minutes_hits(:st)
   end
 
   private
+
+  def _last_60_minutes_hits(field)
+    stats = last_stats_by_minute.map { |s| [Time.parse(s.t).to_i * 1000, s[field]] }
+
+    _fill_missing_values_for_last_stats(stats,
+      period: :minute,
+      from: 59.minutes.ago.change(sec: 0),
+      to: Time.now.utc.change(sec: 0))
+  end
 
   def _reduce_stats_for_field(field)
     reduced_stats = last_stats_by_hour.map { |s| s.send(:[], field) }.compact.reduce(Hash.new(0)) do |memo, stat|

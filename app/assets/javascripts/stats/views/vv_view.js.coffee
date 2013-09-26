@@ -17,14 +17,14 @@ class MSVStats.Views.VVView extends Backbone.View
 
   render: =>
     if MSVStats.period.get('type')?
-      $('#vv_content').show()
-      $('#vv').data().spinner.stop()
+      $('#plays_and_loads_graph').show()
+      $('#plays_and_loads').data().spinner.stop()
       @stats = MSVStats.period.stats()
       @$el.html(this.template(stats: @stats))
       MSVStats.chartsHelper.vvChart(@stats)
     else
-      $('#vv_content').hide()
-      $('#vv').spin(spinOptions)
+      $('#plays_and_loads_graph').hide()
+      $('#plays_and_loads').spin(spinOptions)
       @$el.html(this.template())
 
     this

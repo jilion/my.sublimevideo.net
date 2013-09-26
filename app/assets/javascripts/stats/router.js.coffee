@@ -74,7 +74,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: '#date_pickers'
 
     new MSVStats.Views.VVView
-      el: '#vv_chart_legend'
+      el: '#plays_and_loads_graph_legend'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
@@ -87,7 +87,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       videos: MSVStats.videos
 
     new MSVStats.Views.BPView
-      el: '#bp_content'
+      el: '#browsers_and_platforms_content'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours

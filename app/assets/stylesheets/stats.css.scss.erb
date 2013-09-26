@@ -446,35 +446,35 @@ span.beta_badge {
   padding-right:100px;
 }
 
-.stats #vv_chart_legend {
+.stats #plays_and_loads_graph_legend {
   float:right;
   list-style-type:none;
   padding-top:70px;
   margin-bottom:25px;
 }
 
-.stats.free #vv_chart_legend {padding-top:45px}
+.stats.free #plays_and_loads_graph_legend {padding-top:45px}
 
-.stats #vv_chart_legend li {
+.stats #plays_and_loads_graph_legend li {
   float:left;
   font-size:22px;
   padding:0 0 0 35px;
   margin:0 10px;
 }
 
-.stats #vv_chart_legend li.video_plays {
+.stats #plays_and_loads_graph_legend li.video_plays {
   background:url(<%= asset_path "stats/video_plays_label.png" %>) no-repeat;
 }
 
-.stats #vv_chart_legend li.page_visits {
+.stats #plays_and_loads_graph_legend li.page_visits {
   background:url(<%= asset_path "stats/page_visits_label.png" %>) no-repeat;
 }
 
-.stats #vv_chart_legend li span {
+.stats #plays_and_loads_graph_legend li span {
   font-size:16px;
 }
 
-.stats #vv {
+.stats #plays_and_loads {
   min-height:100px;
   padding:16px 16px 4px;
   background:#6a86a8;
@@ -483,7 +483,7 @@ span.beta_badge {
   @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.5) 0 1px 4px));
 }
 
-.stats #vv p.note {
+.stats #plays_and_loads p.note {
   font-size:11px;
   text-align:right;
   position:relative;
@@ -729,13 +729,13 @@ span.beta_badge {
   background:url(<%= asset_path "stats/expand_videos_arrow_up.png" %>) no-repeat;
 }
 
-#last_60_minutes_loads_and_starts {
+#last_60_minutes_loads_and_plays {
   float:left;
   width:39%;
   margin:35px 0 0;
 }
 
-#last_60_minutes_loads, #last_60_minutes_starts {
+#last_60_minutes_loads, #last_60_minutes_plays {
   height:80px;
   padding:8px 0;
 }
@@ -786,7 +786,7 @@ span.beta_badge {
   margin-bottom:0;
 }
 
-.stats #bp.graph_box, .stats #co.graph_box {
+.stats #browsers_and_platforms.graph_box, .stats #countries.graph_box {
   margin-right:40px;
 }
 
@@ -912,12 +912,12 @@ span.beta_badge {
 .stats .graph_box li.b_saf.p_iph .browser, .stats .graph_box li.b_saf.p_ipa .browser {background-image:url(<%= asset_path "stats/icons/mobile_safari.png" %>);}
 
 /*.stats .graph_box li .platform {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}*/
-.stats .graph_box li.p_osx .platform {background-image:url(<%= asset_path "stats/icons/mac.png" %>);}
-.stats .graph_box li.p_win .platform {background-image:url(<%= asset_path "stats/icons/windows.png" %>);}
-.stats .graph_box li.p_lin .platform {background-image:url(<%= asset_path "stats/icons/linux.png" %>);}
-.stats .graph_box li.p_and .platform {background-image:url(<%= asset_path "stats/icons/android.png" %>);}
-.stats .graph_box li.p_iph .platform {background-image:url(<%= asset_path "stats/icons/iphone.png" %>);}
-.stats .graph_box li.p_ipa .platform {background-image:url(<%= asset_path "stats/icons/ipad.png" %>);}
+.stats .graph_box li.p_osx .platform {background-image:url(<%= asset_path "stats/icons/osx.png" %>);}
+.stats .graph_box li.p_win .platform {background-image:url(<%= asset_path "stats/icons/win.png" %>);}
+.stats .graph_box li.p_lin .platform {background-image:url(<%= asset_path "stats/icons/lin.png" %>);}
+.stats .graph_box li.p_and .platform {background-image:url(<%= asset_path "stats/icons/and.png" %>);}
+.stats .graph_box li.p_iph .platform {background-image:url(<%= asset_path "stats/icons/iph.png" %>);}
+.stats .graph_box li.p_ipa .platform {background-image:url(<%= asset_path "stats/icons/ipa.png" %>);}
 
 .stats .graph_box li.html5 .icon {background-image:url(<%= asset_path "stats/icons/html5.png" %>);}
 .stats .graph_box li.flash .icon {background-image:url(<%= asset_path "stats/icons/flash.png" %>);}
@@ -934,16 +934,22 @@ span.beta_badge {
   padding:20px 0 0 6px;
 }
 
-.stats #bp.graph_box .content_wrap, .stats #co.graph_box .content_wrap, .stats #de.graph_box .content_wrap {
+.stats .graph_box li .title abbr.timeago {
+  font-size:9px;
+}
+
+.stats #last_plays.graph_box li .title {
+  padding:13px 0 0 6px;
+  line-height:17px;
+}
+
+.stats #browsers_and_platforms.graph_box .content_wrap, .stats #countries.graph_box .content_wrap, .stats #mobile_desktop.graph_box .content_wrap {
   height:493px;
   overflow:auto;
 }
 
-.stats .graph_box #bp_content li .title {
-  display:block;
-  float:left;
+.stats #browsers_and_platforms.graph_box li .title {
   font-size:11px;
-  font-weight:600;
   padding:17px 0 0 6px;
 }
 
@@ -963,18 +969,18 @@ span.beta_badge {
   margin-top:20px;
 }
 
-.stats .graph_box #de_content .values {
+.stats #mobile_desktop.graph_box .values {
   display:block;
   text-align:center;
   margin-top:5px;
 }
 
-.stats .graph_box #de_content .value {
+.stats #mobile_desktop.graph_box .value {
   display:block;
   padding-bottom:15px;
 }
 
-.stats .graph_box #de_content .values em {
+.stats #mobile_desktop.graph_box .values em {
   font-style:normal;
   font-weight:normal;
   color:#465B7D;
@@ -984,7 +990,7 @@ span.beta_badge {
   top:5px;
 }
 
-.stats .graph_box li .value .percent, .stats .graph_box #de_content .value .percent {
+.stats .graph_box li .value .percent, .stats #mobile_desktop.graph_box .value .percent {
   display:block;
   font-size:18px;
   font-weight:600;
@@ -1016,7 +1022,7 @@ span.beta_badge {
   margin:-18px 0 15px;
 }
 
-#last_stats_by_hour #vv_chart_legend {
+#last_stats_by_hour #plays_and_loads_graph_legend {
   padding-top:0;
 }
 

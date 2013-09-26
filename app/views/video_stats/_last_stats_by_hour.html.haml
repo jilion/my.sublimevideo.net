@@ -8,33 +8,26 @@
         = select_tag 'source', video_stats_options_for_source_select(stats_presenter.options[:source]), id: 'video_stats_source_select'
     #date_pickers
 
-  %ul#vv_chart_legend
+  %ul#plays_and_loads_graph_legend
     %li.video_plays
-      = display_integer(stats_presenter.hourly_starts.sum { |a| a[1] })
+      = display_integer(stats_presenter.hourly_plays.sum { |a| a[1] })
       %span.title plays
     %li.page_visits
       = display_integer(stats_presenter.hourly_loads.sum { |a| a[1] })
       %span.title loads
   .spacer
 
-  #vv
-    #vv_content
-      #video_loads_and_starts_chart
-        :coffee
-          MySublimeVideo.Helpers.VideoStatsChartsHelper.loadsAndStartsChart(
-            #{stats_presenter.hourly_loads},
-            #{stats_presenter.hourly_starts},
-            #{stats_presenter.options[:hours]}
-          )
+  #plays_and_loads{ data: { plays: stats_presenter.hourly_plays, loads: stats_presenter.hourly_loads, hours: stats_presenter.options[:hours] } }
+    #plays_and_loads_graph
   .spacer
 
-  #bp.graph_box
+  #browsers_and_platforms.graph_box
     = render 'browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
 
-  #co.graph_box
+  #countries.graph_box
     = render 'countries', stats: stats_presenter.countries_stats
 
-  #de.graph_box
+  #mobile_desktop.graph_box
     = render 'mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
