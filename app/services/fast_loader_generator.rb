@@ -1,5 +1,4 @@
 # services
-require 'app/component_version_dependencies_solver'
 require 'app/fast_component_version_dependencies_solver'
 
 class FastLoaderGenerator < LoaderGenerator
