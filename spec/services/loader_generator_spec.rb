@@ -366,101 +366,35 @@ describe LoaderGenerator, :fog_mock do
 
   describe '#template_file' do
     context 'alpha stage' do
-      let(:generator) { described_class.new(site, 'alpha') }
-      context 'versions for stage < 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_4_0_alpha] }
-        end
-
-        it 'returns the old loader' do
-          generator.template_file.should eq 'loader-alpha.js.erb'
-        end
+    let(:generator) { described_class.new(site, 'alpha') }
+      before do
+        app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
       end
 
-      context 'versions for stage == 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_4_0, v2_4_0_beta, v2_5_0_alpha, v2_4_0_alpha] }
-        end
-
-        it 'returns the new loader' do
-          generator.template_file.should eq 'new-loader-alpha.js.erb'
-        end
-      end
-
-      context 'versions for stage > 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
-        end
-
-        it 'returns the new loader' do
-          generator.template_file.should eq 'new-loader-alpha.js.erb'
-        end
+      it 'returns the new loader' do
+        generator.template_file.should eq 'loader-alpha.js.erb'
       end
     end
 
     context 'beta stage' do
       let(:generator) { described_class.new(site, 'beta') }
-      context 'versions for stage < 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_4_0_beta, v2_4_0_alpha] }
-        end
-
-        it 'returns the old loader' do
-          generator.template_file.should eq 'loader-beta.js.erb'
-        end
+      before do
+        app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
       end
 
-      context 'versions for stage == 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_0_alpha, v2_4_0_alpha] }
-        end
-
-        it 'returns the new loader' do
-          generator.template_file.should eq 'new-loader-beta.js.erb'
-        end
-      end
-
-      context 'versions for stage > 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
-        end
-
-        it 'returns the new loader' do
-          generator.template_file.should eq 'new-loader-beta.js.erb'
-        end
+      it 'returns the new loader' do
+        generator.template_file.should eq 'loader-beta.js.erb'
       end
     end
 
     context 'stable stage' do
       let(:generator) { described_class.new(site, 'stable') }
-      context 'versions for stage < 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_4_0, v2_4_0_beta, v2_4_0_alpha] }
-        end
-
-        it 'returns the old loader' do
-          generator.template_file.should eq 'loader-stable.js.erb'
-        end
+      before do
+        app_component.stub(:versions_for_stage) { [v2_5_1, v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
       end
 
-      context 'versions for stage == 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_0_alpha, v2_4_0_alpha] }
-        end
-
-        it 'returns the new loader' do
-          generator.template_file.should eq 'new-loader-stable.js.erb'
-        end
-      end
-
-      context 'versions for stage > 2.5' do
-        before do
-          app_component.stub(:versions_for_stage) { [v2_5_1, v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
-        end
-
-        it 'returns the new loader' do
-          generator.template_file.should eq 'new-loader-stable.js.erb'
-        end
+      it 'returns the new loader' do
+        generator.template_file.should eq 'loader-stable.js.erb'
       end
     end
   end

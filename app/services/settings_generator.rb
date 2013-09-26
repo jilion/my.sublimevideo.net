@@ -31,8 +31,7 @@ class SettingsGenerator
 
   def cdn_files
     @cdn_files ||= [
-      CDNFile.new(_generate_file, _path('s'), _s3_headers),
-      CDNFile.new(_generate_file('new-'), _path('s2'), _s3_headers)
+      CDNFile.new(_generate_file, _path('s2'), _s3_headers)
     ]
   end
 

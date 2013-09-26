@@ -19,7 +19,7 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites
   def index
-    @sites = apply_scopes(Site.includes(:user, :billable_items))
+    @sites = apply_scopes(Site.includes(:user))
     @tags  = Site.tag_counts.order('tags.name')
 
     respond_with(@sites, per_page: 50)
@@ -85,12 +85,12 @@ class Admin::SitesController < Admin::AdminController
   def active_pages
   end
 
-  # PUT /sites/:id/update_design_subscription
+  # PATCH /sites/:id/update_design_subscription
   def update_design_subscription
     _update_billable_item_subscription('design')
   end
 
-  # PUT /sites/:id/update_addon_plan_subscription
+  # PATCH /sites/:id/update_addon_plan_subscription
   def update_addon_plan_subscription
     _update_billable_item_subscription('addon_plan')
   end
