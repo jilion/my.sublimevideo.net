@@ -20,7 +20,7 @@ class VideoStatPresenter
   end
 
   def last_stats_by_minute
-    @last_stats_by_minute ||= LastVideoStat.last_stats(video_tag, options[:since])
+    @last_stats_by_minute ||= LastVideoStat.last_stats(video_tag)
   end
 
   def last_plays
@@ -52,8 +52,8 @@ class VideoStatPresenter
 
     _fill_missing_values_for_last_stats(stats,
       period: :minute,
-      from: 60.minutes.ago.change(sec: 0),
-      to: 1.minute.ago.change(sec: 0))
+      from: 59.minutes.ago.change(sec: 0),
+      to: Time.now.utc.change(sec: 0))
   end
 
   def last_60_minutes_starts
@@ -61,8 +61,8 @@ class VideoStatPresenter
 
     _fill_missing_values_for_last_stats(stats,
       period: :minute,
-      from: 60.minutes.ago.change(sec: 0),
-      to: 1.minute.ago.change(sec: 0))
+      from: 59.minutes.ago.change(sec: 0),
+      to: Time.now.utc.change(sec: 0))
   end
 
   private

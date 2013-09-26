@@ -1,4 +1,4 @@
-%li{ data: { time: Time.parse(last_play.t).to_i } }
+%li{ data: { time: last_play.time.to_i } }
   %span.wrap
     %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
     %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
