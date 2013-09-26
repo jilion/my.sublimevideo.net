@@ -78,6 +78,10 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
       fillColor: options.fillColor ? 'rgba(116,255,131,0.24)')
 
   @loadsAndStartsChart: (plays, loads, hours) ->
+    Highcharts.setOptions
+      global:
+        useUTC: false
+
     new Highcharts.StockChart
       chart:
         renderTo: 'plays_and_loads_graph'

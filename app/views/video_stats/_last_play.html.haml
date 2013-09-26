@@ -14,4 +14,4 @@
       - else
         from direct traffic
 
-      %abbr{ class: 'timeago', title: last_play.t }= l(Time.parse(last_play.t), format: :seconds_timezone_y)
+      %abbr{ class: 'timeago', title: last_play.t }= l(last_play.time, format: :seconds_timezone_y)
