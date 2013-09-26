@@ -3,7 +3,6 @@ require 'searchable'
 class Site < ActiveRecord::Base
   include SiteModules::BillableItem
   include SiteModules::Billing
-  include SiteModules::Referrer
   include SiteModules::Usage
   include Searchable
 

@@ -6,10 +6,8 @@
 #
 #= require_self
 #= require_tree ./helpers
-#= require_tree ./models
 #= require_tree ./ui
 #
-#= require stats
 #= require video_code
 #= require video_stats
 #

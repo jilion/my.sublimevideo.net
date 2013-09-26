@@ -262,15 +262,6 @@ MySublimeVideo::Application.routes.draw do
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     get '/stats' => redirect('/stats-demo')
 
-    # old backbone route
-    scope 'sites/stats' do
-      get '/' => redirect('/sites')
-      get 'demo' => redirect('/stats-demo')
-      get ':site_id' => redirect { |params, req| "/sites/#{params[:site_id]}/stats" }
-    end
-
-    resources :stats_exports, only: [:create, :show], path: 'stats/exports'
-
     resources :invoices, only: [:show] do
       put :retry_all, on: :collection
     end

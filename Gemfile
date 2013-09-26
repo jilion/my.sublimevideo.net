@@ -42,7 +42,7 @@ gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4
 
 # Internals
 gem 'sidekiq'
-gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
+# gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
@@ -59,21 +59,13 @@ gem 'has_scope'
 
 gem 'fog'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
-gem 'request-log-analyzer', require: 'request_log_analyzer'
 gem 'cocaine'
-
-# CDN
-gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'edge_cast'
 
 # until github.com/Shopify/active_merchant/pull/724 is merged
 gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
 
 gem 'public_suffix'
-gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
-gem 'stat_request_parser' # hosted on gemfury
-
+#
 gem 'rubyzip'
 gem 'mime-types'
 gem 'countries'
@@ -139,7 +131,6 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'launchy'
-  gem 'quiet_assets'
   gem 'bullet'
   gem 'annotate'
 
@@ -147,7 +138,6 @@ group :development do
   gem 'binding_of_caller'
   gem 'i18n-extra_translations', require: false
 
-  # gem 'em-http-request' # async pusher in populate
   gem 'letter_opener'
 end
 
@@ -179,9 +169,9 @@ group :test do
   gem 'capybara-email'
   gem 'poltergeist'
   gem 'show_me_the_cookies'
-  gem 'webmock',             '~> 1.6.0'
-  gem 'typhoeus',            '~> 0.2.0'
-  gem 'vcr',                 '~> 1.10.3'
+  gem 'webmock'
+  gem 'typhoeus'
+  gem 'vcr'
   gem 'codeclimate-test-reporter', require: false
 
   gem 'database_cleaner'

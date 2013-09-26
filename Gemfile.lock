@@ -18,12 +18,6 @@ GIT
       regru-premailer (~> 1.7)
 
 GIT
-  remote: git://github.com/jilion/useragent.git
-  revision: 9fd0f887527850994c543caa7cf5327bd635dc02
-  specs:
-    useragent (0.2.3)
-
-GIT
   remote: git://github.com/kolodovskyy/kaminari.git
   revision: 92052eedf047d65df71cc0021a9df9df1e2fc36e
   specs:
@@ -47,20 +41,12 @@ GIT
       compass (>= 0.12.2, < 0.14)
 
 GIT
-  remote: git://github.com/mongoid/kiqstand.git
-  revision: fdd5ea62293707fe044180a220670b0142314d04
-  specs:
-    kiqstand (1.2.0)
-      mongoid (~> 4.0)
-      moped (~> 1.4)
-
-GIT
   remote: git://github.com/mongoid/mongoid.git
-  revision: e3beb2588616ed01e047c559318303addad72488
+  revision: c4229f0c213d2e5c35552c93e514cb6d97405df2
   specs:
     mongoid (4.0.0)
       activemodel (~> 4.0.0)
-      moped (~> 1.5)
+      moped (~> 2.0.beta)
       origin (~> 1.0)
       tzinfo (~> 0.3.37)
 
@@ -86,16 +72,6 @@ GIT
       json (>= 1.5.1)
       money
       nokogiri
-
-GIT
-  remote: git://github.com/thibaudgg/voxel_hapi.git
-  revision: 590c89b458e21be52825ea9f7532182c68310715
-  branch: 1.9.2
-  specs:
-    voxel_hapi (1.1.1)
-      libxml-ruby (~> 2.2.0)
-      rescue_me (~> 0.1.0)
-      xml-simple (~> 1.0.12)
 
 GIT
   remote: git://github.com/tomhughes/oauth-plugin.git
@@ -127,7 +103,7 @@ GEM
       erubis (~> 2.7.0)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    active_utils (2.0.0)
+    active_utils (2.0.1)
       activesupport (>= 2.3.11)
       i18n
     activemodel (4.0.0)
@@ -163,6 +139,7 @@ GEM
       erubis (>= 2.6.6)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bson (2.0.0.rc2)
     builder (3.1.4)
     bullet (4.6.0)
       uniform_notifier
@@ -179,9 +156,6 @@ GEM
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
       json (>= 1.7)
-    carrierwave-mongoid (0.1.0)
-      carrierwave
-      mongoid
     celluloid (0.15.1)
       timers (~> 1.1.0)
     chartkick (1.2.0)
@@ -236,14 +210,13 @@ GEM
     dotenv (0.9.0)
     dotenv-rails (0.9.0)
       dotenv (= 0.9.0)
-    edge_cast (1.0.0)
-      activesupport (~> 4.0)
-      faraday (~> 0.8)
-      faraday_middleware (~> 0.8)
     em-websocket (0.5.0)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.5.3)
     erubis (2.7.0)
+    ethon (0.6.1)
+      ffi (>= 1.3.0)
+      mime-types (~> 1.18)
     eventmachine (1.0.3)
     excon (0.25.3)
     execjs (2.0.1)
@@ -348,7 +321,7 @@ GEM
     librato-rails (0.10.1)
       librato-rack (~> 0.4.2)
       rails (>= 3.0)
-    libxml-ruby (2.2.2)
+    libxml-ruby (2.7.0)
     liquid (2.5.2)
     listen (2.0.0.beta.2)
       celluloid (>= 0.15.1)
@@ -369,7 +342,9 @@ GEM
     minitest (4.7.5)
     money (5.1.1)
       i18n (~> 0.6.0)
-    moped (1.5.1)
+    moped (2.0.0.beta)
+      bson (~> 2.0.0.rc2)
+      optionable (~> 0.1.1)
     multi_json (1.8.0)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
@@ -382,7 +357,7 @@ GEM
     newrelic_moped (0.0.6)
       moped
       newrelic_rpm (~> 3.6.0)
-    newrelic_rpm (3.6.7.152)
+    newrelic_rpm (3.6.7.159)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     oauth (0.4.7)
@@ -394,6 +369,7 @@ GEM
       multi_xml (~> 0.5)
       rack (~> 1.2)
     oj (2.1.4)
+    optionable (0.1.1)
     origin (1.1.0)
     orm_adapter (0.4.0)
     paper_trail (3.0.0.beta1)
@@ -419,8 +395,6 @@ GEM
       httpclient (~> 2.3.0)
       multi_json (~> 1.0)
       signature (~> 0.1.6)
-    quiet_assets (1.0.2)
-      railties (>= 3.1, < 5.0)
     rabl (0.8.6)
       activesupport (>= 2.3.14)
     rack (1.5.2)
@@ -464,7 +438,6 @@ GEM
     regru-premailer (1.7.7)
       css_parser (>= 1.1.9)
       htmlentities (>= 4.0.0)
-    request-log-analyzer (1.12.9)
     rescue_me (0.1.3)
     responders (1.0.0)
       railties (>= 3.2, < 5)
@@ -522,8 +495,6 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    stat_request_parser (1.3.0)
-      activesupport (>= 3.0.0)
     state_machine (1.2.0)
     sublime_video_layout (2.6.7)
       coffee-rails
@@ -539,7 +510,7 @@ GEM
       rescue_me
       responders
       timecop
-    teaspoon (0.7.6)
+    teaspoon (0.7.7)
       phantomjs (>= 1.8.1.1)
       railties (>= 3.2.5, < 5)
     thor (0.18.1)
@@ -569,9 +540,8 @@ GEM
     twitter-stream (0.1.12)
       eventmachine (>= 0.12.8)
       roauth (>= 0.0.2)
-    typhoeus (0.2.4)
-      mime-types
-      mime-types
+    typhoeus (0.6.5)
+      ethon (~> 0.6.1)
     tzinfo (0.3.37)
     uglifier (2.2.1)
       execjs (>= 0.3.0)
@@ -582,14 +552,13 @@ GEM
       raindrops (~> 0.7)
     uniform_notifier (1.3.0)
     uniquify (0.1.0)
-    vcr (1.10.3)
+    vcr (2.6.0)
     warden (1.2.3)
       rack (>= 1.0)
-    webmock (1.6.4)
-      addressable (~> 2.2, > 2.2.5)
-      crack (>= 0.1.7)
+    webmock (1.13.0)
+      addressable (>= 2.2.7)
+      crack (>= 0.3.2)
     websocket-driver (0.3.0)
-    xml-simple (1.0.16)
     xpath (2.0.0)
       nokogiri (~> 1.3)
     zendesk_api (1.0.5)
@@ -619,7 +588,6 @@ DEPENDENCIES
   capybara
   capybara-email
   carrierwave
-  carrierwave-mongoid
   chartkick
   chosen-rails!
   cocaine
@@ -637,7 +605,6 @@ DEPENDENCIES
   devise_invitable
   display_case
   dotenv-rails
-  edge_cast
   execjs
   factory_girl
   factory_girl_rails
@@ -659,7 +626,6 @@ DEPENDENCIES
   http_content_type
   i18n-extra_translations
   kaminari!
-  kiqstand!
   launchy
   letter_opener
   librato-rails
@@ -683,7 +649,6 @@ DEPENDENCIES
   prowl
   public_suffix
   pusher
-  quiet_assets
   rabl
   rack-cache
   rack-google-analytics (~> 0.11.0)
@@ -695,7 +660,6 @@ DEPENDENCIES
   rails_autolink
   redis
   regru-premailer
-  request-log-analyzer
   rescue_me
   responders
   rspec-rails
@@ -710,7 +674,6 @@ DEPENDENCIES
   snail
   solve
   sprockets-rails!
-  stat_request_parser
   state_machine
   sublime_video_layout (~> 2.0)
   sublime_video_private_api (~> 1.5)
@@ -719,12 +682,10 @@ DEPENDENCIES
   tinder
   turbolinks
   twitter
-  typhoeus (~> 0.2.0)
+  typhoeus
   uglifier
   unicorn
   uniquify
-  useragent!
-  vcr (~> 1.10.3)
-  voxel_hapi!
-  webmock (~> 1.6.0)
+  vcr
+  webmock
   zendesk_api

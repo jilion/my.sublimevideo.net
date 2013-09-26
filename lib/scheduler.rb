@@ -47,10 +47,4 @@ module Scheduler
     TweetsSyncerWorker.perform_in(5.minutes.from_now)
   end
 
-  def self.schedule_frequent_tasks
-    10.times do |i|
-      at = (i + 1).minutes.from_now.change(sec: 0).to_i + 5.seconds.to_i # let the log file to be present on Voxcast
-      Log::Voxcast.delay(queue: 'my-high', at: at).download_and_create_new_logs
-    end
-  end
 end

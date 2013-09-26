@@ -11,7 +11,7 @@ namespace :db do
     task clear: :environment do
       Rails.cache.clear
       Sidekiq.redis { |con| con.flushall }
-      timed { PopulateHelpers.empty_tables('invoices_transactions', DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { PopulateHelpers.empty_tables('invoices_transactions', DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures. e.g.: rake 'db:populate:all[remy]'"
@@ -22,7 +22,6 @@ namespace :db do
       timed { Populate.users(args.login) }
       timed { Populate.sites }
       timed { Populate.invoices }
-      timed { Populate.stats(args.login) }
       timed { Populate.trends }
       timed { Populate.feedbacks }
       # timed { Populate.deals }
@@ -64,21 +63,6 @@ namespace :db do
       timed { Populate.invoices }
     end
 
-    desc "Create fake usages"
-    task site_usages: :environment do
-      timed { Populate.site_usages }
-    end
-
-    desc "Create fake site stats. e.g.: rake 'db:populate:stats[remy]'"
-    task :stats, [:login] => [:environment] do |t, args|
-      timed { Populate.stats(args.login) }
-    end
-
-    desc "Create recurring fake site & video stats. e.g.: rake 'db:populate:recurring_stats[abcd1234]'"
-    task :recurring_stats, [:token] => [:environment] do |t, args|
-      timed { Populate.recurring_stats(args.token) }
-    end
-
     desc "Create fake trends for the admin dashboard"
     task trends: :environment do
       timed { Populate.trends }
@@ -102,21 +86,6 @@ namespace :db do
     desc "Send emails (via letter_opener). e.g.: rake 'db:populate:emails[remy]'"
     task :emails, [:login] => [:environment] do |t, args|
       timed { Populate.send_all_emails(args.login) }
-    end
-
-    desc "Import MongoDB production databases locally (not the other way around don't worry!)"
-    task import_mongo_prod: :environment do
-      mongo_db_pwd = argv('password')
-      raise "Please provide a password to access the production database like this: rake db:populate:import_mongo_prod password=MONGOHQ_PASSWORD" if mongo_db_pwd.nil?
-
-      %w[billable_items_stats sales_stats site_stats_stats site_usages_stats sites_stats tweets_stats users_stats tweets].each do |collection|
-        timed do
-          puts "Exporting production '#{collection}' collection"
-          `mongodump -h sublimevideo.member0.mongolayer.com:27017 -d sublimevideo-stats -u heroku -p #{mongo_db_pwd} -o db/backups/ --collection #{collection}`
-          puts "Importing '#{collection}' collection locally"
-          `mongorestore -h localhost -d sublimevideo_dev --collection #{collection} --drop -v db/backups/sublimevideo-stats/#{collection}.bson`
-        end
-      end
     end
   end
 

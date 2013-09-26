@@ -30,8 +30,6 @@ TweetsTrend = Class.new unless defined?(TweetsTrend)
 TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
 Tweet = Class.new unless defined?(Tweet)
 Tweet::KEYWORDS = ['rymai'] unless defined?(Tweet::KEYWORDS)
-Log = Class.new unless defined?(Log)
-Log::Voxcast = Class.new unless defined?(Log::Voxcast)
 
 
 describe Scheduler do
@@ -202,21 +200,6 @@ describe Scheduler do
     it "schedules TweetsSyncerWorker.perform_async" do
       TweetsSyncerWorker.should receive(:perform_in)
       described_class.schedule_hourly_tasks
-    end
-  end
-
-  describe ".schedule_frequent_tasks" do
-    it "schedules 10 times Log::Voxcast.delay_download_and_create_new_logs" do
-      Timecop.freeze do
-        10.times do |i|
-          Log::Voxcast.should delay(:download_and_create_new_logs,
-            queue: 'my-high',
-            at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
-          )
-        end
-
-        described_class.schedule_frequent_tasks
-      end
     end
   end
 end

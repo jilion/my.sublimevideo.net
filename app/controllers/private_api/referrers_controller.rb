@@ -1,5 +1,7 @@
 require 'has_scope'
 
+# TODO Replace by SiteAdminStat
+
 class PrivateApi::ReferrersController < SublimeVideoPrivateApiController
   has_scope :per, :by_hits
   has_scope :with_tokens, type: :array
