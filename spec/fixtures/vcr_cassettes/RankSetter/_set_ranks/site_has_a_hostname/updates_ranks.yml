@@ -1,0 +1,81 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://toolbarqueries.google.com/tbr?ch=63148545275&client=navclient-auto&features=Rank&q=info:sublimevideo.net
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/534.56.5 (KHTML,
+        like Gecko) Version/5.1.6 Safari/534.56.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 26 Sep 2013 13:15:43 GMT
+      Pragma:
+      - no-cache
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Cache-Control:
+      - no-cache, must-revalidate
+      Content-Type:
+      - text/html; charset=ISO-8859-1
+      Set-Cookie:
+      - NID=67=wjtIoUjkdX_lkvXkAZON4wfSOLbmzF3_niQ1BILE3l-rk-7dBJDql9SBLZX7c8SGVTBBev-kothCAGZ2EL777H7RRc-I43hVAR4z6sFnUfkV8HSKNnL-kYZFGXMHG765;
+        expires=Fri, 28-Mar-2014 13:15:43 GMT; path=/; domain=.google.com; HttpOnly
+      - PREF=ID=1664022e9cb225c3:FF=0:TM=1380201343:LM=1380201343:S=k8bFLW3wzHn6OkRf;
+        expires=Sat, 26-Sep-2015 13:15:43 GMT; path=/; domain=.google.com
+      P3p:
+      - CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657
+        for more info."
+      Server:
+      - gws
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        Rank_1:1:6
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 13:15:43 GMT
+- request:
+    method: get
+    uri: http://data.alexa.com/data?cli=10&dat=snbamz&url=sublimevideo.net
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/534.56.5 (KHTML,
+        like Gecko) Version/5.1.6 Safari/534.56.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/xml
+      Content-Length:
+      - '455'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<ALEXA VER=\"0.9\"
+        URL=\"sublimevideo.net/\" HOME=\"0\" AID=\"=\" IDN=\"sublimevideo.net/\">\r\n<RLS
+        PREFIX=\"http://\" more=\"0\">\n</RLS>\n<SD TITLE=\"A\" FLAGS=\"\" HOST=\"sublimevideo.net\">\n<LINKSIN
+        NUM=\"447\"/>\n<SPEED TEXT=\"2421\" PCT=\"30\"/>\n</SD>\n<SD>\n<POPULARITY
+        URL=\"sublimevideo.net/\" TEXT=\"91320\" SOURCE=\"panel\"/>\n<REACH RANK=\"90838\"/>\n<RANK
+        DELTA=\"-20170\"/>\n<COUNTRY CODE=\"US\" NAME=\"United States\" RANK=\"50451\"/>\n</SD>\n</ALEXA>"
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 13:15:43 GMT
+recorded_with: VCR 2.6.0
