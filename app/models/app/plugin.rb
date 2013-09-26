@@ -23,13 +23,13 @@ end
 #  addon_id         :integer          not null
 #  app_component_id :integer          not null
 #  condition        :text
-#  created_at       :datetime         not null
+#  created_at       :datetime
 #  design_id        :integer
 #  id               :integer          not null, primary key
 #  mod              :string(255)
 #  name             :string(255)      not null
 #  token            :string(255)      not null
-#  updated_at       :datetime         not null
+#  updated_at       :datetime
 #
 # Indexes
 #

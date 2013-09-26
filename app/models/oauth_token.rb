@@ -41,7 +41,7 @@ end
 #  authorized_at         :datetime
 #  callback_url          :string(255)
 #  client_application_id :integer
-#  created_at            :datetime         not null
+#  created_at            :datetime
 #  expires_at            :datetime
 #  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
@@ -49,7 +49,7 @@ end
 #  secret                :string(40)
 #  token                 :string(40)
 #  type                  :string(20)
-#  updated_at            :datetime         not null
+#  updated_at            :datetime
 #  user_id               :integer
 #  verifier              :string(20)
 #

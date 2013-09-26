@@ -74,6 +74,24 @@ feature 'Add-on subscription shortcut' do
     @site = @current_user.sites.by_last_30_days_billable_video_views.first
   end
 
+  scenario 'redirects to first site addon page' do
+    go 'my', "sites/foo/addons/stats"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
+  end
+
+  scenario 'redirects to first site addons page' do
+    go 'my', "sites/foo/addons/bar"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+  end
+
+  scenario 'redirects sites/:token/addons/foo to /sites/:token/addons' do
+    go 'my', "sites/#{@site.to_param}/addons/foo"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+  end
+
   scenario 'redirects sites/:token/addons?h=stats-realtime to /sites/:token/addons/stats' do
     go 'my', "sites/#{@site.to_param}/addons/stats?p=realtime"
 

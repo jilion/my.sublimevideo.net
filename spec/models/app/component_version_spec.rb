@@ -98,16 +98,17 @@ end
 # Table name: app_component_versions
 #
 #  app_component_id :integer
-#  created_at       :datetime         not null
+#  created_at       :datetime
 #  deleted_at       :datetime
 #  dependencies     :hstore
 #  id               :integer          not null, primary key
-#  updated_at       :datetime         not null
+#  updated_at       :datetime
 #  version          :string(255)
 #  zip              :string(255)
 #
 # Indexes
 #
-#  index_component_versions_on_component_id_and_version  (app_component_id,version) UNIQUE
+#  index_app_component_versions_on_deleted_at_and_app_component_id  (deleted_at,app_component_id)
+#  index_component_versions_on_component_id_and_version             (app_component_id,version) UNIQUE
 #
 

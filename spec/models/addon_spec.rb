@@ -94,13 +94,13 @@ end
 #
 # Table name: addons
 #
-#  created_at       :datetime         not null
+#  created_at       :datetime
 #  design_dependent :boolean          default(TRUE), not null
 #  id               :integer          not null, primary key
 #  kind             :string(255)
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
-#  updated_at       :datetime         not null
+#  updated_at       :datetime
 #
 # Indexes
 #

@@ -38,10 +38,10 @@ end
 #
 #  archived_at :datetime
 #  body        :text
-#  created_at  :datetime         not null
+#  created_at  :datetime
 #  id          :integer          not null, primary key
 #  subject     :string(255)
 #  title       :string(255)
-#  updated_at  :datetime         not null
+#  updated_at  :datetime
 #
 

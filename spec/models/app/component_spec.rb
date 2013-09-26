@@ -96,15 +96,15 @@ end
 #
 # Table name: app_components
 #
-#  created_at :datetime         not null
+#  created_at :datetime
 #  id         :integer          not null, primary key
 #  name       :string(255)
 #  token      :string(255)
-#  updated_at :datetime         not null
+#  updated_at :datetime
 #
 # Indexes
 #
-#  index_player_components_on_name   (name) UNIQUE
-#  index_player_components_on_token  (token) UNIQUE
+#  index_app_components_on_name   (name) UNIQUE
+#  index_app_components_on_token  (token) UNIQUE
 #
 

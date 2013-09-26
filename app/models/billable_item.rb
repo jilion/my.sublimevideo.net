@@ -38,13 +38,13 @@ end
 #
 # Table name: billable_items
 #
-#  created_at :datetime         not null
+#  created_at :datetime
 #  id         :integer          not null, primary key
 #  item_id    :integer          not null
 #  item_type  :string(255)      not null
 #  site_id    :integer          not null
 #  state      :string(255)      not null
-#  updated_at :datetime         not null
+#  updated_at :datetime
 #
 # Indexes
 #

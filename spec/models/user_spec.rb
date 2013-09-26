@@ -724,7 +724,7 @@ end
 #  confirmation_token                         :string(255)
 #  confirmed_at                               :datetime
 #  country                                    :string(255)
-#  created_at                                 :datetime         not null
+#  created_at                                 :datetime
 #  current_sign_in_at                         :datetime
 #  current_sign_in_ip                         :string(255)
 #  early_access                               :text
@@ -735,6 +735,7 @@ end
 #  hidden_notice_ids                          :text
 #  id                                         :integer          not null, primary key
 #  invitation_accepted_at                     :datetime
+#  invitation_created_at                      :datetime
 #  invitation_limit                           :integer
 #  invitation_sent_at                         :datetime
 #  invitation_token                           :string(60)
@@ -765,7 +766,7 @@ end
 #  state                                      :string(255)
 #  total_invoiced_amount                      :integer          default(0)
 #  unconfirmed_email                          :string(255)
-#  updated_at                                 :datetime         not null
+#  updated_at                                 :datetime
 #  use_clients                                :boolean
 #  use_company                                :boolean
 #  use_personal                               :boolean
@@ -779,6 +780,7 @@ end
 #  index_users_on_created_at             (created_at)
 #  index_users_on_current_sign_in_at     (current_sign_in_at)
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
+#  index_users_on_id_and_state           (id,state)
 #  index_users_on_last_invoiced_amount   (last_invoiced_amount)
 #  index_users_on_referrer_site_token    (referrer_site_token)
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
