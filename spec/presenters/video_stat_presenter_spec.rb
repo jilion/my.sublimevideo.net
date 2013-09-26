@@ -182,11 +182,11 @@ describe VideoStatPresenter do
     end
 
     it 'has a value of 0 for missing minutes' do
-      expect(presenter.last_60_minutes_loads[0]).to eq [60.minutes.ago.change(sec: 0).to_i * 1000, 0]
+      expect(presenter.last_60_minutes_loads[0]).to eq [59.minutes.ago.change(sec: 0).to_i * 1000, 0]
     end
 
     it 'has right values for present minutes' do
-      expect(presenter.last_60_minutes_loads[58]).to eq [2.minutes.ago.change(sec: 0).to_i * 1000, 5]
+      expect(presenter.last_60_minutes_loads[57]).to eq [2.minutes.ago.change(sec: 0).to_i * 1000, 5]
     end
   end
 
@@ -198,11 +198,11 @@ describe VideoStatPresenter do
     end
 
     it 'has a value of 0 for missing minutes' do
-      expect(presenter.last_60_minutes_starts[0]).to eq [60.minutes.ago.change(sec: 0).to_i * 1000, 0]
+      expect(presenter.last_60_minutes_starts[0]).to eq [59.minutes.ago.change(sec: 0).to_i * 1000, 0]
     end
 
     it 'has right values for present minutes' do
-      expect(presenter.last_60_minutes_starts[59]).to eq [1.minute.ago.change(sec: 0).to_i * 1000, 3]
+      expect(presenter.last_60_minutes_starts[58]).to eq [1.minute.ago.change(sec: 0).to_i * 1000, 3]
     end
   end
 
