@@ -5,7 +5,7 @@ class FastLoaderGenerator < LoaderGenerator
 
   private
 
-  def _components_dependencies(version)
+  def _components_dependencies
     @_components_dependencies ||= App::FastComponentVersionDependenciesSolver.components_dependencies(site, stage)
   end
 
