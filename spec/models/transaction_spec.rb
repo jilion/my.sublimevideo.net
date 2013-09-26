@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Transaction do
+describe Transaction, :vcr do
   let(:user)            { create(:user) }
   let(:site1)           { create(:site, user: user) }
   let(:site2)           { create(:site, user: user) }
@@ -290,10 +290,11 @@ describe Transaction do
     end # .charge_invoices
 
     describe ".charge_invoices_by_user_id" do
-      use_vcr_cassette "ogone/visa_payment_generic"
+      let(:user) { create(:user_no_cc, valid_cc_attributes) }
       before do
-        user2    = create(:user)
-        site3    = create(:site, user: user2)
+        NewsletterSubscriptionManager.stub(:subscribe)
+        user2 = create(:user_no_cc, valid_cc_attributes)
+        site3 = create(:site, user: user2)
         @invoice1 = create(:invoice, site: site1, state: 'paid') # first invoice
         @invoice2 = create(:invoice, site: site1, state: 'failed')
         @invoice3 = create(:invoice, site: site1, state: 'open')
@@ -364,14 +365,14 @@ describe Transaction do
     end # .charge_invoices_by_user_id
 
     describe ".charge_by_invoice_ids" do
-      context "with a credit card alias" do
-        use_vcr_cassette "ogone/visa_payment_2000_alias"
+      let(:user) { create(:user_no_cc, valid_cc_attributes) }
 
+      context "with a credit card alias" do
         it "charges OgoneWrapper for the total amount of the open and failed invoices" do
           OgoneWrapper.should_receive(:purchase).with(open_invoice.amount + failed_invoice.amount, user.cc_alias, {
             order_id: an_instance_of(String),
             description: an_instance_of(String),
-            email: user.email,
+            email: user.reload.email,
             billing_address: {
               address1: user.billing_address_1,
               zip: user.billing_postal_code,
@@ -394,8 +395,6 @@ describe Transaction do
 
       context "with a succeeding purchase" do
         context "credit card" do
-          use_vcr_cassette "ogone/visa_payment_2000_credit_card"
-
           it "sets transaction and invoices to paid state" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card }).should be_true
@@ -405,8 +404,6 @@ describe Transaction do
         end
 
         context "alias" do
-          use_vcr_cassette "ogone/visa_payment_2000_alias"
-
           it "sets transaction and invoices to paid state" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id]).should be_true
