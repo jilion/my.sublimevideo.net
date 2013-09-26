@@ -129,8 +129,7 @@ describe User do
 
     describe "before_save :prepare_pending_credit_card & after_save :register_credit_card_on_file" do
 
-      context "when user had no cc info before" do
-        use_vcr_cassette "ogone/void_authorization"
+      context "when user had no cc info before", :vcr do
         subject do
           user = create(:user_no_cc)
           user.reload
