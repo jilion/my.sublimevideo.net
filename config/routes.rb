@@ -68,11 +68,6 @@ MySublimeVideo::Application.routes.draw do
         end
       end
       resources :plans, only: [:index]
-      resources :referrers, only: [] do
-        collection do
-          get :pages
-        end
-      end
 
       resources :users, only: [:index, :show, :edit, :update, :destroy] do
         member do
@@ -161,7 +156,6 @@ MySublimeVideo::Application.routes.draw do
         resources :kits, only: [:index]
       end
       resources :oauth2_tokens, only: [:show]
-      resources :referrers, only: [:index]
     end
 
     devise_for :users, module: 'users', controllers: { passwords: 'devise/passwords' }, path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]

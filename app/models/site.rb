@@ -57,10 +57,6 @@ class Site < ActiveRecord::Base
     designs_components
   end
 
-  def referrers
-    Referrer.where(token: token)
-  end
-
   def day_stats
     Stat::Site::Day.where(t: token)
   end
