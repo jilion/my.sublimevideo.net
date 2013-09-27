@@ -18,10 +18,12 @@ class AddonsController < ApplicationController
   # GET /addons/:id
   # GET /sites/:site_id/addons/:id
   def show
-    @addon = Addon.get(params[:id])
-
     unless @site = current_user.sites.not_archived.where(token: params[:site_id]).first
-      redirect_to site_addon_path(@sites.first, @addon, p: params[:p])
+      redirect_to site_addon_path(@sites.first, params[:id], p: params[:p]) and return
+    end
+
+    unless @addon = Addon.get(params[:id])
+      redirect_to [@site, :addons] and return
     end
   end
 

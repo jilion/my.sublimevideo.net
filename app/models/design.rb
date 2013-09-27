@@ -35,7 +35,7 @@ end
 #
 #  app_component_id :integer          not null
 #  availability     :string(255)      not null
-#  created_at       :datetime         not null
+#  created_at       :datetime
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  price            :integer          not null
@@ -43,7 +43,7 @@ end
 #  skin_mod         :string(255)
 #  skin_token       :string(255)      not null
 #  stable_at        :datetime
-#  updated_at       :datetime         not null
+#  updated_at       :datetime
 #
 # Indexes
 #

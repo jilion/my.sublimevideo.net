@@ -95,14 +95,14 @@ end
 #
 # Table name: kits
 #
-#  created_at :datetime         not null
+#  created_at :datetime
 #  design_id  :integer          not null
 #  id         :integer          not null, primary key
 #  identifier :string(255)
 #  name       :string(255)      not null
 #  settings   :text
 #  site_id    :integer          not null
-#  updated_at :datetime         not null
+#  updated_at :datetime
 #
 # Indexes
 #

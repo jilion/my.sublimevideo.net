@@ -31,7 +31,7 @@ end
 # Table name: invoice_items
 #
 #  amount                :integer
-#  created_at            :datetime         not null
+#  created_at            :datetime
 #  deal_id               :integer
 #  discounted_percentage :float
 #  ended_at              :datetime
@@ -42,7 +42,7 @@ end
 #  price                 :integer
 #  started_at            :datetime
 #  type                  :string(255)
-#  updated_at            :datetime         not null
+#  updated_at            :datetime
 #
 # Indexes
 #

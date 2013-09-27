@@ -129,7 +129,7 @@ end
 # Table name: deals
 #
 #  availability_scope :string(255)
-#  created_at         :datetime         not null
+#  created_at         :datetime
 #  description        :text
 #  ended_at           :datetime
 #  id                 :integer          not null, primary key
@@ -137,7 +137,7 @@ end
 #  name               :string(255)
 #  started_at         :datetime
 #  token              :string(255)
-#  updated_at         :datetime         not null
+#  updated_at         :datetime
 #  value              :float
 #
 # Indexes

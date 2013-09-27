@@ -62,13 +62,13 @@ end
 #
 #  addon_id       :integer          not null
 #  availability   :string(255)      not null
-#  created_at     :datetime         not null
+#  created_at     :datetime
 #  id             :integer          not null, primary key
 #  name           :string(255)      not null
 #  price          :integer          not null
 #  required_stage :string(255)      default("stable"), not null
 #  stable_at      :datetime
-#  updated_at     :datetime         not null
+#  updated_at     :datetime
 #
 # Indexes
 #

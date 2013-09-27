@@ -13,13 +13,13 @@ end
 #
 #  addon_plan_id :integer          not null
 #  app_plugin_id :integer
-#  created_at    :datetime         not null
+#  created_at    :datetime
 #  id            :integer          not null, primary key
 #  template      :text
-#  updated_at    :datetime         not null
+#  updated_at    :datetime
 #
 # Indexes
 #
-#  indexaddon_plan_settings_on_addon_plan_id_and_app_plugin_id  (addon_plan_id,app_plugin_id) UNIQUE
+#  index_addon_plan_settings_on_addon_plan_id_and_app_plugin_id  (addon_plan_id,app_plugin_id) UNIQUE
 #
 

@@ -35,10 +35,10 @@ end
 # Table name: deal_activations
 #
 #  activated_at :datetime
-#  created_at   :datetime         not null
+#  created_at   :datetime
 #  deal_id      :integer
 #  id           :integer          not null, primary key
-#  updated_at   :datetime         not null
+#  updated_at   :datetime
 #  user_id      :integer
 #
 # Indexes

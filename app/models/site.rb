@@ -258,7 +258,7 @@ end
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  created_at                                :datetime         not null
+#  created_at                                :datetime
 #  current_assistant_step                    :string(255)
 #  default_kit_id                            :integer
 #  dev_hostnames                             :text
@@ -294,7 +294,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime         not null
+#  updated_at                                :datetime
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #
@@ -302,6 +302,7 @@ end
 #
 #  index_sites_on_created_at                        (created_at)
 #  index_sites_on_hostname                          (hostname)
+#  index_sites_on_id_and_state                      (id,state)
 #  index_sites_on_last_30_days_dev_video_views      (last_30_days_dev_video_views)
 #  index_sites_on_last_30_days_embed_video_views    (last_30_days_embed_video_views)
 #  index_sites_on_last_30_days_extra_video_views    (last_30_days_extra_video_views)
