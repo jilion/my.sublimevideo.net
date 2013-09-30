@@ -2,9 +2,12 @@ require 'populate'
 
 RSpec.configure do |config|
   config.before :all, addons: true do
+    set_fog_configuration
     create_default_addons
   end
+
   config.before :all, type: :feature do
+    set_fog_configuration
     create_default_addons
   end
 
