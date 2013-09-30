@@ -132,7 +132,7 @@ group :development do
   gem 'rack-livereload'
   gem 'launchy'
   gem 'bullet'
-  gem 'annotate'
+  gem 'annotate', require: false
 
   gem 'better_errors'
   gem 'binding_of_caller'
