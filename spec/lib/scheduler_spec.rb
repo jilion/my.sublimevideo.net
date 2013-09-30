@@ -79,16 +79,8 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules SiteCountersUpdater.set_first_billable_plays_at_for_not_archived_sites" do
-      SiteCountersUpdater.should delay(:set_first_billable_plays_at_for_not_archived_sites,
-        queue: 'my-low',
-        at: Time.now.utc.tomorrow.midnight.to_i
-      )
-      described_class.schedule_daily_tasks
-    end
-
-    it "schedules SiteCountersUpdater.update_last_30_days_counters_for_not_archived_sites" do
-      SiteCountersUpdater.should delay(:update_last_30_days_counters_for_not_archived_sites,
+    it "schedules SiteCountersUpdater.update_not_archived_sites" do
+      SiteCountersUpdater.should delay(:update_not_archived_sites,
         queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )

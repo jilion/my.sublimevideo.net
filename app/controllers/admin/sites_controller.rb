@@ -14,8 +14,7 @@ class Admin::SitesController < Admin::AdminController
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
   has_scope :with_wildcard, :with_path, :with_extra_hostnames, :free, :paying, type: :boolean
   # sort
-  has_scope :by_hostname, :by_user, :by_state, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags, :by_last_30_days_extra_video_views_percentage,
-            :by_date, :with_min_billable_video_views
+  has_scope :by_hostname, :by_user, :by_state, :by_last_30_days_admin_starts, :by_last_30_days_video_tags, :by_date, :with_min_admin_starts
 
   # GET /sites
   def index

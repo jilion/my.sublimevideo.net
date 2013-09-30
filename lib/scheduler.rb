@@ -20,8 +20,7 @@ module Scheduler
 
     TrialHandler.delay(options).send_trial_will_expire_emails
     TrialHandler.delay(options).activate_billable_items_out_of_trial
-    SiteCountersUpdater.delay(options).set_first_billable_plays_at_for_not_archived_sites
-    SiteCountersUpdater.delay(options).update_last_30_days_counters_for_not_archived_sites
+    SiteCountersUpdater.delay(options).update_not_archived_sites
     CreditCardExpirationNotifier.delay(options).send_emails
     NewInactiveUserNotifier.delay(options).send_emails
     UsersTrend.delay(options).create_trends

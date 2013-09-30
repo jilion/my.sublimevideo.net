@@ -5,7 +5,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   before_filter :_set_site, only: [:show, :add_tag]
 
   has_scope :per, :created_on, :created_after, :not_tagged_with, :by_date,
-            :with_min_billable_video_views, :first_billable_plays_on_week, :user_id
+            :with_min_admin_starts, :first_admin_starts_on_week, :user_id
   has_scope :select, :without_hostnames, type: :array
   has_scope :not_archived, type: :boolean
 

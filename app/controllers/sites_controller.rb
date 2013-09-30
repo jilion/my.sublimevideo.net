@@ -10,7 +10,7 @@ class SitesController < ApplicationController
 
   etag { current_user.id }
 
-  has_scope :by_hostname, :by_date, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags
+  has_scope :by_hostname, :by_date, :by_last_30_days_starts, :by_last_30_days_video_tags
 
   # GET /sites
   def index

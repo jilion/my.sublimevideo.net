@@ -23,7 +23,7 @@
     %small= link_to user.confirmation_comment? ? h(user.confirmation_comment) : "-", [:admin, user], title: h(user.confirmation_comment)
 
   %td.number
-    %small= number_with_delimiter(sites.sum { |s| s.last_30_days_billable_video_views })
+    %small= number_with_delimiter(sites.sum { |s| s.last_30_days_admin_starts })
 
   %td.number
     %small

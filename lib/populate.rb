@@ -94,12 +94,6 @@ module Populate
       end
     end
 
-    def stats(user_login_or_site_token)
-      _sites_from_user_login_or_site_token(user_login_or_site_token).each do |site|
-        StatsPopulator.new.execute(site)
-      end
-    end
-
     def recurring_stats(site_token)
       RecurringStatsPopulator.new.execute(Site.where(token: site_token).first)
     end

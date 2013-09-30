@@ -140,32 +140,29 @@ a.add_site span {
   text-align:left;
 }
 
-.early_access_video #sites table.main th.site {
+#sites table.main th.site {
   width:370px;
   text-align:left;
 }
 
-.early_access_video #sites table.main th.usage {
+#sites table.main th.stats {
   width:160px;
+  padding-bottom: 0px;
+}
+
+th.videos {
+  width:140px;
 }
 
 #sites table.main th.videos {
   width:140px;
 }
 
-.early_access_video #sites table.main th.videos {
-  width:140px;
-}
-
-.early_access_video #sites table.main th.code {
+#sites table.main th.code {
   width:138px;
 }
 
 #sites table.main th.status {
-  width:113px;
-}
-
-.early_access_video #sites table.main th.status {
   width:64px;
 }
 
@@ -367,7 +364,11 @@ a.add_site span {
   font-weight:600;
 }
 
-#sites table.main td.usage .sparkline {
+#sites table.main td.stats {
+  padding-bottom: 0px;
+}
+
+#sites table.main td.stats .sparkline {
   width:190px;
   height:28px;
   margin:0 auto;
@@ -375,7 +376,7 @@ a.add_site span {
   top:10px;
 }
 
-#sites table.main td.usage .fake_sparkline {
+#sites table.main td.stats .fake_sparkline {
   width:186px;
   height:27px;
   background:url(<%= asset_path "sites/fake_stats@2x.png" %>) no-repeat;
@@ -385,27 +386,27 @@ a.add_site span {
   top:10px;
 }
 
-#sites table.main td.usage .plays {
+#sites table.main td.stats .plays {
   position:absolute;
   bottom:6px;
   left:10px;
   line-height:12px;
 }
 
-#sites table.main td.usage .plays strong {
+#sites table.main td.stats .plays strong {
   font-weight:normal;
   font-size:16px;
   display:block;
 }
 
-#sites table.main td.usage .plays span {
+#sites table.main td.stats .plays span {
   font-size:9px;
   letter-spacing:1px;
   text-transform:uppercase;
   color:#4a648e;
 }
 
-#sites table.main td.usage a.view_stats, #sites table.main td.usage a.buy_addon {
+#sites table.main td.stats a.view_stats, #sites table.main td.stats a.buy_addon {
   position:absolute;
   bottom:10px;
   right:11px;
@@ -423,11 +424,11 @@ a.add_site span {
   @include border-radius(5px);
 }
 
-#sites table.main td.usage a.view_stats:active {
+#sites table.main td.stats a.view_stats:active {
   @include gradient(#2c4a76,#5f7da6,#46658f);
 }
 
-#sites table.main td.usage a.buy_addon {
+#sites table.main td.stats a.buy_addon {
   color:#fff;
   text-shadow:rgba(0,0,0,0.8) 0 -1px 1px;
   border:1px solid #1a4224;
@@ -436,11 +437,11 @@ a.add_site span {
   @include border-radius(6px);
 }
 
-#sites table.main td.usage a.buy_addon:active {
+#sites table.main td.stats a.buy_addon:active {
   @include gradient(#045a1c,#068e2c,#057524);
 }
 
-#sites table.main td.usage .title_link {
+#sites table.main td.stats .title_link {
   font-size:14px;
   line-height:15px;
   padding:0 20px;

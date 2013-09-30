@@ -47,7 +47,7 @@ class AddonsController < ApplicationController
   end
 
   def _set_sites
-    @sites = current_user.sites.not_archived.by_last_30_days_billable_video_views
+    @sites = current_user.sites.not_archived.by_last_30_days_admin_starts
   end
 
 end

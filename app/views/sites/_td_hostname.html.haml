@@ -22,7 +22,7 @@
       %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Add-ons', [site, :addons]
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Players', [site, :kits]
-        - if early_access?('video') && site.last_30_days_video_tags > 0
+        - if site.last_30_days_video_tags > 0
           %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Videos', site_video_tags_path(site)
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Publish video', new_site_video_code_path(site)
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Loader code', '', class: 'loader_code', data: { token: site.token }

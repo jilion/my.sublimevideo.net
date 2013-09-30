@@ -26,11 +26,6 @@ namespace :sites do
     timed { puts SitesTasks.regenerate_templates(loaders: true, settings: true) }
   end
 
-  desc "Update last 30 days counters of all not archived sites"
-  task update_last_30_days_counters_for_not_archived_sites: :environment do
-    timed { Site.update_last_30_days_counters_for_not_archived_sites }
-  end
-
   desc "Exit beta"
   task exit_beta: :environment do
     timed { puts SitesTasks.exit_beta }

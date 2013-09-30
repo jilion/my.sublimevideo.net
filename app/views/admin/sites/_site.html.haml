@@ -17,17 +17,10 @@
     %small= site.state.humanize
 
   %td.number
-    %small= number_with_delimiter(site.last_30_days_billable_video_views)
+    %small= number_with_delimiter(site.last_30_days_admin_starts)
 
   %td.number
     %small= number_with_delimiter(site.last_30_days_video_tags)
-
-  %td.percentage
-    %small
-      - if site.last_30_days_billable_video_views > 0
-        = display_percentage(site.last_30_days_extra_video_views / site.last_30_days_billable_video_views.to_f)
-      - else
-        = '-'
 
   %td
     %small= display_time(site.created_at)

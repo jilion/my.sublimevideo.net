@@ -1,0 +1,27 @@
+%td.stats
+  .wrap
+    - if site.realtime_stats_active?
+      - starts = last_grouped_starts(video_tag.starts, last_starts_days)
+      .sparkline{ id: "starts_sparkline_#{video_tag.uid}" }
+        :coffee
+          $('#starts_sparkline_#{video_tag.uid}').sparkline #{starts},
+            width:    '100%'
+            height:   '28px'
+            lineColor: '#00ff18'
+            disableHighlight: true
+            disableTooltips: true
+            spotRadius: 0
+            fillColor: 'rgba(79,249,99,.4)'
+      - plays = video_tag.starts.last(last_starts_days).sum
+      .plays
+        %strong= number_with_delimiter(plays)
+        %span= 'plays'
+      = link_to 'View Stats', site_video_tag_stats_url(site, video_tag), class: 'view_stats'
+    - else
+      .fake_sparkline
+      .plays
+        %strong= '?'
+        %span= 'plays'
+      .title_link
+        = link_to 'Add real-time video stats', site_addon_path(site, 'stats', p: 'realtime'), class: 'hl'
+      = link_to 'Buy Add-on', site_addon_path(site, 'stats', p: 'realtime'), class: 'buy_addon'

@@ -15,7 +15,7 @@
               .sorting
                 = link_to_sort :date, default_way: 'desc', default: true, label: "latest"
                 = link_to_sort :title
-        %th.usage
+        %th.stats
           .wrap
             - days = last_starts_days
             - title = "Plays (Last #{days} Days)"

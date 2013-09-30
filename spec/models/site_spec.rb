@@ -13,11 +13,8 @@ describe Site, :addons do
     its(:wildcard)                         { should be_false }
     its(:token)                            { should =~ /^[a-z0-9]{8}$/ }
     its(:accessible_stage)                 { should eq "beta" }
-    its(:last_30_days_main_video_views)    { should eq 0 }
-    its(:last_30_days_extra_video_views)   { should eq 0 }
-    its(:last_30_days_dev_video_views)     { should eq 0 }
-    its(:last_30_days_invalid_video_views) { should eq 0 }
-    its(:last_30_days_embed_video_views)   { should eq 0 }
+    its(:last_30_days_admin_starts)        { should eq 0 }
+    its(:last_30_days_starts)              { should eq 0 }
 
     it { should be_active } # initial state
     it { should be_valid }
@@ -555,18 +552,15 @@ end
 #  default_kit_id                            :integer
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
-#  first_billable_plays_at                   :datetime
+#  first_admin_starts_on                     :datetime
 #  first_paid_plan_started_at                :datetime
 #  first_plan_upgrade_required_alert_sent_at :datetime
 #  google_rank                               :integer
 #  hostname                                  :string(255)
 #  id                                        :integer          not null, primary key
-#  last_30_days_billable_video_views_array   :text
-#  last_30_days_dev_video_views              :integer          default(0)
-#  last_30_days_embed_video_views            :integer          default(0)
-#  last_30_days_extra_video_views            :integer          default(0)
-#  last_30_days_invalid_video_views          :integer          default(0)
-#  last_30_days_main_video_views             :integer          default(0)
+#  last_30_days_admin_starts                 :integer          default(0)
+#  last_30_days_starts                       :integer          default(0)
+#  last_30_days_starts_array                 :integer          default([])
 #  last_30_days_video_tags                   :integer          default(0)
 #  loaders_updated_at                        :datetime
 #  next_cycle_plan_id                        :integer
@@ -592,16 +586,14 @@ end
 #
 # Indexes
 #
-#  index_sites_on_created_at                        (created_at)
-#  index_sites_on_hostname                          (hostname)
-#  index_sites_on_id_and_state                      (id,state)
-#  index_sites_on_last_30_days_dev_video_views      (last_30_days_dev_video_views)
-#  index_sites_on_last_30_days_embed_video_views    (last_30_days_embed_video_views)
-#  index_sites_on_last_30_days_extra_video_views    (last_30_days_extra_video_views)
-#  index_sites_on_last_30_days_invalid_video_views  (last_30_days_invalid_video_views)
-#  index_sites_on_last_30_days_main_video_views     (last_30_days_main_video_views)
-#  index_sites_on_plan_id                           (plan_id)
-#  index_sites_on_token                             (token)
-#  index_sites_on_user_id                           (user_id)
+#  index_sites_on_created_at                       (created_at)
+#  index_sites_on_first_admin_starts_on            (first_admin_starts_on)
+#  index_sites_on_hostname                         (hostname)
+#  index_sites_on_id_and_state                     (id,state)
+#  index_sites_on_last_30_days_admin_starts        (last_30_days_admin_starts)
+#  index_sites_on_plan_id                          (plan_id)
+#  index_sites_on_token                            (token)
+#  index_sites_on_user_id                          (user_id)
+#  index_sites_on_user_id_and_last_30_days_starts  (user_id,last_30_days_starts)
 #
 

@@ -3,6 +3,6 @@
     - site = exhibit(site)
     - assistant = SiteSetupAssistant.new(site)
     = render 'sites/td_hostname', site: site
-    = render 'sites/td_usage', site: site
+    = render 'sites/td_stats', site: site
     = render 'sites/td_videos', site: site, assistant: assistant
     = render 'sites/td_status', site: site, assistant: assistant

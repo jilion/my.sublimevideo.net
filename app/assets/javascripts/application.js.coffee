@@ -3,6 +3,7 @@
 #= require highstock/highstock
 #= require mousetrap.min
 #= require backbone
+#= require jquery.sparkline.min
 #
 #= require_self
 #= require_tree ./helpers

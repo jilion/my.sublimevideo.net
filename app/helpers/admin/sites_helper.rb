@@ -2,7 +2,7 @@ module Admin::SitesHelper
 
   PAGE_TITLES = {
     tagged_with: "tagged with '%s'",
-    with_min_billable_video_views: 'with at least %s video plays in the last 30 days',
+    with_min_admin_starts: 'with at least %s video plays in the last 30 days',
     search: "matching '%s'",
     user_id: 'for %s',
     with_state: '%s',
@@ -14,7 +14,7 @@ module Admin::SitesHelper
   }
 
   def admin_sites_page_title(sites)
-    return unless selected_params = _select_param(:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path, :tagged_with, :with_min_billable_video_views, :search, :user_id, :with_state, :with_addon_plan)
+    return unless selected_params = _select_param(:free, :paying, :with_extra_hostnames, :with_wildcard, :with_path, :tagged_with, :with_min_admin_starts, :search, :user_id, :with_state, :with_addon_plan)
 
     filter_titles = selected_params.reduce([]) do |a, e|
       a << _page_title_from_filter(*e)
@@ -111,7 +111,7 @@ module Admin::SitesHelper
 
   def _value_for_filter_title_interpolation(key, value)
     case key
-    when :with_min_billable_video_views
+    when :with_min_admin_starts
       display_integer(value)
     when :user_id
       User.find(value).try(:name_or_email)

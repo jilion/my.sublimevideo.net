@@ -24,7 +24,7 @@ class SiteStatsController < ApplicationController
   private
 
   def _redirect_user_without_stats_addon
-    redirect_to root_url unless @site.subscribed_to?(AddonPlan.get('stats', 'realtime'))
+    redirect_to root_url unless @site.realtime_stats_active?
   end
 
 end

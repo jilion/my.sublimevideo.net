@@ -13,7 +13,7 @@ describe 'Private API Sites requests' do
     manager.site
   end
   let!(:site2) do
-    manager = SiteManager.new(build(:site, created_at: 2.days.ago, first_billable_plays_at: Time.now.utc, updated_at: Time.utc(2013, 4, 26)))
+    manager = SiteManager.new(build(:site, created_at: 2.days.ago, first_admin_starts_on: Time.now.utc, updated_at: Time.utc(2013, 4, 26)))
     manager.create
     manager.site
   end
@@ -81,8 +81,8 @@ describe 'Private API Sites requests' do
       response.status.should eq 200
     end
 
-    it 'supports :first_billable_plays_on_week scope' do
-      get url, { first_billable_plays_on_week: Time.now.utc }, @env
+    it 'supports :first_admin_starts_on_week scope' do
+      get url, { first_admin_starts_on_week: Time.now.utc }, @env
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site2.token

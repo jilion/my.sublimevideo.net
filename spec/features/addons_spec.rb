@@ -45,7 +45,7 @@ feature 'special /addons page' do
     context 'with 1 site' do
       background do
         sign_in_as :user_with_site
-        @site = @current_user.sites.by_last_30_days_billable_video_views.first
+        @site = @current_user.sites.by_last_30_days_admin_starts.first
       end
 
       scenario 'redirects /sites/:token/addons' do
@@ -58,7 +58,7 @@ feature 'special /addons page' do
   context 'user is logged-in with more than 1 sites' do
     background do
       sign_in_as :user_with_sites
-      @site = @current_user.sites.by_last_30_days_billable_video_views.first
+      @site = @current_user.sites.by_last_30_days_admin_starts.first
     end
 
     scenario 'redirects to /sites/:token/addons' do
@@ -71,7 +71,7 @@ end
 feature 'Add-on subscription shortcut' do
   background do
     sign_in_as :user_with_sites
-    @site = @current_user.sites.by_last_30_days_billable_video_views.first
+    @site = @current_user.sites.by_last_30_days_admin_starts.first
   end
 
   scenario 'redirects to first site addon page' do

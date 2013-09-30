@@ -1,6 +1,6 @@
 %td.videos
   .wrap
-    - if early_access?('video') && site.last_30_days_video_tags > 0
+    - if site.last_30_days_video_tags > 0
       = link_to site_video_tags_path(site), class: "video_number" do
         %strong= number_with_delimiter(site.last_30_days_video_tags)
         %em= "videos"
