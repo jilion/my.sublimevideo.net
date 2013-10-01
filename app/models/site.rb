@@ -126,7 +126,6 @@ class Site < ActiveRecord::Base
   scope :with_path,                  -> { where.not(path: [nil, '', ' ']) }
   scope :with_extra_hostnames,       -> { where.not(extra_hostnames: [nil, '']) }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
-  scope :with_paid_invoices,         -> { joins(:invoices).merge(::Invoice.with_state('paid')).where(refunded_at: nil) }
   scope :without_hostnames,          ->(hostnames = []) { where.not(hostname: [nil, ''] + hostnames) }
 
   scope :created_on,                 ->(timestamp) { where(created_at: _ensure_datetime(timestamp).all_day) }

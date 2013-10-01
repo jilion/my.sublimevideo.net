@@ -24,13 +24,6 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@sites, per_page: 50)
   end
 
-  # GET /sites/paying
-  def paying
-    @sites = apply_scopes(Site.with_paid_invoices.includes(:user))
-
-    respond_with(@sites, per_page: 100, paginate: true, layout: false)
-  end
-
   # GET /sites/:id
   def show
     redirect_to edit_admin_site_path(params[:id])
