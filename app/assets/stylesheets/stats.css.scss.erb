@@ -780,8 +780,12 @@ span.beta_badge {
 
 .stats .graph_box {
   float:left;
-  width:260px;
+  width:400px;
   margin-bottom:40px;
+}
+
+.stats.video .graph_box {
+  width:260px;
 }
 
 .stats #last_plays .graph_box {
@@ -906,12 +910,12 @@ span.beta_badge {
 }
 
 .stats .graph_box li .browser {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}
-.stats .graph_box li.b_fir .browser {background-image:url(<%= asset_path "stats/icons/firefox.png" %>);}
-.stats .graph_box li.b_iex .browser {background-image:url(<%= asset_path "stats/icons/internet_explorer.png" %>);}
-.stats .graph_box li.b_chr .browser {background-image:url(<%= asset_path "stats/icons/chrome.png" %>);}
-.stats .graph_box li.b_saf .browser {background-image:url(<%= asset_path "stats/icons/safari.png" %>);}
-.stats .graph_box li.b_ope .browser {background-image:url(<%= asset_path "stats/icons/opera.png" %>);}
-.stats .graph_box li.b_saf.p_iph .browser, .stats .graph_box li.b_saf.p_ipa .browser {background-image:url(<%= asset_path "stats/icons/mobile_safari.png" %>);}
+.stats .graph_box li.b_fir .browser {background-image:url(<%= asset_path "stats/icons/fir.png" %>);}
+.stats .graph_box li.b_iex .browser {background-image:url(<%= asset_path "stats/icons/iex.png" %>);}
+.stats .graph_box li.b_chr .browser {background-image:url(<%= asset_path "stats/icons/chr.png" %>);}
+.stats .graph_box li.b_saf .browser {background-image:url(<%= asset_path "stats/icons/saf.png" %>);}
+.stats .graph_box li.b_ope .browser {background-image:url(<%= asset_path "stats/icons/ope.png" %>);}
+.stats .graph_box li.b_saf.p_iph .browser, .stats .graph_box li.b_saf.p_ipa .browser {background-image:url(<%= asset_path "stats/icons/saf_mob.png" %>);}
 
 /*.stats .graph_box li .platform {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}*/
 .stats .graph_box li.p_osx .platform {background-image:url(<%= asset_path "stats/icons/osx.png" %>);}
@@ -948,12 +952,14 @@ span.beta_badge {
   line-height:17px;
 }
 
-.stats #browsers_and_platforms.graph_box .content_wrap, .stats #countries.graph_box .content_wrap, .stats #mobile_desktop.graph_box .content_wrap {
+.stats.video #browsers_and_platforms.graph_box .content_wrap,
+.stats.video #countries.graph_box .content_wrap,
+.stats.video #mobile_desktop.graph_box .content_wrap {
   height:493px;
   overflow:auto;
 }
 
-.stats #browsers_and_platforms.graph_box li .title {
+.stats.video #browsers_and_platforms.graph_box li .title {
   font-size:11px;
   padding:17px 0 0 6px;
 }
