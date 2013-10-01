@@ -53,10 +53,6 @@ class Site < ActiveRecord::Base
     designs_components
   end
 
-  def day_stats
-    Stat::Site::Day.where(t: token)
-  end
-
   # ===============
   # = Validations =
   # ===============
@@ -168,24 +164,6 @@ class Site < ActiveRecord::Base
     end
   end
 
-  def self.with_page_loads_in_the_last_30_days
-    stats = Stat::Site::Day.collection.aggregate([
-      { :$match => { d: { :$gte => 30.days.ago.midnight } } },
-      { :$project => {
-          _id: 0,
-          t: 1,
-          pvmTot: { :$add => '$pv.m' },
-          pveTot: { :$add => '$pv.e' },
-          pvemTot: { :$add => '$pv.em' } } },
-      { :$group => {
-        _id: '$t',
-        pvmTotSum: { :$sum => '$pvmTot' },
-        pveTotSum: { :$sum => '$pveTot' },
-        pvemTotSum: { :$sum => '$pvemTot' } } }
-    ])
-    where(token: stats.select { |stat| (stat['pvmTotSum'] + stat['pveTotSum'] + stat['pvemTotSum']) > 0 }.map { |s| s['_id'] })
-  end
-
   def self.to_backbone_json
     all.map(&:to_backbone_json)
   end
@@ -210,11 +188,6 @@ class Site < ActiveRecord::Base
 
   def to_param
     token
-  end
-
-  def views
-    0
-    # @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   def delay_update_loaders_and_settings

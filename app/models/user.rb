@@ -117,8 +117,6 @@ class User < ActiveRecord::Base
 
   scope :sites_tagged_with, ->(word) { joins(:sites).where(sites: { id: Site.not_archived.tagged_with(word).pluck(:id) }) }
 
-  scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days).references(:sites) }
-
   # sort
   scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way}, users.email #{way}") }
   scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way}") }

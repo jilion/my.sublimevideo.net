@@ -11,7 +11,7 @@ class SiteSetupAssistant
   end
 
   def setup_done?
-    current_step == 'summary' || @site.views.nonzero?
+    current_step == 'summary' || SiteAdminStat.total_admin_starts(@site).nonzero?
   end
 
   def current_step

@@ -5,9 +5,8 @@ include ApplicationHelper
 feature "Site invoices page" do
 
   context "user has a credit card" do
-    background do
-      sign_in_as :user
-    end
+    let(:user) { :user }
+    background { sign_in_as user }
 
     describe "navigation and content presence verification" do
       background do
@@ -70,8 +69,10 @@ feature "Site invoices page" do
       end
 
       describe "retry the payment" do
-        scenario "it is possible to retry the payment" do
-          VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.pay_invoices_above') }
+        let(:user) { create(:user_no_cc, valid_cc_attributes).reload }
+
+        scenario "it is possible to retry the payment", :vcr do
+          click_button I18n.t('invoice.pay_invoices_above')
 
           @site.invoices.with_state('failed').should be_empty
 

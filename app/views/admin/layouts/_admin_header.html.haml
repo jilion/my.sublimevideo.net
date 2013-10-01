@@ -33,7 +33,6 @@
         %li= link_to "Countries", admin_single_stat_path(page: 'countries')
         %li= link_to "Employees", admin_single_stat_path(page: 'employees')
         %li= link_to "Videos served", admin_single_stat_path(page: 'videos_served')
-        -#%li= link_to "More...", [:more, :admin, :stats]
 
     - if has_role?('god')
       .popup_menu

@@ -58,7 +58,7 @@ MySublimeVideo::Application.routes.draw do
         end
 
         member do
-          get :videos_infos
+          get :more_info
           get :invoices
           get :active_pages
           patch :generate_loader
@@ -101,7 +101,6 @@ MySublimeVideo::Application.routes.draw do
 
       resources :trends, only: [:index] do
         collection do
-          get :more
           get :billings
           get :revenues
           get :billable_items

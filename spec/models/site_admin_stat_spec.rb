@@ -32,15 +32,54 @@ describe SiteAdminStat do
     end
   end
 
-  describe ".last_stats" do
+  describe ".total_admin_starts" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, { stats: [{ id: 1 }] }.to_json] }
+        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, [
+          { id: 1, st: { e: 1, w: 1 }},
+          { id: 2, st: { e: 2, w: 2 }}
+        ].to_json] }
       end
     end
 
-    it "returns last stats" do
-      expect(described_class.last_stats(site).first).to eq SiteAdminStat.new(id: 1)
+    it "returns sum of all starts" do
+      expect(described_class.total_admin_starts(site)).to eq 6
+    end
+  end
+
+  describe ".total_admin_app_loads" do
+    before do
+      stub_api_for(described_class) do |stub|
+        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, [
+          { id: 1, al: { e: 1, i: 2 }},
+          { id: 2, al: { em: 3, m: 4 }},
+          { id: 3 }
+        ].to_json] }
+      end
+    end
+
+    it "returns sum of all app loads" do
+      expect(described_class.total_admin_app_loads(site)).to eq 10
+    end
+  end
+
+  describe ".last_30_days_admin_app_loads" do
+    before do
+      stub_api_for(described_class) do |stub|
+        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, [
+          { id: 1, al: { e: 1, i: 2 }},
+          { id: 2, al: { e: 3, m: 4 }},
+          { id: 3 }
+        ].to_json] }
+      end
+    end
+
+    it "returns sum of all app loads of type e" do
+      expect(described_class.last_30_days_admin_app_loads(site, :e)).to eq 4
+    end
+
+    it "returns sum of all app loads of type m" do
+      expect(described_class.last_30_days_admin_app_loads(site, :m)).to eq 4
     end
   end
 

@@ -60,13 +60,4 @@ class Admin::TrendsController < Admin::AdminController
     end
   end
 
-  def more
-    # Legacy metric
-    @last_30_days_video_pageviews = SiteUsage.between(day: 31.days.ago.utc..Time.now.utc.yesterday).sum(:player_hits).to_i
-    @total_video_pageviews = SiteUsage.sum(:player_hits).to_i
-
-    @last_30_days_video_views = Stat::Site::Day.views_sum(from: 31.days.ago.utc.midnight, to: Time.now.utc.yesterday.end_of_day)
-    @total_video_views = Stat::Site::Day.views_sum # all time views sum! FUCK YEAH!
-  end
-
 end

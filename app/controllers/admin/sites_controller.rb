@@ -1,6 +1,6 @@
 class Admin::SitesController < Admin::AdminController
-  respond_to :html, except: [:videos_infos, :invoices, :active_pages]
-  respond_to :js, only: [:index, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages]
+  respond_to :html, except: [:more_info, :invoices, :active_pages]
+  respond_to :js, only: [:index, :update, :generate_loader, :generate_settings, :more_info, :invoices, :active_pages]
 
   before_filter do |controller|
     if action_name.in?(%w[update_design_subscription update_addon_plan_subscription])
@@ -8,7 +8,7 @@ class Admin::SitesController < Admin::AdminController
     end
   end
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :_set_site, only: [:edit, :update, :generate_loader, :generate_settings, :videos_infos, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
+  before_filter :_set_site, only: [:edit, :update, :generate_loader, :generate_settings, :more_info, :invoices, :active_pages, :update_design_subscription, :update_addon_plan_subscription]
 
   # filter & search
   has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
@@ -72,8 +72,8 @@ class Admin::SitesController < Admin::AdminController
     _respond_for_site_with_notice('Settings will be regenerated.')
   end
 
-  # GET /sites/:id/videos_infos
-  def videos_infos
+  # GET /sites/:id/more_info
+  def more_info
   end
 
   # GET /sites/:id/invoices

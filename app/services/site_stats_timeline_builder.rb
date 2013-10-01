@@ -23,7 +23,8 @@ class SiteStatsTimelineBuilder
   private
 
   def _all
-    @_all ||= Stat::Site::Day.last_stats(@options)
+    []
+    # @_all ||= Stat::Site::Day.last_stats(@options)
   end
 
   def _sum_views(type, view_types)

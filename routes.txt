@@ -29,20 +29,19 @@
                                admin_root GET           /                                                         redirect(301, /login)
                               admin_admin GET           /                                                         redirect(301, /sites)
                        paying_admin_sites GET           /sites/paying(.:format)                                   admin/sites#paying
-                  videos_infos_admin_site GET           /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
+                     more_info_admin_site GET           /sites/:id/more_info(.:format)                            admin/sites#more_info
                       invoices_admin_site GET           /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET           /sites/:id/active_pages(.:format)                         admin/sites#active_pages
-               generate_loader_admin_site PUT           /sites/:id/generate_loader(.:format)                      admin/sites#generate_loader
-             generate_settings_admin_site PUT           /sites/:id/generate_settings(.:format)                    admin/sites#generate_settings
-    update_design_subscription_admin_site PUT           /sites/:id/update_design_subscription(.:format)           admin/sites#update_design_subscription
-update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
+               generate_loader_admin_site PATCH         /sites/:id/generate_loader(.:format)                      admin/sites#generate_loader
+             generate_settings_admin_site PATCH         /sites/:id/generate_settings(.:format)                    admin/sites#generate_settings
+    update_design_subscription_admin_site PATCH         /sites/:id/update_design_subscription(.:format)           admin/sites#update_design_subscription
+update_addon_plan_subscription_admin_site PATCH         /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
                               admin_sites GET           /sites(.:format)                                          admin/sites#index
                           edit_admin_site GET           /sites/:id/edit(.:format)                                 admin/sites#edit
                                admin_site GET           /sites/:id(.:format)                                      admin/sites#show
                                           PATCH         /sites/:id(.:format)                                      admin/sites#update
                                           PUT           /sites/:id(.:format)                                      admin/sites#update
                               admin_plans GET           /plans(.:format)                                          admin/plans#index
-                    pages_admin_referrers GET           /referrers/pages(.:format)                                admin/referrers#pages
                         become_admin_user GET           /users/:id/become(.:format)                               admin/users#become
                          stats_admin_user GET           /users/:id/stats(.:format)                                admin/users#stats
                       invoices_admin_user GET           /users/:id/invoices(.:format)                             admin/users#invoices
@@ -57,7 +56,7 @@ update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_
                                           DELETE        /users/:id(.:format)                                      admin/users#destroy
                         admin_enthusiasts GET           /enthusiasts(.:format)                                    admin/enthusiasts#index
                          admin_enthusiast GET           /enthusiasts/:id(.:format)                                admin/enthusiasts#show
-             reset_auth_token_admin_admin PUT           /admins/:id/reset_auth_token(.:format)                    admin/admins#reset_auth_token
+             reset_auth_token_admin_admin PATCH         /admins/:id/reset_auth_token(.:format)                    admin/admins#reset_auth_token
                              admin_admins GET           /admins(.:format)                                         admin/admins#index
                          edit_admin_admin GET           /admins/:id/edit(.:format)                                admin/admins#edit
                                           PATCH         /admins/:id(.:format)                                     admin/admins#update
@@ -70,12 +69,10 @@ update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_
                    monthly_admin_invoices GET           /invoices/monthly(.:format)                               admin/invoices#monthly
                     yearly_admin_invoices GET           /invoices/yearly(.:format)                                admin/invoices#yearly
              top_customers_admin_invoices GET           /invoices/top_customers(.:format)                         admin/invoices#top_customers
-             retry_charging_admin_invoice PUT           /invoices/:id/retry_charging(.:format)                    admin/invoices#retry_charging
                            admin_invoices GET           /invoices(.:format)                                       admin/invoices#index
                        edit_admin_invoice GET           /invoices/:id/edit(.:format)                              admin/invoices#edit
                             admin_invoice GET           /invoices/:id(.:format)                                   admin/invoices#show
                         admin_single_stat GET           /stats/single/:page(.:format)                             admin/stats#show
-                        more_admin_trends GET           /trends/more(.:format)                                    admin/trends#more
                     billings_admin_trends GET           /trends/billings(.:format)                                admin/trends#billings
                     revenues_admin_trends GET           /trends/revenues(.:format)                                admin/trends#revenues
               billable_items_admin_trends GET           /trends/billable_items(.:format)                          admin/trends#billable_items
@@ -86,7 +83,7 @@ update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_
                       tweets_admin_trends GET           /trends/tweets(.:format)                                  admin/trends#tweets
  tailor_made_player_requests_admin_trends GET           /trends/tailor_made_player_requests(.:format)             admin/trends#tailor_made_player_requests
                              admin_trends GET           /trends(.:format)                                         admin/trends#index
-                     favorite_admin_tweet PUT           /tweets/:id/favorite(.:format)                            admin/tweets#favorite
+                     favorite_admin_tweet PATCH         /tweets/:id/favorite(.:format)                            admin/tweets#favorite
                              admin_tweets GET           /tweets(.:format)                                         admin/tweets#index
                               admin_deals GET           /deals(.:format)                                          admin/deals#index
                    admin_deal_activations GET           /deals/activations(.:format)                              admin/deal_activations#index
@@ -119,7 +116,6 @@ update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_
                         private_api_sites GET           /private_api/sites(.:format)                              private_api/sites#index
                          private_api_site GET           /private_api/sites/:id(.:format)                          private_api/sites#show
                  private_api_oauth2_token GET           /private_api/oauth2_tokens/:id(.:format)                  private_api/oauth2_tokens#show
-                    private_api_referrers GET           /private_api/referrers(.:format)                          private_api/referrers#index
                          new_user_session GET           /login(.:format)                                          users/sessions#new
                              user_session POST          /login(.:format)                                          users/sessions#create
                      destroy_user_session GET           /logout(.:format)                                         users/sessions#destroy
@@ -210,11 +206,6 @@ update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_
                            new_video_code GET           /videos/new(.:format)                                     video_codes#new
                                           GET           /stats-demo(.:format)                                     site_stats#index {:site_id=>"demo"}
                                     stats GET           /stats(.:format)                                          redirect(301, /stats-demo)
-                                          GET           /sites/stats(.:format)                                    redirect(301, /sites)
-                                     demo GET           /sites/stats/demo(.:format)                               redirect(301, /stats-demo)
-                                          GET           /sites/stats/:site_id(.:format)                           redirect(301)
-                            stats_exports POST          /stats/exports(.:format)                                  stats_exports#create
-                             stats_export GET           /stats/exports/:id(.:format)                              stats_exports#show
                        retry_all_invoices PUT           /invoices/retry_all(.:format)                             invoices#retry_all
                                   invoice GET           /invoices/:id(.:format)                                   invoices#show
                      transaction_callback POST          /transaction/callback(.:format)                           transactions#callback

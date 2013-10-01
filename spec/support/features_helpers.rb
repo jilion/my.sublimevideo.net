@@ -68,15 +68,19 @@ module Spec
         resource_options = { resource_or_resource_name => options }
 
         resource = case resource_or_resource_name
-                   when :user
-                     create_user(resource_options)
-                   when :user_with_site
-                     create_user(resource_options).tap { |u| create_site_for(u) }
-                   when :user_with_sites
-                     create_user(resource_options).tap { |u| 2.times { create_site_for(u) } }
-                   when :admin
-                     create_admin(resource_options)
-                   end
+        when :user
+          create_user(resource_options)
+        when :user_with_site
+          create_user(resource_options).tap { |u| create_site_for(u) }
+        when :user_with_sites
+          create_user(resource_options).tap { |u| 2.times { create_site_for(u) } }
+        when :admin
+          create_admin(resource_options)
+        else
+          resource_or_resource_name.confirm!
+          @current_user = resource_or_resource_name
+        end
+
         sign_in(resource.class == Admin ? 'admin' : 'my', resource, options)
         resource
       end

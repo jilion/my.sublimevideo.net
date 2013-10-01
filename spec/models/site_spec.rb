@@ -507,21 +507,6 @@ describe Site, :addons do
       specify { Site.where(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).should =~ [@site3] }
     end
 
-    describe '.with_page_loads_in_the_last_30_days' do
-      let(:site1) { create(:site) }
-      let(:site2) { create(:site) }
-      let(:site3) { create(:site) }
-      let(:site4) { create(:site) }
-      before do
-        create(:site_day_stat, t: site1.token, d: 3.days.ago.midnight, pv: { m: 1 })
-        create(:site_day_stat, t: site2.token, d: 1.day.ago.midnight, pv: { e: 1 })
-        create(:site_day_stat, t: site3.token, d: 31.days.ago.utc.midnight, pv: { em: 1 })
-        create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
-      end
-
-      specify { Site.with_page_loads_in_the_last_30_days.should =~ [site1, site2] }
-    end
-
     describe '.search' do
       let(:site) { create(:site) }
 
