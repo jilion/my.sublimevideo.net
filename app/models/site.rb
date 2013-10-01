@@ -133,23 +133,11 @@ class Site < ActiveRecord::Base
   scope :with_paid_invoices,         -> { joins(:invoices).merge(::Invoice.with_state('paid')).where(refunded_at: nil) }
   scope :without_hostnames,          ->(hostnames = []) { where.not(hostname: [nil, ''] + hostnames) }
 
-  scope :created_on, ->(timestamp) {
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where(created_at: timestamp.all_day)
-  }
-  scope :created_after, ->(timestamp) {
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where('sites.created_at > ?', timestamp)
-  }
+  scope :created_on,                 ->(timestamp) { where(created_at: _ensure_datetime(timestamp).all_day) }
+  scope :created_after,              ->(timestamp) { where('sites.created_at > ?', _ensure_datetime(timestamp)) }
+  scope :first_admin_starts_on_week, ->(timestamp) { where(first_admin_starts_on: _ensure_datetime(timestamp).all_week) }
 
-  scope :first_admin_starts_on_week, ->(timestamp) {
-    timestamp = Time.parse(timestamp) if timestamp.is_a?(String)
-    where(first_admin_starts_on: timestamp.all_week)
-  }
-
-  scope :not_tagged_with, ->(tag) do
-    tagged_with(tag, exclude: true).references(:taggings)
-  end
+  scope :not_tagged_with, ->(tag) { tagged_with(tag, exclude: true).references(:taggings) }
 
   # addons
   scope :paying, -> { active.joins(:billable_items).where(billable_items: { state: 'subscribed' }).merge(BillableItem.paid) }
@@ -233,6 +221,12 @@ class Site < ActiveRecord::Base
     # Delay for 5 seconds to be sure that commit transaction is done.
     LoaderGenerator.delay(queue: 'my', at: 5.seconds.from_now.to_i).update_all_stages!(id, deletable: true)
     SettingsGenerator.delay(queue: 'my', at: 5.seconds.from_now.to_i).update_all!(id)
+  end
+
+  private
+
+  def self._ensure_datetime(timestamp)
+    timestamp.is_a?(String) ? Time.parse(timestamp) : timestamp
   end
 
 end
