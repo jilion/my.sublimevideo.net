@@ -28,7 +28,6 @@
                                admin_exit GET           /exit(.:format)                                           redirect(301, /logout)
                                admin_root GET           /                                                         redirect(301, /login)
                               admin_admin GET           /                                                         redirect(301, /sites)
-                       paying_admin_sites GET           /sites/paying(.:format)                                   admin/sites#paying
                      more_info_admin_site GET           /sites/:id/more_info(.:format)                            admin/sites#more_info
                       invoices_admin_site GET           /sites/:id/invoices(.:format)                             admin/sites#invoices
                   active_pages_admin_site GET           /sites/:id/active_pages(.:format)                         admin/sites#active_pages
