@@ -260,60 +260,6 @@ describe Site, :addons do
           site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
           site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end
-
-        context 'site had a legacy plus plan' do
-          let(:site) do
-            site = build(:site, plan: plus_plan)
-            SiteManager.new(site).create
-            site
-          end
-
-          it 'unsuspend all billable (and sponsor some) items' do
-            site.suspend!
-            site.unsuspend!
-
-            site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
-            site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
-            site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
-            site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
-            site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
-            site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
-            site.billable_items.with_item(@stats_addon_plan_2)        .state('sponsored').should have(1).item
-            site.billable_items.with_item(@logo_addon_plan_2)         .state('subscribed').should have(1).item
-            site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
-            site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-            site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
-            site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
-            site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
-          end
-        end
-
-        context 'site had a legacy premium plan' do
-          let(:site) do
-            site = build(:site, plan: premium_plan)
-            SiteManager.new(site).create
-            site
-          end
-
-          it 'unsuspend all billable (and sponsor some) items' do
-            site.suspend!
-            site.unsuspend!
-
-            site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
-            site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
-            site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
-            site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
-            site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
-            site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
-            site.billable_items.with_item(@stats_addon_plan_2)        .state('subscribed').should have(1).item
-            site.billable_items.with_item(@logo_addon_plan_2)         .state('subscribed').should have(1).item
-            site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
-            site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-            site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
-            site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
-            site.billable_items.with_item(@support_addon_plan_2)      .state('sponsored').should have(1).item
-          end
-        end
       end
 
       context 'with a billable item in trial' do

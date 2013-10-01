@@ -57,45 +57,10 @@ class SiteManager
   # called from app/models/site.rb
   def unsuspend_billable_items
     _set_default_designs
-    if site.plan_id?
-      _update_addon_subscriptions(_free_addon_plans_subscriptions_hash(reject: %w[logo stats support]))
-      case site.plan.name
-      when 'plus'
-        _unsuspend_billable_items_for_legacy_plus_plan
-      when 'premium'
-        _unsuspend_billable_items_for_legacy_premium_plan
-      end
-      site.save!
-    else
-      site.billable_items.where(state: 'suspended').each do |billable_item|
-        billable_item.state = _new_billable_item_state(billable_item.item)
-        billable_item.save!
-      end
+    site.billable_items.where(state: 'suspended').each do |billable_item|
+      billable_item.state = _new_billable_item_state(billable_item.item)
+      billable_item.save!
     end
-  end
-
-  def _unsuspend_billable_items_for_legacy_plus_plan
-    # Sponsor real-time stats
-    _update_addon_subscriptions({
-      stats: AddonPlan.get('stats', 'realtime').id,
-      support: AddonPlan.get('support', 'standard').id
-    }, force: 'sponsored')
-
-    _update_addon_subscriptions({
-      logo: AddonPlan.get('logo', 'disabled').id
-    }, force: 'subscribed')
-  end
-
-  def _unsuspend_billable_items_for_legacy_premium_plan
-    # Sponsor VIP email support
-    _update_addon_subscriptions({
-      support: AddonPlan.get('support', 'vip').id
-    }, force: 'sponsored')
-
-    _update_addon_subscriptions({
-      logo: AddonPlan.get('logo', 'disabled').id,
-      stats: AddonPlan.get('stats', 'realtime').id
-    }, force: 'subscribed')
   end
 
   # called from app/models/site.rb
