@@ -18,8 +18,7 @@ describe NewInactiveUserNotifier do
     context "with users created 1 week ago" do
       before {
         @user1 = create(:user, created_at: 7.days.ago)
-        site   = create(:site, user: @user1)
-        create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, pv: { m: 2 })
+        site   = create(:site, user: @user1, last_30_days_admin_starts: 1)
         @user2 = create(:user, created_at: 7.days.ago)
         Sidekiq::Worker.clear_all
       }
