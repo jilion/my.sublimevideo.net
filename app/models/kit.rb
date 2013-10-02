@@ -9,6 +9,7 @@ class Kit < ActiveRecord::Base
 
   validates :site, :design, :name, :identifier, presence: true
   validates :identifier, :name, uniqueness: { scope: :site_id }
+  validates :name, length: { maximum: 255 }
 
   def initialize(*args)
     super

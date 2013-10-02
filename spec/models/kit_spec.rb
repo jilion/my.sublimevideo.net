@@ -13,6 +13,7 @@ describe Kit do
     [:site, :design, :identifier, :name].each do |attr|
       it { should validate_presence_of(attr) }
     end
+    it { should ensure_length_of(:name).is_at_most(255) }
 
     describe 'uniqueness of identifier by site_id' do
       it 'adds an error if identifier is not unique for this site' do
