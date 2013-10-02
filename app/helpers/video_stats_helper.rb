@@ -3,10 +3,10 @@ module VideoStatsHelper
   def video_stats_options_for_date_range_select(selected_hours)
     options_for_select([
       ['Last 24 hours', 24],
-      ['Last 30 days', 30*24],
-      ['Last 90 days', 90*24],
-      ['Last 365 days', 365*24],
-    ], selected_hours.to_s)
+      ['Last 30 days', 30.days / 1.hour],
+      ['Last 90 days', 90.days / 1.hour],
+      ['Last 365 days', 365.days / 1.hour],
+    ], selected_hours)
   end
 
   def video_stats_options_for_source_select(selected_source)
@@ -15,6 +15,14 @@ module VideoStatsHelper
       ['Your website', 'w'],
       ['External websites', 'e']
     ], selected_source)
+  end
+
+  def video_stats_hours_or_days(hours)
+    if hours > 24
+      pluralize(hours / 24, 'day')
+    else
+      pluralize(hours, 'hour')
+    end
   end
 
   def video_stats_sources_for_export_text(source)
@@ -62,13 +70,13 @@ module VideoStatsHelper
   end
 
   def video_stats_country_name(country_code)
-    country_code = 'gb' if country_code == 'uk'
+    country_code = _handle_special_country_code(country_code)
 
-    Country[country_code].try(:name) || country_code.upcase
+    Country[country_code].try(:name) || country_code.titleize
   end
 
   def video_stats_country_style(country_code)
-    country_code = 'gb' if country_code == 'uk'
+    country_code = _handle_special_country_code(country_code)
 
     "background-image:url(#{asset_path("flags/#{country_code.upcase}.png")});"
   end
@@ -100,6 +108,19 @@ module VideoStatsHelper
     when 'otm' then 'Other (Mobile)'
     when 'otd' then 'Other (Desktop)'
     else code
+    end
+  end
+
+  private
+
+  def _handle_special_country_code(country_code)
+    case country_code
+    when 'uk'
+      'gb'
+    when 'a1', 'a2', 'o1'
+      'unknown'
+    else
+      country_code
     end
   end
 

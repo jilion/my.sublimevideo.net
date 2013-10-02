@@ -97,11 +97,6 @@ class Admin::UsersController < Admin::AdminController
 
   private
 
-  def _set_default_scopes
-    params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
-    params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
-  end
-
   def _set_user
     @user = User.find(params[:id])
   end

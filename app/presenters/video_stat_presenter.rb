@@ -39,33 +39,47 @@ class VideoStatPresenter
     _reduce_stats_for_field(:de)
   end
 
-  def hourly_loads
-    _reduce_stats_for_field_by_hour(:lo)
+  def loads
+    _reduce_stats_for_field_by_period(:lo)
   end
 
-  def hourly_starts
-    _reduce_stats_for_field_by_hour(:st)
+  def plays
+    _reduce_stats_for_field_by_period(:st)
   end
 
   def last_60_minutes_loads
-    stats = last_stats_by_minute.map { |s| [Time.parse(s.t).to_i * 1000, s.lo] }
-
-    _fill_missing_values_for_last_stats(stats,
-      period: :minute,
-      from: 59.minutes.ago.change(sec: 0),
-      to: Time.now.utc.change(sec: 0))
+    _last_60_minutes_hits(:lo)
   end
 
-  def last_60_minutes_starts
-    stats = last_stats_by_minute.map { |s| [Time.parse(s.t).to_i * 1000, s.st] }
+  def last_60_minutes_plays
+    _last_60_minutes_hits(:st)
+  end
 
-    _fill_missing_values_for_last_stats(stats,
-      period: :minute,
-      from: 59.minutes.ago.change(sec: 0),
-      to: Time.now.utc.change(sec: 0))
+  # TODO: Improve
+  def last_modified
+    stats_for_last_modified = if options[:since]
+      last_stats_by_minute
+    else
+      last_stats_by_hour
+    end
+
+    stats_for_last_modified.map { |s| s.time }.max
+  end
+
+  def etag
+    "#{video_tag.uid}_#{options}"
   end
 
   private
+
+  def _last_60_minutes_hits(field)
+    stats = last_stats_by_minute.map { |s| [s.time.to_i * 1000, s.send(field)] }
+
+    _group_and_fill_missing_values_for_last_stats(stats,
+      period: :minute,
+      from: 59.minutes.ago.change(sec: 0),
+      to: Time.now.utc.change(sec: 0))
+  end
 
   def _reduce_stats_for_field(field)
     reduced_stats = last_stats_by_hour.map { |s| s.send(:[], field) }.compact.reduce(Hash.new(0)) do |memo, stat|
@@ -88,8 +102,8 @@ class VideoStatPresenter
     reduced_stats
   end
 
-  def _reduce_stats_for_field_by_hour(field)
-    reduced_stats = last_stats_by_hour.map do |stat|
+  def _reduce_stats_for_field_by_period(field)
+    reduced_stats = last_stats_by_hour.reduce(Hash.new(0)) do |hash, stat|
       stat_for_field = stat.send(:[], field)
       total = if stat_for_field.present?
         if options[:source] == 'a'
@@ -101,32 +115,35 @@ class VideoStatPresenter
         0
       end
 
-      [Time.parse(stat.t).to_i * 1000, total || 0]
+      time = options[:hours] > 24 ? stat.time.midnight : stat.time
+      hash[time.to_i * 1000] += total.to_i
+
+      hash
     end
 
-    _fill_missing_values_for_last_stats(reduced_stats,
-      period: :hour,
-      from: options[:hours].to_i.hours.ago.change(min: 0),
+    _group_and_fill_missing_values_for_last_stats(reduced_stats.to_a,
+      from: options[:hours].hours.ago.change(min: 0),
       to: 1.hour.ago.change(min: 0))
   end
 
-  def _fill_missing_values_for_last_stats(stats, options = {})
-    options = options.symbolize_keys.reverse_merge(default_value: 0)
+  def _group_and_fill_missing_values_for_last_stats(stats, opts = {})
+    opts = opts.symbolize_keys.reverse_merge(default_value: 0, period: options[:hours] > 24 ? :day : :hour)
 
-    if !options[:from] && !options[:to]
-      options[:from] = stats.first[0] || Time.now
-      options[:to]   = stats.last[0] || (Time.now - 1.second)
+    if !opts[:from] && !opts[:to]
+      opts[:from] = stats.first[0] || Time.now
+      opts[:to]   = stats.last[0] || (Time.now - 1.second)
     end
+    opts[:from] = opts[:from].midnight if opts[:period] == :day
 
-    filled_stats, step = [], 1.send(options[:period])
-    while options[:from] <= options[:to]
-      js_time = options[:from].to_i * 1000
+    filled_stats, step = [], 1.send(opts[:period])
+    while opts[:from] <= opts[:to]
+      js_time = opts[:from].to_i * 1000
       filled_stats << if stats.first && stats.first[0] == js_time
         stats.shift
       else
-        [js_time, options[:default_value]]
+        [js_time, opts[:default_value]]
       end
-      options[:from] += step
+      opts[:from] += step
     end
 
     filled_stats

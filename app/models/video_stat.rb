@@ -9,4 +9,8 @@ class VideoStat
   def self.last_hours_stats(video_tag, hours)
     all(_site_token: video_tag.site_token, _video_uid: video_tag.uid, hours: hours).per(24*365)
   end
+
+  def time
+    Time.parse(t)
+  end
 end

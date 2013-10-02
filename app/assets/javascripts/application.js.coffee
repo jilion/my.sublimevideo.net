@@ -2,6 +2,7 @@
 #= require underscore
 #= require highstock/highstock
 #= require mousetrap.min
+#= require jquery.timeago
 #= require backbone
 #= require jquery.sparkline.min
 #
@@ -91,6 +92,7 @@ MySublimeVideo.Helpers.prepareStatsPoller = ->
   if MySublimeVideo.Helpers.statsPoller?
     MySublimeVideo.Helpers.statsPoller.teardown()
     delete MySublimeVideo.Helpers.statsPoller
+
   if ($div = $('.stats.video')).exists()
     MySublimeVideo.Helpers.statsPoller = new MySublimeVideo.Helpers.StatsPoller($div)
 

@@ -17,4 +17,12 @@ class LastPlay
     Time.parse(t)
   end
 
+  def document_url
+    ERB::Util.h(du)
+  end
+
+  def referrer_url
+    ERB::Util.h(ru)
+  end
+
 end

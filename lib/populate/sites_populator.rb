@@ -31,6 +31,7 @@ class SitesPopulator < Populator
         puts "#{site.hostname} created for #{user.name}"
       end
     end
+    User.first.sites.first.update_column(:token, SiteToken[:www])
   end
 
 end

@@ -12,13 +12,7 @@ class VideoStatsController < ApplicationController
   def index
     @stats_presenter = VideoStatPresenter.new(@video_tag, params)
 
-    stats_for_last_modified = if params[:since]
-      @stats_presenter.last_stats_by_minute
-    else
-      @stats_presenter.last_stats_by_hour
-    end
-
-    if stale?(last_modified: stats_for_last_modified.map { |h| h[:updated_at] }.max, etag: "#{@video_tag.uid}_#{@stats_presenter.options}")
+    if stale?(last_modified: @stats_presenter.last_modified, etag: @stats_presenter.etag)
       respond_to do |format|
         format.html
         format.js
@@ -41,8 +35,8 @@ class VideoStatsController < ApplicationController
     tempfile = Tempfile.new(['export', '.csv'])
     CSV.open(tempfile, 'wb') do |csv|
       csv << %w[time loads plays]
-      @stats_presenter.hourly_loads.each_with_index do |(time, loads), i|
-        csv << [Time.at(time / 1000), loads, @stats_presenter.hourly_starts[i].last]
+      @stats_presenter.loads.each_with_index do |(time, loads), i|
+        csv << [Time.at(time / 1000), loads, @stats_presenter.plays[i].last]
       end
     end
     tempfile

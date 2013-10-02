@@ -81,7 +81,7 @@ module ApplicationHelper
   end
 
   def url_host(url)
-    URI.parse(URI.escape(url)).host
+    URI(url).host
   rescue
     url
   end

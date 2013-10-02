@@ -3,26 +3,28 @@ require 'fast_spec_helper'
 require 'presenters/video_stat_presenter'
 
 describe VideoStatPresenter do
-  FakeVideoStat = Struct.new(:t, :bp, :co, :de, :lo, :st)
-  FakeLastVideoStat = Struct.new(:t, :lo, :st)
+  FakeVideoStat = Struct.new(:time, :bp, :co, :de, :lo, :st)
+  FakeLastVideoStat = Struct.new(:time, :lo, :st)
+  FakeLastPlay = Struct.new(:time, :lo, :st)
   before do
     stub_const('VideoStat', Class.new)
     stub_const('LastVideoStat', Class.new)
+    stub_const('LastPlay', Class.new)
   end
 
-  let(:video_tag) { double('VideoTag') }
+  let(:video_tag) { double('VideoTag', uid: 'foobar') }
   let(:presenter) { described_class.new(video_tag) }
   let(:stats_by_hour) do
     [
       FakeVideoStat.new(
-        2.hours.ago.change(min: 0).to_s,
+        2.hours.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
         { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
         { 'w' => nil, 'e' => 5 },
         nil),
       FakeVideoStat.new(
-        1.hour.ago.change(min: 0).to_s,
+        1.hour.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 2, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 2 } },
         { 'w' => { 'd' => 5, 'm' => 2 }, 'e' => { 'd' => 5, 'm' => 1 } },
@@ -33,8 +35,15 @@ describe VideoStatPresenter do
 
   let(:stats_by_minute) do
     [
-      FakeLastVideoStat.new(2.minutes.ago.change(sec: 0).to_s, 5, nil),
-      FakeLastVideoStat.new(1.minutes.ago.change(sec: 0).to_s, nil, 3)
+      FakeLastVideoStat.new(2.minutes.ago.change(sec: 0), 5, nil),
+      FakeLastVideoStat.new(1.minutes.ago.change(sec: 0), nil, 3)
+    ]
+  end
+
+  let(:last_plays) do
+    [
+      FakeLastPlay.new(2.minutes.ago.change(sec: 0), 5, nil),
+      FakeLastPlay.new(1.minutes.ago.change(sec: 0), nil, 3)
     ]
   end
 
@@ -74,147 +83,11 @@ describe VideoStatPresenter do
     end
   end
 
-  describe '#hourly_loads' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+  describe '#last_plays' do
+    it 'delegates to VideoStat.last_stats' do
+      expect(LastPlay).to receive(:last_plays).with(video_tag, presenter.options[:since]) { last_plays }
 
-    context 'source == "a"' do
-      it 'has 24 items' do
-        expect(presenter.hourly_loads).to have(24).items
-      end
-
-      it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-
-      it 'has right values for present hours' do
-        expect(presenter.hourly_loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
-      end
-    end
-
-    context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
-
-      it 'has 24 items' do
-        expect(presenter.hourly_loads).to have(24).items
-      end
-
-      it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-
-      it 'has right values for present hours' do
-        expect(presenter.hourly_loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-    end
-
-    context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
-
-      it 'has 24 items' do
-        expect(presenter.hourly_loads).to have(24).items
-      end
-
-      it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-
-      it 'has right values for present hours' do
-        expect(presenter.hourly_loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
-      end
-    end
-  end
-
-  describe '#hourly_starts' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
-
-    context 'source == "a"' do
-      it 'has 24 items' do
-        expect(presenter.hourly_starts).to have(24).items
-      end
-
-      it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_starts[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-
-      it 'has right values for present hours' do
-        expect(presenter.hourly_starts[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
-      end
-    end
-
-    context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
-
-      it 'has 24 items' do
-        expect(presenter.hourly_starts).to have(24).items
-      end
-
-      it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_starts[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-
-      it 'has right values for present hours' do
-        expect(presenter.hourly_starts[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
-      end
-    end
-
-    context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
-
-      it 'has 24 items' do
-        expect(presenter.hourly_starts).to have(24).items
-      end
-
-      it 'has a value of 0 for missing hours' do
-        expect(presenter.hourly_starts[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
-      end
-
-      it 'has right values for present hours' do
-        expect(presenter.hourly_starts[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 0]
-      end
-    end
-  end
-
-  describe '#last_60_minutes_loads' do
-    before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
-
-    it 'has 60 items' do
-      expect(presenter.last_60_minutes_loads).to have(60).items
-    end
-
-    it 'has a value of 0 for missing minutes' do
-      expect(presenter.last_60_minutes_loads[0]).to eq [59.minutes.ago.change(sec: 0).to_i * 1000, 0]
-    end
-
-    it 'has right values for present minutes' do
-      expect(presenter.last_60_minutes_loads[57]).to eq [2.minutes.ago.change(sec: 0).to_i * 1000, 5]
-    end
-  end
-
-  describe '#last_60_minutes_starts' do
-    before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
-
-    it 'has 60 items' do
-      expect(presenter.last_60_minutes_starts).to have(60).items
-    end
-
-    it 'has a value of 0 for missing minutes' do
-      expect(presenter.last_60_minutes_starts[0]).to eq [59.minutes.ago.change(sec: 0).to_i * 1000, 0]
-    end
-
-    it 'has right values for present minutes' do
-      expect(presenter.last_60_minutes_starts[58]).to eq [1.minute.ago.change(sec: 0).to_i * 1000, 3]
-    end
-  end
-
-  describe '#_fill_missing_values_for_last_stats' do
-    it 'fills missing minutes with 0' do
-      stats = [[Time.utc(2013, 9, 11, 7).to_i * 1000, 13], [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]]
-      filled_stats = presenter.send(:_fill_missing_values_for_last_stats, stats, field: :lo, from: Time.utc(2013, 9, 11, 6), to: Time.utc(2013, 9, 11, 9), period: :hour)
-
-      filled_stats[0].should eq [Time.utc(2013, 9, 11, 6).to_i * 1000, 0]
-      filled_stats[1].should eq [Time.utc(2013, 9, 11, 7).to_i * 1000, 13]
-      filled_stats[2].should eq [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]
-      filled_stats[3].should eq [Time.utc(2013, 9, 11, 9).to_i * 1000, 0]
+      presenter.last_plays.should eq last_plays
     end
   end
 
@@ -289,4 +162,174 @@ describe VideoStatPresenter do
       it { expect(presenter.devices_stats).to eq expected_result }
     end
   end
+
+  describe '#loads' do
+    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+    context 'source == "a"' do
+      it 'has 24 items' do
+        expect(presenter.loads).to have(24).items
+      end
+
+      it 'has a value of 0 for missing hours' do
+        expect(presenter.loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+
+      it 'has right values for present hours' do
+        expect(presenter.loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
+      end
+    end
+
+    context 'source == "w"' do
+      let(:presenter) { described_class.new(video_tag, source: 'w') }
+
+      it 'has 24 items' do
+        expect(presenter.loads).to have(24).items
+      end
+
+      it 'has a value of 0 for missing hours' do
+        expect(presenter.loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+
+      it 'has right values for present hours' do
+        expect(presenter.loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+    end
+
+    context 'source == "e"' do
+      let(:presenter) { described_class.new(video_tag, source: 'e') }
+
+      it 'has 24 items' do
+        expect(presenter.loads).to have(24).items
+      end
+
+      it 'has a value of 0 for missing hours' do
+        expect(presenter.loads[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+
+      it 'has right values for present hours' do
+        expect(presenter.loads[22]).to eq [2.hours.ago.change(min: 0).to_i * 1000, 5]
+      end
+    end
+  end
+
+  describe '#plays' do
+    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+    context 'source == "a"' do
+      it 'has 24 items' do
+        expect(presenter.plays).to have(24).items
+      end
+
+      it 'has a value of 0 for missing hours' do
+        expect(presenter.plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+
+      it 'has right values for present hours' do
+        expect(presenter.plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
+      end
+    end
+
+    context 'source == "w"' do
+      let(:presenter) { described_class.new(video_tag, source: 'w') }
+
+      it 'has 24 items' do
+        expect(presenter.plays).to have(24).items
+      end
+
+      it 'has a value of 0 for missing hours' do
+        expect(presenter.plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+
+      it 'has right values for present hours' do
+        expect(presenter.plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 3]
+      end
+    end
+
+    context 'source == "e"' do
+      let(:presenter) { described_class.new(video_tag, source: 'e') }
+
+      it 'has 24 items' do
+        expect(presenter.plays).to have(24).items
+      end
+
+      it 'has a value of 0 for missing hours' do
+        expect(presenter.plays[0]).to eq [24.hours.ago.change(min: 0).to_i * 1000, 0]
+      end
+
+      it 'has right values for present hours' do
+        expect(presenter.plays[23]).to eq [1.hour.ago.change(min: 0).to_i * 1000, 0]
+      end
+    end
+  end
+
+  describe '#last_60_minutes_loads' do
+    before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+
+    it 'has 60 items' do
+      expect(presenter.last_60_minutes_loads).to have(60).items
+    end
+
+    it 'has a value of 0 for missing minutes' do
+      expect(presenter.last_60_minutes_loads[0]).to eq [59.minutes.ago.change(sec: 0).to_i * 1000, 0]
+    end
+
+    it 'has right values for present minutes' do
+      expect(presenter.last_60_minutes_loads[57]).to eq [2.minutes.ago.change(sec: 0).to_i * 1000, 5]
+    end
+  end
+
+  describe '#last_60_minutes_plays' do
+    before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+
+    it 'has 60 items' do
+      expect(presenter.last_60_minutes_plays).to have(60).items
+    end
+
+    it 'has a value of 0 for missing minutes' do
+      expect(presenter.last_60_minutes_plays[0]).to eq [59.minutes.ago.change(sec: 0).to_i * 1000, 0]
+    end
+
+    it 'has right values for present minutes' do
+      expect(presenter.last_60_minutes_plays[58]).to eq [1.minute.ago.change(sec: 0).to_i * 1000, 3]
+    end
+  end
+
+  describe '#last_modified' do
+    context 'since option is not set' do
+      before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+      it 'returns the most recent updated_at for stats by hour' do
+        expect(presenter.last_modified).to eq 1.hour.ago.change(min: 0)
+      end
+    end
+
+    context 'since option is set' do
+      before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+      let(:presenter) { described_class.new(video_tag, since: 1.hour.ago) }
+
+      it 'returns the most recent updated_at for stats by minute' do
+        expect(presenter.last_modified).to eq 1.minutes.ago.change(sec: 0)
+      end
+    end
+  end
+
+  describe '#etag' do
+    it 'compute the etag from video tag uid and presenter options' do
+      expect(presenter.etag).to eq "#{video_tag.uid}_#{presenter.options}"
+    end
+  end
+
+  describe '#_group_and_fill_missing_values_for_last_stats' do
+    it 'fills missing minutes with 0' do
+      stats = [[Time.utc(2013, 9, 11, 7).to_i * 1000, 13], [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]]
+      filled_stats = presenter.send(:_group_and_fill_missing_values_for_last_stats, stats, field: :lo, from: Time.utc(2013, 9, 11, 6), to: Time.utc(2013, 9, 11, 9), period: :hour)
+
+      filled_stats[0].should eq [Time.utc(2013, 9, 11, 6).to_i * 1000, 0]
+      filled_stats[1].should eq [Time.utc(2013, 9, 11, 7).to_i * 1000, 13]
+      filled_stats[2].should eq [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]
+      filled_stats[3].should eq [Time.utc(2013, 9, 11, 9).to_i * 1000, 0]
+    end
+  end
+
 end
