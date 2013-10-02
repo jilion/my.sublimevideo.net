@@ -63,7 +63,6 @@ MySublimeVideo::Application.routes.draw do
           patch :update_addon_plan_subscription
         end
       end
-      resources :plans, only: [:index]
 
       resources :users, only: [:index, :show, :edit, :update, :destroy] do
         member do
