@@ -47,21 +47,14 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/generate_loader
   def generate_loader
-    if params[:stage] == 'all'
-      LoaderGenerator.delay(queue: 'my').update_all_stages!(@site.id)
-      CampfireWrapper.delay(queue: 'my').post("Update all loaders for #{@site.hostname} (#{@site.token}).")
-    else
-      LoaderGenerator.delay(queue: 'my').update_stage!(@site.id, params[:stage])
-      CampfireWrapper.delay(queue: 'my').post("Update #{params[:stage]} loader for #{@site.hostname} (#{@site.token}).")
-    end
+    params[:stage] == 'all' ? _update_all_loader_stages : _update_loader_stage(params[:stage])
 
     _respond_for_site_with_notice("#{params[:stage].titleize} loader(s) will be regenerated.")
   end
 
   # PUT /sites/:id/generate_settings
   def generate_settings
-    SettingsGenerator.delay(queue: 'my').update_all!(@site.id)
-    CampfireWrapper.delay(queue: 'my').post("Update settings for #{@site.hostname} (#{@site.token}).")
+    _update_all_settings
 
     _respond_for_site_with_notice('Settings will be regenerated.')
   end
@@ -97,20 +90,27 @@ class Admin::SitesController < Admin::AdminController
     _respond_for_site_with_notice(t("flash.sites.update_#{type}_subscription.notice", :"#{type}_title" => @item.title, state: params[:state].presence || 'subscribed'))
   end
 
-  def _set_default_scopes
-    params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
-
-    unless params.keys.any? { |k| k =~ /^by_\w+$/ }
-      params[:by_date] = 'desc'
-    end
-  end
-
   def _set_site
     @site = Site.where(token: params[:id]).first!
   end
 
   def _site_params
     params.require(:site).permit!
+  end
+
+  def _update_all_loader_stages
+    LoaderGenerator.delay(queue: 'my').update_all_stages!(@site.id)
+    CampfireWrapper.delay(queue: 'my').post("Update all loaders for #{@site.hostname} (#{@site.token}).")
+  end
+
+  def _update_loader_stage(stage)
+    LoaderGenerator.delay(queue: 'my').update_stage!(@site.id, stage)
+    CampfireWrapper.delay(queue: 'my').post("Update #{stage} loader for #{@site.hostname} (#{@site.token}).")
+  end
+
+  def _update_all_settings
+    SettingsGenerator.delay(queue: 'my').update_all!(@site.id)
+    CampfireWrapper.delay(queue: 'my').post("Update settings for #{@site.hostname} (#{@site.token}).")
   end
 
   def _update_design_subscription(design)

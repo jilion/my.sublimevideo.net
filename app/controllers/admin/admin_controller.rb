@@ -11,4 +11,12 @@ class Admin::AdminController < ApplicationController
     admin_signed_in? && current_admin.has_role?(role)
   end
   helper_method :has_role?
+
+  private
+
+  def _set_default_scopes
+    params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
+    params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
+  end
+
 end
