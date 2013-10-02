@@ -188,4 +188,8 @@ end
 
 RSpec.configure do |config|
   config.include Spec::Support::FeaturesHelpers, type: :feature
+
+  config.before :each, type: :feature do
+    SiteAdminStat.stub(:total_admin_starts) { 1 }
+  end
 end
