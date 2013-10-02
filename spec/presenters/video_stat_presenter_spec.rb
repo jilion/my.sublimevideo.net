@@ -5,12 +5,14 @@ require 'presenters/video_stat_presenter'
 describe VideoStatPresenter do
   FakeVideoStat = Struct.new(:time, :bp, :co, :de, :lo, :st)
   FakeLastVideoStat = Struct.new(:time, :lo, :st)
+  FakeLastPlay = Struct.new(:time, :lo, :st)
   before do
     stub_const('VideoStat', Class.new)
     stub_const('LastVideoStat', Class.new)
+    stub_const('LastPlay', Class.new)
   end
 
-  let(:video_tag) { double('VideoTag') }
+  let(:video_tag) { double('VideoTag', uid: 'foobar') }
   let(:presenter) { described_class.new(video_tag) }
   let(:stats_by_hour) do
     [
@@ -35,6 +37,13 @@ describe VideoStatPresenter do
     [
       FakeLastVideoStat.new(2.minutes.ago.change(sec: 0), 5, nil),
       FakeLastVideoStat.new(1.minutes.ago.change(sec: 0), nil, 3)
+    ]
+  end
+
+  let(:last_plays) do
+    [
+      FakeLastPlay.new(2.minutes.ago.change(sec: 0), 5, nil),
+      FakeLastPlay.new(1.minutes.ago.change(sec: 0), nil, 3)
     ]
   end
 
@@ -71,6 +80,86 @@ describe VideoStatPresenter do
       expect(LastVideoStat).to receive(:last_stats).with(video_tag) { stats_by_minute }
 
       presenter.last_stats_by_minute.should eq stats_by_minute
+    end
+  end
+
+  describe '#last_plays' do
+    it 'delegates to VideoStat.last_stats' do
+      expect(LastPlay).to receive(:last_plays).with(video_tag, presenter.options[:since]) { last_plays }
+
+      presenter.last_plays.should eq last_plays
+    end
+  end
+
+  describe '#browsers_and_platforms_stats' do
+    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+    context 'source == "a"' do
+      let(:expected_result) { { 'iex-win' => { count: 20, percent: 0.8 }, 'saf-osx' => { count: 5, percent: 0.2 } } }
+
+      it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
+    end
+
+    context 'source == "w"' do
+      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/12.to_f }, 'saf-osx' => { count: 2, percent: 2/12.to_f } } }
+
+      it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
+    end
+
+    context 'source == "e"' do
+      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/13.to_f }, 'saf-osx' => { count: 3, percent: 3/13.to_f } } }
+
+      it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
+    end
+  end
+
+  describe '#countries_stats' do
+    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+    context 'source == "a"' do
+      let(:expected_result) { { 'fr' => { count: 20, percent: 0.8 }, 'ch' => { count: 5, percent: 0.2 } } }
+
+      it { expect(presenter.countries_stats).to eq expected_result }
+    end
+
+    context 'source == "w"' do
+      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:expected_result) { { 'fr' => { count: 10, percent: 10/12.to_f }, 'ch' => { count: 2, percent: 2/12.to_f } } }
+
+      it { expect(presenter.countries_stats).to eq expected_result }
+    end
+
+    context 'source == "e"' do
+      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:expected_result) { { 'fr' => { count: 10, percent: 10/13.to_f }, 'ch' => { count: 3, percent: 3/13.to_f } } }
+
+      it { expect(presenter.countries_stats).to eq expected_result }
+    end
+  end
+
+  describe '#devices_stats' do
+    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+    context 'source == "a"' do
+      let(:expected_result) { { 'd' => { count: 20, percent: 0.8 }, 'm' => { count: 5, percent: 0.2 } } }
+
+      it { expect(presenter.devices_stats).to eq expected_result }
+    end
+
+    context 'source == "w"' do
+      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:expected_result) { { 'd' => { count: 10, percent: 10/13.to_f }, 'm' => { count: 3, percent: 3/13.to_f } } }
+
+      it { expect(presenter.devices_stats).to eq expected_result }
+    end
+
+    context 'source == "e"' do
+      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:expected_result) { { 'd' => { count: 10, percent: 10/12.to_f }, 'm' => { count: 2, percent: 2/12.to_f } } }
+
+      it { expect(presenter.devices_stats).to eq expected_result }
     end
   end
 
@@ -206,6 +295,31 @@ describe VideoStatPresenter do
     end
   end
 
+  describe '#last_modified' do
+    context 'since option is not set' do
+      before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+
+      it 'returns the most recent updated_at for stats by hour' do
+        expect(presenter.last_modified).to eq 1.hour.ago.change(min: 0)
+      end
+    end
+
+    context 'since option is set' do
+      before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+      let(:presenter) { described_class.new(video_tag, since: 1.hour.ago) }
+
+      it 'returns the most recent updated_at for stats by minute' do
+        expect(presenter.last_modified).to eq 1.minutes.ago.change(sec: 0)
+      end
+    end
+  end
+
+  describe '#etag' do
+    it 'compute the etag from video tag uid and presenter options' do
+      expect(presenter.etag).to eq "#{video_tag.uid}_#{presenter.options}"
+    end
+  end
+
   describe '#_group_and_fill_missing_values_for_last_stats' do
     it 'fills missing minutes with 0' do
       stats = [[Time.utc(2013, 9, 11, 7).to_i * 1000, 13], [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]]
@@ -218,75 +332,4 @@ describe VideoStatPresenter do
     end
   end
 
-  describe '#browsers_and_platforms_stats' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
-
-    context 'source == "a"' do
-      let(:expected_result) { { 'iex-win' => { count: 20, percent: 0.8 }, 'saf-osx' => { count: 5, percent: 0.2 } } }
-
-      it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
-    end
-
-    context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
-      let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/12.to_f }, 'saf-osx' => { count: 2, percent: 2/12.to_f } } }
-
-      it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
-    end
-
-    context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
-      let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/13.to_f }, 'saf-osx' => { count: 3, percent: 3/13.to_f } } }
-
-      it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
-    end
-  end
-
-  describe '#countries_stats' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
-
-    context 'source == "a"' do
-      let(:expected_result) { { 'fr' => { count: 20, percent: 0.8 }, 'ch' => { count: 5, percent: 0.2 } } }
-
-      it { expect(presenter.countries_stats).to eq expected_result }
-    end
-
-    context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
-      let(:expected_result) { { 'fr' => { count: 10, percent: 10/12.to_f }, 'ch' => { count: 2, percent: 2/12.to_f } } }
-
-      it { expect(presenter.countries_stats).to eq expected_result }
-    end
-
-    context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
-      let(:expected_result) { { 'fr' => { count: 10, percent: 10/13.to_f }, 'ch' => { count: 3, percent: 3/13.to_f } } }
-
-      it { expect(presenter.countries_stats).to eq expected_result }
-    end
-  end
-
-  describe '#devices_stats' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
-
-    context 'source == "a"' do
-      let(:expected_result) { { 'd' => { count: 20, percent: 0.8 }, 'm' => { count: 5, percent: 0.2 } } }
-
-      it { expect(presenter.devices_stats).to eq expected_result }
-    end
-
-    context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
-      let(:expected_result) { { 'd' => { count: 10, percent: 10/13.to_f }, 'm' => { count: 3, percent: 3/13.to_f } } }
-
-      it { expect(presenter.devices_stats).to eq expected_result }
-    end
-
-    context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
-      let(:expected_result) { { 'd' => { count: 10, percent: 10/12.to_f }, 'm' => { count: 2, percent: 2/12.to_f } } }
-
-      it { expect(presenter.devices_stats).to eq expected_result }
-    end
-  end
 end

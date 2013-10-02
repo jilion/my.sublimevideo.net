@@ -55,6 +55,21 @@ class VideoStatPresenter
     _last_60_minutes_hits(:st)
   end
 
+  # TODO: Improve
+  def last_modified
+    stats_for_last_modified = if options[:since]
+      last_stats_by_minute
+    else
+      last_stats_by_hour
+    end
+
+    stats_for_last_modified.map { |s| s.time }.max
+  end
+
+  def etag
+    "#{video_tag.uid}_#{options}"
+  end
+
   private
 
   def _last_60_minutes_hits(field)

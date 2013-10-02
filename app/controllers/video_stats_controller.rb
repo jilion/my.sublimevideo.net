@@ -12,13 +12,7 @@ class VideoStatsController < ApplicationController
   def index
     @stats_presenter = VideoStatPresenter.new(@video_tag, params)
 
-    stats_for_last_modified = if params[:since]
-      @stats_presenter.last_stats_by_minute
-    else
-      @stats_presenter.last_stats_by_hour
-    end
-
-    if stale?(last_modified: stats_for_last_modified.map { |h| h[:updated_at] }.max, etag: "#{@video_tag.uid}_#{@stats_presenter.options}")
+    if stale?(last_modified: @stats_presenter.last_modified, etag: @stats_presenter.etag)
       respond_to do |format|
         format.html
         format.js
