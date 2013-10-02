@@ -18,7 +18,7 @@
         = display_integer(SiteAdminStat.total_admin_starts(site))
 
     %td
-      - %w[main extra staging dev invali].each do |type|
+      - %w[main extra staging dev invalid].each do |type|
         %p
           = "Last 30 days (#{type}):"
           = display_integer(SiteAdminStat.last_30_days_admin_app_loads(site, type[0]))
