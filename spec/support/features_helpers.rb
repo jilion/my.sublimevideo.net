@@ -74,11 +74,10 @@ module Spec
           create_user(resource_options).tap { |u| create_site_for(u) }
         when :user_with_sites
           create_user(resource_options).tap { |u| 2.times { create_site_for(u) } }
+        when :user_with_aliased_cc
+          @current_user = create(:user_no_cc, valid_cc_attributes).reload
         when :admin
           create_admin(resource_options)
-        else
-          resource_or_resource_name.confirm!
-          @current_user = resource_or_resource_name
         end
 
         sign_in(resource.class == Admin ? 'admin' : 'my', resource, options)

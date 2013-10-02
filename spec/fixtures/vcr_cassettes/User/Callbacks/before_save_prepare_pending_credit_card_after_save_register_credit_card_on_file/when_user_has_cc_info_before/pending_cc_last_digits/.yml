@@ -1,0 +1,133 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/orderdirect.asp
+    body:
+      encoding: UTF-8
+      string: ALIAS=4BU1EN1A&CARDNO=5399999999999999&CN=Bob+Doe+Hicks&CVC=111&ECI=7&ED=1015&EMAIL=email7%40user.com&FLAG3D=Y&HTTP_ACCEPT=%2A%2F%2A&Operation=RES&OwnerZip=1004&Owneraddress=Avenue+de+France+71&PARAMPLUS=CHECK_CC_USER_ID%3D624&PSPID=jilion&PSWD=WWQMNC89&SHASign=B0A4937CFD0F3F16425414EEF393E81734EDE23BC7A339EE4F6A15D3972C8A3506C6168B537E9D9540B3FC3461FAA5A372775024482843C88B76D0A609EA0119&USERID=sublime&WIN3DS=MAINW&amount=1&currency=USD&orderID=2ba6b6c66b874e130e2e0119cac0e6&ownercty=CH&ownertown=Lausanne
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:58:52 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '345'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:57:51 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1888913719_2213643;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"2ba6b6c66b874e130e2e0119cac0e6\"\r\nPAYID=\"24048647\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"5\"\r\nIPCTY=\"99\"\r\nCCCTY=\"US\"\r\nECI=\"12\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"0.01\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"MasterCard\"\r\nALIAS=\"4BU1EN1A\"\r\nNCERRORPLUS=\"!\">\r\n</ncresponse>"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:58:53 GMT
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=DES&PAYID=24048647&PSPID=jilion&PSWD=WWQMNC89&SHASign=969B73BDAA75BAF33F1D72CBF2C8B9482A0A57764606AB039D68267E9F4406DD7AB7C65ADD4C98156EE2E089F7DCF55B2AFD20E105B0CEA60FBEC51E77939ECC&USERID=sublime
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:58:55 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '229'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:57:55 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1888913757_2213645;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"2ba6b6c66b874e130e2e0119cac0e6\"\r\nPAYID=\"24048647\"\r\nPAYIDSUB=\"1\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nNCERRORPLUS=\"!\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"61\"\r\namount=\"0.01\"\r\ncurrency=\"USD\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:58:55 GMT
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=DES&PAYID=24048647&PSPID=jilion&PSWD=WWQMNC89&SHASign=969B73BDAA75BAF33F1D72CBF2C8B9482A0A57764606AB039D68267E9F4406DD7AB7C65ADD4C98156EE2E089F7DCF55B2AFD20E105B0CEA60FBEC51E77939ECC&USERID=sublime
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:58:56 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '257'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:57:56 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1888913797_2213647;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"2ba6b6c66b874e130e2e0119cac0e6\"\r\nPAYID=\"24048647\"\r\nPAYIDSUB=\"2\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"50001127\"\r\nNCERRORPLUS=\"|this
+        order is not authorized|\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"0\"\r\namount=\"\"\r\ncurrency=\"\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:58:57 GMT
+recorded_with: VCR 2.6.0

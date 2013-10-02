@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Billing address update' do
+feature 'Billing address update', :vcr do
   context 'user is not billable' do
     context 'with an incomplete billing address and no credit card' do
       background do
@@ -12,7 +12,7 @@ feature 'Billing address update' do
       scenario 'Updates his billing address and credit card successfully' do
         fields = fill_billing_address
         fill_credit_card
-        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'billing_info_submit' }
+        click_button 'billing_info_submit'
         go 'my', 'account'
 
         should_display_all_values_from_hash(fields)
@@ -23,14 +23,14 @@ feature 'Billing address update' do
         current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
         fields = fill_billing_address
         fill_credit_card
-        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'billing_info_submit' }
+        click_button 'billing_info_submit'
         current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
       end
 
       scenario 'Update billing address and credit card unsuccessfully' do
         fill_billing_address(email: 'foo', name: '', zip: '1'*21, region: '')
         fill_credit_card(type: 'master')
-        VCR.use_cassette('ogone/credit_card_master_validation') { click_button 'billing_info_submit' }
+        click_button 'billing_info_submit'
 
         page.should have_css '.inline_errors'
         page.should have_content 'Billing email address is invalid'
@@ -54,7 +54,7 @@ feature 'Billing address update' do
         scenario "Updates his billing address and credit card (#{brand}) successfully" do
           fields = fill_billing_address
           fill_credit_card(type: brand)
-          VCR.use_cassette("ogone/credit_card_#{brand}_validation") { click_button 'billing_info_submit' }
+          click_button 'billing_info_submit'
           go 'my', 'account'
 
           should_display_all_values_from_hash(fields)
@@ -63,7 +63,7 @@ feature 'Billing address update' do
         scenario "Update billing address and credit card (#{brand}) unsuccessfully" do
           fill_billing_address(email: 'foo', name: '', zip: '1'*21, region: '')
           fill_credit_card(type: brand)
-          VCR.use_cassette("ogone/credit_card_#{brand}_validation") { click_button 'billing_info_submit' }
+          click_button 'billing_info_submit'
 
           page.should have_css '.inline_errors'
           page.should have_content 'Postal code is too long (maximum is 20 characters)'
@@ -109,7 +109,7 @@ feature 'Billing address update' do
   end
 end
 
-feature 'Credit cards update' do
+feature 'Credit cards update', :vcr do
   context 'user is logged-in and has initially no credit card' do
     background do
       sign_in_as :user, without_cc: true
@@ -123,7 +123,7 @@ feature 'Credit cards update' do
         current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
 
         fill_credit_card(type: brand)
-        VCR.use_cassette("ogone/credit_card_#{brand}_validation") { click_button 'credit_card_submit' }
+        click_button 'credit_card_submit'
 
         @current_user.reload.cc_type.should eql brand
         @current_user.cc_last_digits.should eql send("valid_cc_attributes_#{brand}")[:cc_number][-4,4]
@@ -143,15 +143,15 @@ feature 'Credit cards update' do
 
     scenario 'update is successful' do
       fill_credit_card
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'credit_card_submit' }
+      click_button 'credit_card_submit'
 
       should_save_billing_info_successfully
     end
 
-    scenario 'update is successful after a successful 3-D Secure identification' do
+    scenario 'update is successful after a successful 3-D Secure identification', :vcr do
       fill_credit_card(type: 'd3d')
 
-      VCR.use_cassette('ogone/3ds_authorization') { click_button 'credit_card_submit' }
+      click_button 'credit_card_submit'
 
       @current_user.reload.pending_cc_type.should eq 'visa'
       @current_user.pending_cc_last_digits.should eq '0002'
@@ -159,7 +159,7 @@ feature 'Credit cards update' do
       page.should have_content 'Please click on the "Continue" button to continue the processing of your 3-D secure transaction.'
 
       # fake payment succeeded callback (and thus skip the d3d redirection)
-      VCR.use_cassette('ogone/void_authorization') { @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '5') }
+      @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '5')
       @current_user.cc_type.should eq 'visa'
       @current_user.cc_last_digits.should eq '0002'
       @current_user.pending_cc_type.should be_nil
@@ -171,14 +171,14 @@ feature 'Credit cards update' do
       page.should have_no_content I18n.t('flash.billings.update.notice')
     end
 
-    scenario 'update is waiting after a successful 3-D Secure identification' do
+    scenario 'update is waiting after a successful 3-D Secure identification', :vcr do
       fill_credit_card(type: 'd3d')
-      VCR.use_cassette('ogone/3ds_authorization') { click_button 'credit_card_submit' }
+      click_button 'credit_card_submit'
       @current_user.reload.pending_cc_type.should eq 'visa'
       @current_user.pending_cc_last_digits.should eq '0002'
 
       # fake payment waiting callback (and thus skip the d3d redirection)
-      VCR.use_cassette('ogone/void_authorization') { @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '51') }
+      @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '51')
       @current_user.reload.cc_type.should eq 'visa'
       @current_user.cc_last_digits.should eq '1111'
       @current_user.pending_cc_type.should eq 'visa'
@@ -191,7 +191,7 @@ feature 'Credit cards update' do
 
     scenario 'update is unsuccessful after an unsuccessful 3-D Secure identification' do
       fill_credit_card type: 'd3d'
-      VCR.use_cassette('ogone/3ds_authorization') { click_button 'credit_card_submit' }
+      click_button 'credit_card_submit'
       @current_user.reload.pending_cc_type.should eq 'visa'
       @current_user.pending_cc_last_digits.should eq '0002'
 
@@ -219,7 +219,7 @@ feature 'Credit cards update' do
       page.should have_content 'CSC is required'
 
       fill_credit_card
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'credit_card_submit' }
+      click_button 'credit_card_submit'
 
       should_save_billing_info_successfully
     end
@@ -236,7 +236,7 @@ feature 'Credit cards update' do
       page.should have_content 'CSC is required'
 
       fill_credit_card
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button 'credit_card_submit' }
+      click_button 'credit_card_submit'
       current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
     end
 

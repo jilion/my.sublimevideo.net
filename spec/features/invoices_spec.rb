@@ -4,9 +4,8 @@ include ApplicationHelper
 
 feature "Site invoices page" do
 
-  context "user has a credit card" do
-    let(:user) { :user }
-    background { sign_in_as user }
+  context "user has a credit card", :vcr do
+    background { sign_in_as :user_with_aliased_cc }
 
     describe "navigation and content presence verification" do
       background do
@@ -69,9 +68,7 @@ feature "Site invoices page" do
       end
 
       describe "retry the payment" do
-        let(:user) { create(:user_no_cc, valid_cc_attributes).reload }
-
-        scenario "it is possible to retry the payment", :vcr do
+        scenario "it is possible to retry the payment" do
           click_button I18n.t('invoice.pay_invoices_above')
 
           @site.invoices.with_state('failed').should be_empty
@@ -117,7 +114,7 @@ feature "Site invoices page" do
         @invoice1 = create(:failed_invoice, site: @site, last_failed_at: 2.days.ago)
         @transaction = create(:transaction, invoices: [@invoice1], error: 'Credit card refused')
         @invoice2 = create(:failed_invoice, site: @site)
-         @transaction = create(:transaction, invoices: [@invoice2], error: 'Authorization refused')
+        @transaction = create(:transaction, invoices: [@invoice2], error: 'Authorization refused')
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
 

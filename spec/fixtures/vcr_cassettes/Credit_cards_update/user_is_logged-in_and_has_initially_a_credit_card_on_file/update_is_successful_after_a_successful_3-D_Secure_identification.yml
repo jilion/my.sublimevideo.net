@@ -1,0 +1,135 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/orderdirect.asp
+    body:
+      encoding: UTF-8
+      string: ALIAS=9URTCNZS&CARDNO=4000000000000002&CN=Jilion+Team&CVC=111&ECI=7&ED=0614&EMAIL=email9%40user.com&FLAG3D=Y&HTTP_ACCEPT=%2A%2F%2A&Operation=RES&OwnerZip=1004&Owneraddress=Avenue+de+France+71&PARAMPLUS=CHECK_CC_USER_ID%3D610&PSPID=jilion&PSWD=WWQMNC89&SHASign=FD467062661F19D8CB041003186B5F24D1BF882D4AF077974CC7356E43832104C6A8BFF76B063538DAEA7855E5111D42AE3D0ECCE328CA4F68505DC5384CDE2D&USERID=sublime&WIN3DS=MAINW&amount=1&currency=USD&orderID=340fbb7d8529094e38054f6d874c4a&ownercty=CH&ownertown=Lausanne
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:54:52 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '4680'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:53:49 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1887428148_2213403;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\n\t\t\t\r\norderID=\"340fbb7d8529094e38054f6d874c4a\"\r\nPAYID=\"24048578\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"46\"\r\nECI=\"7\"\r\namount=\"0.01\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nALIAS=\"9URTCNZS\"\r\nNCERRORPLUS=\"Identification
+        requested\"><HTML_ANSWER>PGZvcm0gbmFtZT0iZG93bmxvYWRmb3JtM0QiIGFjdGlvbj0iaHR0cHMmIzU4Oy8vc2VjdXJlLm9nb25lLmNvbS9uY29sL3Rlc3QvVGVzdF8zRF9BQ1MuYXNwIiBtZXRob2Q9InBvc3QiPg0KPG5vc2NyaXB0Pg0KSmF2YVNjcmlwdCBpcyBjdXJyZW50bHkgZGlzYWJsZWQgb3IgaXMgbm90IHN1cHBvcnRlZCBieSB5b3VyIGJyb3dzZXI8YnIvPg0KUGxlYXNlIGNsaWNrIG9uIHRoZSAmcXVvdDtDb250aW51ZSZxdW90OyBidXR0b24gdG8gY29udGludWUgdGhlIHByb2Nlc3Npbmcgb2YgeW91ciAzLUQgc2VjdXJlIHRyYW5zYWN0aW9uLjxici8+DQo8aW5wdXQgY2xhc3M9Im5jb2wiIHR5cGU9InN1Ym1pdCIgdmFsdWU9IkNvbnRpbnVlIiBpZD0ic3VibWl0MSIgbmFtZT0ic3VibWl0MSIgLz4NCjwvbm9zY3JpcHQ+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJDU1JGS0VZIiB2YWx1ZT0iNDM0NjQ2Mjg5N0IxRUU5RjQzMTlBQTdFNkQ4RTIwNDc1QzQ3NDg2RiIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9IkNTUkZUUyIgdmFsdWU9IjIwMTMxMDAyMDk1NDUxIiAvPg0KPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0iQ1NSRlNQIiB2YWx1ZT0iL25jb2wvdGVzdC9vcmRlcmRpcmVjdC5hc3AiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJQYVJlcSIgdmFsdWU9Ijw/eG1sIHZlcnNpb249JnF1b3Q7MS4wJnF1b3Q7Pz48VGhyZWVEU2VjdXJlPjxNZXNzYWdlIGlkPSZxdW90OzEyMyZxdW90Oz48UEFSZXE+PHZlcnNpb24+MS4wMjwvdmVyc2lvbj48TWVyY2hhbnQ+PG1lcklEPmppbGlvbjwvbWVySUQ+PG5hbWU+SmlsaW9uIC8gSmltZSBTQTwvbmFtZT48dXJsPmh0dHAmYW1wOyM1ODsvL2ppbGlvbi5jb208L3VybD48L01lcmNoYW50PjxQdXJjaGFzZT48eGlkPjI0MDQ4NTc4PC94aWQ+PGFtb3VudD4wLjAxPC9hbW91bnQ+PHB1cmNoQW1vdW50PjAuMDE8L3B1cmNoQW1vdW50PjxjdXJyZW5jeT5VU0Q8L2N1cnJlbmN5PjwvUHVyY2hhc2U+PENIPjxhY2N0SUQ+NDAwMDAwMDAwMDAwMDAwMjwvYWNjdElEPjxleHBpcnk+MDYxNDwvZXhwaXJ5PjxzZWxCcmFuZD48L3NlbEJyYW5kPjwvQ0g+PC9QQVJlcT48L01lc3NhZ2U+PC9UaHJlZURTZWN1cmU+DQoiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJUZXJtVXJsIiB2YWx1ZT0iaHR0cHMmIzU4Oy8vc2VjdXJlLm9nb25lLmNvbS9uY29sL3Rlc3Qvb3JkZXJfQTNEUy5hc3AiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJNRCIgdmFsdWU9Ik1BSU5XUFRFU1QwMDAwMjQwNDg1NzgwMTExMSIgLz4NCjwvZm9ybT4NCjxmb3JtIG1ldGhvZD0icG9zdCIgYWN0aW9uPSJodHRwcyYjNTg7Ly9zZWN1cmUub2dvbmUuY29tL25jb2wvdGVzdC9vcmRlcl9hZ3JlZS5hc3AiIG5hbWU9InVwbG9hZEZvcm0zRCIgaWQ9InVwbG9hZEZvcm0zRCI+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJDU1JGS0VZIiB2YWx1ZT0iMzQyMDVBNEU1OUY4NzZGM0FBOUMyRDA4OUNEQUIxRjkwQzZGNjk3RiIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9IkNTUkZUUyIgdmFsdWU9IjIwMTMxMDAyMDk1NDUxIiAvPg0KPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0iQ1NSRlNQIiB2YWx1ZT0iL25jb2wvdGVzdC9vcmRlcmRpcmVjdC5hc3AiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJicmFuZGluZyIgdmFsdWU9Ik9nb25lIiAvPg0KPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0icGF5aWQiIHZhbHVlPSIyNDA0ODU3OCIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9InN0b3JlYWxpYXMiIHZhbHVlPSIiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJoYXNoX3BhcmFtIiB2YWx1ZT0iRDlDNjQ4MUFGMUM5RDNGMjIwQjlEOEY0RTY5QTJBREIzRkE2MzVBRCIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9InhpZF8zRCIgdmFsdWU9IiIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9InN0YXR1c18zRCIgdmFsdWU9IlhYIiAvPg0KPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0iZWNpXzNEIiB2YWx1ZT0iNyIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9ImNhcmRudW1iZXIiIHZhbHVlPSIiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJFY29tX1BheW1lbnRfQ2FyZF9WZXJpZmljYXRpb24iIHZhbHVlPSIxMTEiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJDVkNGbGFnIiB2YWx1ZT0iMSIgLz4NCjxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9ImNhdnZfM0QiIHZhbHVlPSIiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJjYXZ2YWxnb3JpdGhtXzNEIiB2YWx1ZT0iIiAvPg0KPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0ic2lnbmF0dXJlT0tfM0QiIHZhbHVlPSIiIC8+DQo8aW5wdXQgdHlwZT0iaGlkZGVuIiBuYW1lPSJoYXNoX3BhcmFtXzNEIiB2YWx1ZT0iN0I1MjAzQUVENkEzMUU1MEMyMkJBNzdERjNDRkRBMjU0OEEwMEVEOSIgLz4NCjwvZm9ybT4NCjxTQ1JJUFQgTEFOR1VBR0U9IkphdmFzY3JpcHQiID4NCjwhLS0NCnZhciBwb3B1cFdpbjsNCnZhciBzdWJtaXRwb3B1cFdpbiA9IDA7DQoNCmZ1bmN0aW9uIExvYWRQb3B1cCgpIHsNCglpZiAoc2VsZi5uYW1lID09IG51bGwpCXsNCgkJc2VsZi5uYW1lID0gIm9nb25lTWFpbiI7DQoJfQ0KCXBvcHVwV2luID0gd2luZG93Lm9wZW4oJ2Fib3V0OmJsYW5rJywgJ3BvcHVwV2luJywgJ2hlaWdodD00MDAsIHdpZHRoPTM5MCwgc3RhdHVzPXllcywgZGVwZW5kZW50PW5vLCBzY3JvbGxiYXJzPXllcywgcmVzaXphYmxlPW5vJyk7DQoJaWYgKHBvcHVwV2luICE9IG51bGwpIHsNCgkJaWYgICghcG9wdXBXaW4gfHwgcG9wdXBXaW4uY2xvc2VkKSB7DQoJCQlyZXR1cm4gMTsNCgkJfSBlbHNlIHsNCgkJCWlmICghcG9wdXBXaW4ub3BlbmVyIHx8IHBvcHVwV2luLm9wZW5lciA9PSBudWxsKSB7DQoJCQkJcG9wdXBXaW4ub3BlbmVyID0gc2VsZjsNCgkJCX0NCgkJCXNlbGYuZG9jdW1lbnQuZm9ybXMuZG93bmxvYWRmb3JtM0QudGFyZ2V0ID0gJ3BvcHVwV2luJzsNCgkJCWlmIChzdWJtaXRwb3B1cFdpbiA9PSAxKSB7DQoJCQkJc2VsZi5kb2N1bWVudC5mb3Jtcy5kb3dubG9hZGZvcm0zRC5zdWJtaXQoKTsNCgkJCX0NCgkJCXBvcHVwV2luLmZvY3VzKCk7DQoJCQlyZXR1cm4gMDsNCgkJfQ0KCX0gZWxzZSB7DQoJCXJldHVybiAxOw0KCX0NCn0NCglzZWxmLmRvY3VtZW50LmZvcm1zLmRvd25sb2FkZm9ybTNELnN1Ym1pdCgpOw0KLy8tLT4NCjwvU0NSSVBUPg0K</HTML_ANSWER>\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:54:52 GMT
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=DES&PAYID=24048578&PSPID=jilion&PSWD=WWQMNC89&SHASign=EF839CDB4B5F05EEAF175B5F15C884C4848A9D1479038C483DDD0D7ECCAD69BBC3A83B810EC390CBAE2895DEDB0516D438FE3E6F0E06F4B56AD0BE67DF51F0AB&USERID=sublime
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:54:52 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '257'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:53:52 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1887428196_2213403;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"340fbb7d8529094e38054f6d874c4a\"\r\nPAYID=\"24048578\"\r\nPAYIDSUB=\"0\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"50001127\"\r\nNCERRORPLUS=\"|this
+        order is not authorized|\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"0\"\r\namount=\"\"\r\ncurrency=\"\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:54:52 GMT
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=DES&PAYID=1234&PSPID=jilion&PSWD=WWQMNC89&SHASign=D3867753EA9A61A42AC4F608360722D869E699B8461F6CC3D697C5AE053F67F4F6DCB2155195F8A5B78047564A83E82638997F168CE836C5C312ACE3BBFAC179&USERID=sublime
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:57:23 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '241'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:56:23 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1888910907_2213554;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"\"\r\nPAYID=\"1234\"\r\nPAYIDSUB=\"0\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"50001130\"\r\nNCERRORPLUS=\"unknown
+        or locked payid 1234 for merchant jilion\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"0\"\r\namount=\"\"\r\ncurrency=\"\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:57:23 GMT
+recorded_with: VCR 2.6.0

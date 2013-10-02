@@ -5,7 +5,7 @@ http_interactions:
     uri: https://secure.ogone.com/ncol/test/orderdirect.asp
     body:
       encoding: UTF-8
-      string: CARDNO=4111111111111111&CN=John+Doe&CVC=111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=7EDF14525A02BA3C44124847A829A7BDE3C715F6C3E09276856C6A9A4968DCD57F8607904DC52CFDB6315480D4496457F13426128B568868191DDBB2DF9863D9&USERID=sublime&amount=1000&currency=USD&orderID=5dd235d0ec033be7145a8cf7097920
+      string: CARDNO=4111111111111111&CN=John+Doe&CVC=111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=DFA6F14E4F97979254FBE7B6C7976127B3F9FD6B59D4AB11BE463738CC443F26DB332A2BE0A911A0594199FA3BB44EC1E0C16D943FEC68B05FEEF3132CA90A62&USERID=sublime&amount=1000&currency=USD&orderID=cad24f7ea8c886c393a05678315d97
     headers:
       Content-Type:
       - application/x-www-form-urlencoded
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 26 Sep 2013 12:24:25 GMT
+      - Wed, 02 Oct 2013 08:01:14 GMT
       Server:
       - Microsoft-IIS/6.0
       X-Powered-By:
@@ -33,14 +33,58 @@ http_interactions:
       Content-Type:
       - text/XML; Charset=iso-8859-1
       Expires:
-      - Thu, 26 Sep 2013 12:23:24 GMT
+      - Wed, 02 Oct 2013 08:00:12 GMT
       Cache-Control:
       - private, max-age=0
       Set-Cookie:
-      - avr_581370806_0_0_4294901760_4218234546_0=1867971218_1711175;max-age=600;path=/
+      - avr_581370806_0_0_4294901760_485090132_0=1888921363_2213785;max-age=600;path=/
     body:
       encoding: UTF-8
-      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"5dd235d0ec033be7145a8cf7097920\"\r\nPAYID=\"23934746\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"9\"\r\nIPCTY=\"99\"\r\nCCCTY=\"US\"\r\nECI=\"7\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"10\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nNCERRORPLUS=\"!\">\r\n</ncresponse>"
+      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"cad24f7ea8c886c393a05678315d97\"\r\nPAYID=\"24048668\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"9\"\r\nIPCTY=\"99\"\r\nCCCTY=\"US\"\r\nECI=\"7\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"10\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nNCERRORPLUS=\"!\">\r\n</ncresponse>"
     http_version: 
-  recorded_at: Thu, 26 Sep 2013 12:24:25 GMT
+  recorded_at: Wed, 02 Oct 2013 08:01:14 GMT
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=RFD&PAYID=24048668&PSPID=jilion&PSWD=WWQMNC89&SHASign=9E7F78FB9C93D08A5FF2784B66C57184B33CB960ECD732A92694A93CF79E74647279B1882BA85C1CCAB4062CFBA9A963BA8489CF54590C40090839115A3A48F4&USERID=sublime&amount=3000&currency=USD
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 08:01:15 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '266'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 08:00:15 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1887445136_2213786;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"cad24f7ea8c886c393a05678315d97\"\r\nPAYID=\"24048668\"\r\nPAYIDSUB=\"1\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"50001129\"\r\nNCERRORPLUS=\"Overflow
+        in refunds requests/10/10\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"0\"\r\namount=\"30\"\r\ncurrency=\"USD\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 08:01:16 GMT
 recorded_with: VCR 2.6.0

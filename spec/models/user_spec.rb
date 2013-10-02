@@ -147,7 +147,7 @@ describe User do
         its(:pending_cc_expire_on)   { should be_nil }
       end
 
-      context "when user has cc info before" do
+      context "when user has cc info before", :vcr do
         subject { create(:user) }
         before do
           subject.cc_type.should eq 'visa'
@@ -155,7 +155,7 @@ describe User do
           subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
 
           subject.attributes = valid_cc_attributes_master
-          VCR.use_cassette("ogone/void_authorization") { subject.save! }
+          subject.save!
           subject.reload
         end
 

@@ -5,7 +5,7 @@ http_interactions:
     uri: https://secure.ogone.com/ncol/test/orderdirect.asp
     body:
       encoding: UTF-8
-      string: CARDNO=4111111111111111&CN=John+Doe&CVC=111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=AB5852A9E0835239310E77236996E9A1D1687B904B6C18CAD0A6B601E590BB55069755894AE0F44EF2CAED46B40728B89E6A8C64C72BD9EA2206374CCAE19250&USERID=sublime&amount=1000&currency=USD&orderID=bc00f6c1a219679873279a67fb35f8
+      string: CARDNO=4111111111111111&CN=John+Doe&CVC=111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=9460C4C51BE7D143841A4A48AD60F35F6EBA656BE467ACC71C058E60B3AC23FF330147240446FD675E0416C59F44E3BAC845A87325DF634FDB2EED592002B52D&USERID=sublime&amount=1000&currency=USD&orderID=082690be6c560e0a7239d701effb54
     headers:
       Content-Type:
       - application/x-www-form-urlencoded
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 26 Sep 2013 12:24:23 GMT
+      - Wed, 02 Oct 2013 08:01:10 GMT
       Server:
       - Microsoft-IIS/6.0
       X-Powered-By:
@@ -33,14 +33,57 @@ http_interactions:
       Content-Type:
       - text/XML; Charset=iso-8859-1
       Expires:
-      - Thu, 26 Sep 2013 12:23:22 GMT
+      - Wed, 02 Oct 2013 08:00:09 GMT
       Cache-Control:
       - private, max-age=0
       Set-Cookie:
-      - avr_581370806_0_0_4294901760_4218234546_0=1867971110_1711174;max-age=600;path=/
+      - avr_581370806_0_0_4294901760_485090132_0=1887444896_2213781;max-age=600;path=/
     body:
       encoding: UTF-8
-      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"bc00f6c1a219679873279a67fb35f8\"\r\nPAYID=\"23934745\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"9\"\r\nIPCTY=\"99\"\r\nCCCTY=\"US\"\r\nECI=\"7\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"10\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nNCERRORPLUS=\"!\">\r\n</ncresponse>"
+      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"082690be6c560e0a7239d701effb54\"\r\nPAYID=\"24048667\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"9\"\r\nIPCTY=\"99\"\r\nCCCTY=\"US\"\r\nECI=\"7\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"10\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nNCERRORPLUS=\"!\">\r\n</ncresponse>"
     http_version: 
-  recorded_at: Thu, 26 Sep 2013 12:24:23 GMT
+  recorded_at: Wed, 02 Oct 2013 08:01:11 GMT
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/maintenancedirect.asp
+    body:
+      encoding: UTF-8
+      string: Operation=RFD&PAYID=24048667&PSPID=jilion&PSWD=WWQMNC89&SHASign=A3DCE7D77040D4B4EBB11EDB96C8510E3494F80DE28DED48E1C594D8126BF3BC202899A6760E1D6D4B91451D4102E9A0CF4943344DF4230D456684FF0D3FCCE8&USERID=sublime&amount=1000&currency=USD
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 08:01:11 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '227'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 08:00:11 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1887444966_2213782;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\norderID=\"082690be6c560e0a7239d701effb54\"\r\nPAYID=\"24048667\"\r\nPAYIDSUB=\"1\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nNCERRORPLUS=\"!\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"81\"\r\namount=\"10\"\r\ncurrency=\"USD\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 08:01:12 GMT
 recorded_with: VCR 2.6.0

@@ -68,14 +68,12 @@ feature "Help page" do
         page.should have_selector 'form.new_support_request'
       end
 
-      scenario "submit a valid support request" do
+      scenario "submit a valid support request", :vcr do
         fill_in "Subject", with: "SUBJECT"
         fill_in "Description of your issue or question", with: "DESCRIPTION"
 
         PusherWrapper.stub(:trigger)
-        VCR.use_cassette("zendesk_wrapper/create_ticket") do
-          click_button "Send"
-        end
+        click_button "Send"
         page.should have_content I18n.t('flash.support_requests.create.notice')
         @current_user.reload.zendesk_id.should be_present
       end
@@ -124,10 +122,6 @@ feature "Suspended page" do
       background do
         @site = build(:site, user: @current_user)
         SiteManager.new(@site).create
-        @site.pending_plan_started_at = Time.now.utc
-        @site.pending_plan_cycle_started_at = Time.now.utc
-        @site.pending_plan_cycle_ended_at = Time.now.utc
-        @site.save!(validate: false)
         @invoice = create(:failed_invoice, site: @site, last_failed_at: Time.utc(2010,2,10), amount: 1990)
         @transaction = create(:failed_transaction, invoices: [@invoice], error: "Credit Card expired")
         UserManager.new(@current_user).suspend
@@ -168,6 +162,25 @@ feature "Suspended page" do
 
         current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
       end
+    end
+
+  end
+
+  context "logged-in user with aliased cc", :vcr do
+    background do
+      sign_in_as :user_with_aliased_cc
+    end
+
+    context "with a suspended user" do
+      background do
+        @site = build(:site, user: @current_user)
+        SiteManager.new(@site).create
+        @invoice = create(:failed_invoice, site: @site, last_failed_at: Time.utc(2010,2,10), amount: 1990)
+        @transaction = create(:failed_transaction, invoices: [@invoice], error: "Credit Card expired")
+        UserManager.new(@current_user).suspend
+        @site.reload.should be_suspended
+        @current_user.reload.should be_suspended
+      end
 
       scenario "and a valid credit card with 1 or more failed invoices" do
         ActionMailer::Base.deliveries.clear
@@ -176,14 +189,13 @@ feature "Suspended page" do
 
         current_url.should eq "http://my.sublimevideo.dev/suspended"
 
-        VCR.use_cassette('ogone/visa_payment_acceptance') do
-          BillingMailer.should delay(:transaction_succeeded)
-          UserMailer.should delay(:account_unsuspended).with(@current_user.id)
-          LoaderGenerator.should delay(:update_all_stages!).with(@site.id, deletable: true)
-          SettingsGenerator.should delay(:update_all!).with(@site.id)
+        BillingMailer.should delay(:transaction_succeeded)
+        UserMailer.should delay(:account_unsuspended).with(@current_user.id)
+        LoaderGenerator.should delay(:update_all_stages!).with(@site.id, deletable: true)
+        SettingsGenerator.should delay(:update_all!).with(@site.id)
 
-          click_button I18n.t('invoice.retry_invoices')
-        end
+        click_button I18n.t('invoice.retry_invoices')
+
         @invoice.reload.should be_paid
 
         current_url.should eq "http://my.sublimevideo.dev/sites"
@@ -195,7 +207,7 @@ feature "Suspended page" do
         go 'my', 'suspended'
         current_url.should eq "http://my.sublimevideo.dev/sites"
       end
-
     end
+
   end
 end
