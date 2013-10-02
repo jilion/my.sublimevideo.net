@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'spec_helper'
 
 describe ApplicationHelper do
@@ -47,6 +46,13 @@ describe ApplicationHelper do
     it { helper.display_amount_with_sup(1990.0).should eq "$19<sup>.90</sup><small>/mo</small>" }
     it { helper.display_amount_with_sup(7920).should eq "$79<sup>.20</sup><small>/mo</small>" }
     it { helper.display_amount_with_sup(1900).should eq "$19<small>/mo</small>" }
+  end
+
+  describe "#url_host" do
+    it { helper.url_host('http://sublimevideo.net/').should eq 'sublimevideo.net' }
+    it { helper.url_host('http://sublimevideo.net/foo/bar').should eq 'sublimevideo.net' }
+    it { helper.url_host('http://sublimevideo.net/foo/bar?query=value').should eq 'sublimevideo.net' }
+    it { helper.url_host('http://sublimevideo.net/#video_framework').should eq 'sublimevideo.net' }
   end
 
   # describe "#info_box" do
