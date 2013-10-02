@@ -18,11 +18,11 @@ class LastPlay
   end
 
   def document_url
-    du & ERB::Util.h(du)
+    ERB::Util.h(du)
   end
 
   def referrer_url
-    ru & ERB::Util.h(ru)
+    ERB::Util.h(ru)
   end
 
 end
