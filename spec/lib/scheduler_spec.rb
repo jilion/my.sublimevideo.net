@@ -159,14 +159,6 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules SiteUsagesTrend.create_trends" do
-      SiteUsagesTrend.should delay(:create_trends,
-        at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'my-low'
-      )
-      described_class.schedule_daily_tasks
-    end
-
     it "schedules TweetsTrend.create_trends" do
       TweetsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,

@@ -189,22 +189,15 @@ FactoryGirl.define do
   # =================
   # = Trends models =
   # =================
-  factory :billable_items_trend do
-  end
-  factory :billings_trend do
-  end
-  factory :revenues_trend do
-  end
-  factory :site_stats_trend do
-  end
-  factory :sites_trend do
-  end
-  factory :tailor_made_player_requests_trend do
-  end
-  factory :tweets_trend do
-  end
-  factory :users_trend do
-  end
+  factory :billable_items_trend
+  factory :billings_trend
+  factory :revenues_trend
+  factory :site_stats_trend
+  factory :site_usages_trend
+  factory :sites_trend
+  factory :tailor_made_player_requests_trend
+  factory :tweets_trend
+  factory :users_trend
 
   # ==============
   # = API models =

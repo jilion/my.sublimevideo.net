@@ -4,9 +4,9 @@ vv_stats_timeline = SiteStatsTimelineBuilder.new(view_type: 'vv', token: user.si
 pv_stats_timeline = SiteStatsTimelineBuilder.new(view_type: 'pv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
 
 graph = HighchartsGraphBuilder.new do |g|
-  g.option(chart: chart('timeline_usage'))
+  g.option(chart: chart('timeline_stats'))
   g.option(title: { text: "Video plays & Page visits for all #{user.name_or_email}' sites" })
-  g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
+  g.option(subtitle: stats_date_subtitle(start_at: range_start_date, end_at: range_end_date))
   g.option(legend: legend)
   g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
   g.raw_option(y_axis(""))
@@ -36,4 +36,4 @@ graph = HighchartsGraphBuilder.new do |g|
 end
 %>
 <br />
-<div id="timeline_usage" style="width:100%; height:300px;"><%= raw graph.draw %></div>
+<div id="timeline_stats" style="width:100%; height:300px;"><%= raw graph.draw %></div>

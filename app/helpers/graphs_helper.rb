@@ -15,7 +15,7 @@ module GraphsHelper
     }
   end
 
-  def usage_date_subtitle(options = {})
+  def stats_date_subtitle(options = {})
     options.reverse_merge!(start_at: nil, end_at: nil, text: nil, date_format: 'year_month_day')
 
     {
