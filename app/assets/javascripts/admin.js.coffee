@@ -6,7 +6,10 @@
 #= require chosen-jquery
 #
 #= require_self
+#
+#= require_tree ./helpers
 #= require_tree ./ui
+#
 #= require_tree ./admin/form
 #= require_tree ./admin/app
 #= require admin/trends
@@ -16,6 +19,7 @@
 
 window.MySublimeVideo =
   UI: {}
+  Helpers: {}
 
 window.AdminSublimeVideo =
   UI: {}
@@ -46,12 +50,12 @@ AdminSublimeVideo.documentReady = ->
   AdminSublimeVideo.UI.prepareExpandableItems()
   MySublimeVideo.UI.TableSortLinks.setup()
 
-  if (searchInput = $('#search_input')).exists()
-    new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
+  if ($searchInput = $('#search_input')).exists()
+    new AdminSublimeVideo.Form.Ajax(form: $searchInput.parent('form'))
 
   ## Tags autocomplete
-  if (tagList = $('.tag_list')).exists()
-    form = tagList.parent('form')
+  if ($tagList = $('.tag_list')).exists()
+    form = $tagList.parent('form')
     ajaxFormUpdate = (term = null, chosen = null) ->
       if term? and chosen?
         chosen.append_option
@@ -61,7 +65,7 @@ AdminSublimeVideo.documentReady = ->
         type: 'put'
         dataType: 'script'
         data: form.serialize()
-    tagList.chosen
+    $tagList.chosen
       create_option: ((term) -> ajaxFormUpdate(term, this))
       no_results_text: "No tags matched"
     .change (event) -> ajaxFormUpdate()
@@ -71,22 +75,22 @@ AdminSublimeVideo.documentReady = ->
     earlyAccessList.chosen()
 
   ## Filters
-  if (filters = $('.filters')).exists()
-    filters.find('a').each (index, link) ->
+  if ($filters = $('.filters')).exists()
+    $filters.find('a').each (index, link) ->
       $(this).click (e) ->
         SublimeVideo.UI.Table.showSpinner()
-        filters.find('a.active').removeClass 'active'
+        $filters.find('a.active').removeClass 'active'
         $(link).addClass 'active'
 
   ## Range form
-  if (rangeInput = $('#range_input')).exists()
+  if ($rangeInput = $('#range_input')).exists()
     new AdminSublimeVideo.Form.Ajax
-      form: rangeInput.parent('form')
-      observable: rangeInput
+      form: $rangeInput.parent('form')
+      observable: $rangeInput
       event: 'mouseup'
 
-    rangeInput.on 'change', (event) ->
-      $('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger(rangeInput.val()))
+    $rangeInput.on 'change', (event) ->
+      $('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger($rangeInput.val()))
 
 $(window).bind 'page:change', ->
   SublimeVideo.documentReady()

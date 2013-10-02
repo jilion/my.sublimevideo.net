@@ -72,6 +72,6 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
     newStart = this.convertDateToUTC('#start_time_picker')
     newEnd   = this.convertDateToUTC('#end_time_picker')
     AdminSublimeVideo.period.set(start: new Date(newStart), end: new Date(newEnd))
-    AdminSublimeVideo.trendsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
+    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl('p', "#{newStart}-#{newEnd}")
     this.close()
     AdminSublimeVideo.graphView.render()

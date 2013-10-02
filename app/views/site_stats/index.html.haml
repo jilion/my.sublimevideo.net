@@ -63,12 +63,11 @@
   #dates_range
     %h3#time_range_title
     #date_pickers
-  %ul#vv_chart_legend
+  %ul#plays_and_loads_graph_legend
   .spacer
-  #vv
-    #vv_content
-      #vv_chart
-      %p.note Note: Plays and visits from embeds are not considered.
+  #plays_and_loads
+    #plays_and_loads_graph
+    %p.note Note: Plays and visits from embeds are not considered.
 
   .spacer
 
@@ -78,10 +77,10 @@
     #playable_video
   #top_videos_posterframe_cache{ style: "display: none" }
 
-  #bp.graph_box
+  #browsers_and_platforms.graph_box
     %h3.title Browser + OS
     %h5.sub_title Based on page visits
-    #bp_content.content
+    #browsers_and_platforms_content.content
 
   #md.graph_box
     %h3.title HTML5 / Flash

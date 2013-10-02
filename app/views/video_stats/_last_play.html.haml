@@ -1,0 +1,17 @@
+%li{ data: { time: last_play.time.to_i } }
+  %span.wrap
+    %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
+    %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
+    %span.icon{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
+    %span.title
+      On
+      = link_to url_host(last_play.du), url_with_protocol(last_play.du), title: last_play.du, class: "hl"
+      = '[external]' if last_play.ex?
+      %br
+      - if last_play.ru?
+        coming from
+        = link_to url_host(last_play.ru), last_play.ru, title: last_play.ru, class: "hl"
+      - else
+        from direct traffic
+
+      %abbr{ class: 'timeago', title: last_play.t }= l(last_play.time, format: :seconds_timezone_y)

@@ -1,15 +1,10 @@
 - title("Edit Video Code for '#{@video_tag.title}'")
+
 = render 'segmented_menu', site: @site, video_tag: @video_tag
+
 .spacer
 
-.video_tag_header
-  .poster
-    = video_tag_thumbnail(@video_tag, size: '130x75')
-    .duration= duration_string(@video_tag.duration)
-  .name= @video_tag.title
-  .site= link_to "See all <em>#{hostname_or_token(@site)}</em> videos".html_safe, site_video_tags_path(@site), class: 'hl'
-  .spacer
-.big_break
+= render 'video_tags/header', site: @site, video_tag: @video_tag
 
 = render 'layouts/hidable_notice', notice_id: 4, notice_content: t('notices.edit_video_tag')
 

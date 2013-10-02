@@ -1,0 +1,16 @@
+%h3.title Browser + OS
+.content.content_wrap
+  - if stats.empty?
+    %p.empty No plays.
+  - else
+    %ul
+      - stats.each do |browser_and_os, data|
+        %li
+          %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
+          %span.wrap
+            %span.browser{ style: video_stats_browser_style(browser_and_os) }
+            %span.platform{ style: video_stats_platform_style(browser_and_os) }
+            %span.title= video_stats_browser_and_os_name(browser_and_os)
+            %span.value
+              %span.percent= display_percentage(data[:percent])
+              %span.metric= formatted_pluralize(data[:count], 'play')

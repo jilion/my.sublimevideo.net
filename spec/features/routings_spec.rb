@@ -65,11 +65,17 @@ feature 'Redirects' do
     end
 
     %w[video-code-generator publish-video].each do |page|
-      scenario "redirect /#{page} to /sites/:token/publish-video" do
+      scenario "redirect /#{page} to /sites/:token/videos/new" do
         go 'my', page
 
-        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/publish-video"
+        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
       end
+    end
+
+    scenario 'redirect /sites/:site_id/publish-video to /sites/:site_id/videos/new' do
+      go 'my', "/sites/#{@site.to_param}/publish-video"
+
+      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
     end
 
     scenario 'redirect /sites/stats to /sites' do
