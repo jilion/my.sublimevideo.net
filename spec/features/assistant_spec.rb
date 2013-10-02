@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'assistant pages' do
+  background { SiteAdminStat.stub(:total_admin_starts) { 0 } }
+
   context 'user is logged-in without any site' do
     background do
       sign_in_as :user
