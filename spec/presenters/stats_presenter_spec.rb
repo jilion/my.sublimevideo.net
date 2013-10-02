@@ -1,29 +1,58 @@
 require 'fast_spec_helper'
 
-require 'presenters/video_stat_presenter'
+require 'presenters/stats_presenter'
+require 'presenters/site_stats_presenter'
 
-describe VideoStatPresenter do
-  FakeVideoStat = Struct.new(:time, :bp, :co, :de, :lo, :st)
-  FakeLastVideoStat = Struct.new(:time, :lo, :st)
-  FakeLastPlay = Struct.new(:time, :lo, :st)
+describe StatsPresenter do
+  let(:presenter) { described_class.new(nil) }
+
+  describe '#last_stats_by_hour' do
+    it 'must be implemented by a subclass' do
+      expect { p presenter; presenter.last_stats_by_hour }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#last_stats_by_minute' do
+    it 'must be implemented by a subclass' do
+      expect { presenter.last_stats_by_minute }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#last_plays' do
+    it 'must be implemented by a subclass' do
+      expect { presenter.last_plays } .to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#etag' do
+    it 'must be implemented by a subclass' do
+      expect { presenter.etag }.to raise_error(NotImplementedError)
+    end
+  end
+end
+
+describe SiteStatsPresenter do
+  FakeSiteStat = Struct.new(:time, :bp, :co, :de, :lo, :st)
+  FakeLastSiteStat = Struct.new(:time, :lo, :st)
+  FakeLastSitePlay = Struct.new(:time, :lo, :st)
   before do
     stub_const('VideoStat', Class.new)
     stub_const('LastVideoStat', Class.new)
     stub_const('LastPlay', Class.new)
   end
 
-  let(:video_tag) { double('VideoTag', uid: 'foobar') }
-  let(:presenter) { described_class.new(video_tag) }
+  let(:site) { double('Site', token: 'foobar') }
+  let(:presenter) { described_class.new(site) }
   let(:stats_by_hour) do
     [
-      FakeVideoStat.new(
+      FakeSiteStat.new(
         2.hours.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
         { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
         { 'w' => nil, 'e' => 5 },
         nil),
-      FakeVideoStat.new(
+      FakeSiteStat.new(
         1.hour.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 2, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 2 } },
@@ -35,21 +64,21 @@ describe VideoStatPresenter do
 
   let(:stats_by_minute) do
     [
-      FakeLastVideoStat.new(2.minutes.ago.change(sec: 0), 5, nil),
-      FakeLastVideoStat.new(1.minutes.ago.change(sec: 0), nil, 3)
+      FakeLastSiteStat.new(2.minutes.ago.change(sec: 0), 5, nil),
+      FakeLastSiteStat.new(1.minutes.ago.change(sec: 0), nil, 3)
     ]
   end
 
   let(:last_plays) do
     [
-      FakeLastPlay.new(2.minutes.ago.change(sec: 0), 5, nil),
-      FakeLastPlay.new(1.minutes.ago.change(sec: 0), nil, 3)
+      FakeLastSitePlay.new(2.minutes.ago.change(sec: 0), 5, nil),
+      FakeLastSitePlay.new(1.minutes.ago.change(sec: 0), nil, 3)
     ]
   end
 
   describe '.initialize' do
     it 'takes a video tag' do
-      presenter.video_tag.should eq video_tag
+      presenter.object.should eq site
     end
 
     context 'without options' do
@@ -59,35 +88,11 @@ describe VideoStatPresenter do
     end
 
     context 'with options given' do
-      let(:presenter) { described_class.new(video_tag, 'hours' => 48) }
+      let(:presenter) { described_class.new(site, 'hours' => 48) }
 
       it 'merge given options with default options' do
         presenter.options.should eq({ hours: 48, source: 'a' })
       end
-    end
-  end
-
-  describe '#last_stats_by_hour' do
-    it 'delegates to VideoStat.last_hours_stats' do
-      expect(VideoStat).to receive(:last_hours_stats).with(video_tag, presenter.options[:hours]) { stats_by_hour }
-
-      presenter.last_stats_by_hour.should eq stats_by_hour
-    end
-  end
-
-  describe '#last_stats_by_minute' do
-    it 'delegates to VideoStat.last_stats' do
-      expect(LastVideoStat).to receive(:last_stats).with(video_tag) { stats_by_minute }
-
-      presenter.last_stats_by_minute.should eq stats_by_minute
-    end
-  end
-
-  describe '#last_plays' do
-    it 'delegates to VideoStat.last_stats' do
-      expect(LastPlay).to receive(:last_plays).with(video_tag, presenter.options[:since]) { last_plays }
-
-      presenter.last_plays.should eq last_plays
     end
   end
 
@@ -101,14 +106,14 @@ describe VideoStatPresenter do
     end
 
     context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:presenter) { described_class.new(site, source: 'w') }
       let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/12.to_f }, 'saf-osx' => { count: 2, percent: 2/12.to_f } } }
 
       it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
     end
 
     context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:presenter) { described_class.new(site, source: 'e') }
       let(:expected_result) { { 'iex-win' => { count: 10, percent: 10/13.to_f }, 'saf-osx' => { count: 3, percent: 3/13.to_f } } }
 
       it { expect(presenter.browsers_and_platforms_stats).to eq expected_result }
@@ -125,14 +130,14 @@ describe VideoStatPresenter do
     end
 
     context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:presenter) { described_class.new(site, source: 'w') }
       let(:expected_result) { { 'fr' => { count: 10, percent: 10/12.to_f }, 'ch' => { count: 2, percent: 2/12.to_f } } }
 
       it { expect(presenter.countries_stats).to eq expected_result }
     end
 
     context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:presenter) { described_class.new(site, source: 'e') }
       let(:expected_result) { { 'fr' => { count: 10, percent: 10/13.to_f }, 'ch' => { count: 3, percent: 3/13.to_f } } }
 
       it { expect(presenter.countries_stats).to eq expected_result }
@@ -149,14 +154,14 @@ describe VideoStatPresenter do
     end
 
     context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:presenter) { described_class.new(site, source: 'w') }
       let(:expected_result) { { 'd' => { count: 10, percent: 10/13.to_f }, 'm' => { count: 3, percent: 3/13.to_f } } }
 
       it { expect(presenter.devices_stats).to eq expected_result }
     end
 
     context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:presenter) { described_class.new(site, source: 'e') }
       let(:expected_result) { { 'd' => { count: 10, percent: 10/12.to_f }, 'm' => { count: 2, percent: 2/12.to_f } } }
 
       it { expect(presenter.devices_stats).to eq expected_result }
@@ -181,7 +186,7 @@ describe VideoStatPresenter do
     end
 
     context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:presenter) { described_class.new(site, source: 'w') }
 
       it 'has 24 items' do
         expect(presenter.loads).to have(24).items
@@ -197,7 +202,7 @@ describe VideoStatPresenter do
     end
 
     context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:presenter) { described_class.new(site, source: 'e') }
 
       it 'has 24 items' do
         expect(presenter.loads).to have(24).items
@@ -231,7 +236,7 @@ describe VideoStatPresenter do
     end
 
     context 'source == "w"' do
-      let(:presenter) { described_class.new(video_tag, source: 'w') }
+      let(:presenter) { described_class.new(site, source: 'w') }
 
       it 'has 24 items' do
         expect(presenter.plays).to have(24).items
@@ -247,7 +252,7 @@ describe VideoStatPresenter do
     end
 
     context 'source == "e"' do
-      let(:presenter) { described_class.new(video_tag, source: 'e') }
+      let(:presenter) { described_class.new(site, source: 'e') }
 
       it 'has 24 items' do
         expect(presenter.plays).to have(24).items
@@ -306,17 +311,11 @@ describe VideoStatPresenter do
 
     context 'since option is set' do
       before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
-      let(:presenter) { described_class.new(video_tag, since: 1.hour.ago) }
+      let(:presenter) { described_class.new(site, since: 1.hour.ago) }
 
       it 'returns the most recent updated_at for stats by minute' do
         expect(presenter.last_modified).to eq 1.minutes.ago.change(sec: 0)
       end
-    end
-  end
-
-  describe '#etag' do
-    it 'compute the etag from video tag uid and presenter options' do
-      expect(presenter.etag).to eq "#{video_tag.uid}_#{presenter.options}"
     end
   end
 

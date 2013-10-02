@@ -1,30 +1,34 @@
 require 'active_support/core_ext'
 
-class VideoStatPresenter
+class StatsPresenter
 
-  attr_reader :video_tag, :options
+  attr_reader :object, :options
 
   DEFAULT_OPTIONS = {
     source: 'a',
     hours: 24
   }
 
-  def initialize(video_tag, options = {})
-    @video_tag = video_tag
+  def initialize(object, options = {})
+    @object = object
     @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours, :since))
     @options[:hours] = @options[:hours].to_i
   end
 
   def last_stats_by_hour
-    @last_stats_by_hour ||= VideoStat.last_hours_stats(video_tag, options[:hours])
+    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
   end
 
   def last_stats_by_minute
-    @last_stats_by_minute ||= LastVideoStat.last_stats(video_tag)
+    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
   end
 
   def last_plays
-    @last_plays ||= LastPlay.last_plays(video_tag, options[:since])
+    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
+  end
+
+  def etag
+    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
   end
 
   def browsers_and_platforms_stats
@@ -64,10 +68,6 @@ class VideoStatPresenter
     end
 
     stats_for_last_modified.map { |s| s.time }.max
-  end
-
-  def etag
-    "#{video_tag.uid}_#{options}"
   end
 
   private

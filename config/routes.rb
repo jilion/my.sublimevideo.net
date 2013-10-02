@@ -247,7 +247,7 @@ MySublimeVideo::Application.routes.draw do
     get  '/sites/new' => redirect('/assistant/new-site')
 
     get '/videos/new' => 'video_codes#new', as: 'new_video_code'
-    get '/stats-demo' => 'site_stats#index', site_id: 'demo'
+    get '/stats-demo' => 'site_stats#index', site_id: SiteToken[:www], demo: true
     get '/stats' => redirect('/stats-demo')
 
     resources :invoices, only: [:show] do

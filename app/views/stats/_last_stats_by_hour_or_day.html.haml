@@ -1,12 +1,11 @@
 - cache [site, video_tag, stats_presenter.options] do
   #dates_range_and_source
-    = form_tag [site, video_tag, :stats], method: :get, remote: true, id: 'video_stats_dates_range_and_source_selector' do
+    = form_tag [site, video_tag, :stats], method: :get, remote: true, id: 'stats_dates_range_and_source_selector' do
       .entry.select.inline
-        = select_tag 'hours', video_stats_options_for_date_range_select(stats_presenter.options[:hours]), id: 'video_stats_hours_select'
+        = select_tag 'hours', video_stats_options_for_date_range_select(stats_presenter.options[:hours]), id: 'stats_hours_select'
       for
       .entry.select.inline
-        = select_tag 'source', video_stats_options_for_source_select(stats_presenter.options[:source]), id: 'video_stats_source_select'
-    #date_pickers
+        = select_tag 'source', video_stats_options_for_source_select(stats_presenter.options[:source]), id: 'stats_source_select'
 
   %ul#plays_and_loads_graph_legend
     %li.video_plays
@@ -22,13 +21,13 @@
   .spacer
 
   #browsers_and_platforms.graph_box
-    = render 'browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
+    = render 'stats/browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
 
   #countries.graph_box
-    = render 'countries', stats: stats_presenter.countries_stats
+    = render 'stats/countries', stats: stats_presenter.countries_stats
 
   #mobile_desktop.graph_box
-    = render 'mobile_desktop', stats: stats_presenter.devices_stats
+    = render 'stats/mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
   #export_wrap

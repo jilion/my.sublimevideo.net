@@ -10,7 +10,7 @@ class VideoStatsController < ApplicationController
 
   # GET /sites/:site_id/videos/:id/stats
   def index
-    @stats_presenter = VideoStatPresenter.new(@video_tag, params)
+    @stats_presenter = VideoStatsPresenter.new(@video_tag, params)
 
     if stale?(last_modified: @stats_presenter.last_modified, etag: @stats_presenter.etag)
       respond_to do |format|
@@ -22,10 +22,6 @@ class VideoStatsController < ApplicationController
   end
 
   private
-
-  def _redirect_user_without_stats_addon
-    redirect_to root_url unless @site.realtime_stats_active?
-  end
 
   def _csv_filename
     "video_stats-#{@video_tag.uid}-#{@stats_presenter.options[:source]}-#{@stats_presenter.options[:hours].to_i.hours.ago.change(min: 0)}-#{1.hour.ago.change(min: 0)}.csv"

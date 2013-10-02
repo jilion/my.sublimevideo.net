@@ -1,17 +1,17 @@
-MySublimeVideo.videoStats ||= {}
+MySublimeVideo.stats ||= {}
 
-MySublimeVideo.videoStatsReady = ->
-  MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect()
-  MySublimeVideo.videoStats.prepareCSVExportButton()
-  MySublimeVideo.videoStats.prepareTimeAgo()
-  MySublimeVideo.videoStats.drawLast60MinutesPlaysAndLoadsSparklines()
-  MySublimeVideo.videoStats.drawPlaysAndLoadsGraph()
+MySublimeVideo.statsReady = ->
+  MySublimeVideo.stats.prepareAutoSubmitForHoursSelect()
+  MySublimeVideo.stats.prepareCSVExportButton()
+  MySublimeVideo.stats.prepareTimeAgo()
+  MySublimeVideo.stats.drawLast60MinutesPlaysAndLoadsSparklines()
+  MySublimeVideo.stats.drawPlaysAndLoadsGraph()
 
-MySublimeVideo.videoStats.prepareTimeAgo = ->
+MySublimeVideo.stats.prepareTimeAgo = ->
   $.timeago.settings.refreshMillis = 1000
   $('abbr.timeago').timeago()
 
-MySublimeVideo.videoStats.initSparklines = ->
+MySublimeVideo.stats.initSparklines = ->
   $.fn.sparkline.defaults.line.disableHighlight = true
   $.fn.sparkline.defaults.line.disableTooltips  = true
   $.fn.sparkline.defaults.line.spotRadius       = 0
@@ -23,8 +23,8 @@ MySublimeVideo.videoStats.initSparklines = ->
   $.fn.sparkline.defaults.line.chartRangeClip   = true
   $.fn.sparkline.defaults.line.chartRangeMin    = 0
 
-MySublimeVideo.videoStats.drawLast60MinutesPlaysAndLoadsSparklines = ->
-  MySublimeVideo.videoStats.initSparklines()
+MySublimeVideo.stats.drawLast60MinutesPlaysAndLoadsSparklines = ->
+  MySublimeVideo.stats.initSparklines()
   if ($last_60_minutes_plays = $('#last_60_minutes_plays')).exists()
     MySublimeVideo.Helpers.VideoStatsChartsHelper.sparkline($last_60_minutes_plays)
 
@@ -34,30 +34,30 @@ MySublimeVideo.videoStats.drawLast60MinutesPlaysAndLoadsSparklines = ->
       lineColor: '#596e8c')
 
 
-MySublimeVideo.videoStats.drawPlaysAndLoadsGraph = ->
+MySublimeVideo.stats.drawPlaysAndLoadsGraph = ->
   if ($plays_and_loads = $('#plays_and_loads')).exists()
     MySublimeVideo.Helpers.VideoStatsChartsHelper.loadsAndStartsChart($plays_and_loads.data('plays'),
       $plays_and_loads.data('loads'),
       $plays_and_loads.data('hours'))
 
-MySublimeVideo.videoStats.refreshTopStats = ->
+MySublimeVideo.stats.refreshTopStats = ->
   since = $('#last_plays li').first().data('time')
   $.ajax
     url: MySublimeVideo.Helpers.HistoryHelper.currentUrlWithNewQuery('since', since)
     dataType: 'script'
 
-MySublimeVideo.videoStats.refreshBottomStats = ->
-  $('#video_stats_dates_range_and_source_selector').submit()
-  $('#video_stats_hours_select, #video_stats_source_select').prop('disabled', true)
+MySublimeVideo.stats.refreshBottomStats = ->
+  $('#stats_dates_range_and_source_selector').submit()
+  $('#stats_hours_select, #stats_source_select').prop('disabled', true)
   $('#plays_and_loads, #browsers_and_platforms .content_wrap, #countries .content_wrap, #mobile_desktop .content_wrap').spin()
 
-MySublimeVideo.videoStats.prepareAutoSubmitForHoursSelect = ->
-  $('#video_stats_hours_select, #video_stats_source_select').on 'change', (event) ->
+MySublimeVideo.stats.prepareAutoSubmitForHoursSelect = ->
+  $('#stats_hours_select, #stats_source_select').on 'change', (event) ->
     $select = $(event.target)
-    MySublimeVideo.videoStats.refreshBottomStats()
+    MySublimeVideo.stats.refreshBottomStats()
     MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
 
-MySublimeVideo.videoStats.prepareCSVExportButton = ->
+MySublimeVideo.stats.prepareCSVExportButton = ->
   $('#csv_export').on 'click', (event) ->
     event.preventDefault()
     currentLocation = document.location

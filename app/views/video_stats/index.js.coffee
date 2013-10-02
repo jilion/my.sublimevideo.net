@@ -1,6 +1,6 @@
 <% if params[:since] %>
 
-$('#last_60_minutes_plays_and_loads').html("<%= j(render 'last_60_minutes_plays_and_loads', stats_presenter: @stats_presenter) %>")
+$('#last_60_minutes_plays_and_loads').html("<%= j(render 'stats/last_60_minutes_plays_and_loads', stats_presenter: @stats_presenter) %>")
 
 lisToRemove = []
 <% @stats_presenter.last_plays.reverse.each_with_index do |play, i| %>
@@ -26,8 +26,8 @@ $('#last_plays ul li').each (index, el) ->
 
 <% else %>
 
-$('#last_stats_by_hour_or_day').html("<%= j(render 'last_stats_by_hour_or_day', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter) %>")
+$('#last_stats_by_hour_or_day').html("<%= j(render 'stats/last_stats_by_hour_or_day', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter) %>")
 
 <% end %>
 
-MySublimeVideo.videoStatsReady()
+MySublimeVideo.statsReady()

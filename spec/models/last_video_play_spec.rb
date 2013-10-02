@@ -2,9 +2,9 @@ require 'fast_spec_helper'
 require 'active_support/core_ext'
 require 'support/private_api_helpers'
 
-require 'last_play'
+require 'last_video_play'
 
-describe LastPlay do
+describe LastVideoPlay do
   let(:time) { 1.hour.ago }
   let(:site_token) { 'site_token' }
   let(:video_uid) { 'my-video-1' }

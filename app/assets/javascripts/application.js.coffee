@@ -11,11 +11,10 @@
 #= require_tree ./ui
 #
 #= require video_code
-#= require video_stats
+#= require stats
 #
 #= require google-analytics-turbolinks
 #= require turbolinks
-
 
 window.MySublimeVideo =
   UI: {}
@@ -93,7 +92,7 @@ MySublimeVideo.Helpers.prepareStatsPoller = ->
     MySublimeVideo.Helpers.statsPoller.teardown()
     delete MySublimeVideo.Helpers.statsPoller
 
-  if ($div = $('.stats.video')).exists()
+  if ($div = $('.stats')).exists()
     MySublimeVideo.Helpers.statsPoller = new MySublimeVideo.Helpers.StatsPoller($div)
 
 MySublimeVideo.documentReady = ->
@@ -112,7 +111,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareVideoTagsTable()
   MySublimeVideo.UI.TableSortLinks.setup()
   MySublimeVideo.Helpers.prepareStatsPoller()
-  MySublimeVideo.videoStatsReady()
+  MySublimeVideo.statsReady()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
