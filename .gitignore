@@ -21,7 +21,6 @@ uploads
 *.sublime-project
 !.sublime-project
 public/test.html
-routes.txt
-
+doc/routes.txt
 
 .tm_properties
