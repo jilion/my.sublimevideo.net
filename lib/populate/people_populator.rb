@@ -48,7 +48,8 @@ class PeoplePopulator < Populator
           cc_number: "4111111111111111",
           cc_verification_value: "111",
           cc_expiration_month: 12,
-          cc_expiration_year: 2.years.from_now.year
+          cc_expiration_year: 2.years.from_now.year,
+          early_access: ['video']
         )
         user.created_at   = created_at_array.sample
         user.confirmed_at = user.created_at

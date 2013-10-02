@@ -101,11 +101,7 @@ class Admin::SitesController < Admin::AdminController
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
 
     unless params.keys.any? { |k| k =~ /^by_\w+$/ }
-      if params[:in_trial]
-        params[:by_trial_started_at] = 'desc'
-      else
-        params[:by_date] = 'desc'
-      end
+      params[:by_date] = 'desc'
     end
   end
 

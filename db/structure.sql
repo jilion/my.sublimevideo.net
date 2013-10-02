@@ -937,17 +937,6 @@ CREATE TABLE sites (
     wildcard boolean,
     extra_hostnames text,
     plan_id integer,
-    pending_plan_id integer,
-    next_cycle_plan_id integer,
-    first_paid_plan_started_at timestamp without time zone,
-    plan_started_at timestamp without time zone,
-    plan_cycle_started_at timestamp without time zone,
-    plan_cycle_ended_at timestamp without time zone,
-    pending_plan_started_at timestamp without time zone,
-    pending_plan_cycle_started_at timestamp without time zone,
-    pending_plan_cycle_ended_at timestamp without time zone,
-    overusage_notification_sent_at timestamp without time zone,
-    first_plan_upgrade_required_alert_sent_at timestamp without time zone,
     refunded_at timestamp without time zone,
     last_30_days_main_video_views integer DEFAULT 0,
     last_30_days_extra_video_views integer DEFAULT 0,
@@ -2342,3 +2331,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130821142238');
 INSERT INTO schema_migrations (version) VALUES ('20130829074156');
 
 INSERT INTO schema_migrations (version) VALUES ('20130918152449');
+
+INSERT INTO schema_migrations (version) VALUES ('20131002102952');

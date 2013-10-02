@@ -124,9 +124,6 @@ feature "Suspended page" do
       background do
         @site = build(:site, user: @current_user)
         SiteManager.new(@site).create
-        @site.pending_plan_started_at = Time.now.utc
-        @site.pending_plan_cycle_started_at = Time.now.utc
-        @site.pending_plan_cycle_ended_at = Time.now.utc
         @site.save!(validate: false)
         @invoice = create(:failed_invoice, site: @site, last_failed_at: Time.utc(2010,2,10), amount: 1990)
         @transaction = create(:failed_transaction, invoices: [@invoice], error: "Credit Card expired")
