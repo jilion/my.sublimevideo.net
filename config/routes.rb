@@ -234,13 +234,12 @@ MySublimeVideo::Application.routes.draw do
         put :retry, on: :collection
       end
 
-      resources :video_tags, only: [:index], path: 'videos'
+      resources :video_tags, only: [:index], path: 'videos' do
+        resources :video_stats, only: [:index], path: 'stats', as: :stats
+      end
       resources :video_tags, only: [:show]
 
-      resource :video_code, only: [], path: 'publish-video' do
-        get :new, on: :collection, path: '', as: 'new'
-      end
-      resources :video_codes, only: [:show], path: 'video-codes'
+      resources :video_codes, only: [:new, :edit], path: 'videos', path_names: { edit: 'code' }
 
       resources :stats, only: [:index], controller: 'site_stats' do
         get :videos, on: :collection
@@ -248,11 +247,13 @@ MySublimeVideo::Application.routes.draw do
     end
 
     # Legacy redirect
-    get  '/video-code-generator' => redirect('/publish-video')
+    # get  '/video-code-generator' => redirect('/publish-video')
+    %w[video-code-generator publish-video].each { |action| get action, to: redirect('/videos/new') }
+    get '/sites/:site_id/publish-video' => redirect { |params, req| "/sites/#{params[:site_id]}/videos/new" }
     post '/mime-type-check' => 'video_codes#mime_type_check'
     get  '/sites/new' => redirect('/assistant/new-site')
 
-    get '/publish-video' => 'video_codes#new', as: 'new_video_code'
+    get '/videos/new' => 'video_codes#new', as: 'new_video_code'
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     get '/stats' => redirect('/stats-demo')
 

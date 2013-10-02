@@ -30,7 +30,7 @@ MySublimeVideo::Application.configure do
   config.action_dispatch.best_standards_support = :builtin
 
   # Use a different cache store in production
-  config.cache_store = :dalli_store
+  config.cache_store = :null_store
 
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large

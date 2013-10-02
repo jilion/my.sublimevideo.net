@@ -19,7 +19,7 @@ describe Admin::AdminHelper do
   end
 
   describe "#formatted_pluralize" do
-    it { helper.formatted_pluralize(42000, 'item').should eq '42&#39;000 items' }
+    it { helper.formatted_pluralize(42000, 'item').should eq '42,000 items' }
     it { helper.formatted_pluralize(1, 'item').should eq '1 item' }
     it { helper.formatted_pluralize(0, 'item').should eq '0 items' }
   end

@@ -1,9 +1,5 @@
 module SitesHelper
 
-  def current_password_needed_error?(site)
-    site.errors[:base] && site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
-  end
-
   def sublimevideo_script_tag_for(site, stage = nil)
     %{<script type="text/javascript" src="//cdn.sublimevideo.net/js/%s#{'-' + stage if stage}.js"></script>} % [site.token]
   end
@@ -62,18 +58,6 @@ module SitesHelper
 
   def cdn_updated_at(site)
     [site.loaders_updated_at.to_i, site.settings_updated_at.to_i].max
-  end
-
-  def options_for_sites(sites)
-    options_for_select(_sites_for_select(sites), disabled: '')
-  end
-
-  private
-
-  def _sites_for_select(sites)
-    sites.by_hostname.map do |site|
-      [hostname_or_token(site, length: 20), site.token]
-    end
   end
 
 end

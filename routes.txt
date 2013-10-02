@@ -1,222 +1,239 @@
-                                   teabag          /teabag                                                   Teabag::Engine
-                                                   /docs(/*rest)(.:format)                                   :controller#:action
-                        new_admin_session GET      /login(.:format)                                          admin/admins/sessions#new
-                            admin_session POST     /login(.:format)                                          admin/admins/sessions#create
-                    destroy_admin_session GET      /logout(.:format)                                         admin/admins/sessions#destroy
-                           admin_password POST     /password(.:format)                                       admin/admins/passwords#create
-                       new_admin_password GET      /password/new(.:format)                                   admin/admins/passwords#new
-                      edit_admin_password GET      /password/edit(.:format)                                  admin/admins/passwords#edit
-                                          PUT      /password(.:format)                                       admin/admins/passwords#update
-                  accept_admin_invitation GET      /invitation/accept(.:format)                              admin/admins/invitations#edit
-                  remove_admin_invitation GET      /invitation/remove(.:format)                              admin/admins/invitations#destroy
-                         admin_invitation POST     /invitation(.:format)                                     admin/admins/invitations#create
-                     new_admin_invitation GET      /invitation/new(.:format)                                 admin/admins/invitations#new
-                                          PUT      /invitation(.:format)                                     admin/admins/invitations#update
-                  edit_admin_registration GET      /account/edit(.:format)                                   admin/admins/registrations#edit
-                       admin_registration PUT      /account(.:format)                                        admin/admins/registrations#update
-                                          DELETE   /account(.:format)                                        admin/admins/registrations#destroy
-                             admin_log_in GET      /log_in(.:format)                                         :controller#log_in
-                            admin_sign_in GET      /sign_in(.:format)                                        :controller#sign_in
-                             admin_signin GET      /signin(.:format)                                         :controller#signin
-                            admin_log_out GET      /log_out(.:format)                                        :controller#log_out
-                           admin_sign_out GET      /sign_out(.:format)                                       :controller#sign_out
-                            admin_signout GET      /signout(.:format)                                        :controller#signout
-                               admin_exit GET      /exit(.:format)                                           :controller#exit
-                               admin_root          /                                                         :controller#:action
-                              admin_admin          /                                                         :controller#:action
-                       paying_admin_sites GET      /sites/paying(.:format)                                   admin/sites#paying
-                  videos_infos_admin_site GET      /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
-                      invoices_admin_site GET      /sites/:id/invoices(.:format)                             admin/sites#invoices
-                  active_pages_admin_site GET      /sites/:id/active_pages(.:format)                         admin/sites#active_pages
-               generate_loader_admin_site PUT      /sites/:id/generate_loader(.:format)                      admin/sites#generate_loader
-             generate_settings_admin_site PUT      /sites/:id/generate_settings(.:format)                    admin/sites#generate_settings
-    update_design_subscription_admin_site PUT      /sites/:id/update_design_subscription(.:format)           admin/sites#update_design_subscription
-update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
-                              admin_sites GET      /sites(.:format)                                          admin/sites#index
-                          edit_admin_site GET      /sites/:id/edit(.:format)                                 admin/sites#edit
-                               admin_site GET      /sites/:id(.:format)                                      admin/sites#show
-                                          PUT      /sites/:id(.:format)                                      admin/sites#update
-                              admin_plans GET      /plans(.:format)                                          admin/plans#index
-                    pages_admin_referrers GET      /referrers/pages(.:format)                                admin/referrers#pages
-                        become_admin_user GET      /users/:id/become(.:format)                               admin/users#become
-                         stats_admin_user GET      /users/:id/stats(.:format)                                admin/users#stats
-                      invoices_admin_user GET      /users/:id/invoices(.:format)                             admin/users#invoices
-              support_requests_admin_user GET      /users/:id/support_requests(.:format)                     admin/users#support_requests
-           new_support_request_admin_user GET      /users/:id/new_support_request(.:format)                  admin/users#new_support_request
-                  oauth_revoke_admin_user DELETE   /users/:id/oauth_revoke(.:format)                         admin/users#oauth_revoke
-                              admin_users GET      /users(.:format)                                          admin/users#index
-                          edit_admin_user GET      /users/:id/edit(.:format)                                 admin/users#edit
-                               admin_user GET      /users/:id(.:format)                                      admin/users#show
-                                          PUT      /users/:id(.:format)                                      admin/users#update
-                                          DELETE   /users/:id(.:format)                                      admin/users#destroy
-                        admin_enthusiasts GET      /enthusiasts(.:format)                                    admin/enthusiasts#index
-                         admin_enthusiast GET      /enthusiasts/:id(.:format)                                admin/enthusiasts#show
-             reset_auth_token_admin_admin PUT      /admins/:id/reset_auth_token(.:format)                    admin/admins#reset_auth_token
-                             admin_admins GET      /admins(.:format)                                         admin/admins#index
-                         edit_admin_admin GET      /admins/:id/edit(.:format)                                admin/admins#edit
-                                          PUT      /admins/:id(.:format)                                     admin/admins#update
-                                          DELETE   /admins/:id(.:format)                                     admin/admins#destroy
-                          admin_feedbacks GET      /feedbacks(.:format)                                      admin/feedbacks#index
-        admin_tailor_made_player_requests GET      /tailor_made_player_requests(.:format)                    admin/tailor_made_player_requests#index
-         admin_tailor_made_player_request GET      /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#show
-                                          DELETE   /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#destroy
-                   monthly_admin_invoices GET      /invoices/monthly(.:format)                               admin/invoices#monthly
-                    yearly_admin_invoices GET      /invoices/yearly(.:format)                                admin/invoices#yearly
-             top_customers_admin_invoices GET      /invoices/top_customers(.:format)                         admin/invoices#top_customers
-             retry_charging_admin_invoice PUT      /invoices/:id/retry_charging(.:format)                    admin/invoices#retry_charging
-                           admin_invoices GET      /invoices(.:format)                                       admin/invoices#index
-                       edit_admin_invoice GET      /invoices/:id/edit(.:format)                              admin/invoices#edit
-                            admin_invoice GET      /invoices/:id(.:format)                                   admin/invoices#show
-                        admin_single_stat GET      /stats/single/:page(.:format)                             admin/stats#show
-                        more_admin_trends GET      /trends/more(.:format)                                    admin/trends#more
-                    billings_admin_trends GET      /trends/billings(.:format)                                admin/trends#billings
-                    revenues_admin_trends GET      /trends/revenues(.:format)                                admin/trends#revenues
-              billable_items_admin_trends GET      /trends/billable_items(.:format)                          admin/trends#billable_items
-                       users_admin_trends GET      /trends/users(.:format)                                   admin/trends#users
-                       sites_admin_trends GET      /trends/sites(.:format)                                   admin/trends#sites
-                  site_stats_admin_trends GET      /trends/site_stats(.:format)                              admin/trends#site_stats
-                 site_usages_admin_trends GET      /trends/site_usages(.:format)                             admin/trends#site_usages
-                      tweets_admin_trends GET      /trends/tweets(.:format)                                  admin/trends#tweets
- tailor_made_player_requests_admin_trends GET      /trends/tailor_made_player_requests(.:format)             admin/trends#tailor_made_player_requests
-                             admin_trends GET      /trends(.:format)                                         admin/trends#index
-                     favorite_admin_tweet PUT      /tweets/:id/favorite(.:format)                            admin/tweets#favorite
-                             admin_tweets GET      /tweets(.:format)                                         admin/tweets#index
-                              admin_deals GET      /deals(.:format)                                          admin/deals#index
-                   admin_deal_activations GET      /deals/activations(.:format)                              admin/deal_activations#index
-                      confirm_admin_mails POST     /mails/confirm(.:format)                                  admin/mails#confirm
-                              admin_mails GET      /mails(.:format)                                          admin/mails#index
-                                          POST     /mails(.:format)                                          admin/mails#create
-                           new_admin_mail GET      /mails/new(.:format)                                      admin/mails#new
-              preview_admin_mail_template GET      /mails/templates/:id/preview(.:format)                    admin/mail_templates#preview
-                     admin_mail_templates POST     /mails/templates(.:format)                                admin/mail_templates#create
-                  new_admin_mail_template GET      /mails/templates/new(.:format)                            admin/mail_templates#new
-                 edit_admin_mail_template GET      /mails/templates/:id/edit(.:format)                       admin/mail_templates#edit
-                      admin_mail_template PUT      /mails/templates/:id(.:format)                            admin/mail_templates#update
-                           admin_mail_log GET      /mails/logs/:id(.:format)                                 admin/mail_logs#show
-                                admin_app GET      /app(.:format)                                            :controller#:action
-             admin_app_component_versions GET      /app/components/:component_id/versions(.:format)          admin/app/component_versions#index
-                                          POST     /app/components/:component_id/versions(.:format)          admin/app/component_versions#create
-              admin_app_component_version GET      /app/components/:component_id/versions/:id(.:format)      admin/app/component_versions#show
-                                          DELETE   /app/components/:component_id/versions/:id(.:format)      admin/app/component_versions#destroy
-                     admin_app_components GET      /app/components(.:format)                                 admin/app/components#index
-                                          POST     /app/components(.:format)                                 admin/app/components#create
-                      admin_app_component GET      /app/components/:id(.:format)                             admin/app/components#show
-                                          PUT      /app/components/:id(.:format)                             admin/app/components#update
-                                          DELETE   /app/components/:id(.:format)                             admin/app/components#destroy
-                         private_api_user GET      /private_api/users/:id(.:format)                          private_api/users#show
-                 add_tag_private_api_site PUT      /private_api/sites/:id/add_tag(.:format)                  private_api/sites#add_tag
-                  private_api_site_addons GET      /private_api/sites/:site_id/addons(.:format)              private_api/addons#index
-                    private_api_site_kits GET      /private_api/sites/:site_id/kits(.:format)                private_api/kits#index
-                        private_api_sites GET      /private_api/sites(.:format)                              private_api/sites#index
-                         private_api_site GET      /private_api/sites/:id(.:format)                          private_api/sites#show
-                 private_api_oauth2_token GET      /private_api/oauth2_tokens/:id(.:format)                  private_api/oauth2_tokens#show
-                    private_api_referrers GET      /private_api/referrers(.:format)                          private_api/referrers#index
-                         new_user_session GET      /login(.:format)                                          users/sessions#new
-                             user_session POST     /login(.:format)                                          users/sessions#create
-                     destroy_user_session GET      /logout(.:format)                                         users/sessions#destroy
-                            user_password POST     /password(.:format)                                       devise/passwords#create
-                        new_user_password GET      /password/new(.:format)                                   devise/passwords#new
-                       edit_user_password GET      /password/edit(.:format)                                  devise/passwords#edit
-                                          PUT      /password(.:format)                                       devise/passwords#update
-                        user_confirmation POST     /confirmation(.:format)                                   users/confirmations#create
-                    new_user_confirmation GET      /confirmation/new(.:format)                               users/confirmations#new
-                                          GET      /confirmation(.:format)                                   users/confirmations#show
-                              signup_user GET      /signup(.:format)                                         users#new
-                                     user POST     /signup(.:format)                                         users#create
-                                edit_user GET      /account(.:format)                                        users#edit
-                              update_user PUT      /account(.:format)                                        users#update
-                               login_user GET      /login(.:format)                                          users/sessions#new
-                                          GET      /gs-login(.:format)                                       users/sessions#new_gs
-                                 gs_login POST     /gs-login(.:format)                                       users/sessions#create_gs
-                           more_user_info GET      /account/more-info(.:format)                              users#more_info
-                     account_cancellation GET      /account/cancel(.:format)                                 users/cancellations#new
-                                   cancel POST     /account/cancel(.:format)                                 users/cancellations#create
-                                          DELETE   /notice/:id(.:format)                                     users#hide_notice
-                                  sign_up GET      /sign_up(.:format)                                        :controller#sign_up
-                                 register GET      /register(.:format)                                       :controller#register
-                                   log_in GET      /log_in(.:format)                                         :controller#log_in
-                                  sign_in GET      /sign_in(.:format)                                        :controller#sign_in
-                                   signin GET      /signin(.:format)                                         :controller#signin
-                                  log_out GET      /log_out(.:format)                                        :controller#log_out
-                                 sign_out GET      /sign_out(.:format)                                       :controller#sign_out
-                                  signout GET      /signout(.:format)                                        :controller#signout
-                                     edit GET      /account/edit(.:format)                                   :controller#edit
-                             edit_billing GET      /account/billing/edit(.:format)                           billings#edit
-                                  billing PUT      /account/billing(.:format)                                billings#update
-                      client_applications GET      /account/applications(.:format)                           client_applications#index
-                                          POST     /account/applications(.:format)                           client_applications#create
-                   new_client_application GET      /account/applications/new(.:format)                       client_applications#new
-                  edit_client_application GET      /account/applications/:id/edit(.:format)                  client_applications#edit
-                       client_application GET      /account/applications/:id(.:format)                       client_applications#show
-                                          PUT      /account/applications/:id(.:format)                       client_applications#update
-                                          DELETE   /account/applications/:id(.:format)                       client_applications#destroy
-                                          GET      /card(/*anything)(.:format)                               :controller#:action
-                     newsletter_subscribe GET      /newsletter/subscribe(.:format)                           newsletter#subscribe
-                          oauth_authorize GET|POST /oauth/authorize(.:format)                                oauth#authorize
-                             oauth_revoke DELETE   /oauth/revoke(.:format)                                   oauth#revoke
-                              oauth_token POST     /oauth/access_token(.:format)                             oauth#token
-                       assistant_new_site GET|POST /assistant/new-site(.:format)                             assistant#new_site
-                         assistant_addons GET|PUT  /assistant/:site_id/addons(.:format)                      assistant#addons
-                         assistant_player GET|PUT  /assistant/:site_id/player(.:format)                      assistant#player
-                  assistant_publish_video GET      /assistant/:site_id/publish-video(.:format)               assistant#publish_video
-                        assistant_summary GET|POST /assistant/:site_id/summary(.:format)                     assistant#summary
-                                   addons GET      /addons(.:format)                                         addons#index
-                                    addon GET      /addons/:id(.:format)                                     addons#show
-                    subscribe_site_addons PUT      /sites/:site_id/addons/subscribe(.:format)                addons#subscribe
-                              site_addons GET      /sites/:site_id/addons(.:format)                          addons#index
-                               site_addon GET      /sites/:site_id/addons/:id(.:format)                      addons#show
-                  set_as_default_site_kit PUT      /sites/:site_id/players/:id/set_as_default(.:format)      kits#set_as_default
-             process_custom_logo_site_kit POST     /sites/:site_id/players/:id/process_custom_logo(.:format) kits#process_custom_logo
-                          fields_site_kit GET      /sites/:site_id/players/:id/fields(.:format)              kits#fields
-                         fields_site_kits GET      /sites/:site_id/players/fields(.:format)                  kits#fields
-                                site_kits GET      /sites/:site_id/players(.:format)                         kits#index
-                                          POST     /sites/:site_id/players(.:format)                         kits#create
-                             new_site_kit GET      /sites/:site_id/players/new(.:format)                     kits#new
-                            edit_site_kit GET      /sites/:site_id/players/:id/edit(.:format)                kits#edit
-                                 site_kit GET      /sites/:site_id/players/:id(.:format)                     kits#show
-                                          PUT      /sites/:site_id/players/:id(.:format)                     kits#update
-                      retry_site_invoices PUT      /sites/:site_id/invoices/retry(.:format)                  invoices#retry
-                            site_invoices GET      /sites/:site_id/invoices(.:format)                        invoices#index
-                          site_video_tags GET      /sites/:site_id/videos(.:format)                          video_tags#index
-                           site_video_tag GET      /sites/:site_id/video_tags/:id(.:format)                  video_tags#show
-                      new_site_video_code GET      /sites/:site_id/publish-video(.:format)                   video_codes#new
-                          site_video_code GET      /sites/:site_id/video-codes/:id(.:format)                 video_codes#show
-                        videos_site_stats GET      /sites/:site_id/stats/videos(.:format)                    site_stats#videos
-                               site_stats GET      /sites/:site_id/stats(.:format)                           site_stats#index
-                                    sites GET      /sites(.:format)                                          sites#index
-                                edit_site GET      /sites/:id/edit(.:format)                                 sites#edit
-                                     site PUT      /sites/:id(.:format)                                      sites#update
-                                          DELETE   /sites/:id(.:format)                                      sites#destroy
-                                          GET      /video-code-generator(.:format)                           :controller#:action
-                                          POST     /mime-type-check(.:format)                                video_codes#mime_type_check
-                                sites_new GET      /sites/new(.:format)                                      :controller#:action
-                           new_video_code GET      /publish-video(.:format)                                  video_codes#new
-                                          GET      /stats-demo(.:format)                                     site_stats#index {:site_id=>"demo"}
-                                    stats GET      /stats(.:format)                                          :controller#:action
-                                          GET      /sites/stats(.:format)                                    :controller#:action
-                                     demo GET      /sites/stats/demo(.:format)                               :controller#demo
-                                          GET      /sites/stats/:site_id(.:format)                           :controller#:action
-                            stats_exports POST     /stats/exports(.:format)                                  stats_exports#create
-                             stats_export GET      /stats/exports/:id(.:format)                              stats_exports#show
-                       retry_all_invoices PUT      /invoices/retry_all(.:format)                             invoices#retry_all
-                                  invoice GET      /invoices/:id(.:format)                                   invoices#show
-                     transaction_callback POST     /transaction/callback(.:format)                           transactions#callback
-                                     deal GET      /d/:id(.:format)                                          deals#show
-                                 feedback GET      /feedback(.:format)                                       feedbacks#new
-                                          POST     /feedback(.:format)                                       feedbacks#create
-                          support_request POST     /help(.:format)                                           support_requests#create
-                                  support GET      /support(.:format)                                        :controller#support
-                                     auth POST     /pusher/auth(.:format)                                    pusher#auth
-                                  webhook POST     /pusher/webhook(.:format)                                 pusher#webhook
-                                     page GET      /:page                                                    pages#show
-                                     root          /                                                         :controller#:action
-                             rails_routes          /rails/routes(.:format)                                   sextant/routes#index
-                           sextant_engine          /sextant                                                  Sextant::Engine
-                              maintenance GET      /maintenance(.:format)                                    maintenance#show
+                                   Prefix Verb          URI Pattern                                               Controller#Action
+                                 teaspoon               /teaspoon                                                 Teaspoon::Engine
+                                          GET           /docs(/*rest)(.:format)                                   redirect(301)
+                        new_admin_session GET           /login(.:format)                                          admin/admins/sessions#new
+                            admin_session POST          /login(.:format)                                          admin/admins/sessions#create
+                    destroy_admin_session GET           /logout(.:format)                                         admin/admins/sessions#destroy
+                           admin_password POST          /password(.:format)                                       admin/admins/passwords#create
+                       new_admin_password GET           /password/new(.:format)                                   admin/admins/passwords#new
+                      edit_admin_password GET           /password/edit(.:format)                                  admin/admins/passwords#edit
+                                          PATCH         /password(.:format)                                       admin/admins/passwords#update
+                                          PUT           /password(.:format)                                       admin/admins/passwords#update
+                  accept_admin_invitation GET           /invitation/accept(.:format)                              admin/admins/invitations#edit
+                  remove_admin_invitation GET           /invitation/remove(.:format)                              admin/admins/invitations#destroy
+                         admin_invitation POST          /invitation(.:format)                                     admin/admins/invitations#create
+                     new_admin_invitation GET           /invitation/new(.:format)                                 admin/admins/invitations#new
+                                          PATCH         /invitation(.:format)                                     admin/admins/invitations#update
+                                          PUT           /invitation(.:format)                                     admin/admins/invitations#update
+                  edit_admin_registration GET           /account/edit(.:format)                                   admin/admins/registrations#edit
+                       admin_registration PATCH         /account(.:format)                                        admin/admins/registrations#update
+                                          PUT           /account(.:format)                                        admin/admins/registrations#update
+                                          DELETE        /account(.:format)                                        admin/admins/registrations#destroy
+                             admin_log_in GET           /log_in(.:format)                                         redirect(301, /login)
+                            admin_sign_in GET           /sign_in(.:format)                                        redirect(301, /login)
+                             admin_signin GET           /signin(.:format)                                         redirect(301, /login)
+                            admin_log_out GET           /log_out(.:format)                                        redirect(301, /logout)
+                           admin_sign_out GET           /sign_out(.:format)                                       redirect(301, /logout)
+                            admin_signout GET           /signout(.:format)                                        redirect(301, /logout)
+                               admin_exit GET           /exit(.:format)                                           redirect(301, /logout)
+                               admin_root GET           /                                                         redirect(301, /login)
+                              admin_admin GET           /                                                         redirect(301, /sites)
+                       paying_admin_sites GET           /sites/paying(.:format)                                   admin/sites#paying
+                  videos_infos_admin_site GET           /sites/:id/videos_infos(.:format)                         admin/sites#videos_infos
+                      invoices_admin_site GET           /sites/:id/invoices(.:format)                             admin/sites#invoices
+                  active_pages_admin_site GET           /sites/:id/active_pages(.:format)                         admin/sites#active_pages
+               generate_loader_admin_site PUT           /sites/:id/generate_loader(.:format)                      admin/sites#generate_loader
+             generate_settings_admin_site PUT           /sites/:id/generate_settings(.:format)                    admin/sites#generate_settings
+    update_design_subscription_admin_site PUT           /sites/:id/update_design_subscription(.:format)           admin/sites#update_design_subscription
+update_addon_plan_subscription_admin_site PUT           /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
+                              admin_sites GET           /sites(.:format)                                          admin/sites#index
+                          edit_admin_site GET           /sites/:id/edit(.:format)                                 admin/sites#edit
+                               admin_site GET           /sites/:id(.:format)                                      admin/sites#show
+                                          PATCH         /sites/:id(.:format)                                      admin/sites#update
+                                          PUT           /sites/:id(.:format)                                      admin/sites#update
+                              admin_plans GET           /plans(.:format)                                          admin/plans#index
+                    pages_admin_referrers GET           /referrers/pages(.:format)                                admin/referrers#pages
+                        become_admin_user GET           /users/:id/become(.:format)                               admin/users#become
+                         stats_admin_user GET           /users/:id/stats(.:format)                                admin/users#stats
+                      invoices_admin_user GET           /users/:id/invoices(.:format)                             admin/users#invoices
+              support_requests_admin_user GET           /users/:id/support_requests(.:format)                     admin/users#support_requests
+           new_support_request_admin_user GET           /users/:id/new_support_request(.:format)                  admin/users#new_support_request
+                  oauth_revoke_admin_user DELETE        /users/:id/oauth_revoke(.:format)                         admin/users#oauth_revoke
+                              admin_users GET           /users(.:format)                                          admin/users#index
+                          edit_admin_user GET           /users/:id/edit(.:format)                                 admin/users#edit
+                               admin_user GET           /users/:id(.:format)                                      admin/users#show
+                                          PATCH         /users/:id(.:format)                                      admin/users#update
+                                          PUT           /users/:id(.:format)                                      admin/users#update
+                                          DELETE        /users/:id(.:format)                                      admin/users#destroy
+                        admin_enthusiasts GET           /enthusiasts(.:format)                                    admin/enthusiasts#index
+                         admin_enthusiast GET           /enthusiasts/:id(.:format)                                admin/enthusiasts#show
+             reset_auth_token_admin_admin PUT           /admins/:id/reset_auth_token(.:format)                    admin/admins#reset_auth_token
+                             admin_admins GET           /admins(.:format)                                         admin/admins#index
+                         edit_admin_admin GET           /admins/:id/edit(.:format)                                admin/admins#edit
+                                          PATCH         /admins/:id(.:format)                                     admin/admins#update
+                                          PUT           /admins/:id(.:format)                                     admin/admins#update
+                                          DELETE        /admins/:id(.:format)                                     admin/admins#destroy
+                          admin_feedbacks GET           /feedbacks(.:format)                                      admin/feedbacks#index
+        admin_tailor_made_player_requests GET           /tailor_made_player_requests(.:format)                    admin/tailor_made_player_requests#index
+         admin_tailor_made_player_request GET           /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#show
+                                          DELETE        /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#destroy
+                   monthly_admin_invoices GET           /invoices/monthly(.:format)                               admin/invoices#monthly
+                    yearly_admin_invoices GET           /invoices/yearly(.:format)                                admin/invoices#yearly
+             top_customers_admin_invoices GET           /invoices/top_customers(.:format)                         admin/invoices#top_customers
+             retry_charging_admin_invoice PUT           /invoices/:id/retry_charging(.:format)                    admin/invoices#retry_charging
+                           admin_invoices GET           /invoices(.:format)                                       admin/invoices#index
+                       edit_admin_invoice GET           /invoices/:id/edit(.:format)                              admin/invoices#edit
+                            admin_invoice GET           /invoices/:id(.:format)                                   admin/invoices#show
+                        admin_single_stat GET           /stats/single/:page(.:format)                             admin/stats#show
+                        more_admin_trends GET           /trends/more(.:format)                                    admin/trends#more
+                    billings_admin_trends GET           /trends/billings(.:format)                                admin/trends#billings
+                    revenues_admin_trends GET           /trends/revenues(.:format)                                admin/trends#revenues
+              billable_items_admin_trends GET           /trends/billable_items(.:format)                          admin/trends#billable_items
+                       users_admin_trends GET           /trends/users(.:format)                                   admin/trends#users
+                       sites_admin_trends GET           /trends/sites(.:format)                                   admin/trends#sites
+                  site_stats_admin_trends GET           /trends/site_stats(.:format)                              admin/trends#site_stats
+                 site_usages_admin_trends GET           /trends/site_usages(.:format)                             admin/trends#site_usages
+                      tweets_admin_trends GET           /trends/tweets(.:format)                                  admin/trends#tweets
+ tailor_made_player_requests_admin_trends GET           /trends/tailor_made_player_requests(.:format)             admin/trends#tailor_made_player_requests
+                             admin_trends GET           /trends(.:format)                                         admin/trends#index
+                     favorite_admin_tweet PUT           /tweets/:id/favorite(.:format)                            admin/tweets#favorite
+                             admin_tweets GET           /tweets(.:format)                                         admin/tweets#index
+                              admin_deals GET           /deals(.:format)                                          admin/deals#index
+                   admin_deal_activations GET           /deals/activations(.:format)                              admin/deal_activations#index
+                      confirm_admin_mails POST          /mails/confirm(.:format)                                  admin/mails#confirm
+                              admin_mails GET           /mails(.:format)                                          admin/mails#index
+                                          POST          /mails(.:format)                                          admin/mails#create
+                           new_admin_mail GET           /mails/new(.:format)                                      admin/mails#new
+              preview_admin_mail_template GET           /mails/templates/:id/preview(.:format)                    admin/mail_templates#preview
+                     admin_mail_templates POST          /mails/templates(.:format)                                admin/mail_templates#create
+                  new_admin_mail_template GET           /mails/templates/new(.:format)                            admin/mail_templates#new
+                 edit_admin_mail_template GET           /mails/templates/:id/edit(.:format)                       admin/mail_templates#edit
+                      admin_mail_template PATCH         /mails/templates/:id(.:format)                            admin/mail_templates#update
+                                          PUT           /mails/templates/:id(.:format)                            admin/mail_templates#update
+                           admin_mail_log GET           /mails/logs/:id(.:format)                                 admin/mail_logs#show
+                                admin_app GET           /app(.:format)                                            redirect(301, /app/components/sa)
+             admin_app_component_versions GET           /app/components/:component_id/versions(.:format)          admin/app/component_versions#index
+                                          POST          /app/components/:component_id/versions(.:format)          admin/app/component_versions#create
+              admin_app_component_version GET           /app/components/:component_id/versions/:id(.:format)      admin/app/component_versions#show
+                                          DELETE        /app/components/:component_id/versions/:id(.:format)      admin/app/component_versions#destroy
+                     admin_app_components GET           /app/components(.:format)                                 admin/app/components#index
+                                          POST          /app/components(.:format)                                 admin/app/components#create
+                      admin_app_component GET           /app/components/:id(.:format)                             admin/app/components#show
+                                          PATCH         /app/components/:id(.:format)                             admin/app/components#update
+                                          PUT           /app/components/:id(.:format)                             admin/app/components#update
+                                          DELETE        /app/components/:id(.:format)                             admin/app/components#destroy
+                         private_api_user GET           /private_api/users/:id(.:format)                          private_api/users#show
+                 add_tag_private_api_site PUT           /private_api/sites/:id/add_tag(.:format)                  private_api/sites#add_tag
+                  private_api_site_addons GET           /private_api/sites/:site_id/addons(.:format)              private_api/addons#index
+                    private_api_site_kits GET           /private_api/sites/:site_id/kits(.:format)                private_api/kits#index
+                        private_api_sites GET           /private_api/sites(.:format)                              private_api/sites#index
+                         private_api_site GET           /private_api/sites/:id(.:format)                          private_api/sites#show
+                 private_api_oauth2_token GET           /private_api/oauth2_tokens/:id(.:format)                  private_api/oauth2_tokens#show
+                    private_api_referrers GET           /private_api/referrers(.:format)                          private_api/referrers#index
+                         new_user_session GET           /login(.:format)                                          users/sessions#new
+                             user_session POST          /login(.:format)                                          users/sessions#create
+                     destroy_user_session GET           /logout(.:format)                                         users/sessions#destroy
+                            user_password POST          /password(.:format)                                       devise/passwords#create
+                        new_user_password GET           /password/new(.:format)                                   devise/passwords#new
+                       edit_user_password GET           /password/edit(.:format)                                  devise/passwords#edit
+                                          PATCH         /password(.:format)                                       devise/passwords#update
+                                          PUT           /password(.:format)                                       devise/passwords#update
+                        user_confirmation POST          /confirmation(.:format)                                   users/confirmations#create
+                    new_user_confirmation GET           /confirmation/new(.:format)                               users/confirmations#new
+                                          GET           /confirmation(.:format)                                   users/confirmations#show
+                              signup_user GET           /signup(.:format)                                         users#new
+                                     user POST          /signup(.:format)                                         users#create
+                                edit_user GET           /account(.:format)                                        users#edit
+                              update_user PUT           /account(.:format)                                        users#update
+                               login_user GET           /login(.:format)                                          users/sessions#new
+                                          GET           /gs-login(.:format)                                       users/sessions#new_gs
+                                 gs_login POST          /gs-login(.:format)                                       users/sessions#create_gs
+                           more_user_info GET           /account/more-info(.:format)                              users#more_info
+                     account_cancellation GET           /account/cancel(.:format)                                 users/cancellations#new
+                                   cancel POST          /account/cancel(.:format)                                 users/cancellations#create
+                                          DELETE        /notice/:id(.:format)                                     users#hide_notice
+                                  sign_up GET           /sign_up(.:format)                                        redirect(301, /signup)
+                                 register GET           /register(.:format)                                       redirect(301, /signup)
+                                   log_in GET           /log_in(.:format)                                         redirect(301, /login)
+                                  sign_in GET           /sign_in(.:format)                                        redirect(301, /login)
+                                   signin GET           /signin(.:format)                                         redirect(301, /login)
+                                  log_out GET           /log_out(.:format)                                        redirect(301, /logout)
+                                 sign_out GET           /sign_out(.:format)                                       redirect(301, /logout)
+                                  signout GET           /signout(.:format)                                        redirect(301, /logout)
+                                     edit GET           /account/edit(.:format)                                   redirect(301, /account)
+                             edit_billing GET           /account/billing/edit(.:format)                           billings#edit
+                                  billing PATCH         /account/billing(.:format)                                billings#update
+                                          PUT           /account/billing(.:format)                                billings#update
+                      client_applications GET           /account/applications(.:format)                           client_applications#index
+                                          POST          /account/applications(.:format)                           client_applications#create
+                   new_client_application GET           /account/applications/new(.:format)                       client_applications#new
+                  edit_client_application GET           /account/applications/:id/edit(.:format)                  client_applications#edit
+                       client_application GET           /account/applications/:id(.:format)                       client_applications#show
+                                          PATCH         /account/applications/:id(.:format)                       client_applications#update
+                                          PUT           /account/applications/:id(.:format)                       client_applications#update
+                                          DELETE        /account/applications/:id(.:format)                       client_applications#destroy
+                                          GET           /card(/*anything)(.:format)                               redirect(301, /account/billing/edit)
+                     newsletter_subscribe GET           /newsletter/subscribe(.:format)                           newsletter#subscribe
+                          oauth_authorize GET|POST      /oauth/authorize(.:format)                                oauth#authorize
+                             oauth_revoke DELETE        /oauth/revoke(.:format)                                   oauth#revoke
+                              oauth_token POST          /oauth/access_token(.:format)                             oauth#token
+                       assistant_new_site GET|POST      /assistant/new-site(.:format)                             assistant#new_site
+                         assistant_addons GET|PUT|PATCH /assistant/:site_id/addons(.:format)                      assistant#addons
+                         assistant_player GET|PUT|PATCH /assistant/:site_id/player(.:format)                      assistant#player
+                  assistant_publish_video GET           /assistant/:site_id/publish-video(.:format)               assistant#publish_video
+                        assistant_summary GET|POST      /assistant/:site_id/summary(.:format)                     assistant#summary
+                                   addons GET           /addons(.:format)                                         addons#index
+                                    addon GET           /addons/:id(.:format)                                     addons#show
+                    subscribe_site_addons PUT           /sites/:site_id/addons/subscribe(.:format)                addons#subscribe
+                              site_addons GET           /sites/:site_id/addons(.:format)                          addons#index
+                               site_addon GET           /sites/:site_id/addons/:id(.:format)                      addons#show
+                  set_as_default_site_kit PUT           /sites/:site_id/players/:id/set_as_default(.:format)      kits#set_as_default
+             process_custom_logo_site_kit POST          /sites/:site_id/players/:id/process_custom_logo(.:format) kits#process_custom_logo
+                          fields_site_kit GET           /sites/:site_id/players/:id/fields(.:format)              kits#fields
+                         fields_site_kits GET           /sites/:site_id/players/fields(.:format)                  kits#fields
+                                site_kits GET           /sites/:site_id/players(.:format)                         kits#index
+                                          POST          /sites/:site_id/players(.:format)                         kits#create
+                             new_site_kit GET           /sites/:site_id/players/new(.:format)                     kits#new
+                            edit_site_kit GET           /sites/:site_id/players/:id/edit(.:format)                kits#edit
+                                 site_kit GET           /sites/:site_id/players/:id(.:format)                     kits#show
+                                          PATCH         /sites/:site_id/players/:id(.:format)                     kits#update
+                                          PUT           /sites/:site_id/players/:id(.:format)                     kits#update
+                      retry_site_invoices PUT           /sites/:site_id/invoices/retry(.:format)                  invoices#retry
+                            site_invoices GET           /sites/:site_id/invoices(.:format)                        invoices#index
+                     site_video_tag_stats GET           /sites/:site_id/videos/:video_tag_id/stats(.:format)      video_stats#index
+                          site_video_tags GET           /sites/:site_id/videos(.:format)                          video_tags#index
+                           site_video_tag GET           /sites/:site_id/video_tags/:id(.:format)                  video_tags#show
+                      new_site_video_code GET           /sites/:site_id/videos/new(.:format)                      video_codes#new
+                     edit_site_video_code GET           /sites/:site_id/videos/:id/code(.:format)                 video_codes#edit
+                        videos_site_stats GET           /sites/:site_id/stats/videos(.:format)                    site_stats#videos
+                               site_stats GET           /sites/:site_id/stats(.:format)                           site_stats#index
+                                    sites GET           /sites(.:format)                                          sites#index
+                                edit_site GET           /sites/:id/edit(.:format)                                 sites#edit
+                                     site PATCH         /sites/:id(.:format)                                      sites#update
+                                          PUT           /sites/:id(.:format)                                      sites#update
+                                          DELETE        /sites/:id(.:format)                                      sites#destroy
+                                          GET           /video-code-generator(.:format)                           redirect(301, /videos/new)
+                                          GET           /publish-video(.:format)                                  redirect(301, /videos/new)
+                                          GET           /sites/:site_id/publish-video(.:format)                   redirect(301)
+                                          POST          /mime-type-check(.:format)                                video_codes#mime_type_check
+                                sites_new GET           /sites/new(.:format)                                      redirect(301, /assistant/new-site)
+                           new_video_code GET           /videos/new(.:format)                                     video_codes#new
+                                          GET           /stats-demo(.:format)                                     site_stats#index {:site_id=>"demo"}
+                                    stats GET           /stats(.:format)                                          redirect(301, /stats-demo)
+                                          GET           /sites/stats(.:format)                                    redirect(301, /sites)
+                                     demo GET           /sites/stats/demo(.:format)                               redirect(301, /stats-demo)
+                                          GET           /sites/stats/:site_id(.:format)                           redirect(301)
+                            stats_exports POST          /stats/exports(.:format)                                  stats_exports#create
+                             stats_export GET           /stats/exports/:id(.:format)                              stats_exports#show
+                       retry_all_invoices PUT           /invoices/retry_all(.:format)                             invoices#retry_all
+                                  invoice GET           /invoices/:id(.:format)                                   invoices#show
+                     transaction_callback POST          /transaction/callback(.:format)                           transactions#callback
+                                     deal GET           /d/:id(.:format)                                          deals#show
+                                 feedback GET           /feedback(.:format)                                       feedbacks#new
+                                          POST          /feedback(.:format)                                       feedbacks#create
+                          support_request POST          /help(.:format)                                           support_requests#create
+                                  support GET           /support(.:format)                                        redirect(301, /help)
+                                     auth POST          /pusher/auth(.:format)                                    pusher#auth
+                                  webhook POST          /pusher/webhook(.:format)                                 pusher#webhook
+                                     page GET           /:page                                                    pages#show
+                                     root GET           /                                                         redirect(301, /sites)
+                             rails_routes GET           /rails/routes(.:format)                                   sextant/routes#index
+                           sextant_engine               /sextant                                                  Sextant::Engine
+                              maintenance GET           /maintenance(.:format)                                    maintenance#show
 
-Routes for Teabag::Engine:
-     GET /fixtures/*filename(.:format) teabag/spec#fixtures
-     GET /:suite(.:format)             teabag/spec#runner {:suite=>"default"}
-root     /                             teabag/spec#suites
+Routes for Teaspoon::Engine:
+     GET /fixtures/*filename(.:format) teaspoon/spec#fixtures
+     GET /:suite(.:format)             teaspoon/spec#runner {:suite=>"default"}
+root GET /                             teaspoon/spec#suites
 
 Routes for Sextant::Engine:

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 module ApplicationHelper
+
   def display_bool(boolean)
     boolean == 0 || boolean.blank? || !boolean ? '–' : '✓'
   end
@@ -13,7 +14,7 @@ module ApplicationHelper
     date ? l(date, format: options[:format]) : '–'
   end
 
-  def display_integer(number, options = { significant: false, precision: 2, delimiter: "'" })
+  def display_integer(number, options = { significant: false, precision: 2 })
     number_with_delimiter(number, options)
   end
 
@@ -77,6 +78,12 @@ module ApplicationHelper
   def asset_url(asset)
     host = request ? '' : ActionController::Base.asset_host
     "#{host}#{asset_path(asset)}"
+  end
+
+  def url_host(url)
+    URI.parse(URI.escape(url)).host
+  rescue
+    url
   end
 
 end

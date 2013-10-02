@@ -1,0 +1,12 @@
+#last_60_minutes_plays{ data: { sparkline_data: stats_presenter.last_60_minutes_plays.map { |a| a[1] } } }
+  .sum
+    %strong= stats_presenter.last_60_minutes_plays.sum { |a| a[1] }
+    plays
+  .sparkline
+.spacer
+
+#last_60_minutes_loads{ data: { sparkline_data: stats_presenter.last_60_minutes_loads.map { |a| a[1] } } }
+  .sum
+    %strong= stats_presenter.last_60_minutes_loads.sum { |a| a[1] }
+    loads
+  .sparkline

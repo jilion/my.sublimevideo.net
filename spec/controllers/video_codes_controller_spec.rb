@@ -6,7 +6,7 @@ describe VideoCodesController do
   it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:new] }, site_id: '1'
   it_should_behave_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:new] }, site_id: '1'
 
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/assistant/new-site', [[:user, early_access: []]], { get: [:show] }, site_id: '1', id: '1'
+  it_should_behave_like "redirect when connected as", 'http://my.test.host/assistant/new-site', [[:user, early_access: []]], { get: [:edit] }, site_id: '1', id: '1'
 
   context 'user logged-in' do
     before do

@@ -164,6 +164,7 @@ group :development, :test do
 
   # Guard
   gem 'ruby_gntp', require: false
+  gem 'guard', '2.0.0.pre.3', require: false
   gem 'guard-pow', require: false
   gem 'guard-livereload', require: false
   gem 'guard-rspec', require: false

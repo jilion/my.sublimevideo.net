@@ -1,7 +1,8 @@
 #= require sublimevideo
 #= require underscore
-#= require highcharts/highcharts
+#= require highstock/highstock
 #= require mousetrap.min
+#= require jquery.timeago
 #= require backbone
 #
 #= require_self
@@ -11,6 +12,7 @@
 #
 #= require stats
 #= require video_code
+#= require video_stats
 #
 #= require google-analytics-turbolinks
 #= require turbolinks
@@ -87,6 +89,14 @@ MySublimeVideo.UI.prepareVideoTagsTable = ->
       input: $('#js-video_tags_filter_search')
       select: $('#js-video_tags_filter_select')
 
+MySublimeVideo.Helpers.prepareStatsPoller = ->
+  if MySublimeVideo.Helpers.statsPoller?
+    MySublimeVideo.Helpers.statsPoller.teardown()
+    delete MySublimeVideo.Helpers.statsPoller
+
+  if ($div = $('.stats.video')).exists()
+    MySublimeVideo.Helpers.statsPoller = new MySublimeVideo.Helpers.StatsPoller($div)
+
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFakeSelectors()
   MySublimeVideo.UI.prepareFlashNotices()
@@ -102,6 +112,8 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFeedbackForm()
   MySublimeVideo.UI.prepareVideoTagsTable()
   MySublimeVideo.UI.TableSortLinks.setup()
+  MySublimeVideo.Helpers.prepareStatsPoller()
+  MySublimeVideo.videoStatsReady()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
