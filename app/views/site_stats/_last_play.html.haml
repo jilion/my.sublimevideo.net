@@ -1,10 +1,7 @@
 %li.site{ data: { time: last_play.time.to_i } }
   .wrap
     .poster
-      - if last_play.video_tag.poster_url?
-        = proxied_image_tag(last_play.video_tag.poster_url, size: '63x35')
-      - else
-        = image_tag "video_tag/no-poster.png", alt: "no poster", size: '63x35'
+      = video_tag_thumbnail(last_play.video_tag, size: '63x35')
     .title
   %span.wrap
     %span.country{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
