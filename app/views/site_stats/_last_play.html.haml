@@ -1,12 +1,16 @@
-%li{ data: { time: last_play.time.to_i } }
+%li.site{ data: { time: last_play.time.to_i } }
   .wrap
     .poster
       - if last_play.video_tag.poster_url?
-        = proxied_image_tag(last_play.video_tag.poster_url, size: '42x23')
+        = proxied_image_tag(last_play.video_tag.poster_url, size: '63x35')
       - else
-        = image_tag "video_tag/no-poster.png", alt: "no poster", size: '42x23'
-      .duration= duration_string(last_play.video_tag.duration)
+        = image_tag "video_tag/no-poster.png", alt: "no poster", size: '63x35'
     .title
+  %span.wrap
+    %span.country{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
+    %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
+    %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
+    %span.title
       = link_to site_video_tag_stats_url(@site, last_play.video_tag), class: 'hl' do
         - if last_play.video_tag.title?
           = last_play.video_tag.title
@@ -14,19 +18,9 @@
           = tooltip_box href: docs_url('settings/player-settings#title'), class: 'warning' do
             %span.p= t('video_tag.title.not_present')
           = 'Untitled Video'
-  %span.wrap
-    %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
-    %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
-    %span.icon{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
-    %span.title
-      On
+      %br
+      on
       = link_to url_host(last_play.document_url), url_with_protocol(last_play.document_url), title: last_play.document_url, class: "hl"
       = '[external]' if last_play.ex?
-      %br
-      - if last_play.referrer_url?
-        coming from
-        = link_to url_host(last_play.referrer_url), last_play.referrer_url, title: last_play.referrer_url, class: "hl"
-      - else
-        from direct traffic
 
       %abbr{ class: 'timeago', title: last_play.t }= l(last_play.time, format: :seconds_timezone_y)

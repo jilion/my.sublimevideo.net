@@ -336,7 +336,7 @@ span.beta_badge {
 
 .stats .graph_box li .browser,
 .stats .graph_box li .platform,
-.stats .graph_box li .icon {
+.stats .graph_box li .country {
   display:block;
   width:40px;
   height:58px;
@@ -346,8 +346,16 @@ span.beta_badge {
   background-repeat:no-repeat;
 }
 
-.stats .graph_box li li .icon {
-  height:29px;
+.stats .graph_box li.site .wrap {
+  padding-right:6px;
+}
+
+.stats #last_plays.graph_box li.site .browser,
+.stats #last_plays.graph_box li.site .platform,
+.stats #last_plays.graph_box li.site .country {
+  float:right;
+  height:43px;
+  margin-top:15px;
 }
 
 .stats .graph_box li .browser {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}
@@ -378,6 +386,21 @@ span.beta_badge {
   padding:20px 0 0 6px;
 }
 
+.stats .graph_box li .poster {
+  display:block;
+  float:left;
+  width:63px;
+  height:35px;
+  margin-top:11px;
+  border:1px solid rgba(0,0,0,0.9);
+  @include border-radius(4px);
+}
+
+.stats .graph_box li .poster img {
+  @include border-radius(2px);
+}
+
+
 .stats .graph_box li .title abbr.timeago {
   position:absolute;
   top:6px;
@@ -407,6 +430,14 @@ span.beta_badge {
 .stats #last_plays.graph_box li .title {
   padding:13px 0 0 6px;
   line-height:17px;
+}
+
+.stats #last_plays.graph_box .content_wrap {
+  overflow:hidden;
+}
+
+.stats p.empty {
+  text-align:center;
 }
 
 .stats #browsers_and_platforms.graph_box .content_wrap,
@@ -443,12 +474,12 @@ span.beta_badge {
   font-weight:600;
 }
 
-#dates_range_and_source {
+.stats #dates_range_and_source {
   float:left;
   margin:-18px 0 15px;
 }
 
-#last_stats_by_hour_or_day #plays_and_loads_graph_legend {
+.stats #last_stats_by_hour_or_day #plays_and_loads_graph_legend {
   padding-top:0;
 }
 

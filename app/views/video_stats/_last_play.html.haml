@@ -2,7 +2,7 @@
   %span.wrap
     %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
     %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
-    %span.icon{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
+    %span.country{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
     %span.title
       On
       = link_to url_host(last_play.document_url), url_with_protocol(last_play.document_url), title: last_play.document_url, class: "hl"
