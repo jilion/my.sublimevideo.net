@@ -31,3 +31,4 @@ $('#last_stats_by_hour_or_day').html("<%= j(render 'stats/last_stats_by_hour_or_
 <% end %>
 
 MySublimeVideo.statsReady()
+MySublimeVideo.UI.prepareFakeSelectors()

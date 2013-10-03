@@ -1,17 +1,32 @@
 - cache [site, video_tag, stats_presenter.options] do
+
   #dates_range_and_source
-    = form_tag [site, video_tag, :stats], method: :get, remote: true, id: 'stats_dates_range_and_source_selector' do
-      .entry.select.inline
-        = select_tag 'hours', video_stats_options_for_date_range_select(stats_presenter.options[:hours]), id: 'stats_hours_select'
-      for
-      .entry.select.inline
-        = select_tag 'source', video_stats_options_for_source_select(stats_presenter.options[:source]), id: 'stats_source_select'
+    %h3.title
+      %span
+        Last
+        %em= video_stats_hours_or_days(stats_presenter.options[:hours])
+      .site_select_wrap
+        = link_to '', class: 'site_select' do
+          %span Show date ranges
+        %ul.actions{ style: 'display:none', data: { name: 'hours' } }
+          - video_stats_hours_range_select(stats_presenter.options[:hours]).each do |hours, date_range_text|
+            %li{ class: cycle('', 'alt') }= link_to date_range_text, url_for(hours: hours), data: { value: hours }
+      %span
+        for
+        %em= video_stats_sources_hash[stats_presenter.options[:source]]
+      .site_select_wrap
+        = link_to '', class: 'site_select' do
+          %span Show sources
+        %ul.actions{ style: 'display:none', data: { name: 'source' } }
+          - video_stats_source_select(stats_presenter.options[:source]).each do |source, source_text|
+            %li{ class: cycle('', 'alt') }= link_to source_text, url_for(source: source), data: { value: source }
+      .spacer
 
   %ul#plays_and_loads_graph_legend
-    %li.video_plays
+    %li.video_plays<
       = display_integer(stats_presenter.plays.sum { |a| a[1] })
       %span.title plays
-    %li.page_visits
+    %li.page_visits<
       = display_integer(stats_presenter.loads.sum { |a| a[1] })
       %span.title loads
   .spacer
@@ -30,8 +45,8 @@
     = render 'stats/mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
+  .big_break
   #export_wrap
-    .big_break
     #export
       = link_to url_for(format: 'csv'), id: 'csv_export' do
         %span.icon Export Data

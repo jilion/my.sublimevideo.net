@@ -10,79 +10,13 @@ span.beta_badge {
   right:44px;
 }
 
-#trial .wrap {
-  width:960px;
-  height:42px;
-  position:relative;
-  top:-17px;
-  left:-41px;
-  border: 1px solid #000;
-  text-align:center;
-  font-size:17px;
-  text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
-  @include gradient(#2f5790,#1d3659,#264675);
-  @include border-radius(4px 4px 0 0);
-  @include box-shadow((inset #4783c8 0 1px 0, inset rgba(81,152,255,0.58) 0 0 20px, inset rgba(81,152,255,0.58) 0 0 20px));
-}
-
-#trial .wrap.during {
-  @include gradient(#d34a0f,#b72e09,#c53c0c);
-  @include box-shadow((inset #fec72c 0 1px 0, inset #ff7d1d 0 0 20px, inset #ff7d1d 0 0 20px));
-}
-
-#trial .before {
-  color:#bfd8ff;
-}
-
-#trial .during {
-  color:#ffe6dd;
-}
-
-#trial .before p {
-  padding:8px 0 0;
-}
-
-#trial .during p {
-  padding:11px 0 0;
-}
-
-#trial p strong, #trial a {
-  color:#fff;
-  font-weight:600;
-}
-
-#trial a {
-  font-weight:bold;
-  border-bottom:1px solid rgba(255,255,255,0.3);
-}
-
-#trial button {
-  font-family:inherit;
-  color:#fff;
-  font-size:15px;
-  font-weight:600;
-  padding:4px 12px;
-/*  margin-left:10px;*/
-  cursor:pointer;
-  text-shadow:rgba(0,0,0,0.5) 0 1px 2px;
-  border: 1px solid #14325f;
-  @include gradient(#f69619,#bc1704,#da580f);
-  @include border-radius(20px);
-  @include box-shadow((inset #fbcb26 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
-}
-
-#trial button:active {
-  @include gradient(#bc1704,#f69619,#da580f);
-  @include box-shadow(rgba(255,255,255,0.3) 0 1px 0);
-}
-
 .stats {
   padding-bottom:40px;
 }
 
 .stats #sticky_notice {
-  width: 872px;
-  margin: 0px 0 20px 0;
+  width:872px;
+  margin:0px 0 20px 0;
 }
 
 .stats #dates_range {
@@ -90,14 +24,26 @@ span.beta_badge {
   float:left;
 }
 
-.stats #export {
-  float:left;
-  margin:10px 20px 10px 15px;
+.stats #export_wrap {
+  margin-top:5px;
 }
 
-.stats #export button, .stats #export a {
+.stats #export_wrap p.desc {
+  font-size:14px;
+  color:#465B7D;
+  line-height:20px;
+  margin:4px 0 0 15px;
+  padding-right:100px;
+}
+
+.stats #export {
+  float:left;
+  margin:5px 20px 5px 15px;
+}
+
+.stats #export a {
   display:inline-block;
-  border: 1px solid #5e75a2;
+  border:1px solid #5e75a2;
   font-family:inherit;
   font-size:14px;
   font-weight:600;
@@ -119,34 +65,16 @@ span.beta_badge {
   opacity:0.5;
 }
 
-.stats #export button span.icon, .stats #export a span.icon {
+.stats #export a span.icon {
   padding:2px 0 2px 18px;
   background:url(<%= asset_path "stats/export_icon.png" %>) no-repeat 0 50%;
-}
-
-#content #export.tooltip .content.hidden {display:none}
-
-#content #export.tooltip .content {
-  bottom:38px;
-  left:-13px
-}
-
-#content #export_wrap p.desc {
-  font-size:14px;
-  color:#465B7D;
-  line-height:20px;
-  margin:4px 0 0 15px;
-  padding-right:100px;
 }
 
 .stats #plays_and_loads_graph_legend {
   float:right;
   list-style-type:none;
-  padding-top:70px;
-  margin-bottom:25px;
+  padding-top:7px;
 }
-
-.stats.free #plays_and_loads_graph_legend {padding-top:45px}
 
 .stats #plays_and_loads_graph_legend li {
   float:left;
@@ -229,29 +157,27 @@ span.beta_badge {
   width:59%;
 }
 
-#last_plays h4.title {
-  padding-bottom:8px;
-  font-size:16px;
-  font-weight:600;
-}
-
 .stats .graph_box {
   float:left;
   width:260px;
-  margin-bottom:40px;
-}
-
-.stats #last_plays .graph_box {
-  margin-bottom:0;
+  margin-bottom:25px;
 }
 
 .stats #browsers_and_platforms.graph_box, .stats #countries.graph_box {
-  margin-right:40px;
+  margin-right:50px;
 }
 
-.stats .graph_box h3.title {
+.stats .graph_box h4.title {
+  font-size:24px;
+  font-weight:600;
+  padding-top:35px;
   text-align:center;
-  padding-bottom:5px;
+}
+
+.stats #last_plays.graph_box h4.title {
+  font-size:16px;
+  padding:0 0 8px;
+  text-align:left;
 }
 
 .stats .graph_box h5.sub_title {
@@ -262,7 +188,7 @@ span.beta_badge {
 }
 
 .stats .graph_box .content {
-  margin-top:20px;
+  margin-top:15px;
   min-height:100px;
 }
 
@@ -396,7 +322,6 @@ span.beta_badge {
   @include border-radius(2px);
 }
 
-
 .stats .graph_box li .title abbr.timeago {
   position:absolute;
   top:6px;
@@ -436,6 +361,10 @@ span.beta_badge {
   text-align:center;
 }
 
+.stats #last_stats_by_hour_or_day {
+  margin-top:20px;
+}
+
 .stats #browsers_and_platforms.graph_box .content_wrap,
 .stats #countries.graph_box .content_wrap,
 .stats #mobile_desktop.graph_box .content_wrap {
@@ -472,11 +401,16 @@ span.beta_badge {
 
 .stats #dates_range_and_source {
   float:left;
-  margin:-18px 0 15px;
+  margin-top:-18px;
+  width:520px;
 }
 
-.stats #last_stats_by_hour_or_day #plays_and_loads_graph_legend {
-  padding-top:0;
+.stats #dates_range_and_source .site_select_wrap {
+  margin:9px;
+}
+
+.stats #dates_range_and_source h3.title span {
+  float:left;
 }
 
 body.my.stats_demo {

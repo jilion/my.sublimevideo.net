@@ -23,6 +23,7 @@
   - title("Stats for #{hostname_or_token(@site)}")
 
   = render '/layouts/site_header'
+  .big_break
 
 .stats{ data: { 'pusher-channel' => pusher_channel } }
   - if demo_site?

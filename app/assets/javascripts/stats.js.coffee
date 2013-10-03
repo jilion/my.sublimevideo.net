@@ -52,10 +52,13 @@ MySublimeVideo.stats.refreshBottomStats = ->
   $('#plays_and_loads, #browsers_and_platforms .content_wrap, #countries .content_wrap, #mobile_desktop .content_wrap').spin()
 
 MySublimeVideo.stats.prepareAutoSubmitForHoursSelect = ->
-  $('#stats_hours_select, #stats_source_select').on 'change', (event) ->
-    $select = $(event.target)
+  $('#dates_range_and_source ul.actions a').on 'click', (event) ->
+    $link = $(event.target)
+    $ul = $link.parent('ul.actions')
     MySublimeVideo.stats.refreshBottomStats()
-    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($select.prop('name'), $select.val())
+    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($ul.data('name'), $link.data('value'))
+
+  false
 
 MySublimeVideo.stats.prepareCSVExportButton = ->
   $('#csv_export').on 'click', (event) ->
