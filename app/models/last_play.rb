@@ -25,4 +25,8 @@ class LastPlay
     ERB::Util.h(ru)
   end
 
+  def referrer_url?
+    ru?
+  end
+
 end
