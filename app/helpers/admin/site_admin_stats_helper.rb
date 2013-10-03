@@ -1,5 +1,4 @@
-# coding: utf-8
-module GraphsHelper
+module Admin::SiteAdminStatsHelper
 
   def chart(id, options = {})
     options.reverse_merge!(margin_top: 110, margin_bottom: 50, margin_left: 90, background_color: '#EEEEEE')
@@ -54,28 +53,8 @@ module GraphsHelper
         day: '%e %b',
         week: '%e %b'
       },
-      plotBands: options[:plot_bands].each_with_object([]) { |plot_band_options, array| array << plot_band(plot_band_options) },
-      plotLines: options[:plot_lines].each_with_object([]) { |plot_line_options, array| array << plot_line(plot_line_options) }
-    }
-  end
-
-  def plot_band(options = {})
-    options.reverse_merge!(color: '#FFFFD9', from: 30.days.ago.midnight, to: Time.now.utc)
-
-    {
-      color: options[:color],
-      from: options[:from].to_i * 1000,
-      to: options[:to].to_i * 1000
-    }
-  end
-
-  def plot_line(options = {})
-    options.reverse_merge!(width: 2, color: '#FFFFD9', value: 30.days.ago.midnight)
-
-    {
-      width: options[:width],
-      color: options[:color],
-      value: options[:value].to_i * 1000
+      plotBands: options[:plot_bands].each_with_object([]) { |plot_band_options, array| array << _plot_band(plot_band_options) },
+      plotLines: options[:plot_lines].each_with_object([]) { |plot_line_options, array| array << _plot_line(plot_line_options) }
     }
   end
 
@@ -171,17 +150,34 @@ module GraphsHelper
     }
   end
 
-  def evolutive_average_array(array)
-    zeros_days = array.select { |value| value.zero? }.size
-    Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / [(index + 1 - zeros_days), 1].max).round(2) } }
-  end
-
   def moving_average(array, range)
     Array.new.tap do |arr|
       (0..(array.size - range)).each do |index|
         arr << array[index, range].mean
       end
     end
+  end
+
+  private
+
+  def _plot_band(options = {})
+    options.reverse_merge!(color: '#FFFFD9', from: 30.days.ago.midnight, to: Time.now.utc)
+
+    {
+      color: options[:color],
+      from: options[:from].to_i * 1000,
+      to: options[:to].to_i * 1000
+    }
+  end
+
+  def _plot_line(options = {})
+    options.reverse_merge!(width: 2, color: '#FFFFD9', value: 30.days.ago.midnight)
+
+    {
+      width: options[:width],
+      color: options[:color],
+      value: options[:value].to_i * 1000
+    }
   end
 
 end

@@ -25,12 +25,20 @@ class SiteAdminStat
     all(site_token: site.token, days: 30).sum { |stat| stat.app_loads[type.to_s].to_i }
   end
 
-  def starts
-    st || {}
+  def date
+    t.to_date
   end
 
   def app_loads
     al || {}
+  end
+
+  def loads
+    lo || {}
+  end
+
+  def starts
+    st || {}
   end
 
   private

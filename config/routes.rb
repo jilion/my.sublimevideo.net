@@ -67,7 +67,6 @@ MySublimeVideo::Application.routes.draw do
       resources :users, only: [:index, :show, :edit, :update, :destroy] do
         member do
           get :become
-          get :stats
           get :invoices
           get :support_requests
           get :new_support_request

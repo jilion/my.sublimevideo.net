@@ -1,6 +1,31 @@
-%h4= "Active (#{user.sites.active.size})"
-%ul= render(partial: 'li_site', collection: user.sites.active, as: :site)
-%h4= "Suspended (#{user.sites.suspended.size})"
-%ul= render(partial: 'li_site', collection: user.sites.suspended, as: :site)
-%h4= "Archived (#{user.sites.archived.size})"
-%ul= render(partial: 'li_site', collection: user.sites.archived, as: :site)
+%table.main#sites
+  %tr
+    %th ID
+    %th Token
+    %th Hostname
+    %th State
+    %th Last 30 days starts
+    %th Last 30 days VideoTags
+    %th Created at
+
+  - sites.order(:created_at).each do |site|
+    %tr[site]{ class: cycle("", "alt") }
+      %td.id
+        %small= link_to "##{site.id}", [:edit, :admin, site]
+
+      %td.token
+        %small= link_to site.token, [:edit, :admin, site]
+
+      %td.hostname
+        %small= admin_links_to_hostnames(site)
+
+      %td.state
+        %small= site.state.humanize
+
+      %td.number
+        %small= number_with_delimiter(site.last_30_days_admin_starts)
+
+      %td.number
+        %small= number_with_delimiter(site.last_30_days_video_tags)
+      %td
+        %small= display_time(site.created_at)
