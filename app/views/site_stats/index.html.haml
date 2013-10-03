@@ -18,12 +18,15 @@
       This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on
       = link_to 'sublimevideo.net', layout_url('')
       from any device and see your activity logged in real-time on this page. Enjoy!
+
 - else
-  - title("Stats for '#{hostname_or_token(@site)}'")
+  - title("Stats for #{hostname_or_token(@site)}")
 
   = render '/layouts/site_header'
 
 .stats{ data: { 'pusher-channel' => pusher_channel } }
+  - if demo_site?
+    = content_header("Stats for #{hostname_or_token(@site)}")
 
   #last_stats_by_minute= render 'stats/last_stats_by_minute', site: @site, stats_presenter: @stats_presenter
   .spacer
