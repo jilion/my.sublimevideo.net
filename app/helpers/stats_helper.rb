@@ -5,29 +5,7 @@ module StatsHelper
     "private-#{name}"
   end
 
-  def video_stats_hours_range_select(selected_hours)
-    ranges = video_stats_hours_range_hash
-    ranges.delete(selected_hours)
-
-    ranges
-  end
-
-  def video_stats_source_select(selected_source)
-    sources = video_stats_sources_hash
-    sources.delete(selected_source)
-
-    sources
-  end
-
-  def video_stats_sources_hash
-    {
-      'a' => 'all sources',
-      'w' => 'your site',
-      'e' => 'external sources'
-    }
-  end
-
-  def video_stats_hours_range_hash
+  def stats_hours_range_hash
     {
       24 => 'Last 24 hours',
       (30.days / 1.hour) => 'Last 30 days',
@@ -36,7 +14,29 @@ module StatsHelper
     }
   end
 
-  def video_stats_hours_or_days(hours)
+  def stats_sources_hash
+    {
+      'a' => 'all sources',
+      'w' => 'your site',
+      'e' => 'external sources'
+    }
+  end
+
+  def stats_hours_range_select(selected_hours)
+    ranges = stats_hours_range_hash
+    ranges.delete(selected_hours)
+
+    ranges
+  end
+
+  def stats_source_select(selected_source)
+    sources = stats_sources_hash
+    sources.delete(selected_source)
+
+    sources
+  end
+
+  def stats_hours_or_days(hours)
     if hours > 24
       pluralize(hours / 24, 'day')
     else
@@ -44,10 +44,10 @@ module StatsHelper
     end
   end
 
-  def video_stats_sources_for_export_text(source)
+  def stats_sources_for_export_text(source)
     case source
     when 'a'
-      'anywhere (on your website and external sources altogether)'
+      'anywhere (on your site and external sources altogether)'
     when 'w'
       'on your site only'
     when 'e'
@@ -55,7 +55,7 @@ module StatsHelper
     end
   end
 
-  def video_stats_browser_style(browser_and_platform)
+  def stats_browser_style(browser_and_platform)
     bp = browser_and_platform.split('-')
     browser = if bp[0] == 'saf' && bp[1].in?(%w[iph ipa ipo])
       'saf_mob'
@@ -72,7 +72,7 @@ module StatsHelper
     "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
   end
 
-  def video_stats_platform_style(browser_and_platform)
+  def stats_platform_style(browser_and_platform)
     platform = browser_and_platform.split('-')[1]
     icon = case platform
     when 'ipo'
@@ -88,25 +88,25 @@ module StatsHelper
     "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
   end
 
-  def video_stats_country_name(country_code)
+  def stats_country_name(country_code)
     country_code = _handle_special_country_code(country_code)
 
     Country[country_code].try(:name) || country_code.titleize
   end
 
-  def video_stats_country_style(country_code)
+  def stats_country_style(country_code)
     country_code = _handle_special_country_code(country_code)
 
     "background-image:url(#{asset_path("flags/#{country_code.upcase}.png")});"
   end
 
-  def video_stats_browser_and_os_name(browser_and_platform)
+  def stats_browser_and_os_name(browser_and_platform)
     browser_and_platform.split('-').map do |code|
-      video_stats_browser_or_os_name(code)
+      stats_browser_or_os_name(code)
     end.join('<br />').html_safe
   end
 
-  def video_stats_browser_or_os_name(code)
+  def stats_browser_or_os_name(code)
     case code
     when 'fir' then 'Firefox'
     when 'chr' then 'Chrome'

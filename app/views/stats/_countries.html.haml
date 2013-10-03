@@ -8,8 +8,8 @@
         %li
           %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
           %span.wrap
-            %span.country{ style: video_stats_country_style(country_code) }
-            %span.title= truncate(video_stats_country_name(country_code), length: 23)
+            %span.country{ style: stats_country_style(country_code) }
+            %span.title= truncate(stats_country_name(country_code), length: 23)
             %span.value
               %span.percent= display_percentage(data[:percent])
               %span.metric= formatted_pluralize(data[:count], 'play')

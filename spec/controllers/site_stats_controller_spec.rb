@@ -11,8 +11,9 @@ describe SiteStatsController do
     before { Site.stub_chain(:where, :first!) { site } }
 
     it "responds with success to GET :index" do
-      get :index, site_id: 'demo'
-      response.should_not be_redirect
+      get :index, site_id: SiteToken[:www], demo: true
+
+      expect(response).to be_success
     end
   end
 

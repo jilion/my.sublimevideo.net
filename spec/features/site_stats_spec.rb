@@ -31,7 +31,7 @@ feature 'Stats page' do
     end
   end
 
-  context 'user has is subscribed in trial to the stats add-on' do
+  context 'user is subscribed in trial to the stats add-on' do
     background do
       create(:billable_item, site: @site, item: @stats_addon_plan_2, state: 'trial')
     end
@@ -44,7 +44,7 @@ feature 'Stats page' do
     end
   end
 
-  context 'user has is subscribed to the stats add-on' do
+  context 'user is subscribed to the stats add-on' do
     background do
       create(:billable_item, site: @site, item: @stats_addon_plan_2, state: 'subscribed')
     end

@@ -4,9 +4,9 @@
       = video_tag_thumbnail(last_play.video_tag, size: '63x35')
     .title
   %span.wrap
-    %span.country{ style: video_stats_country_style(last_play.co), title: video_stats_country_name(last_play.co) }
-    %span.platform{ style: video_stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.pl) }
-    %span.browser{ style: video_stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: video_stats_browser_or_os_name(last_play.br) }
+    %span.country{ style: stats_country_style(last_play.co), title: stats_country_name(last_play.co) }
+    %span.platform{ style: stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: stats_browser_or_os_name(last_play.pl) }
+    %span.browser{ style: stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: stats_browser_or_os_name(last_play.br) }
     %span.title
       = link_to site_video_tag_stats_url(@site, last_play.video_tag), class: 'hl' do
         - if last_play.video_tag.title?

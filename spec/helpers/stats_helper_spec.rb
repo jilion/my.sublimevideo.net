@@ -22,102 +22,102 @@ describe StatsHelper do
     end
   end
 
-  describe '#video_stats_options_for_date_range_select' do
-    it { expect(helper.video_stats_options_for_date_range_select(24)).to eq(
-      "<option selected=\"selected\" value=\"24\">Last 24 hours</option>" \
-      "\n<option value=\"720\">Last 30 days</option>" \
-      "\n<option value=\"2160\">Last 90 days</option>" \
-      "\n<option value=\"8760\">Last 365 days</option>") }
+  describe '#stats_hours_range_select' do
+    it { expect(helper.stats_hours_range_select(24)).to eq({
+      (30.days / 1.hour) => 'Last 30 days',
+      (90.days / 1.hour) => 'Last 90 days',
+      (365.days / 1.hour) => 'Last 365 days'
+    }) }
 
-    it { expect(helper.video_stats_options_for_date_range_select(30*24)).to eq(
-      "<option value=\"24\">Last 24 hours</option>" \
-      "\n<option selected=\"selected\" value=\"720\">Last 30 days</option>" \
-      "\n<option value=\"2160\">Last 90 days</option>" \
-      "\n<option value=\"8760\">Last 365 days</option>") }
+    it { expect(helper.stats_hours_range_select(30*24)).to eq({
+      24 => 'Last 24 hours',
+      (90.days / 1.hour) => 'Last 90 days',
+      (365.days / 1.hour) => 'Last 365 days'
+    }) }
 
-    it { expect(helper.video_stats_options_for_date_range_select(90*24)).to eq(
-      "<option value=\"24\">Last 24 hours</option>" \
-      "\n<option value=\"720\">Last 30 days</option>" \
-      "\n<option selected=\"selected\" value=\"2160\">Last 90 days</option>" \
-      "\n<option value=\"8760\">Last 365 days</option>") }
+    it { expect(helper.stats_hours_range_select(90*24)).to eq({
+      24 => 'Last 24 hours',
+      (30.days / 1.hour) => 'Last 30 days',
+      (365.days / 1.hour) => 'Last 365 days'
+    }) }
 
-    it { expect(helper.video_stats_options_for_date_range_select(365*24)).to eq(
-      "<option value=\"24\">Last 24 hours</option>" \
-      "\n<option value=\"720\">Last 30 days</option>" \
-      "\n<option value=\"2160\">Last 90 days</option>" \
-      "\n<option selected=\"selected\" value=\"8760\">Last 365 days</option>") }
+    it { expect(helper.stats_hours_range_select(365*24)).to eq({
+      24 => 'Last 24 hours',
+      (30.days / 1.hour) => 'Last 30 days',
+      (90.days / 1.hour) => 'Last 90 days'
+    }) }
   end
 
-  describe '#video_stats_options_for_source_select' do
-    it { expect(helper.video_stats_options_for_source_select('a')).to eq(
-      "<option selected=\"selected\" value=\"a\">All sources</option>" \
-      "\n<option value=\"w\">Your website</option>" \
-      "\n<option value=\"e\">External websites</option>") }
+  describe '#stats_source_select' do
+    it { expect(helper.stats_source_select('a')).to eq({
+      'w' => 'your site',
+      'e' => 'external sources'
+    }) }
 
-    it { expect(helper.video_stats_options_for_source_select('w')).to eq(
-      "<option value=\"a\">All sources</option>" \
-      "\n<option selected=\"selected\" value=\"w\">Your website</option>" \
-      "\n<option value=\"e\">External websites</option>") }
+    it { expect(helper.stats_source_select('w')).to eq({
+      'a' => 'all sources',
+      'e' => 'external sources'
+    }) }
 
-    it { expect(helper.video_stats_options_for_source_select('e')).to eq(
-      "<option value=\"a\">All sources</option>" \
-      "\n<option value=\"w\">Your website</option>" \
-      "\n<option selected=\"selected\" value=\"e\">External websites</option>") }
+    it { expect(helper.stats_source_select('e')).to eq({
+      'a' => 'all sources',
+      'w' => 'your site'
+    }) }
   end
 
-  describe '#video_stats_hours_or_days' do
-    it { expect(helper.video_stats_hours_or_days(1)).to eq '1 hour' }
-    it { expect(helper.video_stats_hours_or_days(23)).to eq '23 hours' }
-    it { expect(helper.video_stats_hours_or_days(24)).to eq '24 hours' }
-    it { expect(helper.video_stats_hours_or_days(25)).to eq '1 day' }
-    it { expect(helper.video_stats_hours_or_days(48)).to eq '2 days' }
+  describe '#stats_hours_or_days' do
+    it { expect(helper.stats_hours_or_days(1)).to eq '1 hour' }
+    it { expect(helper.stats_hours_or_days(23)).to eq '23 hours' }
+    it { expect(helper.stats_hours_or_days(24)).to eq '24 hours' }
+    it { expect(helper.stats_hours_or_days(25)).to eq '1 day' }
+    it { expect(helper.stats_hours_or_days(48)).to eq '2 days' }
   end
 
-  describe '#video_stats_sources_for_export_text' do
-    it { expect(helper.video_stats_sources_for_export_text('a')).to eq 'anywhere (on your website and external websites altogether)' }
-    it { expect(helper.video_stats_sources_for_export_text('w')).to eq 'on your website only' }
-    it { expect(helper.video_stats_sources_for_export_text('e')).to eq 'on external websites only' }
+  describe '#stats_sources_for_export_text' do
+    it { expect(helper.stats_sources_for_export_text('a')).to eq 'anywhere (on your site and external sources altogether)' }
+    it { expect(helper.stats_sources_for_export_text('w')).to eq 'on your site only' }
+    it { expect(helper.stats_sources_for_export_text('e')).to eq 'on external sources only' }
   end
 
-  describe '#video_stats_browser_style' do
-    it { expect(helper.video_stats_browser_style('saf-osx')).to eq 'background-image:url(/assets/stats/icons/saf.png);' }
-    it { expect(helper.video_stats_browser_style('saf-iph')).to eq 'background-image:url(/assets/stats/icons/saf_mob.png);' }
-    it { expect(helper.video_stats_browser_style('saf-ipa')).to eq 'background-image:url(/assets/stats/icons/saf_mob.png);' }
+  describe '#stats_browser_style' do
+    it { expect(helper.stats_browser_style('saf-osx')).to eq 'background-image:url(/assets/stats/icons/saf.png);' }
+    it { expect(helper.stats_browser_style('saf-iph')).to eq 'background-image:url(/assets/stats/icons/saf_mob.png);' }
+    it { expect(helper.stats_browser_style('saf-ipa')).to eq 'background-image:url(/assets/stats/icons/saf_mob.png);' }
   end
 
-  describe '#video_stats_platform_style' do
-    it { expect(helper.video_stats_platform_style('saf-osx')).to eq 'background-image:url(/assets/stats/icons/osx.png);' }
-    it { expect(helper.video_stats_platform_style('saf-iph')).to eq 'background-image:url(/assets/stats/icons/iph.png);' }
-    it { expect(helper.video_stats_platform_style('saf-ipa')).to eq 'background-image:url(/assets/stats/icons/ipa.png);' }
+  describe '#stats_platform_style' do
+    it { expect(helper.stats_platform_style('saf-osx')).to eq 'background-image:url(/assets/stats/icons/osx.png);' }
+    it { expect(helper.stats_platform_style('saf-iph')).to eq 'background-image:url(/assets/stats/icons/iph.png);' }
+    it { expect(helper.stats_platform_style('saf-ipa')).to eq 'background-image:url(/assets/stats/icons/ipa.png);' }
   end
 
-  describe '#video_stats_country_name' do
-    it { expect(helper.video_stats_country_name('fr')).to eq 'France' }
-    it { expect(helper.video_stats_country_name('uk')).to eq 'United Kingdom' }
-    it { expect(helper.video_stats_country_name('gb')).to eq 'United Kingdom' }
-    it { expect(helper.video_stats_country_name('a1')).to eq 'Unknown' }
-    it { expect(helper.video_stats_country_name('a2')).to eq 'Unknown' }
-    it { expect(helper.video_stats_country_name('o1')).to eq 'Unknown' }
+  describe '#stats_country_name' do
+    it { expect(helper.stats_country_name('fr')).to eq 'France' }
+    it { expect(helper.stats_country_name('uk')).to eq 'United Kingdom' }
+    it { expect(helper.stats_country_name('gb')).to eq 'United Kingdom' }
+    it { expect(helper.stats_country_name('a1')).to eq 'Unknown' }
+    it { expect(helper.stats_country_name('a2')).to eq 'Unknown' }
+    it { expect(helper.stats_country_name('o1')).to eq 'Unknown' }
   end
 
-  describe '#video_stats_country_style' do
-    it { expect(helper.video_stats_country_style('fr')).to eq 'background-image:url(/assets/flags/FR.png);' }
-    it { expect(helper.video_stats_country_style('uk')).to eq 'background-image:url(/assets/flags/GB.png);' }
-    it { expect(helper.video_stats_country_style('gb')).to eq 'background-image:url(/assets/flags/GB.png);' }
-    it { expect(helper.video_stats_country_style('a1')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
-    it { expect(helper.video_stats_country_style('a2')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
-    it { expect(helper.video_stats_country_style('o1')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+  describe '#stats_country_style' do
+    it { expect(helper.stats_country_style('fr')).to eq 'background-image:url(/assets/flags/FR.png);' }
+    it { expect(helper.stats_country_style('uk')).to eq 'background-image:url(/assets/flags/GB.png);' }
+    it { expect(helper.stats_country_style('gb')).to eq 'background-image:url(/assets/flags/GB.png);' }
+    it { expect(helper.stats_country_style('a1')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+    it { expect(helper.stats_country_style('a2')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+    it { expect(helper.stats_country_style('o1')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
   end
 
-  describe '#video_stats_browser_and_os_name' do
-    it { expect(helper.video_stats_browser_and_os_name('saf-osx')).to eq 'Safari<br />Macintosh' }
-    it { expect(helper.video_stats_browser_and_os_name('foo-bar')).to eq 'foo<br />bar' }
+  describe '#stats_browser_and_os_name' do
+    it { expect(helper.stats_browser_and_os_name('saf-osx')).to eq 'Safari<br />Macintosh' }
+    it { expect(helper.stats_browser_and_os_name('foo-bar')).to eq 'foo<br />bar' }
   end
 
-  describe '#video_stats_browser_or_os_name' do
-    it { expect(helper.video_stats_browser_and_os_name('saf')).to eq 'Safari' }
-    it { expect(helper.video_stats_browser_and_os_name('osx')).to eq 'Macintosh' }
-    it { expect(helper.video_stats_browser_and_os_name('foo')).to eq 'foo' }
+  describe '#stats_browser_or_os_name' do
+    it { expect(helper.stats_browser_and_os_name('saf')).to eq 'Safari' }
+    it { expect(helper.stats_browser_and_os_name('osx')).to eq 'Macintosh' }
+    it { expect(helper.stats_browser_and_os_name('foo')).to eq 'foo' }
   end
 
 end
