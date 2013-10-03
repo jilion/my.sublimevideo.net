@@ -4,10 +4,7 @@
       %td.video_tag
         .wrap
           .poster
-            - if video_tag.poster_url?
-              = proxied_image_tag(video_tag.poster_url, size: '84x47')
-            - else
-              = image_tag "video_tag/no-poster.png", alt: "no poster", size: '84x47'
+            = video_tag_thumbnail(video_tag.poster_url, size: '84x47')
             .duration= duration_string(video_tag.duration)
           .title
             - if video_tag.title?
