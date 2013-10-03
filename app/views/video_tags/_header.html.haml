@@ -2,7 +2,7 @@
   .poster
     = video_tag_thumbnail(video_tag, size: '130x75')
     .duration= duration_string(video_tag.duration)
-  .name= video_tag.title
+  .name= truncate(video_tag.title, length: 40)
   .site= link_to "See all <em>#{hostname_or_token(site)}</em> videos".html_safe, site_video_tags_path(site), class: 'hl'
   .spacer
 .big_break

@@ -8,7 +8,7 @@
             .duration= duration_string(video_tag.duration)
           .title
             - if video_tag.title?
-              = video_tag.title
+              = truncate(video_tag.title, length: 30)
             - else
               = tooltip_box href: docs_url('settings/player-settings#title'), class: 'warning' do
                 %span.p= t('video_tag.title.not_present')
