@@ -4,7 +4,7 @@
       %td.video_tag
         .wrap
           .poster
-            = video_tag_thumbnail(video_tag.poster_url, size: '84x47')
+            = video_tag_thumbnail(video_tag, size: '84x47')
             .duration= duration_string(video_tag.duration)
           .title
             - if video_tag.title?
