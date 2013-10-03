@@ -46,5 +46,11 @@ describe LastVideoPlay do
     it { expect(described_class.last_plays(video_tag)[2].referrer_url).to eq '' }
   end
 
+  describe '#referrer_url?' do
+    it { expect(described_class.last_plays(video_tag)[0].referrer_url?).to be_true }
+    it { expect(described_class.last_plays(video_tag)[1].referrer_url?).to be_true }
+    it { expect(described_class.last_plays(video_tag)[2].referrer_url?).to be_false }
+  end
+
 end
 

@@ -15,6 +15,10 @@ class LastPlay
     ERB::Util.h(ru)
   end
 
+  def referrer_url?
+    ru?
+  end
+
   def video_tag
     @video_tag ||= VideoTag.find(u, _site_token: s)
   end
