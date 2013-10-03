@@ -116,7 +116,7 @@ gem 'haml_coffee_assets'
 gem 'sass-rails'
 
 gem 'chosen-rails', github: 'jilion/chosen-rails'
-gem 'compass-rails', github: 'milgner/compass-rails', branch: 'rails4'
+gem 'compass-rails', github: 'Compass/compass-rails'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.11.0'

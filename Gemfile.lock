@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/Compass/compass-rails.git
+  revision: aea69635f6000bbc7180f7fdd0ce216f904db30d
+  specs:
+    compass-rails (2.0.alpha.0)
+      compass (>= 0.12.2, < 0.14)
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -37,14 +44,6 @@ GIT
   specs:
     acts-as-taggable-on (2.4.2.pre)
       rails (>= 3, < 5)
-
-GIT
-  remote: git://github.com/milgner/compass-rails.git
-  revision: c86e7fd9c2605c80816a2f64a3fb8b7c3a09e494
-  branch: rails4
-  specs:
-    compass-rails (1.0.3)
-      compass (>= 0.12.2, < 0.14)
 
 GIT
   remote: git://github.com/mongoid/kiqstand.git
