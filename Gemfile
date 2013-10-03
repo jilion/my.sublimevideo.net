@@ -65,7 +65,7 @@ gem 'cocaine'
 gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
 
 gem 'public_suffix'
-#
+
 gem 'rubyzip'
 gem 'mime-types'
 gem 'countries'
@@ -106,7 +106,6 @@ gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
 gem 'sass-rails'
-
 gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails'
 
@@ -134,6 +133,7 @@ group :development do
   gem 'bullet'
   gem 'annotate', require: false
 
+  gem 'quiet_assets'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'i18n-extra_translations', require: false
