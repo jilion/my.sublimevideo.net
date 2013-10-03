@@ -3,7 +3,7 @@ require 'sublime_video_private_api'
 class SiteAdminStat
   include SublimeVideoPrivateApi::Model
   uses_private_api :stats
-  collection_path '/private_api/sites/:site_token/site_admin_stats'
+  collection_path '/private_api/site_admin_stats'
 
   def self.last_days_starts(site, days)
     get_raw(:last_days_starts, site_token: site.token, days: days)[:parsed_data][:data][:starts]

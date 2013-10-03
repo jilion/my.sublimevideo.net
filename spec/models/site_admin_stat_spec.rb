@@ -11,7 +11,7 @@ describe SiteAdminStat do
   describe ".last_days_starts" do
     before {
       stub_api_for(SiteAdminStat) do |stub|
-        stub.get("/private_api/sites/#{site_token}/site_admin_stats/last_days_starts?days=2") { |env| [200, {}, { starts: [42, 2] }.to_json] }
+        stub.get("/private_api/site_admin_stats/last_days_starts?days=2") { |env| [200, {}, { starts: [42, 2] }.to_json] }
       end
     }
 
@@ -23,7 +23,7 @@ describe SiteAdminStat do
   describe ".last_pages" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/site_admin_stats/last_pages") { |env| [200, {}, { pages: ['http://example.com'] }.to_json] }
+        stub.get("/private_api/site_admin_stats/last_pages") { |env| [200, {}, { pages: ['http://example.com'] }.to_json] }
       end
     end
 
@@ -35,7 +35,7 @@ describe SiteAdminStat do
   describe ".total_admin_starts" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, [
+        stub.get("/private_api/site_admin_stats") { |env| [200, {}, [
           { id: 1, st: { e: 1, w: 1 }},
           { id: 2, st: { e: 2, w: 2 }}
         ].to_json] }
@@ -50,7 +50,7 @@ describe SiteAdminStat do
   describe ".total_admin_app_loads" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, [
+        stub.get("/private_api/site_admin_stats") { |env| [200, {}, [
           { id: 1, al: { e: 1, i: 2 }},
           { id: 2, al: { em: 3, m: 4 }},
           { id: 3 }
@@ -66,7 +66,7 @@ describe SiteAdminStat do
   describe ".last_30_days_admin_app_loads" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/site_admin_stats") { |env| [200, {}, [
+        stub.get("/private_api/site_admin_stats") { |env| [200, {}, [
           { id: 1, al: { e: 1, i: 2 }},
           { id: 2, al: { e: 3, m: 4 }},
           { id: 3 }
