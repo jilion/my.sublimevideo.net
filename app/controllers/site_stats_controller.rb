@@ -12,27 +12,11 @@ class SiteStatsController < ApplicationController
       respond_to do |format|
         format.html
         format.js
-        # format.csv { send_file(_csv_file.path, filename: _csv_filename, type: 'text/csv') }
+        format.csv do
+          send_file(*SiteStatsCsvPresenter.new(@site, @stats_presenter).as_sent_file)
+        end
       end
     end
-  end
-
-  private
-
-  def _csv_filename
-    "site_stats-#{@site.token}-#{@stats_presenter.options[:source]}-#{@stats_presenter.options[:hours].to_i.hours.ago.change(min: 0)}-#{1.hour.ago.change(min: 0)}.csv"
-  end
-
-  # TODO
-  def _csv_file
-    tempfile = Tempfile.new(['export', '.csv'])
-    CSV.open(tempfile, 'wb') do |csv|
-      csv << %w[time loads plays]
-      @stats_presenter.loads.each_with_index do |(time, loads), i|
-        csv << [Time.at(time / 1000), loads, @stats_presenter.plays[i].last]
-      end
-    end
-    tempfile
   end
 
 end
