@@ -9,6 +9,7 @@
 .stats.video{ data: { pusher_channel: pusher_channel } }
 
   #last_stats_by_minute= render 'last_stats_by_minute', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter
-  .spacer
+
+  .big_break
 
   #last_stats_by_hour_or_day= render 'last_stats_by_hour_or_day', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter
