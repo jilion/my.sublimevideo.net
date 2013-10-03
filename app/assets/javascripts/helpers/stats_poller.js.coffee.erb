@@ -1,6 +1,7 @@
 class MySublimeVideo.Helpers.StatsPoller
   constructor: (@$statsDiv) ->
     @subscribeToPusherChannel()
+    @lastSecond = @currentSecond()
     @lastMinute = @currentMinute()
     @loopAndRefresh()
 

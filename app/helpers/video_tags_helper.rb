@@ -42,6 +42,14 @@ module VideoTagsHelper
     string.join(':')
   end
 
+  def video_tag_thumbnail(video_tag, options = {})
+    if video_tag.poster_url?
+      proxied_image_tag(video_tag.poster_url, options)
+    else
+      image_tag('video_tag/no-poster.png', { alt: 'no poster' }.merge(options))
+    end
+  end
+
   def proxied_image_tag(source, options = {})
     image_url = source.gsub(/^(http)?s?:?\/\//, '')
     url = "https://images.weserv.nl?url=#{URI::escape(image_url)}"
@@ -51,9 +59,4 @@ module VideoTagsHelper
     end
     image_tag(url, options)
   end
-
-  def video_tag_thumbnail(video_tag, options = {})
-    image_tag(video_tag.poster_url, size: options[:size])
-  end
-
 end
