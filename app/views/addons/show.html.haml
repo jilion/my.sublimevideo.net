@@ -11,8 +11,8 @@
 
         - sites = @sites.select { |site| site.id != @site.id }
         - unless sites.empty?
-          .site_select_wrap
-            = link_to '', class: 'site_select' do
+          .fake_select_wrap
+            = link_to '', class: 'fake_select' do
               %span Select the site to subscribe
             %ul.actions{ id: ['site_actions', @site.id], style: 'display:none' }
               - sites.each do |site|

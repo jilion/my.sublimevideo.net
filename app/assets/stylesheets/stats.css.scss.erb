@@ -19,11 +19,6 @@ span.beta_badge {
   margin:0px 0 20px 0;
 }
 
-.stats #dates_range {
-  position:relative;
-  float:left;
-}
-
 .stats #export_wrap {
   margin-top:5px;
 }
@@ -73,7 +68,7 @@ span.beta_badge {
 .stats #plays_and_loads_graph_legend {
   float:right;
   list-style-type:none;
-  padding-top:7px;
+  padding-top:2px;
 }
 
 .stats #plays_and_loads_graph_legend li {
@@ -113,7 +108,7 @@ span.beta_badge {
 }
 
 .stats h3.title {
-  font-size:34px;
+  font-size:28px;
   font-weight:600;
   padding:15px 0 10px;
 }
@@ -168,7 +163,7 @@ span.beta_badge {
 }
 
 .stats .graph_box h4.title {
-  font-size:24px;
+  font-size:22px;
   font-weight:600;
   padding-top:35px;
   text-align:center;
@@ -402,11 +397,19 @@ span.beta_badge {
 .stats #dates_range_and_source {
   float:left;
   margin-top:-18px;
-  width:520px;
+  width:590px;
 }
 
-.stats #dates_range_and_source .site_select_wrap {
-  margin:9px;
+.stats #dates_range_and_source .fake_select_wrap {
+  margin:6px;
+}
+
+.stats #dates_range_and_source .fake_select {
+  width:22px;
+  height:21px;
+  border:1px solid #576c88;
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(255,255,255,0.4) 0 1px 0, rgba(255,255,255,0.4) 0 1px 0));
 }
 
 .stats #dates_range_and_source h3.title span {

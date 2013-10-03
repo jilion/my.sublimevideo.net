@@ -5,17 +5,17 @@
       %span
         Last
         %em= video_stats_hours_or_days(stats_presenter.options[:hours])
-      .site_select_wrap
-        = link_to '', class: 'site_select' do
+      .fake_select_wrap
+        = link_to '', class: 'fake_select' do
           %span Show date ranges
         %ul.actions{ style: 'display:none', data: { name: 'hours' } }
           - video_stats_hours_range_select(stats_presenter.options[:hours]).each do |hours, date_range_text|
             %li{ class: cycle('', 'alt') }= link_to date_range_text, url_for(hours: hours), data: { value: hours }
-      %span
+      %span{ style: 'padding-left:10px;' }
         for
         %em= video_stats_sources_hash[stats_presenter.options[:source]]
-      .site_select_wrap
-        = link_to '', class: 'site_select' do
+      .fake_select_wrap
+        = link_to '', class: 'fake_select' do
           %span Show sources
         %ul.actions{ style: 'display:none', data: { name: 'source' } }
           - video_stats_source_select(stats_presenter.options[:source]).each do |source, source_text|

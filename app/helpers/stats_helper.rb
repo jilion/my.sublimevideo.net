@@ -23,7 +23,7 @@ module StatsHelper
     {
       'a' => 'all sources',
       'w' => 'your site',
-      'e' => 'ext. sites'
+      'e' => 'external sources'
     }
   end
 
@@ -47,11 +47,11 @@ module StatsHelper
   def video_stats_sources_for_export_text(source)
     case source
     when 'a'
-      'anywhere (on your website and external websites altogether)'
+      'anywhere (on your website and external sources altogether)'
     when 'w'
-      'on your website only'
+      'on your site only'
     when 'e'
-      'on external websites only'
+      'on external sources only'
     end
   end
 

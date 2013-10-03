@@ -1,7 +1,7 @@
 MySublimeVideo.stats ||= {}
 
 MySublimeVideo.statsReady = ->
-  MySublimeVideo.stats.prepareAutoSubmitForHoursSelect()
+  MySublimeVideo.stats.prepareHoursAndSourceSelectors()
   MySublimeVideo.stats.prepareCSVExportButton()
   MySublimeVideo.stats.prepareTimeAgo()
   MySublimeVideo.stats.drawLast60MinutesPlaysAndLoadsSparklines()
@@ -46,19 +46,25 @@ MySublimeVideo.stats.refreshTopStats = ->
     url: MySublimeVideo.Helpers.HistoryHelper.currentUrlWithNewQuery('since', since)
     dataType: 'script'
 
-MySublimeVideo.stats.refreshBottomStats = ->
-  $('#stats_dates_range_and_source_selector').submit()
-  $('#stats_hours_select, #stats_source_select').prop('disabled', true)
+MySublimeVideo.stats.refreshBottomStats = (key = null, value = null) ->
+  url = if key? and value?
+    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl(key, value)
+    MySublimeVideo.Helpers.HistoryHelper.currentUrlWithNewQuery(key, value)
+  else
+    document.location
+
   $('#plays_and_loads, #browsers_and_platforms .content_wrap, #countries .content_wrap, #mobile_desktop .content_wrap').spin()
+  $.ajax
+    url: url
+    dataType: 'script'
 
-MySublimeVideo.stats.prepareAutoSubmitForHoursSelect = ->
+MySublimeVideo.stats.prepareHoursAndSourceSelectors = ->
   $('#dates_range_and_source ul.actions a').on 'click', (event) ->
+    event.preventDefault()
     $link = $(event.target)
-    $ul = $link.parent('ul.actions')
-    MySublimeVideo.stats.refreshBottomStats()
-    MySublimeVideo.Helpers.HistoryHelper.updateQueryInUrl($ul.data('name'), $link.data('value'))
+    MySublimeVideo.stats.refreshBottomStats($link.parents('ul.actions').data('name'), $link.data('value'))
 
-  false
+    false
 
 MySublimeVideo.stats.prepareCSVExportButton = ->
   $('#csv_export').on 'click', (event) ->

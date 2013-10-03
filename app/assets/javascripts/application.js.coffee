@@ -35,7 +35,7 @@ window.spinOptions =
   shadow: false
 
 MySublimeVideo.UI.prepareFakeSelectors = ->
-  $('a.show_button, a.site_select').each ->
+  $('a.show_button, a.fake_select').each ->
     new MySublimeVideo.UI.FakeSelect($(this))
 
 MySublimeVideo.UI.prepareLoaderCodePopups = ->
