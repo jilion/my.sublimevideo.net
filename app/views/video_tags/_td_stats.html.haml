@@ -19,9 +19,6 @@
       = link_to 'View Stats', site_video_tag_stats_url(site, video_tag), class: 'view_stats'
     - else
       .fake_sparkline
-      .plays
-        %strong= '?'
-        %span= 'plays'
       .title_link
         = link_to 'Add real-time video stats', site_addon_path(site, 'stats', p: 'realtime'), class: 'hl'
       = link_to 'Buy Add-on', site_addon_path(site, 'stats', p: 'realtime'), class: 'buy_addon'
