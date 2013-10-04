@@ -11,7 +11,7 @@ describe SiteStat do
   describe ".last_days_starts" do
     before {
       stub_api_for(SiteStat) do |stub|
-        stub.get("/private_api/site_stats/last_days_starts?site_token=#{site_token}&days=2") { |env| [200, {}, { starts: [42, 2] }.to_json] }
+        stub.get("/private_api/site_stats/last_days_starts?site_token=#{site_token}&days=2") { |env| [200, {}, [42, 2].to_json] }
       end
     }
 

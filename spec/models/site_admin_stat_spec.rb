@@ -11,7 +11,7 @@ describe SiteAdminStat do
   describe ".last_days_starts" do
     before {
       stub_api_for(SiteAdminStat) do |stub|
-        stub.get("/private_api/site_admin_stats/last_days_starts?days=2") { |env| [200, {}, { starts: [42, 2] }.to_json] }
+        stub.get("/private_api/site_admin_stats/last_days_starts?days=2") { |env| [200, {}, [42, 2].to_json] }
       end
     }
 
@@ -23,7 +23,7 @@ describe SiteAdminStat do
   describe ".last_pages" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/site_admin_stats/last_pages") { |env| [200, {}, { pages: ['http://example.com'] }.to_json] }
+        stub.get("/private_api/site_admin_stats/last_pages") { |env| [200, {}, ['http://example.com'].to_json] }
       end
     end
 
