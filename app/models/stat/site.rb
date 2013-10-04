@@ -274,52 +274,46 @@ end
 #
 # Table name: sites
 #
-#  accessible_stage                        :string(255)      default("beta")
-#  addons_updated_at                       :datetime
-#  alexa_rank                              :integer
-#  archived_at                             :datetime
-#  badged                                  :boolean
-#  created_at                              :datetime
-#  current_assistant_step                  :string(255)
-#  default_kit_id                          :integer
-#  dev_hostnames                           :text
-#  extra_hostnames                         :text
-#  first_billable_plays_at                 :datetime
-#  google_rank                             :integer
-#  hostname                                :string(255)
-#  id                                      :integer          not null, primary key
-#  last_30_days_billable_video_views_array :text
-#  last_30_days_dev_video_views            :integer          default(0)
-#  last_30_days_embed_video_views          :integer          default(0)
-#  last_30_days_extra_video_views          :integer          default(0)
-#  last_30_days_invalid_video_views        :integer          default(0)
-#  last_30_days_main_video_views           :integer          default(0)
-#  last_30_days_video_tags                 :integer          default(0)
-#  loaders_updated_at                      :datetime
-#  path                                    :string(255)
-#  plan_id                                 :integer
-#  refunded_at                             :datetime
-#  settings_updated_at                     :datetime
-#  staging_hostnames                       :text
-#  state                                   :string(255)
-#  token                                   :string(255)
-#  trial_started_at                        :datetime
-#  updated_at                              :datetime
-#  user_id                                 :integer
-#  wildcard                                :boolean
+#  accessible_stage          :string(255)      default("beta")
+#  addons_updated_at         :datetime
+#  alexa_rank                :integer
+#  archived_at               :datetime
+#  badged                    :boolean
+#  created_at                :datetime
+#  current_assistant_step    :string(255)
+#  default_kit_id            :integer
+#  dev_hostnames             :text
+#  extra_hostnames           :text
+#  first_admin_starts_on     :datetime
+#  google_rank               :integer
+#  hostname                  :string(255)
+#  id                        :integer          not null, primary key
+#  last_30_days_admin_starts :integer          default(0)
+#  last_30_days_starts       :integer          default(0)
+#  last_30_days_starts_array :integer          default([])
+#  last_30_days_video_tags   :integer          default(0)
+#  loaders_updated_at        :datetime
+#  path                      :string(255)
+#  plan_id                   :integer
+#  refunded_at               :datetime
+#  settings_updated_at       :datetime
+#  staging_hostnames         :text
+#  state                     :string(255)
+#  token                     :string(255)
+#  updated_at                :datetime
+#  user_id                   :integer
+#  wildcard                  :boolean
 #
 # Indexes
 #
-#  index_sites_on_created_at                        (created_at)
-#  index_sites_on_hostname                          (hostname)
-#  index_sites_on_id_and_state                      (id,state)
-#  index_sites_on_last_30_days_dev_video_views      (last_30_days_dev_video_views)
-#  index_sites_on_last_30_days_embed_video_views    (last_30_days_embed_video_views)
-#  index_sites_on_last_30_days_extra_video_views    (last_30_days_extra_video_views)
-#  index_sites_on_last_30_days_invalid_video_views  (last_30_days_invalid_video_views)
-#  index_sites_on_last_30_days_main_video_views     (last_30_days_main_video_views)
-#  index_sites_on_plan_id                           (plan_id)
-#  index_sites_on_token                             (token)
-#  index_sites_on_user_id                           (user_id)
+#  index_sites_on_created_at                       (created_at)
+#  index_sites_on_first_admin_starts_on            (first_admin_starts_on)
+#  index_sites_on_hostname                         (hostname)
+#  index_sites_on_id_and_state                     (id,state)
+#  index_sites_on_last_30_days_admin_starts        (last_30_days_admin_starts)
+#  index_sites_on_plan_id                          (plan_id)
+#  index_sites_on_token                            (token)
+#  index_sites_on_user_id                          (user_id)
+#  index_sites_on_user_id_and_last_30_days_starts  (user_id,last_30_days_starts)
 #
 
