@@ -93,7 +93,7 @@ module ApplicationHelper
   def url_host(url)
     URI(url).host
   rescue
-    url
+    url.gsub(%r{https?://([^/]*)/.*}, '\1')
   end
 
 end

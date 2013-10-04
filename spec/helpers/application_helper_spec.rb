@@ -53,6 +53,7 @@ describe ApplicationHelper do
     it { helper.url_host('http://sublimevideo.net/foo/bar').should eq 'sublimevideo.net' }
     it { helper.url_host('http://sublimevideo.net/foo/bar?query=value').should eq 'sublimevideo.net' }
     it { helper.url_host('http://sublimevideo.net/#video_framework').should eq 'sublimevideo.net' }
+    it { helper.url_host('http://ad-emea.doubleclick.net/N3847/adi/ebay.uk.vip/MPU;sz=300x250;cat=69536;tcat=1;cat=1;cat=14429;cat=69529;items=;seg=AdvGL3rdP;sz=300x250;u=i_1746282867726173717|m_172857;;dcopt=ist;tile=1;ot=1;um=0;us=13;eb_trk=172857;pr=20;xp=20;np=20;uz=Unknown;fbi=;sbi=;fbo=;sbo=;fse=;sse=;fvi=;svi=;kw=hand,signed,karen,pickering,mbe,photo;lkw=;cg=c368a6c913f0a2aac5b53625fff30ce8;ord=1380894945345;').should eq 'ad-emea.doubleclick.net' }
   end
 
   # describe "#info_box" do
