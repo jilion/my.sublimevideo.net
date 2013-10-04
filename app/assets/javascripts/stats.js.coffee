@@ -84,6 +84,46 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
       lineColor: options.lineColor ? 'rgba(97,255,114,0.7)'
       fillColor: options.fillColor ? 'rgba(116,255,131,0.24)')
 
+  @seriesForLoadsAndStartsChart: (plays, loads, hours) ->
+    series = [{
+      type: 'areaspline'
+      name: 'Loads'
+      data: loads
+      shadow: false
+      fillColor: 'rgba(74,100,142,0.3)'
+      color: '#596e8c'
+      marker:
+        enabled: false
+    },{
+      type: 'areaspline'
+      name: 'Plays'
+      data: plays
+      shadow:
+        color: 'rgb(116, 255, 131)'
+        offsetX: 1e-100
+        offsetY: 1e-100
+        opacity: 0.22
+        width: 6
+      fillColor: 'rgba(9,250,33,0.15)'
+      color: '#00ff18'
+      marker:
+        enabled: false
+    }]
+
+    new_stats_date = Date.UTC(2013, 8, 10)
+    if new_stats_date >= new Date(new Date() - hours * 3600 * 1000)
+      series.push
+        type: 'flags'
+        data: [{
+          x: new_stats_date
+          title: '!'
+          text: 'The way we count plays and loads changed on that day.'
+        }]
+        width: 16
+        shape: 'squarepin'
+
+    series
+
   @loadsAndStartsChart: (plays, loads, hours) ->
     Highcharts.setOptions
       global:
@@ -125,7 +165,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         borderColor: "#000"
         borderWidth: 1
         borderRadius: 5
-        shadow: true,
+        shadow: true
         style:
           padding: "10"
           fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
@@ -167,39 +207,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
           states:
             hover:
               lineWidth: 2
-      series: [{
-        type: 'areaspline'
-        name: 'Loads'
-        data: loads
-        shadow: false
-        fillColor: 'rgba(74,100,142,0.3)'
-        color: '#596e8c'
-        marker:
-          enabled: false
-      },{
-        type: 'areaspline'
-        name: 'Plays'
-        data: plays
-        shadow:
-          color: 'rgb(116, 255, 131)'
-          offsetX: 1e-100
-          offsetY: 1e-100
-          opacity: 0.22
-          width: 6
-        fillColor: 'rgba(9,250,33,0.15)'
-        color: '#00ff18'
-        marker:
-          enabled: false
-      },{
-        type: 'flags'
-        data: [{
-          x: Date.UTC(2013, 7, 30)
-          title: '!'
-          text: 'The way we count plays and loads changed on that day.'
-        }]
-        width: 16
-        shape: 'squarepin'
-      }]
+      series: @seriesForLoadsAndStartsChart(plays, loads, hours)
       xAxis:
         lineWidth: 0
         tickWidth: 0
