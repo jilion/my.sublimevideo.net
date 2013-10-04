@@ -142,6 +142,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         formatter: ->
           format = if hours > 24 then '%e %b %Y' else '%e %b %Y, %H:%M'
           title = ["#{Highcharts.dateFormat(format, @x)}<br/>"]
+          title += @point.text if @point? and @point.text?
 
           title += _.map(@points, (point) ->
             "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span> #{Highcharts.numberFormat(point.y, 0)} hits"
@@ -175,7 +176,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         color: '#596e8c'
         marker:
           enabled: false
-        },{
+      },{
         type: 'areaspline'
         name: 'Plays'
         data: plays
@@ -189,6 +190,15 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         color: '#00ff18'
         marker:
           enabled: false
+      },{
+        type: 'flags'
+        data: [{
+          x: Date.UTC(2013, 7, 30)
+          title: '!'
+          text: 'The way we count plays and loads changed on that day.'
+        }]
+        width: 16
+        shape: 'squarepin'
       }]
       xAxis:
         lineWidth: 0

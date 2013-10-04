@@ -7,10 +7,10 @@ module StatsHelper
 
   def stats_hours_range_hash
     {
-      24 => 'Last 24 hours',
-      (30.days / 1.hour) => 'Last 30 days',
-      (90.days / 1.hour) => 'Last 90 days',
-      (365.days / 1.hour) => 'Last 365 days'
+      24 => '24 hours',
+      (30.days / 1.hour) => '30 days',
+      (90.days / 1.hour) => '90 days',
+      (365.days / 1.hour) => '365 days'
     }
   end
 

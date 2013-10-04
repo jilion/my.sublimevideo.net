@@ -3,6 +3,7 @@
 --
 
 SET statement_timeout = 0;
+SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -2313,10 +2314,6 @@ INSERT INTO schema_migrations (version) VALUES ('20130821142238');
 INSERT INTO schema_migrations (version) VALUES ('20130829074156');
 
 INSERT INTO schema_migrations (version) VALUES ('20130918152449');
-
-INSERT INTO schema_migrations (version) VALUES ('20130930075400');
-
-INSERT INTO schema_migrations (version) VALUES ('20130930075401');
 
 INSERT INTO schema_migrations (version) VALUES ('20130930075402');
 
