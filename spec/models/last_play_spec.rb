@@ -12,12 +12,12 @@ describe LastPlay do
 
   before do
     stub_api_for(described_class) do |stub|
-      stub.get("/private_api/sites/#{site_token}/videos/#{video_uid}/last_plays") { |env|
-        [200, {}, { plays: [
+      stub.get("/private_api/last_plays?site_token=#{site_token}&video_uid=#{video_uid}") { |env|
+        [200, {}, [
           {'t' => time.to_s, 'du' => 'http://sublimevideo.net/', 'ru' => 'http://google.com/' },
           {'t' => time.to_s, 'du' => 'http://sublimevideo.net/<script type="text/javascript">alert("foo!");</script>', 'ru' => 'http://google.com/<script type="text/javascript">alert("foo!");</script>' },
           {'t' => time.to_s, 'du' => nil, 'ru' => nil }
-        ] }.to_json]
+        ].to_json]
       }
     end
   end

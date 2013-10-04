@@ -12,8 +12,8 @@ describe LastVideoStat do
   describe ".last_stats" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/videos/#{video_uid}/last_video_stats") { |env|
-          [200, {}, { stats: [{'lo' => 2, 'st' => 1}] }.to_json]
+        stub.get("/private_api/last_video_stats?site_token=#{site_token}&video_uid=#{video_uid}") { |env|
+          [200, {}, [{'lo' => 2, 'st' => 1}].to_json]
         }
       end
     end
