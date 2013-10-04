@@ -12,10 +12,10 @@ describe VideoStat do
   describe ".last_hours_stats" do
     before do
       stub_api_for(described_class) do |stub|
-        stub.get("/private_api/sites/#{site_token}/videos/#{video_uid}/video_stats") { |env|
-          [200, {}, { stats: [
+        stub.get("/private_api/video_stats?site_token=#{site_token}&video_uid=#{video_uid}") { |env|
+          [200, {}, [
             'st' => { 'w' => 1, 'e' => 1 }, 'co' => { 'w' => { 'us' => 12, 'fr' => 42 }, 'e' => { 'us' => 13, 'fr' => 43 } }
-          ] }.to_json]
+          ].to_json]
         }
       end
     end

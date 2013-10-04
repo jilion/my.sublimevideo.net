@@ -232,7 +232,6 @@ end
 #  staging_hostnames         :text
 #  state                     :string(255)
 #  token                     :string(255)
-#  trial_started_at          :datetime
 #  updated_at                :datetime
 #  user_id                   :integer
 #  wildcard                  :boolean
