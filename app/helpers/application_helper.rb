@@ -6,29 +6,39 @@ module ApplicationHelper
     boolean == 0 || boolean.blank? || !boolean ? '–' : '✓'
   end
 
-  def display_date(date, options = { format: :d_b_Y })
-    content_tag(:strong, display_time(date, options))
+  def display_date(date, opts = {})
+    opts.reverse_merge!(format: :d_b_Y)
+
+    content_tag(:strong, display_time(date, opts))
   end
 
-  def display_time(date, options = { format: :minutes_y })
-    date ? l(date, format: options[:format]) : '–'
+  def display_time(date, opts = {})
+    opts.reverse_merge!(format: :minutes_y)
+
+    date ? l(date, format: opts[:format]) : '–'
   end
 
-  def display_integer(number, options = { significant: false, precision: 2 })
-    number_with_delimiter(number, options)
+  def display_integer(number, opts = {})
+    opts.reverse_merge!(precision: 2, significant: false)
+
+    number_with_delimiter(number, opts)
   end
 
-  def display_percentage(fraction, options = {})
-    number_to_percentage(fraction * 100.0, precision: options[:precision] || 2, strip_insignificant_zeros: true)
+  def display_percentage(fraction, opts = {})
+    opts.reverse_merge!(precision: 2, strip_insignificant_zeros: true)
+
+    number_to_percentage(fraction * 100.0, precision: opts[:precision], strip_insignificant_zeros: opts[:strip_insignificant_zeros])
   end
 
   def display_vat_percentage
     number_to_percentage(Vat.for_country(current_user.billing_country) * 100, precision: 0, strip_insignificant_zeros: true)
   end
 
-  def display_amount(amount_in_cents, options = {})
+  def display_amount(amount_in_cents, opts = {})
     number = amount_in_cents / 100.0
-    number_to_currency(number, precision: (!options[:decimals] && number == number.to_i ? 0 : options[:decimals] || 2))
+    decimals = !opts[:decimals] && number == number.to_i ? 0 : opts[:decimals] || 2
+
+    number_to_currency(number, precision: decimals)
   end
 
   def display_amount_with_sup(amount_in_cents)

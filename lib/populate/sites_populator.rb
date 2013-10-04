@@ -31,7 +31,10 @@ class SitesPopulator < Populator
         puts "#{site.hostname} created for #{user.name}"
       end
     end
-    User.first.sites.first.update_column(:token, SiteToken[:www])
+
+    sv_site = User.first.sites.first
+    sv_site.update_attributes(token: SiteToken[:www], hostname: 'sublimevideo.net')
+    SiteManager.new(sv_site).update_billable_items({}, { stats: AddonPlan.get('stats', 'realtime').id }, { force: 'subscribed' })
   end
 
 end

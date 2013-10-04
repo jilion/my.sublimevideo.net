@@ -13,9 +13,9 @@
     .values
       %span.value
         %span.percent
-          = display_percentage(stats.try_keys('m', :percent) { 0 })
+          = display_percentage(stats.try_keys('m', :percent) { 0 }, strip_insignificant_zeros: false)
           %em Mobile
       %span.value
         %span.percent
-          = display_percentage(stats.try_keys('d', :percent) { 0 })
+          = display_percentage(stats.try_keys('d', :percent) { 0 }, strip_insignificant_zeros: false)
           %em Desktop

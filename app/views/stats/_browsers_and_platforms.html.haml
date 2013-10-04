@@ -12,5 +12,5 @@
             %span.platform{ style: stats_platform_style(browser_and_os) }
             %span.title= stats_browser_and_os_name(browser_and_os)
             %span.value
-              %span.percent= display_percentage(data[:percent])
+              %span.percent= display_percentage(data[:percent], strip_insignificant_zeros: false)
               %span.metric= formatted_pluralize(data[:count], 'play')
