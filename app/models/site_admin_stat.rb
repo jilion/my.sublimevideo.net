@@ -6,11 +6,11 @@ class SiteAdminStat
   collection_path '/private_api/site_admin_stats'
 
   def self.last_days_starts(site, days)
-    get_raw(:last_days_starts, site_token: site.token, days: days)[:parsed_data][:data][:starts]
+    get_raw(:last_days_starts, site_token: site.token, days: days)[:parsed_data][:data]
   end
 
   def self.last_pages(site)
-    get_raw(:last_pages, site_token: site.token)[:parsed_data][:data][:pages]
+    get_raw(:last_pages, site_token: site.token)[:parsed_data][:data]
   end
 
   def self.total_admin_starts(site)
