@@ -24,7 +24,7 @@ SitesTrend = Class.new unless defined?(SitesTrend)
 BillingsTrend = Class.new unless defined?(BillingsTrend)
 RevenuesTrend = Class.new unless defined?(RevenuesTrend)
 BillableItemsTrend = Class.new unless defined?(BillableItemsTrend)
-SiteStatsTrend = Class.new unless defined?(SiteStatsTrend)
+SiteAdminStatsTrend = Class.new unless defined?(SiteAdminStatsTrend)
 SiteUsagesTrend = Class.new unless defined?(SiteUsagesTrend)
 TweetsTrend = Class.new unless defined?(TweetsTrend)
 TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
@@ -151,8 +151,8 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules SiteStatsTrend.create_trends" do
-      SiteStatsTrend.should delay(:create_trends,
+    it "schedules SiteAdminStatsTrend.create_trends" do
+      SiteAdminStatsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: 'my-low'
       )

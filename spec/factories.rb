@@ -191,7 +191,7 @@ FactoryGirl.define do
   factory :billable_items_trend
   factory :billings_trend
   factory :revenues_trend
-  factory :site_stats_trend
+  factory :site_admin_stats_trend
   factory :site_usages_trend
   factory :sites_trend
   factory :tailor_made_player_requests_trend

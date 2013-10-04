@@ -27,7 +27,7 @@ module Scheduler
     SitesTrend.delay(options).create_trends
     BillingsTrend.delay(options).create_trends
     BillableItemsTrend.delay(options).create_trends
-    SiteStatsTrend.delay(options).create_trends
+    SiteAdminStatsTrend.delay(options).create_trends
     TweetsTrend.delay(options).create_trends
     TailorMadePlayerRequestsTrend.delay(options).create_trends
   end

@@ -1,6 +1,6 @@
 #= require ./trend
 
-class AdminSublimeVideo.Models.SiteStatsTrend extends AdminSublimeVideo.Models.Trend
+class AdminSublimeVideo.Models.SiteAdminStatsTrend extends AdminSublimeVideo.Models.Trend
   defaults:
     pv: {} # Page Visit
     vv: {} # Video views
@@ -24,8 +24,8 @@ class AdminSublimeVideo.Models.SiteStatsTrend extends AdminSublimeVideo.Models.T
 
     mdm / (mdd + mdm) * 100
 
-class AdminSublimeVideo.Collections.SiteStatsTrends extends AdminSublimeVideo.Collections.Trends
-  model: AdminSublimeVideo.Models.SiteStatsTrend
+class AdminSublimeVideo.Collections.SiteAdminStatsTrends extends AdminSublimeVideo.Collections.Trends
+  model: AdminSublimeVideo.Models.SiteAdminStatsTrend
   url: -> '/trends/site_stats.json'
   id: -> 'site_stats'
   yAxis: (selected) ->

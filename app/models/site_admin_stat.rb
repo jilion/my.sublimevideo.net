@@ -25,6 +25,14 @@ class SiteAdminStat
     all(site_token: site.token, days: 30).sum { |stat| stat.app_loads[type.to_s].to_i }
   end
 
+  def self.global_day_stat(day)
+    get_raw(:global_day_stat, day: day)[:parsed_data][:data]
+  end
+
+  def self.last_30_days_sites_with_starts(day, threshold: 100)
+    get_raw(:last_30_days_sites_with_starts, day: day, threshold: threshold)[:parsed_data][:data][:count]
+  end
+
   def date
     t.to_date
   end

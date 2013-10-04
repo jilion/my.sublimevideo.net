@@ -100,7 +100,7 @@ MySublimeVideo::Application.routes.draw do
           get :billable_items
           get :users
           get :sites
-          get :site_stats
+          get :site_admin_stats
           get :site_usages
           get :tweets
           get :tailor_made_player_requests

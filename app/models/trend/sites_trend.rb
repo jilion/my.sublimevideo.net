@@ -13,7 +13,7 @@ class SitesTrend
   field :pa, type: Hash     # paying: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
   field :su, type: Integer  # suspended
   field :ar, type: Integer  # archived
-  field :al, type: Hash     # alive (with page visits / video plays in the last 30 days): { "pv" => 12, "vv" => 6 }
+  field :al, type: Hash     # alive (with more than threshold starts in the last 30 days): { "st1" => 12, "st2" => 12, "st100" => 12 }
 
   def self.json_fields
     [:fr, :sp, :tr, :pa, :su, :ar, :al]
@@ -46,24 +46,10 @@ class SitesTrend
   end
 
   def self.alive_sites_trend_hash(day)
-    {
-      pv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 1),
-      pv2: _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'pv', threshold: 2),
-      vv:  _number_of_sites_with_usage_in_the_last_30_days(day, metric: 'vv', threshold: 1)
-    }
-  end
-
-  def self._number_of_sites_with_usage_in_the_last_30_days(day, options = {})
-    options.reverse_merge!(history: 30.days)
-
-    Stat::Site::Day
-    .between(d: (day - options.delete(:history)).midnight..day.yesterday.end_of_day)
-    .or(*_or_conditions_for_metric(options))
-    .distinct(:t).count
-  end
-
-  def self._or_conditions_for_metric(options)
-    %w[m e em].reduce([]) { |a, e| a << { "#{options[:metric]}.#{e}" => { :$gte => options[:threshold] } } }
+    [1, 2, 100].inject({}) do |hash, threshold|
+      hash["st#{threshold}"] = SiteAdminStat.last_30_days_sites_with_starts(day.to_date, threshold: threshold)
+      hash
+    end
   end
 
 end

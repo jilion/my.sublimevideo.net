@@ -83,5 +83,34 @@ describe SiteAdminStat do
     end
   end
 
+  describe ".global_day_stat" do
+    let(:global_stat) { {
+      al: { i: 2 },
+      lo: { e: 2 },
+      st: { w: 2 }
+    } }
+    before do
+      stub_api_for(described_class) do |stub|
+        stub.get("/private_api/site_admin_stats/global_day_stat") { |env| [200, {}, global_stat.to_json] }
+      end
+    end
+
+    it "returns global stat for day" do
+      expect(described_class.global_day_stat(Date.today)).to eq global_stat
+    end
+  end
+
+  describe ".last_30_days_sites_with_starts" do
+    before do
+      stub_api_for(described_class) do |stub|
+        stub.get("/private_api/site_admin_stats/last_30_days_sites_with_starts") { |env| [200, {}, { count: 2 }.to_json] }
+      end
+    end
+
+    it "returns global stat for day" do
+      expect(described_class.last_30_days_sites_with_starts(Date.today, threshold: 3)).to eq 2
+    end
+  end
+
 end
 

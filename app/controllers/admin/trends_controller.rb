@@ -48,9 +48,9 @@ class Admin::TrendsController < Admin::AdminController
     end
   end
 
-  def site_stats
+  def site_admin_stats
     respond_to do |format|
-      format.json { render json: SiteStatsTrend.json }
+      format.json { render json: SiteAdminStatsTrend.json }
     end
   end
 
