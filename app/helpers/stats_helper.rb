@@ -89,14 +89,10 @@ module StatsHelper
   end
 
   def stats_country_name(country_code)
-    country_code = _handle_special_country_code(country_code)
-
-    Country[country_code].try(:name) || country_code.titleize
+    Country[country_code].try(:name) || _handle_special_country_code_for_name(country_code)
   end
 
   def stats_country_style(country_code)
-    country_code = _handle_special_country_code(country_code)
-
     "background-image:url(#{asset_path("flags/#{country_code.upcase}.png")});"
   end
 
@@ -132,14 +128,12 @@ module StatsHelper
 
   private
 
-  def _handle_special_country_code(country_code)
+  def _handle_special_country_code_for_name(country_code)
     case country_code
-    when 'uk'
-      'gb'
-    when 'a1', 'a2', 'o1'
-      'unknown'
+    when 'eu'
+      'Europe'
     else
-      country_code
+      country_code.titleize
     end
   end
 

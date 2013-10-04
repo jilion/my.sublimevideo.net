@@ -2,15 +2,15 @@ require 'active_support/core_ext'
 
 class StatsPresenter
 
-  attr_reader :object, :options
+  attr_reader :resource, :options
 
   DEFAULT_OPTIONS = {
     source: 'a',
     hours: 24
   }
 
-  def initialize(object, options = {})
-    @object = object
+  def initialize(resource, options = {})
+    @resource = resource
     @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours, :since))
     @options[:hours] = @options[:hours].to_i
   end
@@ -87,6 +87,7 @@ class StatsPresenter
         next unless options[:source].in?(%W[a #{src}])
 
         hash.each do |key, value|
+          key = _handle_special_country_code(key) if field == :co
           memo[key] += value
         end
       end
@@ -129,10 +130,6 @@ class StatsPresenter
   def _group_and_fill_missing_values_for_last_stats(stats, opts = {})
     opts = opts.symbolize_keys.reverse_merge(default_value: 0, period: options[:hours] > 24 ? :day : :hour)
 
-    if !opts[:from] && !opts[:to]
-      opts[:from] = stats.first[0] || Time.now
-      opts[:to]   = stats.last[0] || (Time.now - 1.second)
-    end
     opts[:from] = opts[:from].midnight if opts[:period] == :day
 
     filled_stats, step = [], 1.send(opts[:period])
@@ -147,6 +144,19 @@ class StatsPresenter
     end
 
     filled_stats
+  end
+
+  def _handle_special_country_code(country_code)
+    case country_code
+    when 'fx', 'gp' # Guadeloupe
+      'fr'
+    when 'uk', 'io' # British Indian Ocean Territory
+      'gb'
+    when '--', 'a1', 'a2', 'o1', 'ap' # African Regional Intellectual Property Organization
+      'unknown'
+    else
+      country_code
+    end
   end
 
 end

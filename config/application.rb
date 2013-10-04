@@ -20,6 +20,7 @@ module MySublimeVideo
     # -- all .rb files in that directory are automatically loaded.
 
     # http://ileitch.github.com/2012/03/24/rails-32-code-reloading-from-lib.html
+    config.watchable_dirs['app/presenters'] = [:rb]
     config.watchable_dirs['lib'] = [:rb]
 
     # Enable the asset pipeline
