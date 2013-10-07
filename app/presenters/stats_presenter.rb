@@ -151,11 +151,11 @@ class StatsPresenter
 
   def _handle_special_country_code(country_code)
     case country_code
-    when 'fx', 'gp' # Guadeloupe
+    when 'fx'
       'fr'
-    when 'uk', 'io' # British Indian Ocean Territory
+    when 'uk' # British Indian Ocean Territory
       'gb'
-    when '--', 'a1', 'a2', 'o1', 'ap' # African Regional Intellectual Property Organization
+    when '--', 'a1', 'a2', 'o1', 'ap' # African Regional Intellectual Property Organization, Guadeloupe, Réunion
       'unknown'
     else
       country_code

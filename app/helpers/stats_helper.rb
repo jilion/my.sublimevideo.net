@@ -69,7 +69,7 @@ module StatsHelper
       browser
     end
 
-    "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
+    "background-image:url(#{asset_path("stats/icons/#{icon}.png")});"
   end
 
   def stats_platform_style(browser_and_platform)
@@ -85,7 +85,7 @@ module StatsHelper
       platform
     end
 
-    "background-image:url(#{asset_path "stats/icons/#{icon}.png"});"
+    "background-image:url(#{asset_path("stats/icons/#{icon}.png")});"
   end
 
   def stats_country_name(country_code)
@@ -93,7 +93,7 @@ module StatsHelper
   end
 
   def stats_country_style(country_code)
-    "background-image:url(#{asset_path("flags/#{country_code.upcase}.png")});"
+    "background-image:url(#{asset_path("flags/#{_handle_special_country_code_for_flag(country_code).upcase}.png")});"
   end
 
   def stats_browser_and_os_name(browser_and_platform)
@@ -134,6 +134,15 @@ module StatsHelper
       'Europe'
     else
       country_code.titleize
+    end
+  end
+
+  def _handle_special_country_code_for_flag(country_code)
+    case country_code
+    when 'gp', 're', 'io'
+      'unknown'
+    else
+      country_code
     end
   end
 
