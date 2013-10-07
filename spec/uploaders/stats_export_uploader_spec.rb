@@ -16,7 +16,7 @@ describe StatsExportUploader do
     to: Time.utc(2012,4,20)
   )}
   let(:csv) { fixture_file('stats_export.csv') }
-  let(:uploader) { StatsExportUploader.new(stat_export, :file) }
+  let(:uploader) { described_class.new(stat_export, :file) }
 
   before { Rails.stub(:env) { double('test', to_s: 'test', test?: true) } }
   before { uploader.store!(csv) }

@@ -688,7 +688,7 @@ DEPENDENCIES
   rack-livereload
   rack-ssl-enforcer
   rack-status
-  rails (= 4.0.0)
+  rails (~> 4.0.0)
   rails_12factor
   rails_autolink
   redis
@@ -710,7 +710,7 @@ DEPENDENCIES
   sprockets-rails!
   stat_request_parser
   state_machine
-  sublime_video_layout (~> 2.0)
+  sublime_video_layout (~> 2.6)
   sublime_video_private_api (~> 1.5)
   teaspoon
   timecop
