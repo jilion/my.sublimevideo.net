@@ -132,6 +132,9 @@ class StatsPresenter
 
     opts[:from] = opts[:from].midnight if opts[:period] == :day
 
+    # ensure stats.first[0] is not < opts[:from]
+    stats.shift until stats.empty? || stats.first[0] >= opts[:from].to_i * 1000
+
     filled_stats, step = [], 1.send(opts[:period])
     while opts[:from] <= opts[:to]
       js_time = opts[:from].to_i * 1000

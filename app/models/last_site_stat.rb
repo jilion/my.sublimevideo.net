@@ -6,6 +6,6 @@ class LastSiteStat < LastStat
   def self.last_stats(site)
     params = { site_token: site.token }
 
-    all(params)
+    all(params).per(60)
   end
 end

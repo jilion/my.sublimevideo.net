@@ -6,6 +6,6 @@ class LastVideoStat < LastStat
   def self.last_stats(video_tag)
     params = { site_token: video_tag.site_token, video_uid: video_tag.uid }
 
-    all(params)
+    all(params).per(60)
   end
 end
