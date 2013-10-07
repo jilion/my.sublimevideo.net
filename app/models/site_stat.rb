@@ -1,6 +1,8 @@
 require 'stat'
 
-class SiteStat < Stat
+class SiteStat
+  include Stat
+
   collection_path '/private_api/site_stats'
 
   def self.last_hours_stats(site, hours)

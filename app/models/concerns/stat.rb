@@ -1,9 +1,12 @@
 require 'sublime_video_private_api'
 require 'time_parsable'
 
-class Stat
+module Stat
+  extend ActiveSupport::Concern
   include SublimeVideoPrivateApi::Model
   include TimeParsable
 
-  uses_private_api :stats
+  included do
+    uses_private_api :stats
+  end
 end

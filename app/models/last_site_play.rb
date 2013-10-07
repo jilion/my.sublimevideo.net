@@ -1,6 +1,8 @@
 require 'last_play'
 
-class LastSitePlay < LastPlay
+class LastSitePlay
+  include LastPlay
+
   collection_path '/private_api/last_plays'
 
   def self.last_plays(site, since = nil)

@@ -1,6 +1,8 @@
 require 'last_stat'
 
-class LastSiteStat < LastStat
+class LastSiteStat
+  include LastStat
+
   collection_path '/private_api/last_site_stats'
 
   def self.last_stats(site)

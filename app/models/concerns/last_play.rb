@@ -1,11 +1,14 @@
 require 'sublime_video_private_api'
 require 'time_parsable'
 
-class LastPlay
+module LastPlay
+  extend ActiveSupport::Concern
   include SublimeVideoPrivateApi::Model
   include TimeParsable
 
-  uses_private_api :stats
+  included do
+    uses_private_api :stats
+  end
 
   def document_url
     ERB::Util.h(du)

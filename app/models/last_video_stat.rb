@@ -1,6 +1,8 @@
 require 'last_stat'
 
-class LastVideoStat < LastStat
+class LastVideoStat
+  include LastStat
+
   collection_path '/private_api/last_video_stats'
 
   def self.last_stats(video_tag)

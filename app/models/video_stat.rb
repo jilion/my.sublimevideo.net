@@ -1,6 +1,8 @@
 require 'stat'
 
-class VideoStat < Stat
+class VideoStat
+  include Stat
+
   collection_path '/private_api/video_stats'
 
   def self.last_hours_stats(video_tag, hours)

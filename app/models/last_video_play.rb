@@ -1,6 +1,8 @@
 require 'last_play'
 
-class LastVideoPlay < LastPlay
+class LastVideoPlay
+  include LastPlay
+
   collection_path '/private_api/last_plays'
 
   def self.last_plays(video_tag, since = nil)
