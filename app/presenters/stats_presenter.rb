@@ -15,13 +15,15 @@ class StatsPresenter
     @options[:hours] = @options[:hours].to_i
   end
 
-  def last_stats_by_hour
+  def _last_stats_by_hour
     raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
   end
 
-  def last_stats_by_minute
+  def _last_stats_by_minute
     raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
   end
+
+  private :_last_stats_by_hour, :_last_stats_by_minute
 
   def last_plays
     raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
@@ -32,39 +34,39 @@ class StatsPresenter
   end
 
   def browsers_and_platforms_stats
-    _reduce_stats_for_field(:bp)
+    @browsers_and_platforms_stats ||= _reduce_stats_for_field(:bp)
   end
 
   def countries_stats
-    _reduce_stats_for_field(:co)
+    @countries_stats ||= _reduce_stats_for_field(:co)
   end
 
   def devices_stats
-    _reduce_stats_for_field(:de)
+    @devices_stats ||= _reduce_stats_for_field(:de)
   end
 
   def loads
-    _reduce_stats_for_field_by_period(:lo)
+    @loads ||= _reduce_stats_for_field_by_period(:lo)
   end
 
   def plays
-    _reduce_stats_for_field_by_period(:st)
+    @plays ||= _reduce_stats_for_field_by_period(:st)
   end
 
   def last_60_minutes_loads
-    _last_60_minutes_hits(:lo)
+    @last_60_minutes_loads ||= _last_60_minutes_hits(:lo)
   end
 
   def last_60_minutes_plays
-    _last_60_minutes_hits(:st)
+    @last_60_minutes_plays ||= _last_60_minutes_hits(:st)
   end
 
   # TODO: Improve
   def last_modified
     stats_for_last_modified = if options[:since]
-      last_stats_by_minute
+      _last_stats_by_minute
     else
-      last_stats_by_hour
+      _last_stats_by_hour
     end
 
     stats_for_last_modified.map { |s| s.time }.max
@@ -73,7 +75,8 @@ class StatsPresenter
   private
 
   def _last_60_minutes_hits(field)
-    stats = last_stats_by_minute.map { |s| [s.time.to_i * 1000, s.send(field)] }
+    Rails.logger.info _last_stats_by_minute.map { |s| s.time }
+    stats = _last_stats_by_minute.map { |s| [s.time.to_i * 1000, s.send(field)] }
 
     _group_and_fill_missing_values_for_last_stats(stats,
       period: :minute,
@@ -82,7 +85,7 @@ class StatsPresenter
   end
 
   def _reduce_stats_for_field(field)
-    reduced_stats = last_stats_by_hour.map { |s| s.send(:[], field) }.compact.reduce(Hash.new(0)) do |memo, stat|
+    reduced_stats = _last_stats_by_hour.map { |s| s.send(:[], field) }.compact.reduce(Hash.new(0)) do |memo, stat|
       stat.each do |src, hash|
         next unless options[:source].in?(%W[a #{src}])
 
@@ -104,7 +107,7 @@ class StatsPresenter
   end
 
   def _reduce_stats_for_field_by_period(field)
-    reduced_stats = last_stats_by_hour.reduce(Hash.new(0)) do |hash, stat|
+    reduced_stats = _last_stats_by_hour.reduce(Hash.new(0)) do |hash, stat|
       stat_for_field = stat.send(:[], field)
       total = if stat_for_field.present?
         if options[:source] == 'a'

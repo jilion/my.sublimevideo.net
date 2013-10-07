@@ -6,15 +6,15 @@ require 'presenters/site_stats_presenter'
 describe StatsPresenter do
   let(:presenter) { described_class.new(nil) }
 
-  describe '#last_stats_by_hour' do
+  describe '#_last_stats_by_hour' do
     it 'must be implemented by a subclass' do
-      expect { p presenter; presenter.last_stats_by_hour }.to raise_error(NotImplementedError)
+      expect { presenter.send :_last_stats_by_hour }.to raise_error(NotImplementedError)
     end
   end
 
-  describe '#last_stats_by_minute' do
+  describe '#_last_stats_by_minute' do
     it 'must be implemented by a subclass' do
-      expect { presenter.last_stats_by_minute }.to raise_error(NotImplementedError)
+      expect { presenter.send :_last_stats_by_minute }.to raise_error(NotImplementedError)
     end
   end
 
@@ -78,7 +78,7 @@ describe SiteStatsPresenter do
 
   describe '.initialize' do
     it 'takes a video tag' do
-      presenter.object.should eq site
+      presenter.resource.should eq site
     end
 
     context 'without options' do
@@ -97,7 +97,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#browsers_and_platforms_stats' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+    before { expect(presenter).to receive(:_last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       let(:expected_result) { { 'iex-win' => { count: 20, percent: 0.8 }, 'saf-osx' => { count: 5, percent: 0.2 } } }
@@ -121,7 +121,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#countries_stats' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+    before { expect(presenter).to receive(:_last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       let(:expected_result) { { 'fr' => { count: 20, percent: 0.8 }, 'ch' => { count: 5, percent: 0.2 } } }
@@ -145,7 +145,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#devices_stats' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+    before { expect(presenter).to receive(:_last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       let(:expected_result) { { 'd' => { count: 20, percent: 0.8 }, 'm' => { count: 5, percent: 0.2 } } }
@@ -169,7 +169,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#loads' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+    before { expect(presenter).to receive(:_last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       it 'has 24 items' do
@@ -219,7 +219,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#plays' do
-    before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+    before { expect(presenter).to receive(:_last_stats_by_hour) { stats_by_hour } }
 
     context 'source == "a"' do
       it 'has 24 items' do
@@ -269,7 +269,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#last_60_minutes_loads' do
-    before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+    before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
 
     it 'has 60 items' do
       expect(presenter.last_60_minutes_loads).to have(60).items
@@ -285,7 +285,7 @@ describe SiteStatsPresenter do
   end
 
   describe '#last_60_minutes_plays' do
-    before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+    before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
 
     it 'has 60 items' do
       expect(presenter.last_60_minutes_plays).to have(60).items
@@ -302,7 +302,7 @@ describe SiteStatsPresenter do
 
   describe '#last_modified' do
     context 'since option is not set' do
-      before { expect(presenter).to receive(:last_stats_by_hour) { stats_by_hour } }
+      before { expect(presenter).to receive(:_last_stats_by_hour) { stats_by_hour } }
 
       it 'returns the most recent updated_at for stats by hour' do
         expect(presenter.last_modified).to eq 1.hour.ago.change(min: 0)
@@ -310,7 +310,7 @@ describe SiteStatsPresenter do
     end
 
     context 'since option is set' do
-      before { expect(presenter).to receive(:last_stats_by_minute) { stats_by_minute } }
+      before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
       let(:presenter) { described_class.new(site, since: 1.hour.ago) }
 
       it 'returns the most recent updated_at for stats by minute' do

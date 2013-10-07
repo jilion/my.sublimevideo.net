@@ -24,39 +24,39 @@ describe StatsHelper do
 
   describe '#stats_hours_range_select' do
     it { expect(helper.stats_hours_range_select(24)).to eq({
-      (30.days / 1.hour) => 'Last 30 days',
-      (90.days / 1.hour) => 'Last 90 days',
-      (365.days / 1.hour) => 'Last 365 days'
+      (30.days / 1.hour) => '30 days',
+      (90.days / 1.hour) => '90 days',
+      (365.days / 1.hour) => '365 days'
     }) }
 
     it { expect(helper.stats_hours_range_select(30*24)).to eq({
-      24 => 'Last 24 hours',
-      (90.days / 1.hour) => 'Last 90 days',
-      (365.days / 1.hour) => 'Last 365 days'
+      24 => '24 hours',
+      (90.days / 1.hour) => '90 days',
+      (365.days / 1.hour) => '365 days'
     }) }
 
     it { expect(helper.stats_hours_range_select(90*24)).to eq({
-      24 => 'Last 24 hours',
-      (30.days / 1.hour) => 'Last 30 days',
-      (365.days / 1.hour) => 'Last 365 days'
+      24 => '24 hours',
+      (30.days / 1.hour) => '30 days',
+      (365.days / 1.hour) => '365 days'
     }) }
 
     it { expect(helper.stats_hours_range_select(365*24)).to eq({
-      24 => 'Last 24 hours',
-      (30.days / 1.hour) => 'Last 30 days',
-      (90.days / 1.hour) => 'Last 90 days'
+      24 => '24 hours',
+      (30.days / 1.hour) => '30 days',
+      (90.days / 1.hour) => '90 days'
     }) }
   end
 
   describe '#stats_source_select' do
     it { expect(helper.stats_source_select('a')).to eq({
       'w' => 'your site',
-      'e' => 'external sources'
+      'e' => 'other sites'
     }) }
 
     it { expect(helper.stats_source_select('w')).to eq({
       'a' => 'all sources',
-      'e' => 'external sources'
+      'e' => 'other sites'
     }) }
 
     it { expect(helper.stats_source_select('e')).to eq({
@@ -93,20 +93,20 @@ describe StatsHelper do
 
   describe '#stats_country_name' do
     it { expect(helper.stats_country_name('fr')).to eq 'France' }
-    it { expect(helper.stats_country_name('uk')).to eq 'United Kingdom' }
     it { expect(helper.stats_country_name('gb')).to eq 'United Kingdom' }
-    it { expect(helper.stats_country_name('a1')).to eq 'Unknown' }
-    it { expect(helper.stats_country_name('a2')).to eq 'Unknown' }
-    it { expect(helper.stats_country_name('o1')).to eq 'Unknown' }
+    it { expect(helper.stats_country_name('gp')).to eq 'Guadeloupe' }
+    it { expect(helper.stats_country_name('re')).to eq 'Réunion' }
+    it { expect(helper.stats_country_name('io')).to eq 'British Indian Ocean Territory' }
+    it { expect(helper.stats_country_name('unknown')).to eq 'Unknown' }
   end
 
   describe '#stats_country_style' do
     it { expect(helper.stats_country_style('fr')).to eq 'background-image:url(/assets/flags/FR.png);' }
-    it { expect(helper.stats_country_style('uk')).to eq 'background-image:url(/assets/flags/GB.png);' }
     it { expect(helper.stats_country_style('gb')).to eq 'background-image:url(/assets/flags/GB.png);' }
-    it { expect(helper.stats_country_style('a1')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
-    it { expect(helper.stats_country_style('a2')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
-    it { expect(helper.stats_country_style('o1')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+    it { expect(helper.stats_country_style('gp')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+    it { expect(helper.stats_country_style('re')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+    it { expect(helper.stats_country_style('io')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
+    it { expect(helper.stats_country_style('unknown')).to eq 'background-image:url(/assets/flags/UNKNOWN.png);' }
   end
 
   describe '#stats_browser_and_os_name' do

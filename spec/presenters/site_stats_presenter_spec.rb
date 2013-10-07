@@ -47,19 +47,19 @@ describe SiteStatsPresenter do
     ]
   end
 
-  describe '#last_stats_by_hour' do
+  describe '#_last_stats_by_hour' do
     it 'delegates to VideoStat.last_hours_stats' do
       expect(SiteStat).to receive(:last_hours_stats).with(site, presenter.options[:hours]) { stats_by_hour }
 
-      presenter.last_stats_by_hour.should eq stats_by_hour
+      presenter.send(:_last_stats_by_hour).should eq stats_by_hour
     end
   end
 
-  describe '#last_stats_by_minute' do
+  describe '#_last_stats_by_minute' do
     it 'delegates to VideoStat.last_stats' do
       expect(LastSiteStat).to receive(:last_stats).with(site) { stats_by_minute }
 
-      presenter.last_stats_by_minute.should eq stats_by_minute
+      presenter.send(:_last_stats_by_minute).should eq stats_by_minute
     end
   end
 

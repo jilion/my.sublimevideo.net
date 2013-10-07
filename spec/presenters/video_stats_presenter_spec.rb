@@ -47,19 +47,19 @@ describe VideoStatsPresenter do
     ]
   end
 
-  describe '#last_stats_by_hour' do
+  describe '#_last_stats_by_hour' do
     it 'delegates to VideoStat.last_hours_stats' do
       expect(VideoStat).to receive(:last_hours_stats).with(video_tag, presenter.options[:hours]) { stats_by_hour }
 
-      presenter.last_stats_by_hour.should eq stats_by_hour
+      presenter.send(:_last_stats_by_hour).should eq stats_by_hour
     end
   end
 
-  describe '#last_stats_by_minute' do
+  describe '#_last_stats_by_minute' do
     it 'delegates to VideoStat.last_stats' do
       expect(LastVideoStat).to receive(:last_stats).with(video_tag) { stats_by_minute }
 
-      presenter.last_stats_by_minute.should eq stats_by_minute
+      presenter.send(:_last_stats_by_minute).should eq stats_by_minute
     end
   end
 
