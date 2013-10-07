@@ -644,7 +644,6 @@ DEPENDENCIES
   fog
   google-analytics-turbolinks
   groupdate
-  guard (= 2.0.0.pre.3)
   guard-livereload
   guard-pow
   guard-rspec

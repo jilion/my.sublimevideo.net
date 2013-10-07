@@ -61,6 +61,8 @@ module MySublimeVideo
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = 'utf-8'
 
+    config.action_dispatch.default_headers = { 'X-UA-Compatible' => 'IE=edge,chrome=1' }
+
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:protection_key, :password, :cc_]
 
