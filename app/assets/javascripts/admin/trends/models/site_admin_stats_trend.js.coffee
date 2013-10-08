@@ -2,58 +2,36 @@
 
 class AdminSublimeVideo.Models.SiteAdminStatsTrend extends AdminSublimeVideo.Models.Trend
   defaults:
-    pv: {} # Page Visit
-    vv: {} # Video views
-    md: {} # Player Mode + Device hash
-    bp: {} # Browser + Platform hash
+    al: {} # App loads
+    lo: {} # Video loads
+    st: {} # Video starts
 
   customGet: (selected) ->
     this.get(selected[0])[selected[1]] or 0
 
-  html5Proportion: ->
-    md = this.get('md')
-    mdh = if md.h? then (md.h.d || 0) + (md.h.m || 0) + (md.h.t || 0) else 0
-    mdf = if md.f? then (md.f.d || 0) + (md.f.m || 0) + (md.f.t || 0) else 0
-
-    mdh / (mdh + mdf) * 100
-
-  mobileProportion: ->
-    md = this.get('md')
-    mdd = if md.h? then (md.h.d || 0) else 0 + if md.f? then (md.f.d || 0) else 0
-    mdm = if md.h? then (md.h.m || 0) + (md.h.t || 0) else 0 + if md.f? then (md.f.m || 0) + (md.f.t || 0) else 0
-
-    mdm / (mdd + mdm) * 100
-
 class AdminSublimeVideo.Collections.SiteAdminStatsTrends extends AdminSublimeVideo.Collections.Trends
   model: AdminSublimeVideo.Models.SiteAdminStatsTrend
-  url: -> '/trends/site_stats.json'
-  id: -> 'site_stats'
-  yAxis: (selected) ->
-    switch selected[0]
-      when 'pv', 'vv' then 3
-      when 'md' then 4
-  chartType: (selected) ->
-    switch selected[0]
-      when 'pv', 'vv' then 'areaspline'
-      when 'md' then 'spline'
+  url: -> '/trends/site_admin_stats.json'
+  id: -> 'site_admin_stats'
+  yAxis: (selected) -> 3
+  chartType: (selected) -> 'areaspline'
 
   title: (selected) ->
-    top = switch selected[0]
-      when 'pv' then 'Page visits'
-      when 'vv' then 'Video plays'
-      else ''
-    type = switch selected[1]
-      when 'billable' then 'Billable '
-      when 'm' then 'Main '
-      when 'e' then 'Extra '
-      when 'em' then 'Embed (Main & Extra embeds only) '
-      when 'd' then 'Dev '
+    env = switch selected[1]
+      when 'production' then 'Production '
+      when 'development' then 'Development '
+      when 'ex' then 'External '
       when 'i' then 'Invalid '
-      when 'html5_proportion' then 'HTML5'
-      when 'mobile_proportion' then 'Mobile'
+      when 'w' then 'Website '
+      when 'e' then 'External '
+      else ''
+    hit_kind = switch selected[0]
+      when 'al' then 'App loads'
+      when 'lo' then 'Video loads'
+      when 'st' then 'Video starts'
       else ''
 
-    "#{type}#{top}"
+    "#{env}#{hit_kind}"
 
   customPluck: (selected, from = null, to = null) ->
     array = []
@@ -64,18 +42,17 @@ class AdminSublimeVideo.Collections.SiteAdminStatsTrends extends AdminSublimeVid
       trend = this.get(from)
       value = if trend?
         switch selected[0]
-          when 'pv', 'vv'
+          when 'al'
             switch selected[1]
-              when 'all' then trend.customGet([selected[0], 'm']) + trend.customGet([selected[0], 'e']) + trend.customGet([selected[0], 'em']) + trend.customGet([selected[0], 'd']) + trend.customGet([selected[0], 'i'])
-
-              when 'billable' then trend.customGet([selected[0], 'm']) + trend.customGet([selected[0], 'e']) + trend.customGet([selected[0], 'em'])
-
+              when 'all' then trend.customGet([selected[0], 'm']) + trend.customGet([selected[0], 'e']) + trend.customGet([selected[0], 'd']) + trend.customGet([selected[0], 'i'])
+              when 'production' then trend.customGet([selected[0], 'm']) + trend.customGet([selected[0], 'e'])
+              when 'development' then trend.customGet([selected[0], 'd']) + trend.customGet([selected[0], 's'])
               else trend.customGet(selected)
 
-          when 'md'
+          when 'lo', 'st'
             switch selected[1]
-              when 'html5_proportion' then trend.html5Proportion()
-              when 'mobile_proportion' then trend.mobileProportion()
+              when 'all' then trend.customGet([selected[0], 'w']) + trend.customGet([selected[0], 'e'])
+              else trend.customGet(selected)
       else
         0
 

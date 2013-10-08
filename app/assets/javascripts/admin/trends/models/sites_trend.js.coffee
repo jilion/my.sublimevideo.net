@@ -23,6 +23,9 @@ class AdminSublimeVideo.Collections.SitesTrends extends AdminSublimeVideo.Collec
                   when 'pv' then '≥ 1 page visit'
                   when 'pv2' then '≥ 2 page visits'
                   when 'vv' then '≥ 1 video views'
+                  when 'st1' then '≥ 1 video start'
+                  when 'st2' then '≥ 2 video starts'
+                  when 'st100' then '≥ 100 video starts'
         text += ') '
       else
         text = 'Sites '
