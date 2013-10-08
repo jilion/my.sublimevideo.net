@@ -26,16 +26,16 @@ describe VideoTagsController do
       end
     end
 
-  describe "#show" do
-    context "with demo site" do
-      it "responds with success to GET :show" do
-        VideoTag.stub(:find).with('2', _site_token: SiteToken[:www])
-        get :show, site_id: SiteToken[:www], id: '2'
+    describe '#show' do
+      it_behaves_like 'responds to formats', [:json], :get, [:show] do
+        let(:params) { { site_id: site.token, id: '2' } }
+      end
 
-        expect(response).to be_success
+      it 'calls VideoTag.find with good params' do
+        expect(VideoTag).to receive(:find).with('2', _site_token: site.token).and_return(double('VideoTag'))
+        get :show, site_id: site.token, id: '2', format: :json
       end
     end
-
   end
 
 end

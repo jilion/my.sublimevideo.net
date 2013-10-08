@@ -38,6 +38,7 @@ feature 'Redirects' do
     end
 
     scenario "redirect /stats to /stats-demo" do
+      stub_site_stats
       go 'my', 'stats'
 
       current_url.should eq 'http://my.sublimevideo.dev/stats-demo'

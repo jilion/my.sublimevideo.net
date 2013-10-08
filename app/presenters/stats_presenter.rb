@@ -75,7 +75,6 @@ class StatsPresenter
   private
 
   def _last_60_minutes_hits(field)
-    Rails.logger.info _last_stats_by_minute.map { |s| s.time }
     stats = _last_stats_by_minute.map { |s| [s.time.to_i * 1000, s.send(field)] }
 
     _group_and_fill_missing_values_for_last_stats(stats,

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 feature 'Stats page' do
   background do
+    stub_site_stats
     sign_in_as :user
     @site = build(:site, user: @current_user)
     SiteManager.new(@site).create
