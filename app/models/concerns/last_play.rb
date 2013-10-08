@@ -11,18 +11,18 @@ module LastPlay
   end
 
   def document_url
-    ERB::Util.h(du)
+    ERB::Util.h(try(:du?))
   end
 
   def referrer_url
-    ERB::Util.h(ru)
+    ERB::Util.h(try(:ru?))
   end
 
   def referrer_url?
-    ru?
+    try(:ru?)
   end
 
   def video_tag
-    @video_tag ||= VideoTag.find(u, _site_token: s)
+    @video_tag ||= VideoTag.find(try(:u), _site_token: try(:s))
   end
 end

@@ -18,8 +18,7 @@ class SiteAdminStatsTimelineBuilder
   end
 
   def start_at
-    p (_date_range.first.to_time + moving_average.days)
-    (_date_range.first.to_time + moving_average.days)
+    _date_range.first.to_time + moving_average.days
   end
 
   def end_at

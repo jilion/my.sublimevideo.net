@@ -38,15 +38,15 @@ class SiteAdminStat
   end
 
   def app_loads
-    al || {}
+    try(:al) || {}
   end
 
   def loads
-    lo || {}
+    try(:lo) || {}
   end
 
   def starts
-    st || {}
+    try(:st) || {}
   end
 
   private
@@ -55,5 +55,4 @@ class SiteAdminStat
     all_days = ((Time.now.utc.end_of_day - Time.utc(2011,11,29)) / 1.day).ceil
     all(site_token: site.token, per: all_days)
   end
-
 end
