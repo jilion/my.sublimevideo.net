@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MailMailer do
 
-  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: -> { [FactoryGirl.create(:user).id, FactoryGirl.create(:mail_template).id] }
+  it_behaves_like "common mailer checks", %w[send_mail_with_template], params: -> { [FactoryGirl.create(:user).id, FactoryGirl.create(:mail_template).id] }
 
   before do
     @template = create(:mail_template)

@@ -1,6 +1,4 @@
 class DealsController < ApplicationController
-  respond_to :html
-
   prepend_before_filter :_set_cookie
   before_filter :_set_deal
 
@@ -8,9 +6,7 @@ class DealsController < ApplicationController
     deal_activation = current_user.deal_activations.build(deal_id: @deal.id)
     cookies.delete(:d, domain: :all) if deal_activation.save
 
-    respond_to do |format|
-      format.html { redirect_to :sites }
-    end
+    redirect_to :sites
   end
 
 private

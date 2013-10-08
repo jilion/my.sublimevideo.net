@@ -6,6 +6,7 @@ class VideoTagsController < ApplicationController
   before_filter :require_video_early_access, only: [:index]
   before_filter :_set_site
   before_filter :_set_sites_or_redirect_to_new_site, only: [:index]
+  before_filter :_set_video_tag, only: [:show]
 
   respond_to :html, only: [:index]
   respond_to :json, only: [:show]
@@ -36,8 +37,6 @@ class VideoTagsController < ApplicationController
 
   # GET /sites/:site_id/video_tags/:id
   def show
-    @video_tag = VideoTag.find(params[:id], _site_token: @site.token)
-
     if stale?(@video_tag)
       respond_with(@video_tag) do |format|
         format.json { render json: @video_tag.try(:backbone_data) }
@@ -45,7 +44,7 @@ class VideoTagsController < ApplicationController
     end
   end
 
-private
+  private
 
   def _index_params
     index_params = { _site_token: @site.token, with_valid_uid: true, per: 10 }

@@ -613,7 +613,6 @@ DEPENDENCIES
   fog
   google-analytics-turbolinks
   groupdate
-  guard (= 2.0.0.pre.3)
   guard-livereload
   guard-pow
   guard-rspec
@@ -657,7 +656,7 @@ DEPENDENCIES
   rack-livereload
   rack-ssl-enforcer
   rack-status
-  rails (= 4.0.0)
+  rails (~> 4.0.0)
   rails_12factor
   rails_autolink
   redis
@@ -677,7 +676,7 @@ DEPENDENCIES
   solve
   sprockets-rails!
   state_machine
-  sublime_video_layout (~> 2.0)
+  sublime_video_layout (~> 2.6)
   sublime_video_private_api (~> 1.5)
   teaspoon
   timecop

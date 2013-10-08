@@ -3,10 +3,10 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 
 ruby '2.0.0'
 
-gem 'rails', '4.0.0'
+gem 'rails', '~> 4.0.0'
 gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
-gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
+gem 'sublime_video_layout', '~> 2.6' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
@@ -154,7 +154,6 @@ group :development, :test do
 
   # Guard
   gem 'ruby_gntp', require: false
-  gem 'guard', '2.0.0.pre.3', require: false
   gem 'guard-pow', require: false
   gem 'guard-livereload', require: false
   gem 'guard-rspec', require: false
