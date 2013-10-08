@@ -1,7 +1,7 @@
 module Spec
   module Support
     module ControllersHelpers
-      shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params = {}|
+      shared_examples_for 'redirect when connected as' do |url, roles, verb_actions, params = {}|
         roles = Array.wrap(roles)
         roles.each do |role|
           role_name, role_stubs = if role.is_a?(Array)
@@ -17,20 +17,41 @@ module Spec
                 before do
                   @request.host = "#{url =~ /admin/ ? 'admin' : 'my'}.test.host"
                   case role_name.to_sym
-                  when :user
-                    sign_in(role_name.to_sym, send("authenticated_#{role_name}", role_stubs))
-                  when :admin
+                  when :user, :admin
                     sign_in(role_name.to_sym, send("authenticated_#{role_name}", role_stubs))
                   end
                 end
 
-                it "should redirect to #{url} on #{verb.upcase} :#{action}" do
+                it "redirects to #{url} on #{verb.upcase} :#{action}" do
                   params = params.nil? ? {} : params.reverse_merge({ id: '1' })
                   send(verb, action, params)
 
-                  response.should redirect_to(url)
+                  expect(response).to redirect_to(url)
                 end
               end
+            end
+          end
+        end
+      end
+
+      FORMATS = %i[html js json csv]
+      shared_examples_for 'responds to formats' do |formats, verb, actions|
+        respond_to_formats = formats & FORMATS
+        dont_respond_to_formats = FORMATS - respond_to_formats
+
+        actions.each do |action|
+          respond_to_formats.each do |format|
+            it "responds to #{format.upcase} on #{verb.upcase} :#{action}" do
+              send(verb, action, params.merge(format: format))
+
+              expect(response).to be_success
+            end
+          end
+
+          dont_respond_to_formats.each do |format|
+            it "does not respond to #{format.upcase} on #{verb.upcase} :#{action}" do
+              expect { send(verb, action, params.merge(format: format)) }.to \
+              raise_error(ActionController::UnknownFormat)
             end
           end
         end

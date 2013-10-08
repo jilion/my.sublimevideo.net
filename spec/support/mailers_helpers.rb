@@ -6,7 +6,7 @@ module Spec
         ActionMailer::Base.deliveries.last
       end
 
-      # it_should_behave_like "common mailer checks", %w[is_expired will_expire], params: [FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)]
+      # it_behaves_like "common mailer checks", %w[is_expired will_expire], params: [FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)]
       shared_examples_for "common mailer checks" do |methods=[], *args|
         options = args.extract_options!
         options.reverse_merge!(from: [I18n.t('mailer.info.email')], to: nil, content_type: %r{multipart/alternative; boundary="--==_mimepart_\w+"; charset=UTF-8})

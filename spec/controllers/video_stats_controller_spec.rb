@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe VideoStatsController do
 
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], { get: [:index] }, site_id: 'public'
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:index] }, site_id: '1'
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:index] }, site_id: '1'
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1', id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], { get: [:index] }, site_id: 'public'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:index] }, site_id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:index] }, site_id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1', id: '1'
 
   context 'user logged-in' do
     before do
