@@ -6,6 +6,19 @@ GIT
       compass (>= 0.12.2, < 0.14)
 
 GIT
+  remote: git://github.com/Shopify/active_merchant.git
+  revision: ff911f420b705117a674a40da644a9230e7192f7
+  specs:
+    activemerchant (1.38.1)
+      active_utils (~> 2.0, >= 2.0.1)
+      activesupport (>= 2.3.14, < 5.0.0)
+      builder (>= 2.1.2, < 4.0.0)
+      i18n (~> 0.5)
+      json (~> 1.7)
+      money (< 6.0.0)
+      nokogiri (~> 1.4)
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -73,20 +86,6 @@ GIT
       sprockets (~> 2.8)
 
 GIT
-  remote: git://github.com/rymai/active_merchant.git
-  revision: 4dc159611a3ab12cb41dd6a4a5ae4e28962a1354
-  branch: ogone-store-amount-option
-  specs:
-    activemerchant (1.33.0)
-      active_utils (>= 1.0.2)
-      activesupport (>= 2.3.14)
-      builder (>= 2.0.0)
-      i18n
-      json (>= 1.5.1)
-      money
-      nokogiri
-
-GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 590c89b458e21be52825ea9f7532182c68310715
   branch: 1.9.2
@@ -126,7 +125,7 @@ GEM
       erubis (~> 2.7.0)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    active_utils (2.0.0)
+    active_utils (2.0.1)
       activesupport (>= 2.3.11)
       i18n
     activemodel (4.0.0)
@@ -369,7 +368,7 @@ GEM
     money (5.1.1)
       i18n (~> 0.6.0)
     moped (1.5.1)
-    multi_json (1.8.0)
+    multi_json (1.8.1)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
     net-scp (1.1.2)
@@ -571,7 +570,7 @@ GEM
     typhoeus (0.2.4)
       mime-types
       mime-types
-    tzinfo (0.3.37)
+    tzinfo (0.3.38)
     uglifier (2.2.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
