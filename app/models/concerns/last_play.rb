@@ -11,11 +11,11 @@ module LastPlay
   end
 
   def document_url
-    ERB::Util.h(try(:du?))
+    ERB::Util.h(try(:du))
   end
 
   def referrer_url
-    ERB::Util.h(try(:ru?))
+    ERB::Util.h(try(:ru))
   end
 
   def referrer_url?
