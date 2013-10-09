@@ -230,10 +230,47 @@ span.beta_badge {
   height:58px;
   background:#83acae;
   background:rgba(116,255,131,0.18);
-  background-image:url(<%= asset_path "stats/chart_highlight_bar.png" %>);
+  background-image:url(<%= asset_path 'stats/chart_highlight_bar_vertical.png' %>);
   background-position:right top;
   background-repeat:repeat-y;
 }
+
+// Special case for the mobile / desktop column
+.stats #mobile_desktop.graph_box ul {
+  height:100%;
+}
+
+.stats #mobile_desktop.graph_box li {
+  height:58px;
+  position:relative;
+  border:none;
+  @include box-shadow(none);
+}
+
+.stats #mobile_desktop.graph_box ul li span {
+  text-align:center;
+}
+
+.stats #mobile_desktop.graph_box li .bar {
+  bottom:0;
+  height:100%;
+  width:100%;
+  background-image:url(<%= asset_path 'stats/chart_highlight_bar_horizontal.png' %>);
+  background-position:left top;
+  background-repeat:repeat-x;
+}
+
+.stats #mobile_desktop.graph_box .value {
+  display:block;
+  position:static;
+}
+
+.stats #mobile_desktop.graph_box .value em {
+  font-style:normal;
+  font-weight:normal;
+  color:#465B7D;
+}
+// Special case for the mobile / desktop column
 
 .stats .graph_box li:first-child .bar {@include border-radius(5px 0 0 0)}
 .stats .graph_box li:first-child .bar.percent_100,
@@ -337,12 +374,6 @@ span.beta_badge {
   color:#465b7d;
 }
 
-.stats #mobile_desktop.graph_box .values {
-  display:block;
-  text-align:center;
-  margin-top:5px;
-}
-
 .stats #last_plays.graph_box li .title {
   padding:13px 0 0 6px;
   line-height:17px;
@@ -373,23 +404,7 @@ span.beta_badge {
   padding:17px 0 0 6px;
 }
 
-.stats #mobiles_and_desktops_chart {
-  margin-top:20px;
-}
-
-.stats #mobile_desktop.graph_box .value {
-  display:block;
-  padding-bottom:15px;
-}
-
-.stats #mobile_desktop.graph_box .values em {
-  font-style:normal;
-  font-weight:normal;
-  color:#465B7D;
-}
-
-.stats .graph_box li .value .percent,
-.stats #mobile_desktop.graph_box .value .percent {
+.stats .graph_box li .value .percent {
   display:block;
   font-size:18px;
   font-weight:600;

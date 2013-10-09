@@ -16,7 +16,7 @@ module StatsHelper
 
   def stats_sources_hash
     {
-      'a' => 'all sources',
+      'a' => 'all sites',
       'w' => 'your site',
       'e' => 'other sites'
     }
@@ -94,6 +94,22 @@ module StatsHelper
 
   def stats_country_style(country_code)
     "background-image:url(#{asset_path("flags/#{_handle_special_country_code_for_flag(country_code).upcase}.png")});"
+  end
+
+  def stats_class_for_visual_percentage(decimal)
+    "percent_#{(decimal * 100).to_i}"
+  end
+
+  def stats_style_for_horizontal_visual_percentage(decimal)
+    "width: #{decimal * 100}%;"
+  end
+
+  def stats_height_style_for_mobile_desktop_percentage(decimal)
+    "height: #{[[decimal, 0.05].max, 0.95].min * 100}%;"
+  end
+
+  def stats_line_height_style_for_mobile_desktop_percentage(decimal, offset = 0)
+    "line-height: #{(493 * [[decimal, 0.05].max, 0.95].min + offset).floor}px;"
   end
 
   def stats_browser_and_os_name(browser_and_platform)

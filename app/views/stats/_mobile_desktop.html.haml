@@ -3,19 +3,18 @@
   - if stats.empty?
     %p.empty No plays.
   - else
-    #mobiles_and_desktops_chart
-    :coffee
-      MySublimeVideo.Helpers.VideoStatsChartsHelper.mobilesAndDesktopsChart([
-        { name: 'Desktop', y: #{stats.try_keys('d', :count) { 0 }}, color: 'rgba(74,100,142,0.6)', borderWidth: 1, borderColor: 'rgba(74,100,142,0.9)' },
-        { name: 'Mobile', y: #{stats.try_keys('m', :count) { 0 }}, color: 'rgba(9,250,33,0.45)', borderWidth: 1, borderColor: 'rgba(9,250,33,0.75)' }
-      ])
+    %ul
+      - d_percent = stats.try_keys('d', :percent) { 0 }
+      %li{ style: stats_height_style_for_mobile_desktop_percentage(d_percent) }
+        %span.value
+          %span.percent{ style: stats_line_height_style_for_mobile_desktop_percentage(d_percent) }
+            = display_percentage(d_percent, strip_insignificant_zeros: false)
+            %em Desktop
 
-    .values
-      %span.value
-        %span.percent
-          = display_percentage(stats.try_keys('m', :percent) { 0 }, strip_insignificant_zeros: false)
-          %em Mobile
-      %span.value
-        %span.percent
-          = display_percentage(stats.try_keys('d', :percent) { 0 }, strip_insignificant_zeros: false)
-          %em Desktop
+      - m_percent = stats.try_keys('m', :percent) { 0 }
+      %li{ style: stats_height_style_for_mobile_desktop_percentage(m_percent) }
+        %span.bar
+          %span.value
+            %span.percent{ style: stats_line_height_style_for_mobile_desktop_percentage(m_percent, 3) }
+              = display_percentage(m_percent, strip_insignificant_zeros: false)
+              %em Mobile

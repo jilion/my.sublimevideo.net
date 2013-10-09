@@ -6,7 +6,7 @@
     %ul
       - stats.each do |browser_and_os, data|
         %li
-          %span{ class: "bar percent_#{(data[:percent] * 100).to_i}", style: "width: #{data[:percent] * 100}%;"}
+          %span.bar{ class: stats_class_for_visual_percentage(data[:percent]), style: stats_style_for_horizontal_visual_percentage(data[:percent]) }
           %span.wrap
             %span.browser{ style: stats_browser_style(browser_and_os) }
             %span.platform{ style: stats_platform_style(browser_and_os) }

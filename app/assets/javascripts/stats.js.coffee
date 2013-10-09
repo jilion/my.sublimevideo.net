@@ -119,27 +119,17 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
           title: 'i'
           text: 'Video plays and loads metrics collection method changed on this day.'
         }]
-        lineWidth: 0
-        fillColor:
-          linearGradient: [0, 0, 0, 60]
-          stops: [
-            [0, '#fcf3cc']
-            [1, '#f8e9a1']
-          ]
+        lineWidth: 1
+        color: '#f8e9a1'
+        fillColor: '#f8e9a1'
         width: 16,
         style:
           color: '#6e4b00' # text color
         states:
           hover:
             lineWidth: 1
-            color: '#f8e9a1'
-            fillColor:
-              linearGradient: [0, 0, 0, 60]
-              stops: [
-                [0, '#fcf3cc']
-                [1, '#f8e9a1']
-              ]
-        shape: 'circlepin'
+            fillColor: '#f8e9a1'
+        shape: 'squarepin'
 
     series
 
@@ -257,56 +247,3 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         title:
           text: null
 
-  @mobilesAndDesktopsChart: (data) ->
-    new Highcharts.Chart
-      chart:
-        renderTo: 'mobiles_and_desktops_chart'
-        backgroundColor: 'transparent'
-        plotBackgroundColor: null
-        animation: false
-        plotShadow: false
-        height: 260
-        width: 260
-      credits:
-        enabled: false
-      title:
-        text: null
-      tooltip:
-        enabled: true
-        backgroundColor:
-          linearGradient: [0, 0, 0, 60]
-          stops: [
-            [0, 'rgba(22,37,63,0.8)']
-            [1, 'rgba(0,0,0,0.7)']
-          ]
-        shared: true
-        borderColor: "#000"
-        borderWidth: 1
-        borderRadius: 5
-        shadow: true
-        style:
-          padding: "10"
-          fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
-          fontSize: "15px"
-          fontWeight: "bold"
-          textAlign: "right"
-          color: '#fff'
-          textShadow: 'rgba(0,0,0,0.8) 0 -1px 0'
-          WebkitFontSmoothing: "antialiased"
-        formatter: ->
-          "<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.name}</span> #{Highcharts.numberFormat(@point.y, 0)} plays"
-      scrollbar:
-        enabled: false
-      plotOptions:
-        pie:
-          dataLabels:
-            enabled: false
-          states:
-            hover:
-              enabled: false
-      series: [{
-        type: 'pie'
-        name: 'Mobile / Desktop'
-        data: data
-        shadow: false
-      }]

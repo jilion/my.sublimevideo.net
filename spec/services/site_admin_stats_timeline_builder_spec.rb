@@ -17,7 +17,7 @@ describe SiteAdminStatsTimelineBuilder do
   }
 
   describe "#loads" do
-    describe "with all sources" do
+    describe "with all sites" do
       it "returns 30 stats array" do
         expect(builder.loads).to have(30).stats
         expect(builder.loads.last).to eq 7
@@ -32,7 +32,7 @@ describe SiteAdminStatsTimelineBuilder do
   end
 
   describe "#starts" do
-    describe "with all sources" do
+    describe "with all sites" do
       it "returns 30 stats array" do
         expect(builder.starts).to have(30).stats
         expect(builder.starts[15]).to eq 7

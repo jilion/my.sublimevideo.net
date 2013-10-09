@@ -55,12 +55,12 @@ describe StatsHelper do
     }) }
 
     it { expect(helper.stats_source_select('w')).to eq({
-      'a' => 'all sources',
+      'a' => 'all sites',
       'e' => 'other sites'
     }) }
 
     it { expect(helper.stats_source_select('e')).to eq({
-      'a' => 'all sources',
+      'a' => 'all sites',
       'w' => 'your site'
     }) }
   end
