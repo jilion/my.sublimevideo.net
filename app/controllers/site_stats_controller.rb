@@ -11,7 +11,7 @@ class SiteStatsController < ApplicationController
     if stale?(last_modified: @stats_presenter.last_modified, etag: @stats_presenter.etag)
       respond_to do |format|
         format.html
-        format.js
+        format.js { render 'stats/index' }
         format.csv do
           send_file(*SiteStatsCsvPresenter.new(@site, @stats_presenter).as_sent_file)
         end

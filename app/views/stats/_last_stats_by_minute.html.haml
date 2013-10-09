@@ -3,7 +3,7 @@
 #last_60_minutes_plays_and_loads= render 'stats/last_60_minutes_plays_and_loads', stats_presenter: stats_presenter
 
 #last_plays.graph_box
-  %h4.title Last plays
+  %h4.title Last 100 plays
   .content_wrap
     - if stats_presenter.last_plays.empty?
       %p.empty No plays.
