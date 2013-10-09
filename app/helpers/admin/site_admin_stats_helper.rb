@@ -15,7 +15,7 @@ module Admin::SiteAdminStatsHelper
   end
 
   def stats_date_subtitle(options = {})
-    options.reverse_merge!(start_at: nil, end_at: nil, text: nil, date_format: 'year_month_day')
+    options.reverse_merge!(start_at: nil, end_at: nil, text: nil, date_format: :d_b_Y)
 
     {
       text: options[:text] || "#{l(options[:start_at], format: options[:date_format].to_sym)} - #{l(options[:end_at], format: options[:date_format].to_sym)}",
