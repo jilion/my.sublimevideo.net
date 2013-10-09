@@ -92,7 +92,8 @@ class KitsController < ApplicationController
   end
 
   def _gracefully_find_kit_and_design_or_redirect_to_kits
-    [exhibit(@site.kits.where(identifier: params[:id]).first!), @kit.design]
+    kit = exhibit(@site.kits.where(identifier: params[:id]).first!)
+    [kit, kit.design]
   rescue ActiveRecord::RecordNotFound
     redirect_to [@site, :kits] and return
   end

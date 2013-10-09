@@ -1,16 +1,14 @@
 module SitesTasks
   def self.regenerate_templates(options = {})
-    loader_generator_class = options[:fast] ? FastLoaderGenerator : LoaderGenerator
-
     Site.where(token: SiteToken.tokens).pluck(:id).each do |site_id|
-      loader_generator_class.delay(queue: 'my-high').update_all_stages!(site_id) if options[:loaders]
+      LoaderGenerator.delay(queue: 'my-high').update_all_stages!(site_id) if options[:loaders]
       SettingsGenerator.delay(queue: 'my-high').update_all!(site_id) if options[:settings]
     end
     puts 'Important sites scheduled...' if Rails.env.development?
 
     scheduled = 0
     Site.active.order(last_30_days_admin_starts: :desc).pluck(:id).each do |site_id|
-      loader_generator_class.delay(queue: 'my-loader').update_all_stages!(site_id) if options[:loaders]
+      LoaderGenerator.delay(queue: 'my-loader').update_all_stages!(site_id) if options[:loaders]
       SettingsGenerator.delay(queue: 'my-low').update_all!(site_id) if options[:settings]
 
       scheduled += 1

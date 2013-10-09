@@ -61,8 +61,8 @@ gem 'fog'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'cocaine'
 
-# until github.com/Shopify/active_merchant/pull/724 is merged
-gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
+# until > 1.38.1 is released
+gem 'activemerchant', github: 'Shopify/active_merchant'
 
 gem 'public_suffix'
 
