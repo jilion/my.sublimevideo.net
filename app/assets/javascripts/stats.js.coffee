@@ -117,7 +117,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         data: [{
           x: new_stats_date
           title: 'i'
-          text: 'Video plays and loads metrics collection method changed on that day.'
+          text: 'Video plays and loads metrics collection method changed on this day.'
         }]
         lineWidth: 0
         fillColor:
