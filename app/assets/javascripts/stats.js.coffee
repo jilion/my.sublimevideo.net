@@ -116,11 +116,30 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         type: 'flags'
         data: [{
           x: new_stats_date
-          title: '!'
-          text: 'The way we count plays and loads changed on that day.'
+          title: 'i'
+          text: 'Video plays and loads metrics collection method changed on that day.'
         }]
-        width: 16
-        shape: 'squarepin'
+        lineWidth: 0
+        fillColor:
+          linearGradient: [0, 0, 0, 60]
+          stops: [
+            [0, '#fcf3cc']
+            [1, '#f8e9a1']
+          ]
+        width: 16,
+        style:
+          color: '#6e4b00' # text color
+        states:
+          hover:
+            lineWidth: 1
+            color: '#f8e9a1'
+            fillColor:
+              linearGradient: [0, 0, 0, 60]
+              stops: [
+                [0, '#fcf3cc']
+                [1, '#f8e9a1']
+              ]
+        shape: 'circlepin'
 
     series
 

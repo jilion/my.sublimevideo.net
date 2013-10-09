@@ -35,12 +35,6 @@
     #plays_and_loads_graph
   .spacer
 
-  - if stats_presenter.options[:hours] > 24
-    %p.notice
-      Video plays and loads metrics collection method changed on
-      = succeed '.' do
-        = l(Time.utc(2013, 9, 10), format: :default)
-
   #browsers_and_platforms.graph_box
     = render 'stats/browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
 
