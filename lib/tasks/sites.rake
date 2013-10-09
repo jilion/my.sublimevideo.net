@@ -22,11 +22,6 @@ namespace :sites do
     timed { puts SitesTasks.regenerate_templates(loaders: true, settings: false) }
   end
 
-  desc "FAST Re-generate loaders templates for all sites"
-  task fast_regenerate_loaders: :environment do
-    timed { puts SitesTasks.regenerate_templates(fast: true, loaders: true, settings: false) }
-  end
-
   desc "Re-generate settings templates for all sites"
   task regenerate_settings: :environment do
     timed { puts SitesTasks.regenerate_templates(loaders: false, settings: true) }
