@@ -105,11 +105,11 @@ module StatsHelper
   end
 
   def stats_height_style_for_mobile_desktop_percentage(decimal)
-    "height: #{[[decimal, 0.05].max, 0.95].min * 100}%;"
+    "height: #{decimal * 100}%;"
   end
 
   def stats_line_height_style_for_mobile_desktop_percentage(decimal, offset = 0)
-    "line-height: #{(493 * [[decimal, 0.05].max, 0.95].min + offset).floor}px;"
+    "line-height: #{(493 * decimal + offset).floor}px;"
   end
 
   def stats_browser_and_os_name(browser_and_platform)
@@ -148,6 +148,8 @@ module StatsHelper
     case country_code
     when 'eu'
       'Europe'
+    when 'ap'
+      'Asia/Pacific Region'
     else
       country_code.titleize
     end
@@ -155,7 +157,7 @@ module StatsHelper
 
   def _handle_special_country_code_for_flag(country_code)
     case country_code
-    when 'gp', 're', 'io'
+    when 'gp', 're', 'io', 'ap' # No flags for Guadeloupe, Reunion, British Indian Ocean Territory, Asia/Pacific Region
       'unknown'
     else
       country_code

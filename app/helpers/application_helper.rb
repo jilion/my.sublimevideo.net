@@ -27,7 +27,13 @@ module ApplicationHelper
   def display_percentage(fraction, opts = {})
     opts.reverse_merge!(precision: 2, strip_insignificant_zeros: true)
 
-    number_to_percentage(fraction * 100.0, precision: opts[:precision], strip_insignificant_zeros: opts[:strip_insignificant_zeros])
+    percent = number_to_percentage(fraction * 100.0, precision: opts[:precision], strip_insignificant_zeros: opts[:strip_insignificant_zeros])
+
+    if percent.sub(/%/, '').to_f < 0.01
+      '< 0.01%'
+    else
+      percent
+    end
   end
 
   def display_vat_percentage

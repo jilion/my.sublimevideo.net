@@ -19,19 +19,20 @@ describe ApplicationHelper do
     it { helper.display_time(nil).should eq "–" }
   end
 
-  describe "#display_percentage" do
-    it { helper.display_percentage(0.1).should eq number_to_percentage(10, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.12).should eq number_to_percentage(12, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.123).should eq number_to_percentage(12.3, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.1234).should eq number_to_percentage(12.34, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.12344).should eq number_to_percentage(12.34, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.123459).should eq number_to_percentage(12.35, precision: 2, strip_insignificant_zeros: true) }
+  describe '#display_percentage', :focus do
+    it { helper.display_percentage(0.123).should eq '12.3%' }
+    it { helper.display_percentage(0.12345).should eq '12.35%' }
 
-    it { helper.display_percentage(0.01).should eq number_to_percentage(1, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.012).should eq number_to_percentage(1.2, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.0123).should eq number_to_percentage(1.23, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.01234).should eq number_to_percentage(1.23, precision: 2, strip_insignificant_zeros: true) }
-    it { helper.display_percentage(0.01239).should eq number_to_percentage(1.24, precision: 2, strip_insignificant_zeros: true) }
+    it { helper.display_percentage(0.1234567, precision: 1).should eq '12.3%' }
+    it { helper.display_percentage(0.1234567, precision: 3).should eq '12.346%' }
+
+    it { helper.display_percentage(0.123, strip_insignificant_zeros: false).should eq '12.30%' }
+    it { helper.display_percentage(0.12345, strip_insignificant_zeros: false).should eq '12.35%' }
+
+    it { helper.display_percentage(0.1234567, precision: 1, strip_insignificant_zeros: false).should eq '12.3%' }
+    it { helper.display_percentage(0.1234, precision: 3, strip_insignificant_zeros: false).should eq '12.340%' }
+
+    it { helper.display_percentage(0.00004).should eq '< 0.01%' }
   end
 
   describe "#display_amount" do

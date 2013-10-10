@@ -1,5 +1,4 @@
 - cache [site, video_tag, stats_presenter.options] do
-
   #dates_range_and_source
     %h3.title
       %span
@@ -22,27 +21,24 @@
             %li{ class: cycle('', 'alt') }= link_to source_text, url_for(source: source), data: { value: source }
       .spacer
 
-  %ul#plays_and_loads_graph_legend
-    %li.video_plays<
+  %ul#plays_and_loads_graph_legend.graph_legend
+    %li.graph_label_color_1<
       = display_integer(stats_presenter.plays.sum { |a| a[1] })
-      %span.title plays
-    %li.page_visits<
+      %span plays
+    %li.graph_label_color_2<
       = display_integer(stats_presenter.loads.sum { |a| a[1] })
-      %span.title loads
+      %span loads
   .spacer
 
   #plays_and_loads{ data: { plays: stats_presenter.plays, loads: stats_presenter.loads, hours: stats_presenter.options[:hours] } }
     #plays_and_loads_graph
   .spacer
 
-  #browsers_and_platforms.graph_box
-    = render 'stats/browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
+  = render 'stats/browsers_and_platforms', stats: stats_presenter.browsers_and_platforms_stats
 
-  #countries.graph_box
-    = render 'stats/countries', stats: stats_presenter.countries_stats
+  = render 'stats/countries', stats: stats_presenter.countries_stats
 
-  #mobile_desktop.graph_box
-    = render 'stats/mobile_desktop', stats: stats_presenter.devices_stats
+  = render 'stats/mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
   .big_break

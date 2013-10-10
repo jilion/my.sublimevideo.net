@@ -1,110 +1,7 @@
 @import "css3";
 
-span.beta_badge {
-  display:block;
-  width:60px;
-  height:28px;
-  background:url(<%= asset_path "stats/beta_badge.png" %>) no-repeat;
-  position:absolute;
-  top:58px;
-  right:44px;
-}
-
 .stats {
   padding-bottom:40px;
-}
-
-.stats #sticky_notice {
-  width:872px;
-  margin:0px 0 20px 0;
-}
-
-.stats #export_wrap {
-  margin-top:5px;
-}
-
-.stats #export_wrap p.desc {
-  font-size:14px;
-  color:#465B7D;
-  line-height:20px;
-  margin:4px 0 0 15px;
-  padding-right:100px;
-}
-
-.stats #export {
-  float:left;
-  margin:5px 20px 5px 15px;
-}
-
-.stats #export a {
-  display:inline-block;
-  border:1px solid #5e75a2;
-  font-family:inherit;
-  font-size:14px;
-  font-weight:600;
-  color:#213866;
-  padding:3px 7px;
-  cursor:pointer;
-  text-shadow:rgba(255,255,255,0.3) 0 1px 0;
-  @include gradient(rgba(255,255,255,0.25), rgba(255,255,255,0), #98acc6);
-  @include border-radius(4px);
-  @include box-shadow((inset rgba(255,255,255,0.6) 0 1px 0, rgba(255,255,255,0.2) 0 1px 0))
-}
-
-.stats #export button:active, .stats #export a:active {
-  @include gradient(rgba(255,255,255,0), rgba(255,255,255,0.25), transparent);
-}
-
-.stats #export button:disabled, .stats #export a:disabled {
-  cursor:default;
-  opacity:0.5;
-}
-
-.stats #export a span.icon {
-  padding:2px 0 2px 18px;
-  background:url(<%= asset_path "stats/export_icon.png" %>) no-repeat 0 50%;
-}
-
-.stats #plays_and_loads_graph_legend {
-  float:right;
-  list-style-type:none;
-  padding-top:2px;
-}
-
-.stats #plays_and_loads_graph_legend li {
-  float:left;
-  font-size:22px;
-  padding:0 0 0 35px;
-  margin:0 10px;
-}
-
-.stats #plays_and_loads_graph_legend li.video_plays {
-  background:url(<%= asset_path "stats/video_plays_label.png" %>) no-repeat;
-}
-
-.stats #plays_and_loads_graph_legend li.page_visits {
-  background:url(<%= asset_path "stats/page_visits_label.png" %>) no-repeat;
-}
-
-.stats #plays_and_loads_graph_legend li span {
-  font-size:16px;
-}
-
-.stats #plays_and_loads {
-  min-height:100px;
-  padding:16px 16px 4px;
-  background:#6a86a8;
-  background:rgba(0,36,91,0.25);
-  @include border-radius(5px);
-  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.5) 0 1px 4px));
-}
-
-.stats #plays_and_loads p.note {
-  font-size:11px;
-  text-align:right;
-  position:relative;
-  right:-10px;
-  padding-bottom:1px;
 }
 
 .stats h3.title {
@@ -113,73 +10,19 @@ span.beta_badge {
   padding:15px 0 10px;
 }
 
-#last_60_minutes_plays_and_loads {
-  float:left;
-  width:39%;
-  margin:50px 0 0;
+.stats #sticky_notice {
+  width:872px;
+  margin:0px 0 20px 0;
 }
 
-#last_60_minutes_loads, #last_60_minutes_plays {
-  height:80px;
-  padding:8px 0;
-}
-
-#last_60_minutes_plays_and_loads .sum {
-  float:left;
-  width:100px;
-  font-weight:600;
+.stats p.empty {
   text-align:center;
-}
-
-#last_60_minutes_plays_and_loads .sum strong {
-  display:block;
-  font-size:23px;
-  font-weight:600;
-}
-
-#last_60_minutes_plays_and_loads .sparkline {
-  float:left;
-  width:200px;
-  height:50px;
-  text-align:center;
-  color:#d5e5ff;
-  text-shadow:#000 0 -1px 0;
-  @include border-radius(5px);
-}
-
-#last_plays {
-  float:right;
-  width:59%;
 }
 
 .stats .graph_box {
   float:left;
   width:260px;
   margin-bottom:25px;
-}
-
-.stats #browsers_and_platforms.graph_box, .stats #countries.graph_box {
-  margin-right:50px;
-}
-
-.stats .graph_box h4.title {
-  font-size:22px;
-  font-weight:600;
-  padding-top:35px;
-  text-align:center;
-}
-
-.stats #last_plays.graph_box h4.title {
-  font-size:16px;
-  padding:0 0 8px;
-  text-align:left;
-}
-
-.stats .graph_box h5.sub_title {
-  text-align:center;
-  font-size:16px;
-  font-weight:normal;
-  color:#465b7d;
 }
 
 .stats .graph_box .content {
@@ -218,10 +61,6 @@ span.beta_badge {
   @include box-shadow(none);
 }
 
-.stats .graph_box li li {
-  height:29px;
-}
-
 .stats .graph_box li .bar {
   display:block;
   position:absolute;
@@ -235,51 +74,9 @@ span.beta_badge {
   background-repeat:repeat-y;
 }
 
-// Special case for the mobile / desktop column
-.stats #mobile_desktop.graph_box ul {
-  height:100%;
-}
-
-.stats #mobile_desktop.graph_box li {
-  height:58px;
-  position:relative;
-  border:none;
-  @include box-shadow(none);
-}
-
-.stats #mobile_desktop.graph_box ul li span {
-  text-align:center;
-}
-
-.stats #mobile_desktop.graph_box li .bar {
-  bottom:0;
-  height:100%;
-  width:100%;
-  background-image:url(<%= asset_path 'stats/chart_highlight_bar_horizontal.png' %>);
-  background-position:left top;
-  background-repeat:repeat-x;
-}
-
-.stats #mobile_desktop.graph_box .value {
-  display:block;
-  position:static;
-}
-
-.stats #mobile_desktop.graph_box .value em {
-  font-style:normal;
-  font-weight:normal;
-  color:#465B7D;
-}
-// Special case for the mobile / desktop column
-
 .stats .graph_box li:first-child .bar {@include border-radius(5px 0 0 0)}
 .stats .graph_box li:first-child .bar.percent_100,
 .stats .graph_box li:first-child .bar.percent_99 {@include border-radius(5px 5px 0 0)}
-.stats .graph_box li:first-child li .bar {@include border-radius(0 0 0 0)}
-
-.stats .graph_box li li .bar {
-  height:29px;
-}
 
 .stats .graph_box li .wrap {
   display:block;
@@ -295,7 +92,7 @@ span.beta_badge {
   width:40px;
   height:58px;
   float:left;
-  background-image:url(<%= asset_path "stats/icons/default.png" %>);
+  background-image:url(<%= asset_path 'stats/icons/default.png' %>);
   background-position:center;
   background-repeat:no-repeat;
 }
@@ -304,12 +101,11 @@ span.beta_badge {
   padding-right:6px;
 }
 
-.stats #last_plays.graph_box li.site .browser,
-.stats #last_plays.graph_box li.site .platform,
-.stats #last_plays.graph_box li.site .country {
-  float:right;
-  height:43px;
-  margin-top:15px;
+.stats .graph_box h4.title {
+  font-size:22px;
+  font-weight:600;
+  padding-top:35px;
+  text-align:center;
 }
 
 .stats .graph_box li .browser {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}
@@ -374,42 +170,194 @@ span.beta_badge {
   color:#465b7d;
 }
 
-.stats #last_plays.graph_box li .title {
-  padding:13px 0 0 6px;
-  line-height:17px;
+// Plays and loads graphs \
+.stats #plays_and_loads {
+  min-height:100px;
+  padding:16px 16px 4px;
+  background:#6a86a8;
+  background:rgba(0,36,91,0.25);
+  @include border-radius(5px);
+  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.5) 0 1px 4px));
+}
+// Plays and loads graphs /
+
+// Graph legend \
+.stats .graph_legend {
+  list-style-type:none;
 }
 
-.stats #last_plays.graph_box .content_wrap {
+.stats .graph_legend li {
+  float:left;
+  font-size:22px;
+  padding:0 0 0 35px;
+  margin:0 10px;
+}
+
+.stats .graph_legend li.graph_label_color_1 {
+  background:url(<%= asset_path 'stats/graph_label_color_1.png' %>) no-repeat;
+}
+
+.stats .graph_legend li.graph_label_color_2 {
+  background:url(<%= asset_path 'stats/graph_label_color_2.png' %>) no-repeat;
+}
+
+.stats .graph_legend li span {
+  font-size:16px;
+}
+// Graph legend /
+
+// Last 60 minutes plays and loads graphs \
+#last_60_minutes_plays_and_loads {
+  float:left;
+  width:39%;
+  margin:50px 0 0;
+}
+
+#last_60_minutes_loads, #last_60_minutes_plays {
+  height:80px;
+  padding:8px 0;
+}
+
+#last_60_minutes_plays_and_loads .sum {
+  float:left;
+  width:100px;
+  font-weight:600;
+  text-align:center;
+}
+
+#last_60_minutes_plays_and_loads .sum strong {
+  display:block;
+  font-size:23px;
+  font-weight:600;
+}
+
+#last_60_minutes_plays_and_loads .sparkline {
+  float:left;
+  width:200px;
+  height:50px;
+  text-align:center;
+  color:#d5e5ff;
+  text-shadow:#000 0 -1px 0;
+  @include border-radius(5px);
+}
+// Last 60 minutes plays and loads graphs /
+
+// Last plays column \
+.stats #last_plays .graph_box {
+  float:right;
+  width:59%;
+}
+
+.stats #last_plays .graph_box .content_wrap {
   overflow:auto;
   height:204px;
 }
 
-.stats p.empty {
-  text-align:center;
+.stats #last_plays .graph_box h4.title {
+  font-size:16px;
+  padding:0 0 8px;
+  text-align:left;
 }
 
+.stats #last_plays .graph_box li .title {
+  padding:13px 0 0 6px;
+  line-height:17px;
+}
+
+.stats #last_plays .graph_box li.site .browser,
+.stats #last_plays .graph_box li.site .platform,
+.stats #last_plays .graph_box li.site .country {
+  float:right;
+  height:43px;
+  margin-top:15px;
+}
+// Last plays column /
+
+// Plays and loads graph \
 .stats #last_stats_by_hour_or_day {
   margin-top:20px;
 }
 
-.stats #browsers_and_platforms.graph_box .content_wrap,
-.stats #countries.graph_box .content_wrap,
-.stats #mobile_desktop.graph_box .content_wrap {
+.stats #plays_and_loads .graph_legend {
+  float:right;
+  padding-top:2px;
+}
+// Plays and loads graph /
+
+.stats #browsers_and_platforms .graph_box .content_wrap,
+.stats #countries .graph_box .content_wrap,
+.stats #mobile_desktop .graph_box .content_wrap {
   height:493px;
   overflow:auto;
 }
 
-.stats #browsers_and_platforms.graph_box li .title {
-  font-size:11px;
-  padding:17px 0 0 6px;
+.stats #browsers_and_platforms .graph_box, .stats #countries .graph_box {
+  margin-right:50px;
 }
 
-.stats .graph_box li .value .percent {
+.stats .graph_box li .value .percent, .stats #mobile_desktop li .value .percent {
   display:block;
   font-size:18px;
   font-weight:600;
 }
 
+// Browser and platform column \
+.stats #browsers_and_platforms .graph_box li .title {
+  font-size:11px;
+  padding:17px 0 0 6px;
+}
+// Browser and platform column /
+
+// Mobile / desktop column \
+.stats #mobile_desktop .graph_box {
+  margin-bottom:13px;
+}
+
+.stats #mobile_desktop .graph_box .content_wrap {
+  height:409px;
+}
+
+.stats #mobile_desktop .graph_box ul {
+  height:100%;
+}
+
+.stats #mobile_desktop .graph_box li {
+  height:58px;
+  position:relative;
+  border:none;
+  @include box-shadow(none);
+}
+
+.stats #mobile_desktop .graph_box ul li span {
+  text-align:center;
+}
+
+.stats #mobile_desktop .graph_box li .bar {
+  bottom:0;
+  height:100%;
+  width:100%;
+  background-image:url(<%= asset_path 'stats/chart_highlight_bar_horizontal.png' %>);
+  background-position:left top;
+  background-repeat:repeat-x;
+}
+
+.stats #mobile_desktop .graph_box .value {
+  display:block;
+  position:static;
+}
+
+.stats #mobile_desktop li .value .percent span {
+  font-size:16px;
+}
+
+.stats #mobile_desktop .graph_legend li {
+  margin:0;
+  line-height:28px;
+  padding-bottom:8px;
+}
+// Mobile / desktop column /
+
+// Dates range and sources selectors \
 .stats #dates_range_and_source {
   float:left;
   margin-top:-18px;
@@ -431,7 +379,52 @@ span.beta_badge {
 .stats #dates_range_and_source h3.title span {
   float:left;
 }
+// Dates range and sources selectors /
 
+// Export stats section \
+.stats #export_wrap {
+  margin-top:5px;
+}
+
+.stats #export_wrap p.desc {
+  font-size:14px;
+  color:#465B7D;
+  line-height:20px;
+  margin:4px 0 0 15px;
+  padding-right:100px;
+}
+
+.stats #export {
+  float:left;
+  margin:5px 20px 5px 15px;
+}
+
+.stats #export a {
+  display:inline-block;
+  border:1px solid #5e75a2;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  color:#213866;
+  padding:3px 7px;
+  cursor:pointer;
+  text-shadow:rgba(255,255,255,0.3) 0 1px 0;
+  @include gradient(rgba(255,255,255,0.25), rgba(255,255,255,0), #98acc6);
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(255,255,255,0.6) 0 1px 0, rgba(255,255,255,0.2) 0 1px 0))
+}
+
+.stats #export button:active, .stats #export a:active {
+  @include gradient(rgba(255,255,255,0), rgba(255,255,255,0.25), transparent);
+}
+
+.stats #export a span.icon {
+  padding:2px 0 2px 18px;
+  background:url(<%= asset_path 'stats/export_icon.png' %>) no-repeat 0 50%;
+}
+// Export stats section /
+
+// Demo stats page \
 body.my.stats_demo {
   background:#eef2f6;
 }
@@ -501,7 +494,4 @@ body.my.stats_demo div.stats {
   @include border-radius(4px);
   @include box-shadow((inset rgba(255,255,255,0.5) 0 1px 0, rgba(0,39,104,0.8) 0 1px 8px));
 }
-
-.inline {
-  display:inline-block;
-}
+// Demo stats page /
