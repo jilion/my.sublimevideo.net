@@ -33,6 +33,7 @@ describe ApplicationHelper do
     it { helper.display_percentage(0.1234, precision: 3, strip_insignificant_zeros: false).should eq '12.340%' }
 
     it { helper.display_percentage(0.00004).should eq '< 0.01%' }
+    it { helper.display_percentage(0).should eq '0%' }
   end
 
   describe "#display_amount" do
