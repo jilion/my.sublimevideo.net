@@ -42,6 +42,7 @@ gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4
 
 # Internals
 gem 'sidekiq'
+gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
