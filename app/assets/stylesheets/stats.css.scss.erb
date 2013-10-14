@@ -309,40 +309,35 @@
 // Browser and platform column /
 
 // Mobile / desktop column \
-.stats #mobile_desktop .graph_box {
-  margin-bottom:13px;
+.stats #mobile_desktop .graph_box .graph, .stats #mobile_desktop .graph_box .graph_legend {
+  margin:20px;
+}
+.stats #mobile_desktop .graph_box .graph {
+  height:370px;
+  border:1px solid #576c88;
+  @include border-radius(5px);
 }
 
-.stats #mobile_desktop .graph_box .content_wrap {
-  height:409px;
-}
-
-.stats #mobile_desktop .graph_box ul {
-  height:100%;
-}
-
-.stats #mobile_desktop .graph_box li {
-  height:58px;
+.stats #mobile_desktop .graph_box .graph li, .stats #mobile_desktop .graph_box .graph_legend li {
   position:relative;
   border:none;
   @include box-shadow(none);
 }
 
+.stats #mobile_desktop .graph_box .graph li {
+  background-color:rgba(9,250,33,0.75);
+}
+
+.stats #mobile_desktop .graph_box .graph_legend li {
+  height:30px;
+}
+
+.stats #mobile_desktop .graph_box .graph li:first-child {
+  background-color:rgba(9,250,33,0.15);
+}
+
 .stats #mobile_desktop .graph_box ul li span {
   text-align:center;
-}
-
-.stats #mobile_desktop .graph_box li:first-child {
-  background-color:rgba(74,100,142,0.3);
-}
-
-.stats #mobile_desktop .graph_box li .bar {
-  bottom:0;
-  height:100%;
-  width:100%;
-  background-image:url(<%= asset_path 'stats/chart_highlight_bar_horizontal.png' %>);
-  background-position:left top;
-  background-repeat:repeat-x;
 }
 
 .stats #mobile_desktop .graph_box .value {
@@ -350,7 +345,7 @@
   position:static;
 }
 
-.stats #mobile_desktop li .value .percent span {
+.stats #mobile_desktop .graph_legend li .value .percent span {
   font-size:16px;
 }
 
