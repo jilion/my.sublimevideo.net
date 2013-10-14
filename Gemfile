@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid' # Rails 4 support
+gem 'mongoid', github: 'mongoid', ref: 'f91fe' # Rails 4 support
 
 # Views
 gem 'haml'
