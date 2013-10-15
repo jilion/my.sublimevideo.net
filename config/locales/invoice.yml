@@ -3,13 +3,9 @@ en:
     failed_invoices:
       one:   "1 failed invoice"
       other: "%{count} failed invoices"
-    count_failed_invoices_with_total_amount:
-      one: "You have 1 failed invoice for a total of <strong>%{total_amount}</strong>."
-      other: "You have %{count} failed invoices for a total of <strong>%{total_amount}</strong>."
-    count_open_invoices_with_total_amount:
-      one: "You have 1 open invoice for a total of <strong>%{total_amount}</strong>."
-      other: "You have %{count} open invoices for a total of <strong>%{total_amount}</strong>."
     retry_invoices: "Retry the payment"
-    pay_invoices_above: "Pay the invoices above"
+    pay_outstanding_invoices:
+      one: "Pay outstanding invoice"
+      other: "Pay outstanding invoices"
     retry_succeed: "Invoices have been successfully paid. Thank you."
-    no_invoices_to_retry: "You have no open or failed invoices to pay."
+    no_invoices_to_retry: "You don't have any outstanding invoices."

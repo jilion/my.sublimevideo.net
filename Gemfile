@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid' # Rails 4 support
+gem 'mongoid', github: 'mongoid', ref: 'f91fe' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -61,8 +61,8 @@ gem 'fog'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'cocaine'
 
-# until > 1.38.1 is released
-gem 'activemerchant', github: 'Shopify/active_merchant'
+
+gem 'activemerchant'
 
 gem 'public_suffix'
 

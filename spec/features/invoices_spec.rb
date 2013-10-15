@@ -39,7 +39,7 @@ feature "Site invoices page" do
         current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
         page.should have_content 'rymai.com'
         page.should have_no_content 'No invoices'
-        page.should have_content 'Past invoices'
+        page.should have_content 'Paid invoices'
         within '.past_invoices' do
           page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
           page.should have_content "Status: Paid on #{I18n.l(@site.last_invoice.paid_at, format: :minutes_timezone)}"
@@ -56,20 +56,9 @@ feature "Site invoices page" do
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
 
-      scenario "displays a notice" do
-        page.should have_content "You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}"
-        page.should have_content "If necessary, update your credit card and then retry the payment via the button below."
-
-        within '.past_invoices' do
-          page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-          page.should have_content "Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}"
-          page.should have_content "with the following error: \"Credit card refused\"."
-        end
-      end
-
       describe "retry the payment" do
         scenario "it is possible to retry the payment" do
-          click_button I18n.t('invoice.pay_invoices_above')
+          click_button I18n.t('invoice.pay_outstanding_invoices')
 
           @site.invoices.with_state('failed').should be_empty
 
@@ -84,100 +73,6 @@ feature "Site invoices page" do
         end
       end
 
-    end
-
-    context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
-      background do
-        @site = build(:site, user: @current_user, hostname: 'rymai.com')
-        SiteManager.new(@site).create
-        @invoice = create(:failed_invoice, site: @site)
-        @transaction = create(:transaction, invoices: [@invoice], error: '<html>secure.ogone...</html>')
-        go 'my', "/sites/#{@site.to_param}/invoices"
-      end
-
-      scenario "displays a notice" do
-        page.should have_content "You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}"
-        page.should have_content "If necessary, update your credit card and then retry the payment via the button below."
-
-        within '.past_invoices' do
-          page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-          page.should have_content "Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}"
-          page.should have_no_content "with the following error"
-        end
-      end
-    end
-
-    context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
-      background do
-        @site = build(:site, user: @current_user, hostname: 'rymai.com')
-        SiteManager.new(@site).create
-        @invoice1 = create(:failed_invoice, site: @site, last_failed_at: 2.days.ago)
-        @transaction = create(:transaction, invoices: [@invoice1], error: 'Credit card refused')
-        @invoice2 = create(:failed_invoice, site: @site)
-        @transaction = create(:transaction, invoices: [@invoice2], error: 'Authorization refused')
-        go 'my', "/sites/#{@site.to_param}/invoices"
-      end
-
-      scenario "displays a notice" do
-        page.should have_content "You have 2 failed invoices for a total of #{display_amount(@invoice1.amount + @invoice2.amount)}"
-        page.should have_content "If necessary, update your credit card and then retry the payment via the button below."
-
-        within '.past_invoices' do
-          page.should have_content "#{display_amount(@invoice1.amount)} on #{I18n.l(@invoice1.created_at, format: :d_b_Y)}"
-          page.should have_content "Status: Payment failed on #{I18n.l(@invoice1.last_failed_at, format: :minutes_timezone)}"
-          page.should have_content "with the following error: \"Credit card refused\"."
-
-          page.should have_content "#{display_amount(@invoice2.amount)} on #{I18n.l(@invoice2.created_at, format: :d_b_Y)}"
-          page.should have_content "Status: Payment failed on #{I18n.l(@invoice2.last_failed_at, format: :minutes_timezone)}"
-          page.should have_content "with the following error: \"Authorization refused\"."
-        end
-      end
-    end
-  end
-
-  context "user has no credit card" do
-    background do
-      sign_in_as :user, without_cc: true
-      @site = build(:site, user: @current_user, hostname: 'rymai.com')
-      SiteManager.new(@site).create
-      @invoice = create(:failed_invoice, site: @site)
-      @transaction = create(:transaction, invoices: [@invoice], error: 'Credit card refused')
-      go 'my', "/sites/#{@site.to_param}/invoices"
-    end
-
-    scenario "displays a notice" do
-      page.should have_content "You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}"
-      page.should have_content "Please add a valid credit card and then retry the payment here."
-
-      within '.past_invoices' do
-        page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-        page.should have_content "Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}"
-        page.should have_content "with the following error: \"Credit card refused\"."
-      end
-    end
-  end
-
-  context "user credit card is expired" do
-    background do
-      sign_in_as :user, cc_expire_on: 2.years.ago
-      @current_user.should be_cc_expired
-      @site = build(:site, user: @current_user, hostname: 'rymai.com')
-      SiteManager.new(@site).create
-      @invoice = create(:failed_invoice, site: @site)
-      @transaction = create(:transaction, invoices: [@invoice], error: 'Credit card refused')
-      go 'my', "/sites/#{@site.to_param}/invoices"
-    end
-
-    scenario "displays a notice" do
-      page.should have_content "You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}"
-      page.should have_content "Your credit card is expired"
-      page.should have_content "Please update your credit card and then retry the payment here."
-
-      within('.past_invoices') do
-        page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-        page.should have_content "Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}"
-        page.should have_content "with the following error: \"Credit card refused\"."
-      end
     end
   end
 
@@ -228,25 +123,6 @@ feature "Site invoice page" do
         page.should have_content display_amount(0)
 
         page.should have_content display_amount(@invoice.amount)
-      end
-    end
-
-    context "upgrade invoice" do
-      background do
-        @site = build(:site, user: @current_user, hostname: 'rymai.com')
-        SiteManager.new(@site).create
-        @invoice = build(:invoice, site: @site)
-        @plan_invoice_item1 = build(:plan_invoice_item, amount: -1000)
-        @plan_invoice_item2 = build(:plan_invoice_item, amount: 1000)
-        @invoice.invoice_items << @plan_invoice_item1 << @plan_invoice_item2
-        @invoice.save!
-
-        go 'my', "/invoices/#{@invoice.reference}"
-      end
-
-      scenario "includes a line for the deducted plan" do
-        page.should have_content("#{I18n.l(@plan_invoice_item2.started_at, format: :d_b_Y)} - #{I18n.l(@plan_invoice_item2.ended_at, format: :d_b_Y)}")
-        page.should have_content("-$10.00")
       end
     end
 
