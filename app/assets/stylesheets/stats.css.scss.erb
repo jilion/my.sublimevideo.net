@@ -295,7 +295,7 @@
   margin-right:50px;
 }
 
-.stats .graph_box li .value .percent, .stats #mobile_desktop li .value .percent {
+.stats .graph_box li .value .percent {
   display:block;
   font-size:18px;
   font-weight:600;
@@ -309,31 +309,35 @@
 // Browser and platform column /
 
 // Mobile / desktop column \
+.stats #mobile_desktop.graph_box .values {
+  display:block;
+  text-align:center;
+  margin-top:5px;
+}
+
+.stats #mobiles_and_desktops_chart {
+  margin-top:20px;
+}
+
+.stats #mobile_desktop.graph_box .value {
+  display:block;
+  padding-bottom:15px;
+}
+
+.stats #mobile_desktop.graph_box .values em {
+  font-style:normal;
+  font-weight:normal;
+  color:#465B7D;
+}
+
 .stats #mobile_desktop .graph_box .graph, .stats #mobile_desktop .graph_box .graph_legend {
   margin:20px;
-}
-.stats #mobile_desktop .graph_box .graph {
-  height:370px;
-  border:1px solid #576c88;
-  @include border-radius(5px);
 }
 
 .stats #mobile_desktop .graph_box .graph li, .stats #mobile_desktop .graph_box .graph_legend li {
   position:relative;
   border:none;
   @include box-shadow(none);
-}
-
-.stats #mobile_desktop .graph_box .graph li {
-  background-color:rgba(9,250,33,0.75);
-}
-
-.stats #mobile_desktop .graph_box .graph_legend li {
-  height:30px;
-}
-
-.stats #mobile_desktop .graph_box .graph li:first-child {
-  background-color:rgba(9,250,33,0.15);
 }
 
 .stats #mobile_desktop .graph_box ul li span {
@@ -343,10 +347,6 @@
 .stats #mobile_desktop .graph_box .value {
   display:block;
   position:static;
-}
-
-.stats #mobile_desktop .graph_legend li .value .percent span {
-  font-size:16px;
 }
 
 .stats #mobile_desktop .graph_legend li {
