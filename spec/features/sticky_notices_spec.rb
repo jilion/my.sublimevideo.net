@@ -12,7 +12,7 @@ feature "Sticky notices" do
     scenario "no notice" do
       page.should have_no_content I18n.t("user.credit_card.will_expire")
       page.should have_no_content I18n.t("user.credit_card.expired")
-      page.should have_no_content I18n.t("app.update_it")
+      page.should have_no_content I18n.t("user.credit_card.add")
     end
   end
 
@@ -34,7 +34,7 @@ feature "Sticky notices" do
 
       scenario "shows a notice" do
         page.should have_content I18n.t("user.credit_card.will_expire")
-        page.should have_content I18n.t("app.update_it")
+        page.should have_content I18n.t("user.credit_card.add")
       end
     end
   end
@@ -63,7 +63,7 @@ feature "Sticky notices" do
 
       scenario "shows a notice" do
         page.should have_content I18n.t("user.credit_card.expired")
-        page.should have_content I18n.t("app.update_it")
+        page.should have_content I18n.t("user.credit_card.add")
       end
     end
   end

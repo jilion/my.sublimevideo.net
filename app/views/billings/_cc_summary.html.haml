@@ -8,7 +8,7 @@
       - elsif current_user.cc_expire_this_month?
         = t('user.credit_card.will_expire')
       %br
-      = raw t('user.credit_card.prevent_charging_problem', link: link_to(t('app.update_it'), [:edit, :billing]))
+      = raw t('app.please_link_dot', link: link_to(t('user.credit_card.add'), [:edit, :billing]))
 
   %p.card{ class: user.cc_type }
     = raw "#{t("user.credit_card.type.#{user.cc_type}")} ending in #{content_tag(:strong, user.cc_last_digits)}."

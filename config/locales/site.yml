@@ -5,8 +5,8 @@ en:
         one: "Trial for %{hostname} <strong>expires today</strong>. If you enjoy it, please don't forget to %{link} before it ends."
         other: "Trial for %{hostname} <strong>expires in %{count} days</strong>. If you enjoy it, please don't forget to %{link} before it ends."
     status:
-      payment_issue: "Transaction error, click to review your invoice and retry the payment."
-      payment_waiting: "Transaction in progress, please be patient. Click to review your invoice."
+      payment_issue: "Payment issue, click to review your invoice and retry the payment."
+      payment_waiting: "Payment in progress, please be patient. Click to review your invoice."
       payment_open: "Invoice will be charged soon."
       ok: "Player published."
       in_progress: "Your player is being published (this can take up to 5 minutes)."

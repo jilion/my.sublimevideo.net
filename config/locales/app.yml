@@ -34,7 +34,7 @@ en:
 
   app:
     please_link: "Please %{link}"
+    please_link_dot: "Please %{link}."
     please_link_to_know_more_about_it: "Please %{link} to know more about it."
     please_email_to_know_more_about_it: "Please email %{email} to know more about it."
-    update_it: "update it"
     complete_it: "complete it"
