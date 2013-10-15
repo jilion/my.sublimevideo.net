@@ -6,19 +6,6 @@ GIT
       compass (>= 0.12.2, < 0.14)
 
 GIT
-  remote: git://github.com/Shopify/active_merchant.git
-  revision: a68df48e576cfdb45797bdc7fccfd549ced24939
-  specs:
-    activemerchant (1.39.2)
-      active_utils (~> 2.0, >= 2.0.1)
-      activesupport (>= 2.3.14, < 5.0.0)
-      builder (>= 2.1.2, < 4.0.0)
-      i18n (~> 0.5)
-      json (~> 1.7)
-      money (< 6.0.0)
-      nokogiri (~> 1.4)
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -129,6 +116,14 @@ GEM
     active_utils (2.0.1)
       activesupport (>= 2.3.11)
       i18n
+    activemerchant (1.39.2)
+      active_utils (~> 2.0, >= 2.0.1)
+      activesupport (>= 2.3.14, < 5.0.0)
+      builder (>= 2.1.2, < 4.0.0)
+      i18n (~> 0.5)
+      json (~> 1.7)
+      money (< 6.0.0)
+      nokogiri (~> 1.4)
     activemodel (4.0.0)
       activesupport (= 4.0.0)
       builder (~> 3.1.0)
@@ -605,7 +600,7 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr
-  activemerchant!
+  activemerchant
   acts-as-taggable-on!
   addressable (~> 2.2.8)
   annotate

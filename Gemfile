@@ -67,8 +67,7 @@ gem 'cocaine'
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast'
 
-# until > 1.38.1 is released
-gem 'activemerchant', github: 'Shopify/active_merchant'
+gem 'activemerchant'
 
 gem 'public_suffix'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
