@@ -16,7 +16,7 @@
           %ul= render partial: 'invoice_row', collection: open_or_failed_invoices, as: 'invoice'
           %strong
             Total due:
-            = display_amount(open_or_failed_invoices.sum(&:amount))
+            = display_amount(open_or_failed_invoices.to_a.sum(&:amount))
         - if !current_user.cc? || current_user.cc_expired?
           %p.alert
             = raw t('app.please_link', link: link_to('add a valid credit card', [:edit, :billing], class: 'hl'))
