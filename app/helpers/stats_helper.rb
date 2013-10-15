@@ -47,11 +47,11 @@ module StatsHelper
   def stats_sources_for_export_text(source)
     case source
     when 'a'
-      'anywhere (on your site and external sources altogether)'
+      'anywhere (on your site and external sites altogether)'
     when 'w'
       'on your site only'
     when 'e'
-      'on external sources only'
+      'on external sites only'
     end
   end
 

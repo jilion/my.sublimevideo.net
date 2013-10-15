@@ -74,9 +74,9 @@ describe StatsHelper do
   end
 
   describe '#stats_sources_for_export_text' do
-    it { expect(helper.stats_sources_for_export_text('a')).to eq 'anywhere (on your site and external sources altogether)' }
+    it { expect(helper.stats_sources_for_export_text('a')).to eq 'anywhere (on your site and external sites altogether)' }
     it { expect(helper.stats_sources_for_export_text('w')).to eq 'on your site only' }
-    it { expect(helper.stats_sources_for_export_text('e')).to eq 'on external sources only' }
+    it { expect(helper.stats_sources_for_export_text('e')).to eq 'on external sites only' }
   end
 
   describe '#stats_browser_style' do

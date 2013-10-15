@@ -6,11 +6,11 @@ require 'last_video_play'
 class VideoStatsPresenter < StatsPresenter
 
   def _last_stats_by_hour
-    @_last_stats_by_hour ||= VideoStat.last_hours_stats(resource, options[:hours])
+    @_last_stats_by_hour ||= VideoStat.last_hours_stats(resource, options[:hours]).reverse
   end
 
   def _last_stats_by_minute
-    @_last_stats_by_minute ||= LastVideoStat.last_stats(resource)
+    @_last_stats_by_minute ||= LastVideoStat.last_stats(resource).reverse
   end
 
   def last_plays
