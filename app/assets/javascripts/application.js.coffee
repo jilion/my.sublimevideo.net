@@ -92,7 +92,7 @@ MySublimeVideo.Helpers.prepareStatsPoller = ->
     MySublimeVideo.Helpers.statsPoller.teardown()
     delete MySublimeVideo.Helpers.statsPoller
 
-  if ($div = $('.stats')).exists()
+  if ($div = $('#stats')).exists()
     MySublimeVideo.Helpers.statsPoller = new MySublimeVideo.Helpers.StatsPoller($div)
 
 MySublimeVideo.documentReady = ->
@@ -119,7 +119,7 @@ MySublimeVideo.documentReady = ->
 
 MySublimeVideo.prepareVideosAndLightboxes = ->
   sublime.ready ->
-    $(".sublime").each (index, el) ->
+    $('.sublime').each (index, el) ->
       sublime.prepare el
   sublime.load()
 

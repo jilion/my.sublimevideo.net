@@ -6,8 +6,7 @@
 
 = render 'video_tags/header', site: @site, video_tag: @video_tag
 
-.stats.video{ data: { pusher_channel: pusher_channel } }
-
+#stats.stats.video{ data: { pusher_channel: pusher_channel } }
   #last_stats_by_minute= render 'stats/last_stats_by_minute', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter
 
   .big_break
