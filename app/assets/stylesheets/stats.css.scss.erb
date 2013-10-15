@@ -188,18 +188,37 @@
 }
 
 .stats .graph_legend li {
+  height:auto;
   float:left;
   font-size:22px;
-  padding:0 0 0 35px;
+//  padding:0 0 0 35px;
   margin:0 10px;
 }
 
-.stats .graph_legend li.graph_label_color_1 {
-  background:url(<%= asset_path 'stats/graph_label_color_1.png' %>) no-repeat;
+.stats .graph_legend li:before {
+  content:" ";
+  width:19px;
+  height:19px;
+  display:inline;
+  float:left;
+  margin-right:8px;
+  border:3px solid transparent;
+  @include border-radius(4px);
 }
 
-.stats .graph_legend li.graph_label_color_2 {
-  background:url(<%= asset_path 'stats/graph_label_color_2.png' %>) no-repeat;
+.stats .graph_legend li.graph_label_color_1:before {
+  background:rgba(0,255,24,0.35);
+  border-color:rgba(0,255,24,1);
+}
+
+.stats .graph_legend li.graph_label_color_2:before {
+  background:rgba(30,57,102,0.2);
+  border-color:rgba(30,57,102,0.3);
+}
+
+.stats .graph_legend li.graph_label_color_3:before {
+  background:rgba(30,57,102,1);
+  border-color:rgba(30,57,102,1);
 }
 
 .stats .graph_legend li span {
