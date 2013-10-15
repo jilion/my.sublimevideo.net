@@ -11,9 +11,9 @@
 
   - if current_user.billable? && !current_user.billing_address_complete?
     %p.alert
-      = t("user.billing_address.incomplete")
+      = t('user.billing_address.incomplete')
       %br
-      = raw t('app.please_link', link: link_to(t('app.update_it'), [:edit, :billing])) + '.'
+      = raw t('app.please_link_dot', link: link_to(t('app.complete_it'), [:edit, :billing]))
 
   %p
     %strong Billing Email Address
@@ -22,7 +22,7 @@
         = raw t('user.billing_email.missing', email: current_user.email)
       = current_user.billing_email
 
-  %p.link= link_to "Update billing email address", [:edit, :billing]
+  %p.link= link_to 'Update billing email address', [:edit, :billing]
 
   %br
 
@@ -30,4 +30,4 @@
     %strong Billing Address
     = simple_format(current_user.billing_address(false))
 
-  %p.link= link_to "Update billing address", [:edit, :billing]
+  %p.link= link_to 'Update billing address', [:edit, :billing]

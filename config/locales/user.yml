@@ -14,11 +14,10 @@ en:
         master: 'MasterCard'
         american_express: 'American Express'
       will_expire: "Your credit card expires at the end of the month."
-      prevent_charging_problem: "Please %{link} to prevent any charging problem."
       expired: "Your credit card is expired."
+      add: 'add a valid credit card'
     payment:
-      and_retry_here: "and then retry the payment here."
-      to_prevent_any_payment_issue: "to prevent any payment issue."
+      and_retry_here: ' and retry the payment here'
 
     will_be_reactivated: "Your account should be re-activated in a few minutes, you will receive an email when it will be done."
     failed_invoices_are_being_processed: "Failed invoices are being processed. You will receive an email when your account will be re-activated."

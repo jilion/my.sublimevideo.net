@@ -17,21 +17,11 @@
           %strong
             Total due:
             = display_amount(open_or_failed_invoices.sum(&:amount))
-        - if !current_user.cc?
+        - if !current_user.cc? || current_user.cc_expired?
           %p.alert
-            = raw t("app.please_link", link: link_to('add a valid credit card', [:edit, :billing], class: 'hl'))
-            - if @site.invoices_failed?
-              = t('user.payment.and_retry_here')
-            - else
-              = t('user.payment.to_prevent_any_payment_issue')
-        - elsif current_user.cc_expired?
-          %p.alert
-            = t('user.credit_card.expired')
-            = raw t("app.please_link", link: link_to('update your credit card', [:edit, :billing], class: 'hl'))
-            - if @site.invoices_failed?
-              = t('user.payment.and_retry_here')
-            - else
-              = t('user.payment.to_prevent_any_payment_issue')
+            = raw t('app.please_link', link: link_to('add a valid credit card', [:edit, :billing], class: 'hl'))
+            = t('user.payment.and_retry_here') if @site.invoices_failed?
+            %span><= '.'
         - else
           = form_for @site, url: retry_site_invoices_path(site_id: @site.to_param), html: { method: 'put' } do |f|
             - unless @site.invoices_failed?
