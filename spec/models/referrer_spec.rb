@@ -31,7 +31,7 @@ describe Referrer do
       let(:referrer) { Referrer.all.first }
 
       it "should have valid attributes" do
-        referrer.url.should eq "http://www.sublimevideo.net/demo"
+        referrer.url.should include "sublimevideo.net/demo"
         referrer.token.should eq site.token
         referrer.hits.should eq 1
         referrer.created_at.should be_present

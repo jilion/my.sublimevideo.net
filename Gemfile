@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid' # Rails 4 support
+gem 'mongoid', github: 'mongoid', ref: 'f91fe' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -67,8 +67,7 @@ gem 'cocaine'
 gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast'
 
-# until github.com/Shopify/active_merchant/pull/724 is merged
-gem 'activemerchant', github: 'rymai/active_merchant', branch: 'ogone-store-amount-option'
+gem 'activemerchant'
 
 gem 'public_suffix'
 gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser

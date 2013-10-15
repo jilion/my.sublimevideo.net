@@ -1,4 +1,5 @@
 class KitsController < ApplicationController
+  respond_to :html, except: [:fields, :process_custom_logo]
   respond_to :js, only: [:fields, :process_custom_logo]
 
   before_filter :redirect_suspended_user, :_set_site
@@ -58,37 +59,54 @@ class KitsController < ApplicationController
   # POST /sites/:site_id/players/:id/process_custom_logo
   def process_custom_logo
     @custom_logo = Addons::CustomLogo.new(params[:file])
-    uploader = Addons::CustomLogoUploader.new(@kit, @custom_logo, params[:old_custom_logo_path])
-    uploader.upload!
-    @logo_path, @logo_width, @logo_height = uploader.path, uploader.width, uploader.height
+    @logo_path, @logo_width, @logo_height = _upload_custom_logo(@kit, @custom_logo, params[:old_custom_logo_path])
+
+    respond_with(@custom_logo)
   end
 
   # GET /sites/:site_id/players/:id/fields
   def fields
     params[:kit][:settings] = SettingsSanitizer.new(@kit, params[:kit][:settings]).sanitize
+
+    respond_with(@kit)
   end
 
   private
 
   def _set_kit
-    @kit = exhibit(@site.kits.where(identifier: params[:id])).first!
-  rescue ActiveRecord::RecordNotFound
-    @kit = exhibit(@site.kits.build(design_id: @design.id))
-  end
-
-  def _set_kit_and_design
-    @kit    = exhibit(@site.kits.where(identifier: params[:id])).first!
-    @design = @kit.design
-  rescue ActiveRecord::RecordNotFound
-    redirect_to [@site, :kits]
+    @kit = _gracefully_find_kit
   end
 
   def _set_design
     @design = params[:design_id] ? Design.find(params[:design_id]) : Design.get('classic')
   end
 
+  def _set_kit_and_design
+    @kit, @design = _gracefully_find_kit_and_design_or_redirect_to_kits
+  end
+
+  def _gracefully_find_kit
+    exhibit(@site.kits.where(identifier: params[:id]).first!)
+  rescue ActiveRecord::RecordNotFound
+    exhibit(@site.kits.build(design_id: @design.id))
+  end
+
+  def _gracefully_find_kit_and_design_or_redirect_to_kits
+    kit = exhibit(@site.kits.where(identifier: params[:id]).first!)
+    [kit, kit.design]
+  rescue ActiveRecord::RecordNotFound
+    redirect_to [@site, :kits] and return
+  end
+
   def _kit_params
     params.require(:kit).permit(:name, :design_id).merge(settings: params[:kit][:settings])
+  end
+
+  def _upload_custom_logo(kit, custom_logo, old_custom_logo_path)
+    uploader = Addons::CustomLogoUploader.new(kit, custom_logo, old_custom_logo_path)
+    uploader.upload!
+
+    [uploader.path, uploader.width, uploader.height]
   end
 
 end

@@ -20,6 +20,6 @@ describe Admin::TweetsController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: :index, put: :favorite }
+  it_behaves_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: :index, put: :favorite }
 
 end

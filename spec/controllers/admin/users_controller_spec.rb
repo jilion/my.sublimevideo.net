@@ -27,6 +27,6 @@ describe Admin::UsersController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :show, :become] }
+  it_behaves_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :show, :become] }
 
 end

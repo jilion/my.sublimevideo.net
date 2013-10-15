@@ -59,7 +59,7 @@ describe Admin::MailTemplatesController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: :edit, put: :update }
-  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { get: :edit, put: :update }
+  it_behaves_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: :edit, put: :update }
+  it_behaves_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { get: :edit, put: :update }
 
 end
