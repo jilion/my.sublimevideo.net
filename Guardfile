@@ -46,7 +46,7 @@ group :backend do
     end
   end
 
-  guard :rspec, bundler: false do
+  guard :rspec do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routing" }
     watch(%r{^spec/support/(controllers|mailers|models|presenters|features|routing)_helpers\.rb}) { |m| "spec/#{m[1]}" }

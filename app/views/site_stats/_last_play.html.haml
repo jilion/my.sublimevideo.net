@@ -2,7 +2,6 @@
   .wrap
     .poster
       = video_tag_thumbnail(last_play.video_tag, size: '63x35')
-    .title
   %span.wrap
     %span.country{ style: stats_country_style(last_play.co), title: stats_country_name(last_play.co) }
     %span.platform{ style: stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: stats_browser_or_os_name(last_play.pl) }
@@ -10,10 +9,8 @@
     %span.title
       = link_to site_video_tag_stats_url(@site, last_play.video_tag), class: 'hl' do
         - if last_play.video_tag.title?
-          = last_play.video_tag.title
+          = truncate(last_play.video_tag.title, length: 35)
         - else
-          = tooltip_box href: docs_url('settings/player-settings#title'), class: 'warning' do
-            %span.p= t('video_tag.title.not_present')
           = 'Untitled Video'
       %br
       on
