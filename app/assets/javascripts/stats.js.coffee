@@ -149,10 +149,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         marginRight: 10
         marginBottom: 50
         marginLeft: 50
-        spacingTop: 5
-        spacingRight: 5
-        spacingBottom: 5
-        spacingLeft: 5
+        spacing: 5
         height: 300
         width: 848
       rangeSelector:
@@ -226,8 +223,8 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         labels:
           y: 21
           style:
-            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
-            fontSize: "14px"
+            fontFamily: 'proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif'
+            fontSize: '14px'
             color: '#1e3966'
       yAxis:
         lineWidth: 0
@@ -238,11 +235,12 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         startOnTick: false
         showFirstLabel: false
         labels:
-          x: -30
+          align: 'right'
+          x: -10
           y: 5
           style:
-            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
-            fontSize: "14px"
+            fontFamily: 'proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif'
+            fontSize: '14px'
             color: '#1e3966'
         title:
           text: null

@@ -7,7 +7,7 @@
     %span.platform{ style: stats_platform_style("#{last_play.br}-#{last_play.pl}"), title: stats_browser_or_os_name(last_play.pl) }
     %span.browser{ style: stats_browser_style("#{last_play.br}-#{last_play.pl}"), title: stats_browser_or_os_name(last_play.br) }
     %span.title
-      = link_to site_video_tag_stats_url(@site, last_play.video_tag), class: 'hl' do
+      = link_to site_video_tag_stats_url(@site, last_play.video_tag), title: last_play.video_tag.title, class: 'hl' do
         - if last_play.video_tag.title?
           = truncate(last_play.video_tag.title, length: 35)
         - else
