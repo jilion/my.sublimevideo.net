@@ -212,10 +212,13 @@ module UserModules::CreditCard
       save!
     end
 
+    # We need the '_will_change!' calls since this methods is called in an after_save callback...
     def _apply_pending_credit_card_info
       CC_FIELDS.each do |att|
         self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
         self.send("pending_cc_#{att}=", nil)
+        self.send("cc_#{att}_will_change!")
+        self.send("pending_cc_#{att}_will_change!")
       end
     end
 
