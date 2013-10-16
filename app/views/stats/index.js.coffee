@@ -20,11 +20,11 @@ $('#last_plays ul li').each (index, el) ->
 # Remove plays until there's no more than 100 plays
 $('#last_plays ul li').last().remove() while $('#last_plays ul li').length > 100
 
+MySublimeVideo.statsReady.topStatsReady()
 <% else %>
 
 $('#last_stats_by_hour_or_day').html("<%= j(render 'stats/last_stats_by_hour_or_day', site: @site, video_tag: @video_tag, stats_presenter: @stats_presenter) %>")
 
+MySublimeVideo.statsReady.bottomStatsReady()
 <% end %>
 
-MySublimeVideo.statsReady()
-MySublimeVideo.UI.prepareFakeSelectors()

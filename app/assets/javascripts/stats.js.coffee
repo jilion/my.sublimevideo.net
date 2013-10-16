@@ -1,11 +1,18 @@
 MySublimeVideo.stats ||= {}
 
 MySublimeVideo.statsReady = ->
-  MySublimeVideo.stats.prepareHoursAndSourceSelectors()
-  MySublimeVideo.stats.prepareCSVExportButton()
+  MySublimeVideo.statsReady.topStatsReady()
+  MySublimeVideo.statsReady.bottomStatsReady()
+
+MySublimeVideo.statsReady.topStatsReady = ->
   MySublimeVideo.stats.prepareTimeAgo()
   MySublimeVideo.stats.drawLast60MinutesPlaysAndLoadsSparklines()
   MySublimeVideo.stats.drawPlaysAndLoadsGraph()
+
+MySublimeVideo.statsReady.bottomStatsReady = ->
+  MySublimeVideo.UI.prepareFakeSelectors()
+  MySublimeVideo.stats.prepareHoursAndSourceSelectors()
+  MySublimeVideo.stats.prepareCSVExportButton()
 
 MySublimeVideo.stats.prepareTimeAgo = ->
   $.timeago.settings.refreshMillis = 1000
