@@ -4,6 +4,7 @@ module UserModules::CreditCard
   extend ActiveSupport::Concern
 
   BRANDS = %w[visa master american_express]
+  CC_FIELDS = %w[type last_digits expire_on updated_at]
 
   included do
 
@@ -82,7 +83,7 @@ module UserModules::CreditCard
 
     # Be careful with this! Should be only used in dev and for special support-requested-credit-card-deletion purposes
     def reset_credit_card_info
-      %w[type last_digits expire_on updated_at].each do |att|
+      CC_FIELDS.each do |att|
         self.send("cc_#{att}=", nil)
         self.send("pending_cc_#{att}=", nil)
       end
@@ -118,15 +119,23 @@ module UserModules::CreditCard
 
     private
 
+    def _handle_known_authorization_response(status, authorization)
+      send("_handle_auth_#{OgoneWrapper.status[status]}", authorization)
+      _increment_librato(OgoneWrapper.status[status], authorization['BRAND'].gsub(/\s/, '_'))
+      _set_last_failed_cc_authorize_fields!(authorization) unless OgoneWrapper.status[status] == :authorized
+    end
+
+    def _handle_unknown_authorization_response(status, authorization)
+      _set_notice('unknown', :alert)
+      Notifier.send("Credit card authorization unknown status: #{status}")
+    end
+
     def _handle_authorization_response(status, authorization)
       if OgoneWrapper.status.keys.include?(status)
-        send("_handle_auth_#{OgoneWrapper.status[status]}", authorization)
-        _increment_librato(OgoneWrapper.status[status], authorization['BRAND'].gsub(/\s/, '_'))
+        _handle_known_authorization_response(status, authorization)
       else
-        _set_notice('unknown', :alert)
-        Notifier.send("Credit card authorization unknown status: #{status}")
+        _handle_unknown_authorization_response(status, authorization)
       end
-      _set_last_failed_cc_authorize_fields!(authorization) unless OgoneWrapper.status[status] == :authorized
     end
 
     def _custom_errors_handling(attribute, errors)
@@ -153,7 +162,7 @@ module UserModules::CreditCard
     #   An authorization code is available in the field "ACCEPTANCE".
     def _handle_auth_authorized(auth)
       OgoneWrapper.void([auth['PAYID'], 'RES'].join(';'))
-      _apply_pending_credit_card_info!
+      _save_credit_card!
     end
 
     # STATUS == 51, Authorization waiting:
@@ -203,14 +212,15 @@ module UserModules::CreditCard
       save!
     end
 
-    # We need the '_will_change!' calls since this methods is called in an after_save callback...
-    def _apply_pending_credit_card_info!
-      %w[type last_digits expire_on updated_at].each do |att|
+    def _apply_pending_credit_card_info
+      CC_FIELDS.each do |att|
         self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
         self.send("pending_cc_#{att}=", nil)
-        self.send("cc_#{att}_will_change!")
-        self.send("pending_cc_#{att}_will_change!")
       end
+    end
+
+    def _save_credit_card!
+      _apply_pending_credit_card_info
       _reset_last_failed_cc_authorize_fields
 
       save!
