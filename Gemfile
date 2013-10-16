@@ -38,7 +38,7 @@ gem 'devise-async'
 
 # API
 gem 'oauth'
-gem 'oauth-plugin', github: 'tomhughes/oauth-plugin', branch: 'rails4' # Rails 4 support
+gem 'oauth-plugin', github: 'pelle/oauth-plugin' # Rails 4 support
 
 # Internals
 gem 'sidekiq'
