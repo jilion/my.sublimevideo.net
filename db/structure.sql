@@ -278,7 +278,6 @@ CREATE TABLE app_plugins (
     app_component_id integer NOT NULL,
     token character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
-    condition text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     mod character varying(255)
@@ -2334,3 +2333,5 @@ INSERT INTO schema_migrations (version) VALUES ('20130918152449');
 INSERT INTO schema_migrations (version) VALUES ('20131002102952');
 
 INSERT INTO schema_migrations (version) VALUES ('20131004084105');
+
+INSERT INTO schema_migrations (version) VALUES ('20131016130457');

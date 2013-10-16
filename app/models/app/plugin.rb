@@ -3,8 +3,6 @@ require 'findable_and_cached'
 class App::Plugin < ActiveRecord::Base
   include FindableAndCached
 
-  serialize :condition, Hash
-
   belongs_to :addon
   belongs_to :design
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
@@ -22,7 +20,6 @@ end
 #
 #  addon_id         :integer          not null
 #  app_component_id :integer          not null
-#  condition        :text
 #  created_at       :datetime
 #  design_id        :integer
 #  id               :integer          not null, primary key

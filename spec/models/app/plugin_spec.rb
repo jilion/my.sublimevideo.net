@@ -26,7 +26,6 @@ end
 #
 #  addon_id         :integer          not null
 #  app_component_id :integer          not null
-#  condition        :text
 #  created_at       :datetime
 #  design_id        :integer
 #  id               :integer          not null, primary key

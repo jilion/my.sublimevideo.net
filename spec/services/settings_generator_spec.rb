@@ -178,10 +178,10 @@ describe SettingsGenerator, :fog_mock do
       let(:addon1) { double(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { double(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { double(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
-      let(:plugin1) { double(App::Plugin, id: 1, design_id: nil, token: 'plugin1', mod: 'foo/bar', condition: {}) }
-      let(:plugin2_1) { double(App::Plugin, id: 2, design_id: 1, token: 'plugin2_1', mod: 'foo/bar2', condition: {}) }
-      let(:plugin2_2) { double(App::Plugin, id: 3, design_id: 2, token: 'plugin2_2', mod: 'foo/bar3', condition: {}) }
-      let(:plugin3) { double(App::Plugin, id: 4, design_id: 3, token: 'plugin3', mod: 'foo/bar4', condition: {}) }
+      let(:plugin1) { double(App::Plugin, id: 1, design_id: nil, token: 'plugin1', mod: 'foo/bar') }
+      let(:plugin2_1) { double(App::Plugin, id: 2, design_id: 1, token: 'plugin2_1', mod: 'foo/bar2') }
+      let(:plugin2_2) { double(App::Plugin, id: 3, design_id: 2, token: 'plugin2_2', mod: 'foo/bar3') }
+      let(:plugin3) { double(App::Plugin, id: 4, design_id: 3, token: 'plugin3', mod: 'foo/bar4') }
       let(:addon_plan_settings1) { double(AddonPlanSettings, template: template1, app_plugin_id: plugin1.id, plugin: plugin1) }
       let(:addon_plan_settings2_1) { double(AddonPlanSettings, template: template2_1, app_plugin_id: plugin2_1.id, plugin: plugin2_1) }
       let(:addon_plan_settings2_2) { double(AddonPlanSettings, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
