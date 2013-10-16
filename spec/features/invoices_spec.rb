@@ -58,7 +58,7 @@ feature "Site invoices page" do
 
       describe "retry the payment" do
         scenario "it is possible to retry the payment" do
-          click_button I18n.t('invoice.pay_outstanding_invoices')
+          click_button I18n.t('invoice.pay_outstanding_invoices', count: 1)
 
           @site.invoices.with_state('failed').should be_empty
 

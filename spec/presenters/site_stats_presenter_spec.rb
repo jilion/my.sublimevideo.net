@@ -17,26 +17,26 @@ describe SiteStatsPresenter do
   let(:stats_by_hour) do
     [
       FakeSiteStat.new(
-        2.hours.ago.change(min: 0),
-        { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
-        { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
-        { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
-        { 'w' => nil, 'e' => 5 },
-        nil),
-      FakeSiteStat.new(
         1.hour.ago.change(min: 0),
         { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 2, 'iex-win' => 5 } },
         { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 2 } },
         { 'w' => { 'd' => 5, 'm' => 2 }, 'e' => { 'd' => 5, 'm' => 1 } },
         nil,
-        { 'w' => 3, 'e' => nil })
+        { 'w' => 3, 'e' => nil }),
+      FakeSiteStat.new(
+        2.hours.ago.change(min: 0),
+        { 'w' => { 'saf-osx' => 1, 'iex-win' => 5 }, 'e' => { 'saf-osx' => 1, 'iex-win' => 5 } },
+        { 'w' => { 'fr' => 5, 'ch' => 1 }, 'e' => { 'fr' => 5, 'ch' => 1 } },
+        { 'w' => { 'd' => 5, 'm' => 1 }, 'e' => { 'd' => 5, 'm' => 1 } },
+        { 'w' => nil, 'e' => 5 },
+        nil)
     ]
   end
 
   let(:stats_by_minute) do
     [
-      FakeLastSiteStat.new(2.minutes.ago.change(sec: 0), 5, nil),
-      FakeLastSiteStat.new(1.minutes.ago.change(sec: 0), nil, 3)
+      FakeLastSiteStat.new(1.minutes.ago.change(sec: 0), nil, 3),
+      FakeLastSiteStat.new(2.minutes.ago.change(sec: 0), 5, nil)
     ]
   end
 
@@ -51,7 +51,7 @@ describe SiteStatsPresenter do
     it 'delegates to VideoStat.last_hours_stats' do
       expect(SiteStat).to receive(:last_hours_stats).with(site, presenter.options[:hours]) { stats_by_hour }
 
-      presenter.send(:_last_stats_by_hour).should eq stats_by_hour
+      presenter.send(:_last_stats_by_hour).should eq stats_by_hour.reverse
     end
   end
 
@@ -59,7 +59,7 @@ describe SiteStatsPresenter do
     it 'delegates to VideoStat.last_stats' do
       expect(LastSiteStat).to receive(:last_stats).with(site) { stats_by_minute }
 
-      presenter.send(:_last_stats_by_minute).should eq stats_by_minute
+      presenter.send(:_last_stats_by_minute).should eq stats_by_minute.reverse
     end
   end
 

@@ -19,7 +19,7 @@ describe ApplicationHelper do
     it { helper.display_time(nil).should eq "–" }
   end
 
-  describe '#display_percentage', :focus do
+  describe '#display_percentage' do
     it { helper.display_percentage(0.123).should eq '12.3%' }
     it { helper.display_percentage(0.12345).should eq '12.35%' }
 
