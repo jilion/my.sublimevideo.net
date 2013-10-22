@@ -174,6 +174,8 @@ describe Stat do
   end
 
   describe ".incs_from_trackers" do
+    use_vcr_cassette "stat/librato"
+
     let(:user_agent) { "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3" }
 
     context "load event with 1 video loaded" do

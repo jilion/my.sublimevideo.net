@@ -87,26 +87,51 @@ module Stat
   # { 'site_token' => { inc: {...}, videos: { 'video_uid' => { inc }, ... } } }
   #
   def self.incs_from_trackers(trackers)
+    Librato::Metrics.authenticate ENV['LIBRATO_USER'], ENV['LIBRATO_TOKEN']
+    queue = Librato::Metrics::Queue.new
     trackers = only_stats_trackers(trackers)
     incs     = Hash.new { |h, k| h[k] = default_incs_hash }
-
 
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
         params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
+
+        queue = _increment_temp_metrics(queue, params, hits)
+
         params_inc = ::StatRequestParser.stat_incs(params, user_agent, hits)
 
         incs_from_tracker_for_site(params_inc[:site], incs)
         incs_from_tracker_for_videos(params_inc[:videos], incs)
-
       rescue StatRequestParser::BadParamsError, ArgumentError
       rescue TypeError => ex
         Notifier.send("Request parsing problem: #{request}", exception: ex)
       end
     end
+    queue.submit
 
     incs
+  end
+
+  def self._increment_temp_metrics(queue, params, hits)
+    case params[:e]
+    when 's'
+      queue.add "temp.starts.#{_player_version(params)}" => { measure_time: params[:i], value: hits, source: 'old' }
+    when 'l'
+      vu_size = params[:vu].size
+      if vu_size == 0
+        Honeybadger.notify(error_message: 'Params vu is empty', parameters: params)
+      end
+      queue.add "temp.loads.#{_player_version(params)}" => { measure_time: params[:i], value: vu_size * hits, source: 'old' }
+    end
+  rescue => ex
+    Honeybadger.notify(ex, error_message: 'Issue with temp metrics', parameters: params)
+  ensure
+    queue
+  end
+
+  def self._player_version(params)
+    params.fetch(:v, 'none')
   end
 
   def self.incs_from_tracker_for_site(site_params_inc, global_incs)
