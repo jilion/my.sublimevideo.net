@@ -81,10 +81,10 @@ class Transaction < ActiveRecord::Base
     if transaction.save
       if payment = transaction.execute_payment(options)
         transaction.process_payment_response(payment.params)
-      else
-        transaction
       end
     end
+
+    transaction
   end
 
   def execute_payment(opts = {})
