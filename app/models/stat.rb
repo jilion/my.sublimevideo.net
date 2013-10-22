@@ -112,7 +112,7 @@ module Stat
     begin
       queue.submit
     rescue => ex
-      Honeybadger.notify(ex, error_message: 'Issue with temp metrics submit', parameters: params)
+      Honeybadger.notify(ex, error_message: 'Issue with temp metrics submit', parameters: { queue: queue })
     end
 
     incs
@@ -136,7 +136,13 @@ module Stat
   end
 
   def self._time(params)
-    params[:i].to_i / 1000
+    time = params[:i]
+    if time.nil?
+      Honeybadger.notify(error_message: 'Params i is nil', parameters: params)
+      Time.now.utc.to_i
+    else
+      time.to_i / 1000
+    end
   end
 
   def self._player_version(params)
