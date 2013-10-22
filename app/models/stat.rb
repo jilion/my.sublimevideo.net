@@ -119,15 +119,16 @@ module Stat
   end
 
   def self._increment_temp_metrics(queue, params, hits)
+    measure_time = request_time(params)
     case params[:e]
     when 's'
-      queue.add "temp.starts.#{_player_version(params)}" => { measure_time: _time(params), value: hits, source: 'old' }
+      queue.add "temp.starts.#{_player_version(params)}" => { measure_time: measure_time, value: hits, source: 'old' }
     when 'l'
       vu_size = params[:vu].size
       if vu_size == 0
         Honeybadger.notify(error_message: 'Params vu is empty', parameters: params)
       end
-      queue.add "temp.loads.#{_player_version(params)}" => { measure_time: _time(params), value: vu_size * hits, source: 'old' }
+      queue.add "temp.loads.#{_player_version(params)}" => { measure_time: measure_time, value: vu_size * hits, source: 'old' }
     end
   rescue => ex
     Honeybadger.notify(ex, error_message: 'Issue with temp metrics', parameters: params)
@@ -135,7 +136,7 @@ module Stat
     queue
   end
 
-  def self._time(params)
+  def self.request_time(params)
     time = params[:i]
     if time.nil?
       Honeybadger.notify(error_message: 'Params i is nil', parameters: params)
