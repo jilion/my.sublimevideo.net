@@ -88,16 +88,20 @@ module Stat
   #
   def self.incs_from_trackers(trackers)
     Librato::Metrics.authenticate ENV['LIBRATO_USER'], ENV['LIBRATO_TOKEN']
-    queue = Librato::Metrics::Queue.new
+    @queue = Librato::Metrics::Queue.new
     trackers = only_stats_trackers(trackers)
     incs     = Hash.new { |h, k| h[k] = default_incs_hash }
 
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
-        params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
+        params = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
 
-        queue = _increment_temp_metrics(queue, params, hits)
+        begin
+          _increment_temp_metrics(params, hits)
+        rescue => ex
+          Honeybadger.notify(ex, parameters: params)
+        end
 
         params_inc = ::StatRequestParser.stat_incs(params, user_agent, hits)
 
@@ -110,30 +114,26 @@ module Stat
     end
 
     begin
-      queue.submit
+      @queue.submit
     rescue => ex
-      Honeybadger.notify(ex, error_message: 'Issue with temp metrics submit', parameters: { queue: queue })
+      Honeybadger.notify(ex, parameters: { queue: @queue })
     end
 
     incs
   end
 
-  def self._increment_temp_metrics(queue, params, hits)
+  def self._increment_temp_metrics(params, hits)
     measure_time = request_time(params)
     case params[:e]
     when 's'
-      queue.add "temp.starts.#{_player_version(params)}" => { measure_time: measure_time, value: hits, source: 'old' }
+      @queue.add "temp.starts.#{_player_version(params)}" => { measure_time: measure_time, value: hits, source: 'old' }
     when 'l'
       vu_size = params[:vu].size
       if vu_size == 0
         Honeybadger.notify(error_message: 'Params vu is empty', parameters: params)
       end
-      queue.add "temp.loads.#{_player_version(params)}" => { measure_time: measure_time, value: vu_size * hits, source: 'old' }
+      @queue.add "temp.loads.#{_player_version(params)}" => { measure_time: measure_time, value: vu_size * hits, source: 'old' }
     end
-  rescue => ex
-    Honeybadger.notify(ex, error_message: 'Issue with temp metrics', parameters: params)
-  ensure
-    queue
   end
 
   def self.request_time(params)
