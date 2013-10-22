@@ -119,10 +119,7 @@ module Stat
     when 's'
       Librato.increment "temp.starts.#{_player_version(params)}", by: hits, source: 'old'
     when 'l'
-      vu_size = params[:vu].size
-      if vu_size == 0
-        Honeybadger.notify(error_message: 'Params vu is empty', parameters: params)
-      end
+      vu_size = params[:vu].try(:size).to_i
       Librato.increment "temp.loads.#{_player_version(params)}", by: vu_size * hits, source: 'old'
     end
   end
