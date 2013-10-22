@@ -87,8 +87,6 @@ module Stat
   # { 'site_token' => { inc: {...}, videos: { 'video_uid' => { inc }, ... } } }
   #
   def self.incs_from_trackers(trackers)
-    Librato::Metrics.authenticate ENV['LIBRATO_USER'], ENV['LIBRATO_TOKEN']
-    @queue = Librato::Metrics::Queue.new
     trackers = only_stats_trackers(trackers)
     incs     = Hash.new { |h, k| h[k] = default_incs_hash }
 
@@ -113,36 +111,19 @@ module Stat
       end
     end
 
-    begin
-      @queue.submit
-    rescue => ex
-      Honeybadger.notify(ex, parameters: { queue: @queue })
-    end
-
     incs
   end
 
   def self._increment_temp_metrics(params, hits)
-    measure_time = request_time(params)
     case params[:e]
     when 's'
-      @queue.add "temp.starts.#{_player_version(params)}" => { measure_time: measure_time, value: hits, source: 'old' }
+      Librato.increment "temp.starts.#{_player_version(params)}", by: hits, source: 'old'
     when 'l'
       vu_size = params[:vu].size
       if vu_size == 0
         Honeybadger.notify(error_message: 'Params vu is empty', parameters: params)
       end
-      @queue.add "temp.loads.#{_player_version(params)}" => { measure_time: measure_time, value: vu_size * hits, source: 'old' }
-    end
-  end
-
-  def self.request_time(params)
-    time = params[:i]
-    if time.nil?
-      Honeybadger.notify(error_message: 'Params i is nil', parameters: params)
-      Time.now.utc.to_i
-    else
-      time.to_i / 1000
+      Librato.increment "temp.loads.#{_player_version(params)}", by: vu_size * hits, source: 'old'
     end
   end
 
