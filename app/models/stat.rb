@@ -108,7 +108,12 @@ module Stat
         Notifier.send("Request parsing problem: #{request}", exception: ex)
       end
     end
-    queue.submit
+
+    begin
+      queue.submit
+    rescue => ex
+      Honeybadger.notify(ex, error_message: 'Issue with temp metrics submit', parameters: params)
+    end
 
     incs
   end
