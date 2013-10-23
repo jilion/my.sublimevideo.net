@@ -17,12 +17,12 @@ GIT
 
 GIT
   remote: git://github.com/jilion/premailer-rails.git
-  revision: 0281e0d32ca26b7c6c07c188dd5f681fa9930442
-  branch: regru-premailer-dependency
+  revision: 1a42d6d87c4a33a99d7b8df45295fb3ecf963d31
+  branch: fix-82
   specs:
     premailer-rails (1.4.0)
+      premailer (~> 1.7)
       rails (>= 3)
-      regru-premailer (~> 1.7)
 
 GIT
   remote: git://github.com/jilion/useragent.git
@@ -402,6 +402,9 @@ GEM
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     polyglot (0.3.3)
+    premailer (1.7.8)
+      css_parser (>= 1.1.9)
+      htmlentities (>= 4.0.0)
     prowl (0.1.3)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -454,9 +457,6 @@ GEM
     redis (3.0.5)
     redis-namespace (1.3.1)
       redis (~> 3.0.0)
-    regru-premailer (1.7.8)
-      css_parser (>= 1.1.9)
-      htmlentities (>= 4.0.0)
     request-log-analyzer (1.12.9)
     rescue_me (0.1.3)
     responders (1.0.0)
@@ -684,7 +684,6 @@ DEPENDENCIES
   rails_12factor
   rails_autolink
   redis
-  regru-premailer
   request-log-analyzer
   rescue_me
   responders

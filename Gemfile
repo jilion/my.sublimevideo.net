@@ -22,8 +22,8 @@ gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
-gem 'regru-premailer'
-gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'regru-premailer-dependency'
+# until https://github.com/fphilipe/premailer-rails/pull/83 is merged
+gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'fix-82'
 gem 'turbolinks'
 gem 'google-analytics-turbolinks'
 
