@@ -63,7 +63,7 @@ describe StatsMigrator do
         player_mode_and_device: 'player_mode_and_device',
         browser_and_platform: 'browser_and_platform',
         sa: true)
-      migrator.migrate
+      migrator.migrate(Date.today)
     end
 
     context "with site not subscribed to realtime stats addon" do
@@ -88,7 +88,7 @@ describe StatsMigrator do
           player_mode_and_device: 'player_mode_and_device',
           browser_and_platform: 'browser_and_platform',
           sa: false)
-        migrator.migrate
+        migrator.migrate(Date.today)
       end
     end
 

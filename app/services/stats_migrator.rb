@@ -19,7 +19,7 @@ class StatsMigrator
     end
   end
 
-  def self.migrate(site_id, until_day)
+  def self.migrate(site_id, until_day = nil)
     site = Site.find(site_id)
     StatsMigrator.new(site).migrate(until_day)
   end
