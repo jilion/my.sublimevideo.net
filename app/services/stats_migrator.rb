@@ -7,19 +7,19 @@ class StatsMigrator
     @site = site
   end
 
-  def migrate(until_day = 1.day.ago.utc.beginning_of_day)
+  def migrate(until_day)
     criteria = { d: { :$lte => until_day } }
     Stat::Site::Day.where(criteria.merge(t: site.token)).each { |stat| _migrate_stat(stat) }
     Stat::Video::Day.where(criteria.merge(st: site.token)).each { |stat| _migrate_stat(stat) }
   end
 
-  def self.migrate_all(until_day = nil)
-    Site.select(:id).all.find_in_batches do |site|
+  def self.migrate_all(until_day = Time.utc(2013,10,22))
+    Site.select(:id).order(:id).all.find_in_batches do |site|
       self.delay(queue: 'my-stats_migration').migrate(site.id, until_day)
     end
   end
 
-  def self.migrate(site_id, until_day = nil)
+  def self.migrate(site_id, until_day)
     site = Site.find(site_id)
     StatsMigrator.new(site).migrate(until_day)
   end

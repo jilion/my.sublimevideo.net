@@ -12,11 +12,15 @@ unless defined? ActiveRecord
       class Day; end
     end
   end
+  class AddonPlan; end
 end
 
 describe StatsMigrator do
   let(:site) { double('Site', token: 'site_token', subscribed_to?: true) }
   let(:migrator) { StatsMigrator.new(site) }
+  before {
+    AddonPlan.stub(:get)
+  }
 
   describe "#migrate" do
     let(:site_stat) { double('Stat::Site::Day',
