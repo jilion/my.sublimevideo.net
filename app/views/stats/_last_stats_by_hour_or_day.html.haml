@@ -41,14 +41,16 @@
   = render 'stats/mobile_desktop', stats: stats_presenter.devices_stats
 
   .spacer
-  .big_break
-  #export_wrap
-    #export
-      = link_to url_for(format: 'csv'), id: 'csv_export' do
-        %span.icon Export Data
-    %p.desc
-      Export "loads" and "plays" data for the last
-      = stats_hours_or_days(stats_presenter.options[:hours])
-      in CSV format. The exported file includes "loads" and "plays" data that happened
-      = succeed '.' do
-        = stats_sources_for_export_text(stats_presenter.options[:source])
+
+  - unless demo_site?
+    .big_break
+    #export_wrap
+      #export
+        = link_to url_for(format: 'csv'), id: 'csv_export' do
+          %span.icon Export Data
+      %p.desc
+        Export "loads" and "plays" data for the last
+        = stats_hours_or_days(stats_presenter.options[:hours])
+        in CSV format. The exported file includes "loads" and "plays" data that happened
+        = succeed '.' do
+          = stats_sources_for_export_text(stats_presenter.options[:source])
