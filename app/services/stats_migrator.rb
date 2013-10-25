@@ -27,7 +27,7 @@ class StatsMigrator
   private
 
   def _migrate_stat(stat)
-    sleep 0.1 while Sidekiq::Queue.new('stats-migration').size >= 10_000
+    sleep 0.5 while Sidekiq::Queue.new('stats-migration').size >= 10_000
     StatsMigratorWorker.perform_async(_stat_class(stat), _stat_data(stat))
   end
 
