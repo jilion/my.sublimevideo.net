@@ -57,7 +57,7 @@ gem 'paranoia'
 gem 'responders'
 gem 'has_scope'
 
-gem 'fog'
+gem 'fog', github: 'fog/fog' # Need > 1.16.0
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
