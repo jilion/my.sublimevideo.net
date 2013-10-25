@@ -14,7 +14,7 @@ class StatsMigrator
   end
 
   def self.migrate_all(until_day = Time.utc(2013,10,22))
-    Site.select(:id).order(:id).offset(1000).where.not(id: 13589).all.find_in_batches do |site|
+    Site.select(:id).find_in_batches do |site|
       self.delay(queue: 'my-stats_migration').migrate(site.id, until_day)
     end
   end
@@ -27,6 +27,7 @@ class StatsMigrator
   private
 
   def _migrate_stat(stat)
+    sleep 0.1 while Sidekiq::Queue.new('stats-migration').size >= 10_000
     StatsMigratorWorker.perform_async(_stat_class(stat), _stat_data(stat))
   end
 
