@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid', ref: 'f91fe' # Rails 4 support
+gem 'mongoid', github: 'mongoid'
 
 # Views
 gem 'haml'
@@ -42,7 +42,6 @@ gem 'oauth-plugin', github: 'pelle/oauth-plugin' # Rails 4 support
 
 # Internals
 gem 'sidekiq'
-gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
@@ -57,7 +56,7 @@ gem 'paranoia'
 gem 'responders'
 gem 'has_scope'
 
-gem 'fog' #, github: 'fog/fog' # Need > 1.16.0
+gem 'fog', github: 'fog/fog' # Need > 1.16.0
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
