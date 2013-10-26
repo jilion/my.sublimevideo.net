@@ -61,12 +61,21 @@ GIT
       rails (>= 3, < 5)
 
 GIT
+  remote: git://github.com/mongoid/kiqstand.git
+  revision: fdd5ea62293707fe044180a220670b0142314d04
+  specs:
+    kiqstand (1.2.0)
+      mongoid (~> 4.0)
+      moped (~> 1.4)
+
+GIT
   remote: git://github.com/mongoid/mongoid.git
-  revision: 5a34921251b6d159b6ef3aa2a9f9aebdc6ac687f
+  revision: f91feef0a0c6b83a1b878e154f1014536aa1c298
+  ref: f91fe
   specs:
     mongoid (4.0.0)
       activemodel (~> 4.0.0)
-      moped (~> 2.0.beta3)
+      moped (~> 1.5)
       origin (~> 1.0)
       tzinfo (~> 0.3.37)
 
@@ -162,7 +171,6 @@ GEM
       erubis (>= 2.6.6)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bson (2.0.0.rc3)
     builder (3.1.4)
     bullet (4.6.0)
       uniform_notifier
@@ -360,9 +368,7 @@ GEM
     minitest (4.7.5)
     money (5.1.1)
       i18n (~> 0.6.0)
-    moped (2.0.0.beta3)
-      bson (~> 2.0.0.rc3)
-      optionable (~> 0.1.1)
+    moped (1.5.1)
     multi_json (1.8.2)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
@@ -387,7 +393,6 @@ GEM
       multi_xml (~> 0.5)
       rack (~> 1.2)
     oj (2.1.7)
-    optionable (0.1.1)
     origin (1.1.0)
     orm_adapter (0.4.0)
     paper_trail (3.0.0.beta1)
@@ -650,6 +655,7 @@ DEPENDENCIES
   http_content_type
   i18n-extra_translations
   kaminari!
+  kiqstand!
   launchy
   letter_opener
   librato-rails

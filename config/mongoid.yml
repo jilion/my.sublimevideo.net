@@ -104,10 +104,9 @@ production:
         - sublimevideo.member0.mongolayer.com:27017
       options:
         consistency: :strong
-        identity_map_enabled: false
-        skip_version_check: true
-        safe: true
-        pool_size: 20
+        op_timeout: 30
+        connect_timeout: 30
+        pool_size: 10
   options:
     preload_models: true
     use_utc: true

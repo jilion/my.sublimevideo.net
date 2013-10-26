@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid'
+gem 'mongoid', github: 'mongoid', ref: 'f91fe' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -42,6 +42,7 @@ gem 'oauth-plugin', github: 'pelle/oauth-plugin' # Rails 4 support
 
 # Internals
 gem 'sidekiq'
+gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
