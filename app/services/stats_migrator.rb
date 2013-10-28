@@ -5,30 +5,80 @@ class StatsMigrator
 
   def initialize(site)
     @site = site
+
+    @last_queue_check = Time.now.utc
+    @queue_size = 0
   end
 
-  def migrate(until_day)
-    criteria = { d: { :$lte => until_day } }
-    Stat::Site::Day.where(criteria.merge(t: site.token)).each { |stat| _migrate_stat(stat) }
-    Stat::Video::Day.where(criteria.merge(st: site.token)).each { |stat| _migrate_stat(stat) }
+  def self.check_migration
+    _all_sites do |site|
+      migrator = StatsMigrator.new(site)
+      old_totals = migrator.totals
+      new_totals = SiteAdminStat.migration_totals(site.token)
+      if old_totals == new_totals
+        print '.'
+      else
+        puts "/nMigration failed: #{site.token} (#{site.id}): old #{old_totals} / new #{new_totals}"
+      end
+    end
+    puts "/nCheck done"
   end
 
-  def self.migrate_all(until_day = Time.utc(2013,10,22))
-    Site.select(:id).find_in_batches do |site|
-      self.delay(queue: 'my-stats_migration').migrate(site.id, until_day)
+  def self.migrate_all
+    _all_sites do |site|
+      self.delay(queue: 'my-stats_migration').migrate(site.id)
     end
   end
 
-  def self.migrate(site_id, until_day = nil)
+  def self.migrate(site_id)
     site = Site.find(site_id)
-    StatsMigrator.new(site).migrate(until_day)
+    StatsMigrator.new(site).migrate
+  end
+
+  def migrate
+    _all_stats { |stat| _migrate_stat(stat) }
+  end
+
+  def totals
+    @totals = { app_loads: 0, loads: 0, starts: 0 }
+    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).only(:pv).each_by(10_000) do |stat|
+      @totals[:app_loads] += stat.pv.slice(*%w[m e s d i]).values.sum
+    end
+    Stat::Video::Day.where(_date_criteria.merge(st: site.token)).only(:vl, :vv).each_by(10_000) do |stat|
+      @totals[:loads] += (stat.vl['m'].to_i + stat.vl['e'].to_i + stat.vl['em'].to_i)
+      @totals[:starts] += (stat.vv['m'].to_i + stat.vv['e'].to_i + stat.vv['em'].to_i)
+    end
+    @totals
   end
 
   private
 
+  def _all_sites(&block)
+    Site.select(:id, :token).find_in_batches do |sites|
+      sites.each { |site| yield site }
+    end
+  end
+
+  def _all_stats(&block)
+    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).each_by(1000) { |stat| yield stat }
+    Stat::Video::Day.where(_date_criteria.merge(st: site.token)).each_by(1000) { |stat| yield stat }
+  end
+
+  def _date_criteria
+    { d: { :$lte => Time.utc(2013,10,22) } }
+  end
+
   def _migrate_stat(stat)
-    sleep 0.1 while Sidekiq::Queue.new('stats-migration').size >= 10_000
+    sleep 1 if _queue_size >= 10_000
     StatsMigratorWorker.perform_async(_stat_class(stat), _stat_data(stat))
+  end
+
+  def _queue_size
+    if @last_queue_check < 1.second.ago
+      @queue_size = Sidekiq::Queue.new('stats-migration').size
+      @last_queue_check = Time.now.utc
+    end
+    @queue_size
   end
 
   def _stat_class(stat)
