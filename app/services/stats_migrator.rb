@@ -10,24 +10,12 @@ class StatsMigrator
     @queue_size = 0
   end
 
-  def self.check_migration
-    _all_sites do |site|
-      migrator = StatsMigrator.new(site)
-      old_totals = migrator.totals
-      new_totals = SiteAdminStat.migration_totals(site.token)
-      if old_totals == new_totals
-        print '.'
-      else
-        puts "/nMigration failed: #{site.token} (#{site.id}): old #{old_totals} / new #{new_totals}"
-      end
-    end
-    puts "/nCheck done"
+  def self.check_all_migration
+    _all_sites { |site| self.delay(queue: 'my-stats_migration').check_migration(site.id) }
   end
 
   def self.migrate_all
-    _all_sites do |site|
-      self.delay(queue: 'my-stats_migration').migrate(site.id)
-    end
+    _all_sites { |site| self.delay(queue: 'my-stats_migration').migrate(site.id) }
   end
 
   def self.migrate(site_id)
@@ -37,6 +25,17 @@ class StatsMigrator
 
   def migrate
     _all_stats { |stat| _migrate_stat(stat) }
+  end
+
+  def self.check_migration(site_id)
+    site = Site.find(site_id)
+    StatsMigrator.new(site).check_migration
+  end
+
+  def check_migration
+    if totals == SiteAdminStat.migration_totals(site.token)
+      site.update_column(:stats_migration_success, true)
+    end
   end
 
   def totals
@@ -54,7 +53,7 @@ class StatsMigrator
   private
 
   def self._all_sites(&block)
-    Site.select(:id, :token).find_in_batches do |sites|
+    Site.select(:id, :token).where(stats_migration_success: false).find_in_batches do |sites|
       sites.each { |site| yield site }
     end
   end
