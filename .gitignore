@@ -13,7 +13,7 @@ doc/js/
 .sass-cache/
 vendor/ruby
 vendor/bundler
-!.bundle
+!.bundle/bin
 !.env
 .env.*
 uploads
