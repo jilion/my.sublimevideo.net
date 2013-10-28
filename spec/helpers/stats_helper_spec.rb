@@ -51,12 +51,12 @@ describe StatsHelper do
   describe '#stats_source_select' do
     it { expect(helper.stats_source_select('a')).to eq({
       'w' => 'your site',
-      'e' => 'other sites'
+      'e' => '3rd-party sites'
     }) }
 
     it { expect(helper.stats_source_select('w')).to eq({
       'a' => 'all sites',
-      'e' => 'other sites'
+      'e' => '3rd-party sites'
     }) }
 
     it { expect(helper.stats_source_select('e')).to eq({
