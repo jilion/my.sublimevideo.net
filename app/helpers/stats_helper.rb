@@ -18,7 +18,7 @@ module StatsHelper
     {
       'a' => 'all sites',
       'w' => 'your site',
-      'e' => 'other sites'
+      'e' => '3rd-party sites'
     }
   end
 
