@@ -936,18 +936,21 @@ CREATE TABLE sites (
     extra_hostnames text,
     plan_id integer,
     refunded_at timestamp without time zone,
+    last_30_days_main_video_views integer DEFAULT 0,
+    last_30_days_extra_video_views integer DEFAULT 0,
+    last_30_days_dev_video_views integer DEFAULT 0,
     badged boolean,
+    last_30_days_invalid_video_views integer DEFAULT 0,
+    last_30_days_embed_video_views integer DEFAULT 0,
+    last_30_days_billable_video_views_array text,
     last_30_days_video_tags integer DEFAULT 0,
-    first_admin_starts_on timestamp without time zone,
+    first_billable_plays_at timestamp without time zone,
     settings_updated_at timestamp without time zone,
     loaders_updated_at timestamp without time zone,
     default_kit_id integer,
     current_assistant_step character varying(255),
     addons_updated_at timestamp without time zone,
     staging_hostnames text,
-    last_30_days_starts integer DEFAULT 0,
-    last_30_days_starts_array integer[] DEFAULT '{}'::integer[],
-    last_30_days_admin_starts integer DEFAULT 0,
     stats_migration_success boolean DEFAULT false
 );
 
@@ -1929,13 +1932,6 @@ CREATE INDEX index_sites_on_created_at ON sites USING btree (created_at);
 
 
 --
--- Name: index_sites_on_first_admin_starts_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_sites_on_first_admin_starts_on ON sites USING btree (first_admin_starts_on);
-
-
---
 -- Name: index_sites_on_hostname; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1950,10 +1946,38 @@ CREATE INDEX index_sites_on_id_and_state ON sites USING btree (id, state);
 
 
 --
--- Name: index_sites_on_last_30_days_admin_starts; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sites_on_last_30_days_dev_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_sites_on_last_30_days_admin_starts ON sites USING btree (last_30_days_admin_starts);
+CREATE INDEX index_sites_on_last_30_days_dev_video_views ON sites USING btree (last_30_days_dev_video_views);
+
+
+--
+-- Name: index_sites_on_last_30_days_embed_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sites_on_last_30_days_embed_video_views ON sites USING btree (last_30_days_embed_video_views);
+
+
+--
+-- Name: index_sites_on_last_30_days_extra_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sites_on_last_30_days_extra_video_views ON sites USING btree (last_30_days_extra_video_views);
+
+
+--
+-- Name: index_sites_on_last_30_days_invalid_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sites_on_last_30_days_invalid_video_views ON sites USING btree (last_30_days_invalid_video_views);
+
+
+--
+-- Name: index_sites_on_last_30_days_main_video_views; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sites_on_last_30_days_main_video_views ON sites USING btree (last_30_days_main_video_views);
 
 
 --
@@ -1975,13 +1999,6 @@ CREATE INDEX index_sites_on_token ON sites USING btree (token);
 --
 
 CREATE INDEX index_sites_on_user_id ON sites USING btree (user_id);
-
-
---
--- Name: index_sites_on_user_id_and_last_30_days_starts; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_sites_on_user_id_and_last_30_days_starts ON sites USING btree (user_id, last_30_days_starts);
 
 
 --
@@ -2312,12 +2329,6 @@ INSERT INTO schema_migrations (version) VALUES ('20130821142238');
 INSERT INTO schema_migrations (version) VALUES ('20130829074156');
 
 INSERT INTO schema_migrations (version) VALUES ('20130918152449');
-
-INSERT INTO schema_migrations (version) VALUES ('20130930075400');
-
-INSERT INTO schema_migrations (version) VALUES ('20130930075401');
-
-INSERT INTO schema_migrations (version) VALUES ('20130930075402');
 
 INSERT INTO schema_migrations (version) VALUES ('20131002102952');
 
