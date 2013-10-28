@@ -53,7 +53,7 @@ class StatsMigrator
 
   private
 
-  def _all_sites(&block)
+  def self._all_sites(&block)
     Site.select(:id, :token).find_in_batches do |sites|
       sites.each { |site| yield site }
     end
