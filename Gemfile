@@ -123,6 +123,7 @@ end
 group :staging, :production do
   gem 'unicorn', require: false
   gem 'memcachier'
+  gem 'rack-cache'
   gem 'dalli'
   gem 'kgio'
   gem 'rack-ssl-enforcer'
