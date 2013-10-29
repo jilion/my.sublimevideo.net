@@ -5,6 +5,8 @@ module Admin::UsersHelper
       ' free'
     elsif params[:paying]
       ' paying'
+    elsif params[:vip]
+      ' VIP'
     elsif params[:with_balance]
       ' with a balance'
     elsif params[:with_state]
