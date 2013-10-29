@@ -68,6 +68,10 @@ MySublimeVideo::Application.configure do
 
   # Use a different cache store in production
   config.cache_store = :dalli_store
+  client = Dalli::Client.new(ENV['MEMCACHIER_SERVERS'], value_max_bytes: 10485760)
+  config.action_dispatch.rack_cache = {
+    metastore: client,
+    entitystore: client
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   config.action_controller.asset_host = 'd3fg40r50eby7d.cloudfront.net'
