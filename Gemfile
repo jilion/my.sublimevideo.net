@@ -117,20 +117,21 @@ gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails'
 
 group :production do
-  gem 'rack-google-analytics', '~> 0.11.0'
+  gem 'rack-google-analytics', github: 'leehambley/rack-google-analytics'
 end
 
 group :staging, :production do
-  gem 'lograge'
-  gem 'rack-cache'
-  gem 'rack-ssl-enforcer'
   gem 'unicorn', require: false
+  gem 'memcachier'
+  gem 'rack-cache'
+  gem 'dalli'
+  gem 'kgio'
+  gem 'rack-ssl-enforcer'
+  gem 'rails_12factor'
+  gem 'lograge'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
-  gem 'memcachier'
-  gem 'dalli'
-  gem 'rails_12factor'
 end
 
 group :development do

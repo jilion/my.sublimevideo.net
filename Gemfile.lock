@@ -54,6 +54,12 @@ GIT
       activesupport (>= 3.0.0)
 
 GIT
+  remote: git://github.com/leehambley/rack-google-analytics.git
+  revision: acaa086b3368c080a236339d917bcdb7d5729ae3
+  specs:
+    rack-google-analytics (0.12.0)
+
+GIT
   remote: git://github.com/mbleigh/acts-as-taggable-on.git
   revision: 7c76b1b2566ca78e181c68e8ded473053584a22e
   specs:
@@ -425,7 +431,6 @@ GEM
     rack (1.5.2)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-google-analytics (0.11.0)
     rack-livereload (0.3.15)
       rack
     rack-ssl-enforcer (0.2.6)
@@ -651,6 +656,7 @@ DEPENDENCIES
   http_content_type
   i18n-extra_translations
   kaminari!
+  kgio
   kiqstand!
   launchy
   letter_opener
@@ -678,7 +684,7 @@ DEPENDENCIES
   quiet_assets
   rabl
   rack-cache
-  rack-google-analytics (~> 0.11.0)
+  rack-google-analytics!
   rack-livereload
   rack-ssl-enforcer
   rack-status
