@@ -128,7 +128,6 @@ group :staging, :production do
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
-  gem 'asset_sync'
   gem 'memcachier'
   gem 'dalli'
   gem 'rails_12factor'

@@ -159,9 +159,6 @@ GEM
       rake
     arel (4.0.1)
     array_stats (0.6.0)
-    asset_sync (1.0.0)
-      activemodel
-      fog (>= 1.8.0)
     atomic (1.1.14)
     backbone-rails (1.0.0.1)
       rails (>= 3.0.0)
@@ -608,7 +605,6 @@ DEPENDENCIES
   addressable (~> 2.2.8)
   annotate
   array_stats
-  asset_sync
   backbone-rails
   better_errors
   binding_of_caller
