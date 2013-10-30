@@ -945,13 +945,9 @@ CREATE TABLE sites (
     current_assistant_step character varying(255),
     addons_updated_at timestamp without time zone,
     staging_hostnames text,
-<<<<<<< HEAD
     last_30_days_starts integer DEFAULT 0,
     last_30_days_starts_array integer[] DEFAULT '{}'::integer[],
     last_30_days_admin_starts integer DEFAULT 0
-=======
-    stats_migration_success boolean DEFAULT false
->>>>>>> master
 );
 
 
@@ -2325,3 +2321,5 @@ INSERT INTO schema_migrations (version) VALUES ('20131004084105');
 INSERT INTO schema_migrations (version) VALUES ('20131016130457');
 
 INSERT INTO schema_migrations (version) VALUES ('20131028104646');
+
+INSERT INTO schema_migrations (version) VALUES ('20131030134524');
