@@ -46,7 +46,8 @@ gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
-gem 'oj'
+gem 'oj' # Faster JSON
+gem 'kgio' # Faster IO
 
 gem 'state_machine'
 gem 'paper_trail', '3.0.0.beta1'
@@ -85,11 +86,12 @@ gem 'array_stats'
 gem 'createsend' # Campaign Monitor
 gem 'http_content_type'
 
+# Monitoring
+gem 'rack-status'
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails'
-gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
@@ -106,13 +108,16 @@ gem 'zendesk_api'
 # App
 gem 'solve'
 
-# Gems used only for assets and not required
-# in production environments by default.
-gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
-gem 'sass-rails'
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'uglifier'
+  gem 'sass-rails'
+end
 
 gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails'
@@ -123,12 +128,11 @@ end
 
 group :staging, :production do
   gem 'unicorn', require: false
-  gem 'memcachier'
-  gem 'rack-cache'
-  gem 'dalli'
-  gem 'kgio'
-  gem 'rack-ssl-enforcer'
   gem 'rails_12factor'
+  gem 'rack-ssl-enforcer'
+  gem 'memcachier'
+  gem 'dalli'
+  gem 'rack-cache'
   gem 'lograge'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
@@ -144,9 +148,7 @@ group :development do
 
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'i18n-extra_translations', require: false
 
-  # gem 'em-http-request' # async pusher in populate
   gem 'letter_opener'
 end
 

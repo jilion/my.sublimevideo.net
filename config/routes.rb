@@ -23,11 +23,6 @@ end
 
 MySublimeVideo::Application.routes.draw do
 
-  # if Rails.env.development?
-  #   require 'i18n/extra_translations'
-  #   mount I18n::ExtraTranslations::Server.new => '/i18n'
-  # end
-
   # Redirect to subdomains
   get '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 

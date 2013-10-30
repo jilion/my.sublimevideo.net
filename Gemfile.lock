@@ -320,8 +320,6 @@ GEM
     httpauth (0.2.0)
     httpclient (2.3.4.1)
     i18n (0.6.5)
-    i18n-extra_translations (0.0.5)
-      i18n (~> 0.6)
     inflection (1.0.0)
     jquery-rails (3.0.4)
       railties (>= 3.0, < 5.0)
@@ -652,7 +650,6 @@ DEPENDENCIES
   honeybadger
   hpricot
   http_content_type
-  i18n-extra_translations
   kaminari!
   kgio
   kiqstand!

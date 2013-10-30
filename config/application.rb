@@ -7,7 +7,7 @@ require 'sprockets/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env)
+Bundler.require *Rails.groups(assets: %w(development test))
 
 # Required from sublime_video_layout, needed for rake assets:precompile when
 # initialize_on_precompile is false
