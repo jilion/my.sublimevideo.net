@@ -23,7 +23,8 @@ MySublimeVideo::Application.configure do
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = false
+  config.serve_static_assets = true
+  config.static_cache_control = 'public, max-age=31557600'
 
   # http://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets
   # For faster asset precompiles, you can partially load your application
@@ -68,15 +69,14 @@ MySublimeVideo::Application.configure do
 
   # Use a different cache store in production
   config.cache_store = :dalli_store
-  # https://devcenter.heroku.com/articles/rack-cache-memcached-static-assets-rails31
+  client = Dalli::Client.new(ENV['MEMCACHIER_SERVERS'], value_max_bytes: 10485760)
   config.action_dispatch.rack_cache = {
-    metastore:    Dalli::Client.new,
-    entitystore:  'file:tmp/cache/rack/body',
-    allow_reload: false
+    metastore: client,
+    entitystore: client
   }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = 'https://cdn.sublimevideo.net'
+  config.action_controller.asset_host = 'd3fg40r50eby7d.cloudfront.net'
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -99,8 +99,4 @@ MySublimeVideo::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-
-  # Use Dalli as the rack-cache metastore
-  # $cache = Dalli::Client.new
-  # config.middleware.use ::Rack::Cache, metastore: $cache, entitystore: 'file:tmp/cache/entity'
 end

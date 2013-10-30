@@ -3,7 +3,6 @@
 --
 
 SET statement_timeout = 0;
-SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -278,7 +277,6 @@ CREATE TABLE app_plugins (
     app_component_id integer NOT NULL,
     token character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
-    condition text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     mod character varying(255)
@@ -947,9 +945,13 @@ CREATE TABLE sites (
     current_assistant_step character varying(255),
     addons_updated_at timestamp without time zone,
     staging_hostnames text,
+<<<<<<< HEAD
     last_30_days_starts integer DEFAULT 0,
     last_30_days_starts_array integer[] DEFAULT '{}'::integer[],
     last_30_days_admin_starts integer DEFAULT 0
+=======
+    stats_migration_success boolean DEFAULT false
+>>>>>>> master
 );
 
 
@@ -2319,3 +2321,7 @@ INSERT INTO schema_migrations (version) VALUES ('20130930075402');
 INSERT INTO schema_migrations (version) VALUES ('20131002102952');
 
 INSERT INTO schema_migrations (version) VALUES ('20131004084105');
+
+INSERT INTO schema_migrations (version) VALUES ('20131016130457');
+
+INSERT INTO schema_migrations (version) VALUES ('20131028104646');

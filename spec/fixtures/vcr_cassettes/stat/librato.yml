@@ -1,0 +1,32 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://thibaud%40thibaud.me:0132b3ecae47457b8c8d34b796a3af02abbe9fa528265cddfb650439c3049e25@metrics-api.librato.com:443/v1/metrics
+    body: '{"gauges":[{"measure_time":1382445815,"value":4,"source":"old","name":"temp.loads.none"},{"measure_time":1382445815,"value":1,"source":"old","name":"temp.loads.none"},{"measure_time":1382445815,"value":1,"source":"old","name":"temp.loads.none"},{"measure_time":1382445815,"value":6,"source":"old","name":"temp.loads.none"},{"measure_time":1382445815,"value":1,"source":"old","name":"temp.starts.none"},{"measure_time":1382445815,"value":1,"source":"old","name":"temp.starts.none"}]}'
+    headers:
+      user-agent:
+      - librato-metrics/1.1.1 (ruby; 2.0.0p247; x86_64-darwin12.4.0) direct-faraday/0.8.8
+      content-type:
+      - application/json
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json;charset=utf-8
+      date:
+      - Tue, 22 Oct 2013 12:43:37 GMT
+      server:
+      - nginx/1.4.2
+      status:
+      - 200 OK
+      content-length:
+      - '0'
+      connection:
+      - Close
+    body:
+    http_version: '1.1'

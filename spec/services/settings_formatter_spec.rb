@@ -13,7 +13,7 @@ describe SettingsFormatter do
   end
 
   describe '.format' do
-    it 'mangles key' do
+    it 'formats key' do
       service = double('SettingsFormatter')
       described_class.should_receive(:new).with(foo_bar: { 'bar_foo' => 'baz' }) { service }
       service.should_receive(:format)

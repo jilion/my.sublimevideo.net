@@ -7,7 +7,7 @@ gem 'rails', '~> 4.0.0'
 gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
 gem 'sublime_video_layout', '~> 2.6' # hosted on gemfury
-gem 'sublime_video_private_api', '~> 1.5' # hosted on gemfury
+gem 'sublime_video_private_api', '~> 1.6' # hosted on gemfury
 
 # Databases
 gem 'pg'
@@ -22,8 +22,8 @@ gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
-gem 'regru-premailer'
-gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'regru-premailer-dependency'
+# until https://github.com/fphilipe/premailer-rails/pull/83 is merged
+gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'fix-82'
 gem 'turbolinks'
 gem 'google-analytics-turbolinks'
 
@@ -46,7 +46,8 @@ gem 'sidekiq'
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
-gem 'oj'
+gem 'oj' # Faster JSON
+gem 'kgio' # Faster IO
 
 gem 'state_machine'
 gem 'paper_trail', '3.0.0.beta1'
@@ -58,6 +59,7 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
+gem 'unf' # encoding for fog
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'cocaine'
 
@@ -77,11 +79,12 @@ gem 'array_stats'
 gem 'createsend' # Campaign Monitor
 gem 'http_content_type'
 
+# Monitoring
+gem 'rack-status'
 gem 'honeybadger'
 gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails'
-gem 'rack-status'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
@@ -91,7 +94,6 @@ gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
 gem 'crack'
 gem 'pusher'
 gem 'redis'
-gem 'skylight'
 
 # Tickets
 gem 'zendesk_api'
@@ -99,9 +101,6 @@ gem 'zendesk_api'
 # App
 gem 'solve'
 
-# Gems used only for assets and not required
-# in production environments by default.
-gem 'uglifier'
 gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
@@ -110,21 +109,20 @@ gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails'
 
 group :production do
-  gem 'rack-google-analytics', '~> 0.11.0'
+  gem 'rack-google-analytics', github: 'leehambley/rack-google-analytics'
 end
 
 group :staging, :production do
-  gem 'lograge'
-  gem 'rack-cache'
-  gem 'rack-ssl-enforcer'
   gem 'unicorn', require: false
+  gem 'rails_12factor'
+  gem 'rack-ssl-enforcer'
+  gem 'memcachier'
+  gem 'dalli'
+  gem 'rack-cache'
+  gem 'lograge'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
-  gem 'asset_sync'
-  gem 'memcachier'
-  gem 'dalli'
-  gem 'rails_12factor'
 end
 
 group :development do
@@ -136,7 +134,6 @@ group :development do
   gem 'quiet_assets'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'i18n-extra_translations', require: false
 
   gem 'letter_opener'
 end

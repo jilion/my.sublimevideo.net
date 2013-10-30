@@ -11,9 +11,6 @@ db/*.sqlite3
 db/backups/*
 doc/js/
 .sass-cache/
-vendor/ruby
-vendor/bundler
-!.bundle
 !.env
 .env.*
 uploads
@@ -23,3 +20,4 @@ uploads
 public/test.html
 doc/routes.txt
 .tm_properties
+!.bundle/config

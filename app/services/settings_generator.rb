@@ -8,7 +8,6 @@ require 's3_wrapper'
 require 'cdn_file'
 
 # services
-require 'player_mangler'
 require 'settings_formatter'
 
 class SettingsGenerator
@@ -73,12 +72,6 @@ class SettingsGenerator
     site.default_kit.identifier
   end
 
-  # @deprecated
-  #
-  def mangle(hash)
-    PlayerMangler.mangle(hash)
-  end
-
   def format(hash)
     SettingsFormatter.format(hash)
   end
@@ -129,9 +122,6 @@ private
         hash[addon_plan.kind][:allowed_settings] = _addon_plan_allowed_settings(template.template)
         hash[addon_plan.kind][:id] = template.plugin.token
         hash[addon_plan.kind][:module] = template.plugin.mod if with_module
-        unless (condition = template.plugin.condition).empty?
-          hash[addon_plan.kind][:condition] = condition
-        end
       end
 
       hash.reject { |k, v| v.empty? }

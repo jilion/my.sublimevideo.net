@@ -15,7 +15,7 @@ namespace :balances do
       # print "----- #{date} -----\n"
       print "#{date},"
 
-      Invoice.where("balance_deduction_amount > ?", 0).for_month(date).each do |invoice|
+      Invoice.paid.where("balance_deduction_amount > 0").for_month(date).uniq.each do |invoice|
         user_balances[invoice.user.id] += invoice.balance_deduction_amount
       end
 
