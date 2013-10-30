@@ -58,6 +58,7 @@ gem 'responders'
 gem 'has_scope'
 
 gem 'fog'
+gem 'unf' # encoding for fog
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
