@@ -11,7 +11,7 @@
           - stats_hours_range_select(stats_presenter.options[:hours]).each do |hours, date_range_text|
             %li{ class: cycle('', 'alt') }= link_to date_range_text, url_for(hours: hours), data: { value: hours }
       %span{ style: 'padding-left:10px;' }
-        for
+        from
         %em= stats_sources_hash[stats_presenter.options[:source]]
       .fake_select_wrap
         = link_to '', class: 'fake_select' do
