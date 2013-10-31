@@ -6,7 +6,6 @@ require 'app'
 # wrappers
 require 's3_wrapper'
 require 'cdn_file'
-require '../helpers/urls_helper'
 
 # services
 require 'settings_formatter'
@@ -29,9 +28,13 @@ class SettingsGenerator
     end
   end
 
+  def cdn_path
+    "s2/#{site.token}.js"
+  end
+
   def cdn_files
     @cdn_files ||= [
-      CDNFile.new(_generate_file, _path, _s3_headers)
+      CDNFile.new(_generate_file, cdn_path, _s3_headers)
     ]
   end
 
@@ -153,9 +156,6 @@ private
     file
   end
 
-  def _path
-    cdn_settings_path(site.token)
-  end
 
   def _s3_headers
     {

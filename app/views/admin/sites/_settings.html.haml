@@ -24,7 +24,7 @@
 %p
   = "settings.js updated at: #{site.settings_updated_at}"
   = ' | '
-  = link_to "View settings", cdn_settings_url(site.token), onclick: "window.open(this); return false"
+  = link_to "View settings", cdn_settings_url(site), onclick: "window.open(this); return false"
 
 %h4 Refresh settings
 = form_for [:generate_settings, :admin, site], remote: true do |f|
