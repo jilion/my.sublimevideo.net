@@ -6,6 +6,14 @@ module UrlsHelper
     'cdn.sublimevideo.net'
   end
 
+  def cdn_settings_path(token)
+    "s2/#{token}.js"
+  end
+
+  def cdn_settings_url(token)
+    cdn_url(cdn_settings_path(token))
+  end
+
   def proxied_https_url(url)
     return url if url.blank? || url =~ /^https/
 
