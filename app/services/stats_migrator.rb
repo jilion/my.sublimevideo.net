@@ -1,6 +1,8 @@
 require 'stats_migrator_worker'
 
 class StatsMigrator
+  MIGRATION_DATE = Time.utc(2013,10,22)
+
   attr_accessor :site
 
   def initialize(site)
@@ -53,7 +55,7 @@ class StatsMigrator
   private
 
   def self._all_sites(&block)
-    Site.select(:id, :token).where(stats_migration_success: false).find_in_batches do |sites|
+    Site.select(:id, :token).where('created_at <= ?', MIGRATION_DATE).where(stats_migration_success: false).find_in_batches do |sites|
       sites.each { |site| yield site }
     end
   end
@@ -64,12 +66,17 @@ class StatsMigrator
   end
 
   def _date_criteria
-    { d: { :$lte => Time.utc(2013,10,22) } }
+    { d: { :$lte => MIGRATION_DATE } }
   end
 
   def _migrate_stat(stat)
     sleep 1 if _queue_size >= 10_000
     StatsMigratorWorker.perform_async(_stat_class(stat), _stat_data(stat))
+  rescue => ex
+    begin
+      Honeybadger.notify_or_ignore(ex, context: _stat_data(stat))
+    rescue
+    end
   end
 
   def _queue_size
