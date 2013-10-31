@@ -1,12 +1,11 @@
 module I18n
   class JustRaiseExceptionHandler < ExceptionHandler
     def call(exception, locale, key, options)
-      if exception.is_a?(MissingTranslation)
-        if %w[staging production].include?(Rails.env)
-          Notifier.send(exception.to_exception)
-        else
-          raise exception.to_exception
-        end
+      case Rails.env
+      when 'development'
+        raise exception.to_exception
+      when 'staging', 'production'
+        Notifier.send(exception.to_exception)
       else
         super
       end
