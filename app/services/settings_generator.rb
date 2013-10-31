@@ -6,7 +6,7 @@ require 'app'
 # wrappers
 require 's3_wrapper'
 require 'cdn_file'
-require '../helpers/urls_helper'
+require 'urls_helper'
 
 # services
 require 'settings_formatter'
