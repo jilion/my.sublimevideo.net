@@ -106,4 +106,4 @@ en:
       title: 'Google Analytics settings'
       settings:
         enable: 'Events tracking'
-        account: 'Alternative Account ID'
+        account: 'Alternative Account ID (not supported with analytics.js)'
