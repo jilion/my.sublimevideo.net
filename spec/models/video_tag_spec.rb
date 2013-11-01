@@ -34,11 +34,5 @@ describe VideoTag do
       video_tag.to_param.should eq video_tag.uid
     end
   end
-
-  describe ".find" do
-    it "raises ActiveRecord::RecordNotFound when uid is invalid" do
-      expect { described_class.find(' a ', _site_token: 1) }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
 end
 
