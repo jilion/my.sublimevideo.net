@@ -6,6 +6,14 @@ GIT
       compass (>= 0.12.2, < 0.14)
 
 GIT
+  remote: git://github.com/fphilipe/premailer-rails.git
+  revision: 9010124aa5a6c1c01580e1abb170d3b2bb2470bd
+  specs:
+    premailer-rails (1.4.0)
+      premailer (~> 1.7)
+      rails (>= 3)
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -14,15 +22,6 @@ GIT
       compass-rails (>= 1.0)
       railties (>= 3.0)
       sass-rails (>= 3.2)
-
-GIT
-  remote: git://github.com/jilion/premailer-rails.git
-  revision: 1a42d6d87c4a33a99d7b8df45295fb3ecf963d31
-  branch: fix-82
-  specs:
-    premailer-rails (1.4.0)
-      premailer (~> 1.7)
-      rails (>= 3)
 
 GIT
   remote: git://github.com/jilion/useragent.git
@@ -404,6 +403,8 @@ GEM
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     polyglot (0.3.3)
+    powder (0.2.0)
+      thor (>= 0.11.5)
     premailer (1.7.9)
       css_parser (>= 1.1.9)
       htmlentities (>= 4.0.0)
@@ -626,7 +627,7 @@ DEPENDENCIES
   createsend
   dalli
   database_cleaner
-  devise (~> 3.0.0)
+  devise
   devise-async
   devise_invitable
   display_case
@@ -672,6 +673,7 @@ DEPENDENCIES
   paranoia
   pg
   poltergeist
+  powder
   premailer-rails!
   prowl
   public_suffix
