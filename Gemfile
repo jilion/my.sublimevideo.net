@@ -22,8 +22,8 @@ gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
-# until https://github.com/fphilipe/premailer-rails/pull/83 is merged
-gem 'premailer-rails', github: 'jilion/premailer-rails', branch: 'fix-82'
+# until > 1.4.0 is released
+gem 'premailer-rails', github: 'fphilipe/premailer-rails'
 gem 'turbolinks'
 gem 'google-analytics-turbolinks'
 
@@ -32,7 +32,7 @@ gem 'groupdate'
 gem 'chartkick'
 
 # Auth / invitations
-gem 'devise', '~> 3.0.0'
+gem 'devise'
 gem 'devise_invitable'
 gem 'devise-async'
 
@@ -150,6 +150,7 @@ group :development do
   gem 'binding_of_caller'
 
   gem 'letter_opener'
+  gem 'powder', require: false
 end
 
 group :development, :test do
