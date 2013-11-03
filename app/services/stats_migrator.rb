@@ -20,13 +20,13 @@ class StatsMigrator
     _all_sites { |site| self.delay(queue: 'my-stats_migration').migrate(site.id) }
   end
 
-  def self.migrate(site_id)
+  def self.migrate(site_id, day)
     site = Site.find(site_id)
-    StatsMigrator.new(site).migrate
+    StatsMigrator.new(site).migrate(day)
   end
 
-  def migrate
-    _all_stats { |stat| _migrate_stat(stat) }
+  def migrate(day)
+    _all_stats(day) { |stat| _migrate_stat(stat) }
   end
 
   def self.check_migration(site_id)
@@ -60,9 +60,9 @@ class StatsMigrator
     end
   end
 
-  def _all_stats(&block)
-    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).each_by(1000) { |stat| yield stat }
-    Stat::Video::Day.where(_date_criteria.merge(st: site.token)).each_by(1000) { |stat| yield stat }
+  def _all_stats(day, &block)
+    Stat::Site::Day.where(d: day, t: site.token).each_by(1000) { |stat| yield stat }
+    Stat::Video::Day.where(d: day, st: site.token).each_by(1000) { |stat| yield stat }
   end
 
   def _date_criteria
