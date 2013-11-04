@@ -1,7 +1,7 @@
 require 'has_scope'
 
 class PrivateApi::SitesController < SublimeVideoPrivateApiController
-  before_filter :_set_sites, only: [:index, :tokens]
+  before_filter :_set_sites, only: [:index]
   before_filter :_set_site, only: [:show, :add_tag]
 
   has_scope :per, :created_on, :created_after, :not_tagged_with, :by_date, :with_addon_plan,
@@ -17,6 +17,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites/tokens
   def tokens
+    @sites = apply_scopes(Site.with_state('active'))
     expires_in 2.minutes, public: true
     respond_with(@sites.pluck(:token))
   end
