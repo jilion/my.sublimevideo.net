@@ -22,7 +22,7 @@ class StatsMigrator
 
   def self.migrate(site_id)
     site = Site.find(site_id)
-    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).pluck(:d).each do |day|
+    Stat::Site::Day.where(d: { :$lte => MIGRATION_DATE }, t: site.token)).pluck(:d).each do |day|
       self.delay(queue: 'my-stats_migration').migrate_day(site.id, day)
     end
   end
