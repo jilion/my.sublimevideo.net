@@ -21,10 +21,13 @@ class StatsMigrator
   end
 
   def self.migrate(site_id)
-    site = Site.find(site_id)
-    Stat::Site::Day.where(d: { :$lte => MIGRATION_DATE }, t: site.token).pluck(:d).each do |day|
-      self.delay(queue: 'my-stats_migration').migrate_day(site.id, day)
+    return if site_id > 58449
+    if site = Site.find_by_id(site_id)
+      Stat::Site::Day.where(d: { :$lte => MIGRATION_DATE }, t: site.token).pluck(:d).each do |day|
+        self.delay(queue: 'my-stats_migration').migrate_day(site.id, day)
+      end
     end
+    self.delay(queue: 'my-stats_migration').migrate(site_id + 1)
   end
 
   def self.migrate_day(site_id, day)
