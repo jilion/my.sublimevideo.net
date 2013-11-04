@@ -26,7 +26,17 @@ class StatsMigrator
   end
 
   def migrate(day)
-    _all_stats(day) { |stat| _migrate_stat(stat) }
+    @data = {
+      app_loads: {},
+      stages: [],
+      ssl: false }
+    _all_site_stats(day) { |stat| @data = _merge_site_data(stat, @data) }
+    _migrate_site_stat(@data, day)
+    @data = {
+      loads: {},
+      starts: {} }
+    _all_video_stats(day) { |stat| @data = _merge_video_data(stat, @data) }
+    _migrate_video_stat(@data, day)
   end
 
   def self.check_migration(site_id)
@@ -60,8 +70,11 @@ class StatsMigrator
     end
   end
 
-  def _all_stats(day, &block)
+  def _all_site_stats(day, &block)
     Stat::Site::Day.where(d: day, t: site.token).each_by(1000) { |stat| yield stat }
+  end
+
+  def _all_video_stats(day, &block)
     Stat::Video::Day.where(d: day, st: site.token).each_by(1000) { |stat| yield stat }
   end
 
@@ -69,12 +82,20 @@ class StatsMigrator
     { d: { :$lte => MIGRATION_DATE } }
   end
 
-  def _migrate_stat(stat)
-    sleep 1 if _queue_size >= 10_000
-    StatsMigratorWorker.perform_async(_stat_class(stat), _stat_data(stat))
+  def _migrate_site_stat(data, day)
+    StatsMigratorWorker.perform_async('Stat::Site::Day', data.merge(site_token: site.token, time: day, sa: false))
   rescue => ex
     begin
-      Honeybadger.notify_or_ignore(ex, context: _stat_data(stat))
+      Honeybadger.notify_or_ignore(ex, context: data)
+    rescue
+    end
+  end
+
+  def _migrate_video_stat(data, day)
+    StatsMigratorWorker.perform_async('Stat::Video::Day', data.merge(site_token: site.token, time: day, sa: false))
+  rescue => ex
+    begin
+      Honeybadger.notify_or_ignore(ex, context: data)
     rescue
     end
   end
@@ -85,6 +106,19 @@ class StatsMigrator
       @last_queue_check = Time.now.utc
     end
     @queue_size
+  end
+
+  def _merge_site_data(stat, data)
+    data[:app_loads] = stat.pv.merge(data[:app_loads]) { |k, old_v, new_v| old_v + new_v }
+    data[:stages].push(stat.st) unless data[:stages].include?(stat.st)
+    data[:ssl] = true if stat.s
+    data
+  end
+
+  def _merge_video_data(stat, data)
+    data[:loads] = stat.vl.merge(data[:loads]) { |k, old_v, new_v| old_v + new_v }
+    data[:starts] = stat.vv.merge(data[:starts]) { |k, old_v, new_v| old_v + new_v }
+    data
   end
 
   def _stat_class(stat)
