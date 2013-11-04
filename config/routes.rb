@@ -143,9 +143,8 @@ MySublimeVideo::Application.routes.draw do
     namespace :private_api do
       resources :users, only: [:show]
       resources :sites, only: [:index, :show] do
-        member do
-          put :add_tag
-        end
+        collection { get :tokens }
+        member { put :add_tag }
 
         resources :addons, only: [:index]
         resources :kits, only: [:index]

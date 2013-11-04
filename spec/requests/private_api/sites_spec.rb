@@ -1,11 +1,6 @@
 require 'spec_helper'
 
-describe 'Private API Sites requests' do
-  let!(:design) do
-    create(:design, name: 'classic')
-    create(:design, name: 'light')
-    create(:design, name: 'flat')
-  end
+describe 'Private API Sites requests', :addons do
   let!(:site1) do
     manager = SiteManager.new(build(:site, created_at: 3.days.ago, hostname: 'google.com', updated_at: Time.utc(2013, 4, 25)))
     manager.create
@@ -94,6 +89,19 @@ describe 'Private API Sites requests' do
       body = MultiJson.load(response.body)
       body.should have(1).site
       body[0]['token'].should eq site1.token
+      response.status.should eq 200
+    end
+  end
+
+  describe "tokens" do
+    let(:url) { 'private_api/sites/tokens.json' }
+
+    it_behaves_like 'valid caching headers', cache_validation: false
+
+    it 'supports :with_addon_plan scope' do
+      get url, { with_addon_plan: 'stats-realtime' }, @env
+      body = MultiJson.load(response.body)
+      expect(body).to eq []
       response.status.should eq 200
     end
   end
