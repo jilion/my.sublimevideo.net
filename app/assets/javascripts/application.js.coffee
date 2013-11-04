@@ -14,9 +14,8 @@
 #= require video_code
 #= require video_stats
 #
-#= require google-analytics-turbolinks
 #= require turbolinks
-
+#= require google-analytics-turbolinks
 
 window.MySublimeVideo =
   UI: {}

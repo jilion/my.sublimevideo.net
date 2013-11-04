@@ -1,17 +1,19 @@
-- user.feedbacks.each do |feedback|
-  - if feedback.reason? || feedback.next_player? || feedback.comment?
-    %div
-      %h3= "#{display_kind(feedback)} feedback"
-      - if feedback.reason?
-        %p
-          %strong Reason:
-          = t("feedback.reason.options_short.#{feedback.reason}")
-      - if feedback.next_player?
-        %p
-          %strong Next player:
-          = feedback.next_player || 'N/A'
-      - if feedback.comment?
-        %p
-          %strong Additional comment:
-          = simple_format(feedback.comment || 'N/A')
-    %br
+%h3.expanding_handler= link_to 'Feedbacks', ''
+%ul.expandable
+  - user.feedbacks.each do |feedback|
+    - if feedback.reason? || feedback.next_player? || feedback.comment?
+      %div
+        %h3= "#{display_kind(feedback)} feedback"
+        - if feedback.reason?
+          %p
+            %strong Reason:
+            = t("feedback.reason.options_short.#{feedback.reason}")
+        - if feedback.next_player?
+          %p
+            %strong Next player:
+            = feedback.next_player || 'N/A'
+        - if feedback.comment?
+          %p
+            %strong Additional comment:
+            = simple_format(feedback.comment || 'N/A')
+      %br

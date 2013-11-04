@@ -1,6 +1,8 @@
 %table.left
   %tr
     %th
+      %h3 Billing contact
+    %th
       %h3 Billing address
     %th
       %h3 Credit card
@@ -8,6 +10,11 @@
       %h3 Current balance
 
   %tr
+    %td
+      %p
+        = @user.billing_name.presence || 'No billing name provided'
+        = surround '[', ']' do
+          = @user.billing_email? ? mail_to(@user.billing_email) : 'No billing email provided'
     %td
       %p= simple_format(user.billing_address)
     %td
