@@ -7,9 +7,6 @@ class StatsMigrator
 
   def initialize(site)
     @site = site
-
-    @last_queue_check = Time.now.utc
-    @queue_size = 0
   end
 
   def self.check_all_migration
@@ -88,18 +85,10 @@ class StatsMigrator
   end
 
   def _migrate_stat(type, data, day)
-    sleep 1 if _queue_size >= 10_000
+    sleep 1 while Sidekiq::Queue.new('stats-migration').size >= 10_000
     StatsMigratorWorker.perform_async(type, data.merge(site_token: site.token, time: day))
   rescue => ex
     Honeybadger.notify_or_ignore(ex, context: { data: data, day: day, type: type })
-  end
-
-  def _queue_size
-    if @last_queue_check < 1.second.ago
-      @queue_size = Sidekiq::Queue.new('stats-migration').size
-      @last_queue_check = Time.now.utc
-    end
-    @queue_size
   end
 
   def _merge_site_data(stat, data)
