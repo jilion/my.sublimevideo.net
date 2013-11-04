@@ -24,15 +24,6 @@ GIT
       sass-rails (>= 3.2)
 
 GIT
-  remote: git://github.com/jilion/premailer-rails.git
-  revision: 1a42d6d87c4a33a99d7b8df45295fb3ecf963d31
-  branch: fix-82
-  specs:
-    premailer-rails (1.4.0)
-      premailer (~> 1.7)
-      rails (>= 3)
-
-GIT
   remote: git://github.com/kolodovskyy/kaminari.git
   revision: 92052eedf047d65df71cc0021a9df9df1e2fc36e
   specs:
