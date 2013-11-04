@@ -88,7 +88,7 @@ class StatsMigrator
     sleep 1 if _queue_size >= 10_000
     StatsMigratorWorker.perform_async(type, data.merge(site_token: site.token, time: day))
   rescue => ex
-    Honeybadger.notify_or_ignore(ex, context: {data: data, day: day, type: type)
+    Honeybadger.notify_or_ignore(ex, context: { data: data, day: day, type: type })
   end
 
   def _queue_size
