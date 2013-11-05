@@ -22,13 +22,12 @@ class StatsMigrator
   end
 
   def self.migrate(site_id)
-    return if site_id > 58449
-    if site = Site.find_by_id(site_id)
-      Stat::Site::Day.where(d: { :$lte => MIGRATION_DATE }, t: site.token).pluck(:d).each do |day|
-        self.delay(queue: 'my-stats_migration').migrate_day(site.id, day)
-      end
+    site = Site.find_by_id(site_id)
+    all_dates = (site.created_at.to_date...MIGRATION_DATE.to_date).map { |d| d }
+    site_stat_dates = Stat::Site::Day.where(d: { :$lte => MIGRATION_DATE }, t: site.token).pluck(:d).map { |d| d.to_date }
+    (all_dates- site_stat_dates).each do |day|
+      self.delay(queue: 'my-stats_migration').migrate_day(site.id, day)
     end
-    self.delay(queue: 'my-stats_migration').migrate(site_id + 1)
   end
 
   def self.migrate_day(site_id, day)
@@ -37,12 +36,12 @@ class StatsMigrator
   end
 
   def migrate(day)
-    @data = { app_loads: {}, stages: [], ssl: false }
-    _all_site_stats(day) { |stat| @data = _merge_site_data(stat, @data) }
-    _migrate_stat('site', @data, day)
+    # @data = { app_loads: {}, stages: [], ssl: false }
+    # _all_site_stats(day) { |stat| @data = _merge_site_data(stat, @data) }
+    # _migrate_stat('site', @data, day) unless @data == { app_loads: {}, stages: [], ssl: false }
     @data = { loads: {}, starts: {} }
     _all_video_stats(day) { |stat| @data = _merge_video_data(stat, @data) }
-    _migrate_stat('video', @data, day)
+    _migrate_stat('video', @data, day) unless @data == { loads: {}, starts: {} }
   end
 
   def self.check_migration(site_id)
