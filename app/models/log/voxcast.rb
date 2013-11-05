@@ -95,8 +95,8 @@ private
   # after_create on log model
   def delay_parse
     self.class.delay(queue: 'my-logs_high', at: 5.seconds.from_now.to_i).parse_log_for_stats(id)
-    self.class.delay(queue: 'my-logs', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
-    self.class.delay(queue: 'my-logs', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
+    # self.class.delay(queue: 'my-logs', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
+    # self.class.delay(queue: 'my-logs', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
   end
 
   # call from name= in Log
