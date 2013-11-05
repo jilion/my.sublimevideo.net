@@ -9,6 +9,10 @@ class StatsMigrator
     @site = site
   end
 
+  def self.failed_migrations
+    Site.select(:id, :token).where('created_at <= ?', MIGRATION_DATE).where(stats_migration_success: false).count
+  end
+
   def self.check_all_migration
     _all_sites { |site| self.delay(queue: 'my-stats_migration').check_migration(site.id) }
   end
@@ -67,7 +71,7 @@ class StatsMigrator
   private
 
   def self._all_sites(&block)
-    Site.select(:id, :token).where('created_at <= ?', MIGRATION_DATE).find_in_batches do |sites|
+    Site.select(:id, :token).where('created_at <= ?', MIGRATION_DATE).where(stats_migration_success: false).find_in_batches do |sites|
       sites.each { |site| yield site }
     end
   end
