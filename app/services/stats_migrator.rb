@@ -25,15 +25,13 @@ class StatsMigrator
     site = Site.find_by_id(site_id)
     all_dates = (site.created_at.to_date...MIGRATION_DATE.to_date).map { |d| d }
     site_stat_dates = Stat::Site::Day.where(d: { :$lte => MIGRATION_DATE }, t: site.token).pluck(:d).map { |d| d.to_date }
-    (all_dates- site_stat_dates).each do |day|
-      self.delay(queue: 'my-stats_migration').migrate_day(site.id, day)
-    end
+    (all_dates - site_stat_dates).each { |day| new(site).migrate(day) }
   end
 
-  def self.migrate_day(site_id, day)
-    site = Site.find(site_id)
-    StatsMigrator.new(site).migrate(day)
-  end
+  # def self.migrate_day(site_id, day)
+  #   site = Site.find(site_id)
+  #   StatsMigrator.new(site).migrate(day)
+  # end
 
   def migrate(day)
     # @data = { app_loads: {}, stages: [], ssl: false }
