@@ -7,9 +7,9 @@ class SiteAdminStat
   uses_private_api :stats
   collection_path '/private_api/site_admin_stats'
 
-  def self.migration_totals(site_token)
+  def self.migration_totals(site_token, params = {})
     rescue_and_retry(3) do
-      get_raw(:migration_totals, site_token: site_token)[:parsed_data][:data][:totals]
+      get_raw(:migration_totals, params.merge(site_token: site_token))[:parsed_data][:data][:totals]
     end
   end
 end

@@ -28,6 +28,13 @@ class StatsMigrator
     (all_dates - site_stat_dates).each { |day| new(site).migrate(day) }
   end
 
+  def self.check_migration(site_id)
+    site = Site.find(site_id)
+    (site.created_at.to_date...MIGRATION_DATE.to_date).each do |day|
+      self.delay(queue: 'my-stats_migration').check_migration_day(site.id, day)
+    end
+  end
+
   # def self.migrate_day(site_id, day)
   #   site = Site.find(site_id)
   #   StatsMigrator.new(site).migrate(day)
@@ -42,23 +49,26 @@ class StatsMigrator
     _migrate_stat('video', @data, day) unless @data == { loads: {}, starts: {} }
   end
 
-  def self.check_migration(site_id)
+  def self.check_migration_day(site_id, day)
     site = Site.find(site_id)
-    StatsMigrator.new(site).check_migration
+    StatsMigrator.new(site).check_migration(day)
   end
 
-  def check_migration
-    if totals == SiteAdminStat.migration_totals(site.token)
-      site.update_column(:stats_migration_success, true)
+  def check_migration(day)
+    stsv = SiteAdminStat.migration_totals(site.token, day: day)
+    mysv = totals(day)
+    if stsv != mysv
+      campfire = CampfireWrapper.new
+      campfire.speak("Check failed for ##{site.id} on #{day}\nstsv: #{stsv}\nmysv: #{mysv}")
     end
   end
 
-  def totals
+  def totals(day)
     @totals = { app_loads: 0, loads: 0, starts: 0 }
-    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).only(:pv).each_by(1000) do |stat|
+    Stat::Site::Day.where(d: day, t: site.token).only(:pv).each_by(1000) do |stat|
       @totals[:app_loads] += stat.pv.values.sum
     end
-    Stat::Video::Day.where(_date_criteria.merge(st: site.token)).only(:vl, :vv).each_by(1000) do |stat|
+    Stat::Video::Day.where(d: day, st: site.token).only(:vl, :vv).each_by(1000) do |stat|
       @totals[:loads] += stat.vl.values.sum
       @totals[:starts] += stat.vv.values.sum
     end
