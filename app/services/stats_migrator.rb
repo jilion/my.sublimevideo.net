@@ -55,10 +55,10 @@ class StatsMigrator
 
   def totals
     @totals = { app_loads: 0, loads: 0, starts: 0 }
-    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).only(:pv).each_by(10_000) do |stat|
+    Stat::Site::Day.where(_date_criteria.merge(t: site.token)).only(:pv).each_by(1000) do |stat|
       @totals[:app_loads] += stat.pv.values.sum
     end
-    Stat::Video::Day.where(_date_criteria.merge(st: site.token)).only(:vl, :vv).each_by(10_000) do |stat|
+    Stat::Video::Day.where(_date_criteria.merge(st: site.token)).only(:vl, :vv).each_by(1000) do |stat|
       @totals[:loads] += stat.vl.values.sum
       @totals[:starts] += stat.vv.values.sum
     end
