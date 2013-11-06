@@ -7,11 +7,11 @@ MySublimeVideo.statsReady = ->
 MySublimeVideo.statsReady.topStatsReady = ->
   MySublimeVideo.stats.prepareTimeAgo()
   MySublimeVideo.stats.drawLast60MinutesPlaysAndLoadsSparklines()
-  MySublimeVideo.stats.drawPlaysAndLoadsGraph()
 
 MySublimeVideo.statsReady.bottomStatsReady = ->
   MySublimeVideo.UI.prepareFakeSelectors()
   MySublimeVideo.stats.prepareHoursAndSourceSelectors()
+  MySublimeVideo.stats.drawPlaysAndLoadsGraph()
   MySublimeVideo.stats.prepareCSVExportButton()
 
 MySublimeVideo.stats.prepareTimeAgo = ->
