@@ -19,6 +19,11 @@ describe ApplicationHelper do
     it { helper.display_time(nil).should eq "–" }
   end
 
+  describe '#display_integer' do
+    it { helper.display_integer(1234).should eq '1,234' }
+    it { helper.display_integer(1_234_567).should eq '1.235M' }
+  end
+
   describe '#display_percentage' do
     it { helper.display_percentage(0.123).should eq '12.3%' }
     it { helper.display_percentage(0.12345).should eq '12.35%' }

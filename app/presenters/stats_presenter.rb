@@ -152,7 +152,7 @@ class StatsPresenter
   end
 
   def _handle_special_country_code(country_code)
-    case country_code
+    case country_code.downcase
     when 'fx'
       'fr'
     when 'uk' # British Indian Ocean Territory

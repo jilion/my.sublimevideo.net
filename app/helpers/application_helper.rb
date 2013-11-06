@@ -20,8 +20,14 @@ module ApplicationHelper
 
   def display_integer(number, opts = {})
     opts.reverse_merge!(precision: 2, significant: false)
+    number = number.to_i
+    thousand = number > 1_000_000
 
-    number_with_delimiter(number, opts)
+    number = (number / 1_000_000.0).round(3) if thousand
+    number = number_with_delimiter(number, opts)
+    number += 'M' if thousand
+
+    number
   end
 
   def display_percentage(fraction, opts = {})
@@ -52,6 +58,10 @@ module ApplicationHelper
     units    = amount_in_cents.to_i / 100
     decimals = amount_in_cents.to_i - (units * 100)
     "#{number_to_currency(units, precision: 0)}#{content_tag(:sup, ".#{decimals}") unless decimals.zero?}#{content_tag(:small, '/mo')}".html_safe
+  end
+
+  def formatted_pluralize(count, singular, plural = nil)
+    pluralize(count, singular, plural).sub(/\d+/) { |number| display_integer(number) }.html_safe
   end
 
   def info_box(options = {}, &block)
