@@ -1,10 +1,11 @@
 class PrivateApi::UsersController < SublimeVideoPrivateApiController
+  include ApisControllerHelper
+
   before_filter :_set_user, only: [:show]
 
   # GET /private_api/users/:id
   def show
-    expires_in 2.minutes, public: true
-    respond_with(@user) if stale?(@user)
+    _with_cache_control { respond_with(@user) if stale?(@user) }
   end
 
   private

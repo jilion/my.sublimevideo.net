@@ -1,14 +1,15 @@
 require 'has_scope'
 
 class PrivateApi::KitsController < SublimeVideoPrivateApiController
+  include ApisControllerHelper
+
   before_filter :_set_site, :_set_kits, only: [:index]
 
   has_scope :per
 
   # GET /private_api/sites/:site_id/kits
   def index
-    expires_in 2.minutes, public: true
-    respond_with(@kits)
+    _with_cache_control { respond_with(@kits) }
   end
 
   private
