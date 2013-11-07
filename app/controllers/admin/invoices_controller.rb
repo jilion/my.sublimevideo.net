@@ -1,4 +1,6 @@
 class Admin::InvoicesController < Admin::AdminController
+  include InvoicesControllerHelper
+
   respond_to :js, :html, :json
   respond_to :json, only: [:index]
 
@@ -20,14 +22,14 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /invoices/:id
   def show
+    redirect_to edit_admin_invoice_path(params[:id])
+  end
+
+  # GET /invoices/:id/edit
+  def edit
     @invoice = Invoice.includes(:user).where(reference: params[:id]).first!
-    respond_with(@invoice) do |format|
-      if @invoice
-        format.html { render template: '/invoices/show', layout: 'invoices' }
-      else
-        format.html { redirect_to [:admin, :invoices], notice: "Invoice with reference ##{params[:id]} not found." }
-      end
-    end
+
+    respond_with(@invoice)
   end
 
   # GET /invoices/:id/edit
@@ -36,11 +38,12 @@ class Admin::InvoicesController < Admin::AdminController
     respond_with(@invoice)
   end
 
-  # PUT /invoices/:id/retry_charging
+  # PATCH /invoices/:id/retry_charging
   def retry_charging
     @invoice = Invoice.where(reference: params[:id]).first!
-    @invoice.retry
-    respond_with(@invoice, location: [:admin, :invoices])
+    _retry_invoices([@invoice])
+
+    respond_with(@invoice, location: [:edit, :admin, @invoice])
   end
 
   def monthly
