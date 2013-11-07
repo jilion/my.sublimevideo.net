@@ -2,25 +2,20 @@ require 'spec_helper'
 
 describe VideoStatsController do
 
-  it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], { get: [:index] }, site_id: 'public'
-  it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:index] }, site_id: '1'
-  it_behaves_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:index] }, site_id: '1'
-  it_behaves_like "redirect when connected as", 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1', id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], { get: [:index] }, site_id: '1', video_tag_id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:index] }, site_id: '1', video_tag_id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:index] }, site_id: '1', video_tag_id: '1'
+  it_behaves_like "redirect when connected as", 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1', video_tag_id: '1'
 
   context 'user logged-in' do
     before do
       sign_in authenticated_user(early_access: [])
     end
 
-    context "without early access to video" do
+    context 'without early access to video' do
       context 'without any site' do
-        it "redirects when :index, site_id: nil, id: nil" do
-          get :index, site_id: nil, id: nil
-          response.should redirect_to root_path
-        end
-
-        it "redirects when :index, site_id: nil, id: '1'" do
-          get :index, site_id: nil, id: '1'
+        it 'redirects to root' do
+          get :index, site_id: '1', video_tag_id: '1'
           response.should redirect_to root_path
         end
       end
@@ -30,20 +25,15 @@ describe VideoStatsController do
           @site = create(:site, user: @authenticated_user, created_at: 3.days.ago)
         end
 
-        it "redirects when :index, site_id: nil, id: nil" do
-          get :index, site_id: @site.token, id: nil
-          response.should redirect_to root_path
-        end
-
-        it "redirects when :index, site_id: 'site.token', id: nil" do
-          get :index, site_id: @site.token, id: '1'
+        it 'redirects to root' do
+          get :index, site_id: @site.token, video_tag_id: '1'
           response.should redirect_to root_path
         end
       end
     end
   end
 
-  context "with early access to video" do
+  context 'with early access to video' do
     before do
       sign_in authenticated_user(early_access: ['video'])
       @site = create(:site, user: @authenticated_user)
@@ -57,7 +47,7 @@ describe VideoStatsController do
       end
 
       it 'redirects' do
-        get :index, site_id: @site.token, id: '1'
+        get :index, site_id: @site.token, video_tag_id: '1'
         response.should redirect_to root_path
       end
     end
@@ -68,13 +58,13 @@ describe VideoStatsController do
         expect(VideoStat).to receive(:last_hours_stats) { [] }
       end
 
-      it "is success when :index, site_id: 'site.token', id: '1'" do
-        get :index, site_id: @site.token, id: '1'
+      it 'responds with HTML format' do
+        get :index, site_id: @site.token, video_tag_id: '1'
         response.should be_success
       end
 
-      it "is success when :index, site_id: 'site.token', id: '1'" do
-        get :index, site_id: @site.token, id: '1', format: 'csv'
+      it 'responds to CSV format' do
+        get :index, site_id: @site.token, video_tag_id: '1', format: 'csv'
         response.should be_success
       end
     end
