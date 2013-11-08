@@ -38,7 +38,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   private
 
   def _set_sites
-    @sites = apply_scopes(_base_scopes.page(params[:page]))
+    @sites = apply_scopes(_base_scopes.page(params[:page])).order(:created_at)
   end
 
   def _set_site
@@ -50,7 +50,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
   end
 
   def _base_scopes
-    scopes = Site.with_state('active').order(:created_at).includes(:default_kit).references(:kits)
+    scopes = Site.with_state('active').includes(:default_kit).references(:kits)
     scopes = scopes.select(:default_kit_id) if params['select']
     scopes
   end
