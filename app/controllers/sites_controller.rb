@@ -14,7 +14,7 @@ class SitesController < ApplicationController
 
   # GET /sites
   def index
-    @sites = apply_scopes(@sites.includes(:invoices).by_date)
+    @sites = apply_scopes(@sites.includes(:invoices)).by_date
 
     if stale?(last_modified: @sites.maximum(:updated_at), etag: @sites.to_sql)
       respond_with(@sites, per_page: 10) do |format|
