@@ -38,7 +38,7 @@ class SitesPopulator < Populator
       sites.each do |site|
         puts "Create site #{site['hostname']} [#{site['token']}] with the real-time stats add-on"
         site = user.sites.build(hostname: site['hostname'])
-        service = SiteManager.new(site).tap { |s| s.create; s.update_column(:token, site['token']) }
+        service = SiteManager.new(site).tap { |s| s.create; s.site.update_column(:token, site['token']); s }
         service.update_billable_items({}, { 'stats' => realtime_stats_addon_plan.id }, { force: 'sponsored' })
       end
     end
