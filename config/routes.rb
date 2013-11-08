@@ -83,6 +83,9 @@ MySublimeVideo::Application.routes.draw do
           get :yearly
           get :top_customers
         end
+        member do
+          patch :retry_charging
+        end
       end
 
       get 'stats/single/:page' => 'stats#show', as: 'single_stat'

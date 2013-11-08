@@ -1,6 +1,8 @@
 require 'has_scope'
 
 class PrivateApi::AddonsController < SublimeVideoPrivateApiController
+  include ApisControllerHelper
+
   before_filter :_set_site, only: [:index]
   before_filter :_set_addon_plans, only: [:index]
 
@@ -8,8 +10,7 @@ class PrivateApi::AddonsController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites/:site_id/addons
   def index
-    expires_in 2.minutes, public: true
-    respond_with(@addon_plans)
+    _with_cache_control { respond_with(@addon_plans) }
   end
 
   private

@@ -1,4 +1,6 @@
 class InvoicesController < ApplicationController
+  include InvoicesControllerHelper
+
   before_filter :redirect_suspended_user, only: [:index]
   before_filter :_set_sites_or_redirect_to_new_site, only: [:index]
   before_filter :_set_site, only: [:index, :retry]
@@ -38,21 +40,6 @@ class InvoicesController < ApplicationController
 
     respond_with(@invoices) do |format|
       format.html { redirect_to sites_url }
-    end
-  end
-
-  private
-
-  def _retry_invoices(invoices)
-    if invoices.present?
-      transaction = Transaction.charge_by_invoice_ids(invoices.map(&:id))
-      if transaction.paid?
-        flash[:notice] = t('invoice.retry_succeed')
-      else
-        flash[:alert] = t("transaction.errors.#{transaction.state}")
-      end
-    else
-      flash[:notice] = t('invoice.no_invoices_to_retry')
     end
   end
 

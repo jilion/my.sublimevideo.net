@@ -1,6 +1,8 @@
 require 'has_scope'
 
 class PrivateApi::SitesController < SublimeVideoPrivateApiController
+  include ApisControllerHelper
+
   before_filter :_set_sites, only: [:index]
   before_filter :_set_site, only: [:show, :add_tag]
 
@@ -11,21 +13,18 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   # GET /private_api/sites
   def index
-    expires_in 2.minutes, public: true
-    respond_with(@sites)
+    _with_cache_control { respond_with(@sites) }
   end
 
   # GET /private_api/sites/tokens
   def tokens
     @sites = apply_scopes(Site.with_state('active'))
-    expires_in 2.minutes, public: true
-    respond_with(@sites.pluck(:token))
+    _with_cache_control { respond_with(@sites.pluck(:token)) }
   end
 
   # GET /private_api/sites/:id
   def show
-    expires_in 2.minutes, public: true
-    respond_with(@site) if stale?(@site)
+    _with_cache_control { respond_with(@site) if stale?(@site) }
   end
 
   # PUT /private_api/sites/:id/add_tag

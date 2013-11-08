@@ -3,7 +3,7 @@
     %small= link_to "##{invoice.id}", [:admin, invoice]
 
   %td.reference
-    %small= link_to invoice.reference, [:admin, invoice]
+    %small= link_to invoice.reference, [:edit, :admin, invoice]
 
   %td.user
     %small

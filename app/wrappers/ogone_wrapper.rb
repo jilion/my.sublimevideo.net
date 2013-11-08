@@ -4,13 +4,16 @@ require 'custom_ogone_gateway'
 module OgoneWrapper
 
   STATUS = {
-    '46' => :waiting_3d_secure,
-    '5'  => :authorized,
-    '51' => :waiting,
     '0'  => :invalid,
-    '2'  => :refused,
     '1'  => :canceled,
-    '52' => :uncertain
+    '2'  => :refused, # auth refused
+    '5'  => :authorized,
+    '9'  => :requested,
+    '46' => :waiting_3d_secure,
+    '51' => :waiting, # auth waiting
+    '52' => :uncertain, # auth unknown
+    '92' => :uncertain, # payment uncertain
+    '93' => :refused # payment refused
   }
 
   class << self

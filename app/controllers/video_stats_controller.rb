@@ -6,7 +6,7 @@ class VideoStatsController < ApplicationController
 
   etag { current_user.id }
 
-  # GET /sites/:site_id/videos/:id/stats
+  # GET /sites/:site_id/videos/:video_tag_id/stats
   def index
     @stats_presenter = VideoStatsPresenter.new(@video_tag, params)
 

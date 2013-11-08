@@ -30,6 +30,17 @@ class SitesPopulator < Populator
         Timecop.return
         puts "#{site.hostname} created for #{user.name}"
       end
+
+      url = 'https://my.sublimevideo.net/private_api/sites.json?select[]=token&with_addon_plan=stats-realtime&by_last_30_days_billable_video_views=desc'
+      sites = JSON[`curl -g -H 'Authorization: Token FJUs29vEt28GaRTrJh8mzeH8yQJM3TUZ' #{url}`]
+      realtime_stats_addon_plan = AddonPlan.get('stats', 'realtime')
+
+      sites.each do |site|
+        puts "Create site #{site['hostname']} [#{site['token']}] with the real-time stats add-on"
+        site = user.sites.build(hostname: site['hostname'])
+        service = SiteManager.new(site).tap { |s| s.create; s.update_column(:token, site['token']) }
+        service.update_billable_items({}, { 'stats' => realtime_stats_addon_plan.id }, { force: 'sponsored' })
+      end
     end
 
     sv_site = User.first.sites.first

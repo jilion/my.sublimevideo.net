@@ -1,21 +1,52 @@
 = title_and_content_header("Invoice ##{@invoice.reference} - #{invoice_dates(@invoice)} (#{link_to(@invoice.user.name_or_email, [:admin, @invoice.user])})")
 
-%h2 TODO
 %h3= charging_status(@invoice)
 
--#.spacer
--#
--#
--#%br
--#%hr
--#%br
--#
--#-#= render "/invoices/sites", invoice: @invoice
--#
--#-#= render "/invoices/total", invoice: @invoice
--#
--#%br
--#%hr
--#%br
+%h4 Bill To
+= render 'invoices/customer_billing_info', invoice: @invoice
 
-%p= link_to "Back to invoices", [:admin, :invoices]
+= render 'invoices/details', invoice: @invoice
+
+%h4 Transactions
+%table.main#transactions
+  %tr
+    %th ID
+    %th Order id
+    %th Error
+    %th Credit card
+    %th Pay ID
+    %th NC status
+    %th Status
+    %th Created at
+    %th Amount
+    %th State
+  - @invoice.transactions.order('created_at desc').each do |transaction|
+    %tr
+      %td= transaction.id
+      %td= transaction.order_id
+      %td= transaction.error
+      %td= "#{transaction.cc_type} / #{transaction.cc_last_digits} / #{transaction.cc_expire_on}"
+      %td= transaction.pay_id
+      %td= transaction.nc_status
+      %td
+        = transaction.status
+        = "(#{OgoneWrapper.status[transaction.status.to_s]})"
+      %td= display_time(transaction.created_at)
+      %td= display_amount(transaction.amount)
+      %td.state
+        %small
+          - case transaction.state
+          - when 'open', 'waiting_d3d', 'waiting'
+            %span{ style: "color:orange" }= transaction.state
+          - when 'failed'
+            %strong{ style: "color:red" }= transaction.state
+            = " (#{invoice.transactions.failed.size}/15)"
+          - when 'paid'
+            %span{ style: "color:green" }= transaction.state
+
+- if @invoice.failed?
+  = form_for [:retry_charging, :admin, @invoice] do |f|
+    = f.submit 'Retry charging'
+
+%p= link_to "Back to #{@invoice.site.hostname} invoices", admin_invoices_url(site_id: @invoice.site.id)
+%p= link_to "Back to all invoices", [:admin, :invoices]
