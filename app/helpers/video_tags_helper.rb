@@ -44,6 +44,7 @@ module VideoTagsHelper
 
   def video_tag_thumbnail(video_tag, options = {})
     if video_tag.poster_url?
+      options.merge!(onerror: "this.onerror=null;this.src='#{image_path('video_tag/no-poster.png')}';")
       proxied_image_tag(video_tag.poster_url, options)
     else
       image_tag('video_tag/no-poster.png', { alt: 'no poster' }.merge(options))
