@@ -151,7 +151,7 @@ class Site < ActiveRecord::Base
   scope :by_state,                     ->(way = 'desc') { order("#{quoted_table_name()}.state #{way}") }
   scope :by_date,                      ->(way = 'desc') { order("#{quoted_table_name()}.created_at #{way}") }
   scope :by_last_30_days_video_tags,   ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_video_tags #{way}") }
-  scope :by_last_30_days_starts,       ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_starts #{way}") }
+  scope :by_last_30_days_starts,       ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_starts #{way} NULLS LAST") }
   scope :by_last_30_days_admin_starts, ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_admin_starts #{way}") }
 
   scope :with_min_admin_starts, ->(min) { where("sites.last_30_days_admin_starts >= ?", min) }
