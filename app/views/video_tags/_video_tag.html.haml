@@ -15,7 +15,7 @@
               = 'Untitled Video'
           .hosted_on
             = "Hosted on"
-            %em= video_tag.hosted_by || 'unknown domain'
+            %em= truncate(video_tag.hosted_by, length: 39) || 'unknown domain'
           .uid
             uid:
             %strong= video_tag.uid
