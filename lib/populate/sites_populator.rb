@@ -31,17 +31,18 @@ class SitesPopulator < Populator
         puts "#{site.hostname} created for #{user.name}"
       end
 
-      url = 'https://my.sublimevideo.net/private_api/sites.json?select[]=token&with_addon_plan=stats-realtime&by_last_30_days_billable_video_views=desc'
-      sites = JSON[`curl -g -H 'Authorization: Token FJUs29vEt28GaRTrJh8mzeH8yQJM3TUZ' #{url}`]
+      url = 'https://my.sublimevideo.net/private_api/sites.json?select[]=token&with_addon_plan=stats-realtime&by_last_30_days_billable_video_views=desc&per=50'
+      sites = JSON[`curl -g -H 'Authorization: Token FJUs29vEt28GaRTrJh8mzeH8yQJM3TUZ' "#{url}"`]
       realtime_stats_addon_plan = AddonPlan.get('stats', 'realtime')
 
-      sites.each do |site|
-        puts "Create site #{site['hostname']} [#{site['token']}] with the real-time stats add-on"
-        site = user.sites.build(hostname: site['hostname'])
+      sites.each do |site_data|
+        puts "Create site #{site_data['hostname']} [#{site_data['token']}] with the real-time stats add-on"
+        site = user.sites.build(hostname: site_data['hostname'])
         service = SiteManager.new(site)
         service.create
-        service.site.site.update_column(:token, site['token'])
         service.update_billable_items({}, { 'stats' => realtime_stats_addon_plan.id }, { force: 'sponsored' })
+        service.site.update_column(:token, site_data['token'])
+        SiteCountersUpdater.new(service.site).update
       end
     end
 
