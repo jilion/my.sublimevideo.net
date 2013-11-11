@@ -11,8 +11,9 @@ class SiteCountersUpdater
     end
   end
 
-  def self.update(site)
-    new(Site.find(site_id)).update
+  def self.update(site_id)
+    site = Site.find(site_id)
+    new(site).update
   end
 
   def update
@@ -37,13 +38,13 @@ class SiteCountersUpdater
   end
 
   def _update_starts
-    if site.last_30_days_admin_starts > 0
-      last_starts = SiteStat.last_days_starts(site, 30)
+    if _realtime_stats?
+      last_starts = site.last_30_days_admin_starts > 0 ? SiteStat.last_days_starts(site, 30) : 30.times.map { 0 }
     else
-      last_starts = 30.times.map { 0 }
+      last_starts = []
     end
     site.last_30_days_starts_array = last_starts
-    site.last_30_days_starts = last_starts.sum
+    site.last_30_days_starts = last_starts.present? ? last_starts.sum : nil
   end
 
   def _update_video_tags
@@ -53,6 +54,10 @@ class SiteCountersUpdater
       last_video_tags = 0
     end
     site.last_30_days_video_tags = last_video_tags
+  end
+
+  def _realtime_stats?
+    site.subscribed_to?(AddonPlan.get('stats', 'realtime'))
   end
 
 end

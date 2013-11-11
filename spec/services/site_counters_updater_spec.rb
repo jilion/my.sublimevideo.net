@@ -5,9 +5,17 @@ require 'support/matchers/sidekiq_matchers'
 
 require 'services/site_counters_updater'
 
+SiteAdminStat = Class.new unless defined?(SiteAdminStat)
+AddonPlan = Class.new unless defined?(AddonPlan)
+SiteStat = Class.new unless defined?(SiteStat)
+VideoTag = Class.new unless defined?(VideoTag)
+Site = Class.new unless defined?(Site)
+
 describe SiteCountersUpdater do
   let(:site) { double(:site, id: 2).as_null_object }
   let(:updater) { SiteCountersUpdater.new(site).update }
+
+  before { AddonPlan.stub(:get) }
 
   describe '.update_not_archived_sites' do
     it 'calls #update and #update_not_archived_sites on each non-archived sites' do
@@ -70,16 +78,34 @@ describe SiteCountersUpdater do
     context "with some last_30_days_admin_starts" do
       before { site.stub(:last_30_days_admin_starts) { 1 } }
 
-      it "updates last_30_days_starts_array from SiteStat" do
-        expect(SiteStat).to receive(:last_days_starts).with(site, 30) { [1,2,3] }
-        expect(site).to receive(:last_30_days_starts_array=).with([1,2,3])
-        updater.update
+      context "with realtime stats addon" do
+        before { site.stub(:subscribed_to?) { true } }
+
+        it "updates last_30_days_starts_array from SiteStat" do
+          expect(SiteStat).to receive(:last_days_starts).with(site, 30) { [1,2,3] }
+          expect(site).to receive(:last_30_days_starts_array=).with([1,2,3])
+          updater.update
+        end
+
+        it "updates last_30_days_starts from SiteStat" do
+          expect(SiteStat).to receive(:last_days_starts).with(site, 30) { [1,2,3] }
+          expect(site).to receive(:last_30_days_starts=).with(6)
+          updater.update
+        end
       end
 
-      it "updates last_30_days_starts from SiteStat" do
-        expect(SiteStat).to receive(:last_days_starts).with(site, 30) { [1,2,3] }
-        expect(site).to receive(:last_30_days_starts=).with(6)
-        updater.update
+      context "without realtime stats addon" do
+        before { site.stub(:subscribed_to?) { false } }
+
+        it "sets last_30_days_starts_array to empty array" do
+          expect(site).to receive(:last_30_days_starts_array=).with([])
+          updater.update
+        end
+
+        it "sets last_30_days_starts to nil" do
+          expect(site).to receive(:last_30_days_starts=).with(nil)
+          updater.update
+        end
       end
 
       it "updates last_30_days_video_tags from VideoTag" do
