@@ -1,5 +1,5 @@
 class VideoStatsController < ApplicationController
-  before_filter :redirect_suspended_user, :require_video_early_access, :_set_site, :_set_video_tag, only: [:index]
+  before_filter :redirect_suspended_user, :_set_site, :_set_video_tag, only: [:index]
   before_filter :_redirect_user_without_stats_addon, :_set_sites_or_redirect_to_new_site, only: [:index]
 
   respond_to :html, :js, :csv

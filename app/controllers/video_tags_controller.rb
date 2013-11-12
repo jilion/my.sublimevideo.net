@@ -3,7 +3,6 @@ class VideoTagsController < ApplicationController
 
   skip_before_filter :authenticate_user!, if: :demo_site?
   before_filter :redirect_suspended_user
-  before_filter :require_video_early_access, only: [:index]
   before_filter :_set_site
   before_filter :_set_sites_or_redirect_to_new_site, only: [:index]
   before_filter :_set_video_tag, only: [:show]
