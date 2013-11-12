@@ -107,6 +107,7 @@ gem 'haml_coffee_assets'
 gem 'sass-rails'
 gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails'
+gem 'uglifier'
 
 group :production do
   gem 'rack-google-analytics', github: 'leehambley/rack-google-analytics'
