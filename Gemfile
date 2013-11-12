@@ -42,7 +42,6 @@ gem 'oauth-plugin', github: 'pelle/oauth-plugin' # Rails 4 support
 
 # Internals
 gem 'sidekiq'
-# gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
