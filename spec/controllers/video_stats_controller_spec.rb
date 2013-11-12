@@ -5,37 +5,10 @@ describe VideoStatsController do
   it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], { get: [:index] }, site_id: '1', video_tag_id: '1'
   it_behaves_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:index] }, site_id: '1', video_tag_id: '1'
   it_behaves_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:index] }, site_id: '1', video_tag_id: '1'
-  it_behaves_like "redirect when connected as", 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1', video_tag_id: '1'
 
   context 'user logged-in' do
     before do
-      sign_in authenticated_user(early_access: [])
-    end
-
-    context 'without early access to video' do
-      context 'without any site' do
-        it 'redirects to root' do
-          get :index, site_id: '1', video_tag_id: '1'
-          response.should redirect_to root_path
-        end
-      end
-
-      context 'with sites' do
-        before do
-          @site = create(:site, user: @authenticated_user, created_at: 3.days.ago)
-        end
-
-        it 'redirects to root' do
-          get :index, site_id: @site.token, video_tag_id: '1'
-          response.should redirect_to root_path
-        end
-      end
-    end
-  end
-
-  context 'with early access to video' do
-    before do
-      sign_in authenticated_user(early_access: ['video'])
+      sign_in authenticated_user
       @site = create(:site, user: @authenticated_user)
       video_tag = double(uid: '1', site_token: @site.token, sources: [])
       expect(VideoTag).to receive(:find).with('1', _site_token: @site.token) { video_tag }

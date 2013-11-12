@@ -6,8 +6,6 @@ describe VideoTagsController do
   it_behaves_like 'redirect when connected as', 'http://my.test.host/suspended', [[:user, state: 'suspended']], verb_and_actions, site_id: '1', id: '2'
   it_behaves_like 'redirect when connected as', 'http://my.test.host/login', [:guest], verb_and_actions, site_id: '1', id: '2'
 
-  it_behaves_like 'redirect when connected as', 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1'
-
   context 'logged-in' do
     let(:user) { create(:user) }
     let(:site) { create(:site, user: user) }
