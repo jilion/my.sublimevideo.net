@@ -40,8 +40,6 @@ feature 'Kits page' do
 end
 
 feature 'New kit' do
-  use_vcr_cassette "kits/new"
-
   background do
     sign_in_as :user_with_site
     @site = @current_user.sites.last

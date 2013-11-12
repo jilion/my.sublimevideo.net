@@ -1,0 +1,8 @@
+%h3 Active pages
+
+%table
+  %tr
+    %th{ style: "width:80%;" } Last active URLs
+    - SiteAdminStat.last_pages(site).each do |page|
+      %tr
+        %td{ style: "width:100%; text-align:left;" }= link_to truncate(page, length: 200), page

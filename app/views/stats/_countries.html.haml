@@ -1,0 +1,17 @@
+#countries
+  .graph_box
+    %h4.title Countries
+    .content.content_wrap
+      - if stats.empty?
+        %p.empty No plays.
+      - else
+        %ul
+          - stats.each do |country_code, data|
+            %li
+              %span.bar{ class: stats_class_for_visual_percentage(data[:percent]), style: stats_style_for_horizontal_visual_percentage(data[:percent]) }
+              %span.wrap
+                %span.country{ style: stats_country_style(country_code) }
+                %span.title{ title: stats_country_name(country_code) }= truncate(stats_country_name(country_code), length: 21)
+                %span.value
+                  %span.percent= display_percentage(data[:percent], strip_insignificant_zeros: false)
+                  %span.metric= formatted_pluralize(data[:count], 'play')

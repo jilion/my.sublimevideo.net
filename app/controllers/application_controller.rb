@@ -2,14 +2,15 @@ require 'core_ext/hash/try_keys'
 
 class ApplicationController < ActionController::Base
   include SublimeVideoLayout::EngineHelper
-  include RedirectionFiltersControllerHelper
-  include EarlyAccessControllerHelper
-  include SitesControllerHelper
-  include VideosControllerHelper
-  include PaperTrailControllerHelper
   include CookiesControllerHelper
   include DealsControllerHelper
+  include EarlyAccessControllerHelper
+  include PaperTrailControllerHelper
+  include RedirectionFiltersControllerHelper
+  include SitesControllerHelper
+  include StatsControllerHelper
   include TransactionControllerHelper
+  include VideosControllerHelper
   include DisplayCase::ExhibitsHelper
 
   helper :all

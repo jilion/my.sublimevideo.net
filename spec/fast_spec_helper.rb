@@ -22,4 +22,6 @@ unless defined?(Librato)
 end
 
 require 'bundler/setup'
+require 'dotenv'
+Dotenv.load ".env.#{Rails.env}", '.env'
 require_relative 'config/rspec'

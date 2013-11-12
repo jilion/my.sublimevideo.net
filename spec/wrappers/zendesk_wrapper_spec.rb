@@ -4,7 +4,7 @@ require 'config/vcr'
 
 require 'wrappers/zendesk_wrapper'
 
-describe ZendeskWrapper do
+describe ZendeskWrapper, :vcr do
   let(:ticket_params) {
     { subject: 'SUBJECT', comment: { value: 'DESCRIPTION' }, tags: ['email-support'], requester: { name: 'Remy', email: 'user@example.com' } }
   }
@@ -13,13 +13,9 @@ describe ZendeskWrapper do
   let(:ticket_response)     { described_class.ticket(ticket_id) }
   let(:user_response)       { described_class.user(requester_id) }
 
-  before {
-    Librato.stub(:increment)
-  }
+  before { Librato.stub(:increment) }
 
   describe '.tickets' do
-    use_vcr_cassette 'zendesk_wrapper/tickets'
-
     it 'returns the wanted ticket' do
       tickets = described_class.tickets.page(1).per_page(100)
       tickets.first.should be_a(ZendeskAPI::Ticket)
@@ -27,8 +23,6 @@ describe ZendeskWrapper do
   end
 
   describe '.ticket' do
-    use_vcr_cassette 'zendesk_wrapper/ticket'
-
     it 'returns the wanted ticket' do
       ticket_response.subject.should eq 'SUBJECT'
     end
@@ -36,8 +30,6 @@ describe ZendeskWrapper do
 
   describe '.create_ticket' do
     context 'without uploaded files' do
-      use_vcr_cassette 'zendesk_wrapper/create_ticket'
-
       it 'returns the created ticket' do
         @zd_ticket = described_class.create_ticket(ticket_params)
 
@@ -50,13 +42,9 @@ describe ZendeskWrapper do
     end
 
     context 'with uploaded files' do
-      use_vcr_cassette 'zendesk_wrapper/create_ticket_with_uploaded_files'
-
       before do
-        @foo = fixture_file('foo.jpg', 'wb') { |f| f.write 'foo' }
-        @foo.stub(:original_filename) { 'foo.jpg' }
-        @bar = fixture_file('bar.jpg', 'wb') { |f| f.write 'bar' }
-        @bar.stub(:original_filename) { 'bar.jpg' }
+        @foo = fixture_file('foo.jpg')
+        @bar = fixture_file('bar.jpg')
       end
 
       it 'returns the created ticket' do
@@ -67,8 +55,6 @@ describe ZendeskWrapper do
   end
 
   describe '.user' do
-    use_vcr_cassette 'zendesk_wrapper/user'
-
     it 'returns the user' do
       user_response.email.should eq 'remy@jilion.com'
       user_response.id.should eq 17650353
@@ -77,9 +63,7 @@ describe ZendeskWrapper do
 
   describe '.create_user' do
     context 'user has no name' do
-      use_vcr_cassette 'zendesk_wrapper/create_user_without_a_name'
       let(:user) { double(id: 1234, email: 'user10@example.org', name_or_email: 'user10@example.org') }
-
       after { described_class.destroy_user(@zd_user.id) }
 
       it 'creates the user and verifies him' do
@@ -93,9 +77,7 @@ describe ZendeskWrapper do
     end
 
     context 'user has a name' do
-      use_vcr_cassette 'zendesk_wrapper/create_user'
       let(:user) { double(id: 1234, email: 'user7@example.org', name_or_email: 'User Example') }
-
       after { described_class.destroy_user(@zd_user.id) }
 
       it 'creates the user and verifies him' do
@@ -113,22 +95,19 @@ describe ZendeskWrapper do
 
     describe 'update name' do
       let(:user) { double(id: 4321, email: '1231231231231@example.org', name_or_email: 'Remy Coutable') }
-      before { VCR.use_cassette('zendesk_wrapper/reset_user') { @zd_user = described_class.create_user(user) } }
-      after { VCR.use_cassette('zendesk_wrapper/reset_user') { described_class.destroy_user(@zd_user.id) } }
-      use_vcr_cassette 'zendesk_wrapper/update_user_name'
+      before { @zd_user = described_class.create_user(user) }
+      after { described_class.destroy_user(@zd_user.id) }
 
       it 'updates the user name' do
         described_class.update_user(@zd_user.id, name: 'John Doe')
-
         described_class.user(@zd_user.id).name.should eq 'John Doe'
       end
     end
 
     describe 'update email' do
       let(:user) { double(id: 3210, email: '321321321@example.org', name_or_email: 'Remy Coutable') }
-      before { VCR.use_cassette('zendesk_wrapper/reset_user2') { @zd_user = described_class.create_user(user) } }
-      after { VCR.use_cassette('zendesk_wrapper/reset_user2') { described_class.destroy_user(@zd_user.id) } }
-      use_vcr_cassette 'zendesk_wrapper/update_user_email'
+      before { @zd_user = described_class.create_user(user) }
+      after { described_class.destroy_user(@zd_user.id) }
 
       it 'update the user email and set his last identity as primary' do
         described_class.update_user(@zd_user.id, email: 'user43210@example.org')
@@ -143,9 +122,7 @@ describe ZendeskWrapper do
 
   describe '.destroy_user' do
     context 'user has a name' do
-      use_vcr_cassette 'zendesk_wrapper/destroy_user'
       let(:user) { double(id: 1234, email: 'user1234@example.org', name_or_email: 'User Example') }
-
       before { @zd_user = described_class.create_user(user) }
 
       it 'creates the user and verifies him' do
@@ -157,16 +134,12 @@ describe ZendeskWrapper do
   end
 
   describe '.search' do
-    use_vcr_cassette 'zendesk_wrapper/search'
-
     it 'returns the wanted tickets' do
-      described_class.search(query: "requester_id:#{requester_id}").should have(1).item
+      described_class.search(query: "requester_id:#{requester_id}").should have(6).item
     end
   end
 
   describe '.verify_user' do
-    use_vcr_cassette 'zendesk_wrapper/verify_user'
-
     it 'verify the user' do
       described_class.verify_user(requester_id)
 
@@ -180,5 +153,4 @@ describe ZendeskWrapper do
       described_class.send(:extract_ticket_id_from_location, location).should eq ticket_id
     end
   end
-
 end

@@ -90,7 +90,7 @@ AdminSublimeVideo.documentReady = ->
       event: 'mouseup'
 
     $rangeInput.on 'change', (event) ->
-      $('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger($rangeInput.val()))
+      $('label[for=with_min_admin_starts]').text(AdminSublimeVideo.Helpers.addCommasToInteger($rangeInput.val()))
 
 $(window).bind 'page:change', ->
   SublimeVideo.documentReady()

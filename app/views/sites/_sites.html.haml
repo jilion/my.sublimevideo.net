@@ -2,7 +2,7 @@
   .main_table_wrap
     %table.main
       %col
-      %col.usage
+      %col.stats
       %col.odd
       %col
       %col.odd
@@ -17,15 +17,15 @@
                 .sorting
                   = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
                   = link_to_sort :hostname
-          %th.usage
+          %th.stats
             .wrap
               - if @sites.one?
                 Plays (Last 30 Days)
               - else
-                .sorting= link_to_sort :last_30_days_billable_video_views, default_way: 'desc', label: "Plays (Last 30 Days)"
+                .sorting= link_to_sort :last_30_days_starts, default_way: 'desc', label: "Plays (Last 30 Days)"
           %th.videos
             .wrap
-              - if !early_access?('video') || @sites.one?
+              - if @sites.one?
                 Videos
               - else
                 .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"

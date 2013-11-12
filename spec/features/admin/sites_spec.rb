@@ -26,6 +26,7 @@ end
 
 feature 'Sites page' do
   background do
+    stub_site_stats
     sign_in_as :admin
     @site = create(:site) # this create a billable user
     create(:invoice, site: @site)

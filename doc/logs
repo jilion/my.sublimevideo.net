@@ -1,4 +1,0 @@
-license:      /js/{{token}}.js
-player js:    /p/sublime.js?t={{token}}
-player flash: /p/sublime.swf?t={{token}}
-player css:   /p/sublime.css?t={{token}}

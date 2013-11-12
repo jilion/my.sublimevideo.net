@@ -3,11 +3,9 @@ require 'config/vcr'
 
 require 'wrappers/campfire_wrapper'
 
-describe CampfireWrapper do
+describe CampfireWrapper, :vcr do
 
   describe '#room' do
-    use_vcr_cassette 'campfire/room'
-
     context 'with default room' do
       let(:wrapper) { described_class.new }
 
@@ -30,7 +28,6 @@ describe CampfireWrapper do
     let(:room_name) { 'Jilion'}
 
     context 'in production' do
-      use_vcr_cassette 'campfire/production_message'
       before { Rails.stub(:env) { 'production' } }
 
       it 'speaks to the room' do
@@ -40,7 +37,6 @@ describe CampfireWrapper do
     end
 
     context 'in staging' do
-      use_vcr_cassette 'campfire/staging_message'
       before { Rails.stub(:env) { 'staging' } }
 
       it 'speaks to the room' do

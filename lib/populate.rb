@@ -2,13 +2,11 @@
 require 'ffaker' if Rails.env.development?
 require 'populate/populator'
 require 'populate/populate_helpers'
-require 'populate/stats_populator'
 require 'populate/addon_plan_settings_populator'
 require 'populate/addon_system_populator'
 require 'populate/emails_populator'
 require 'populate/people_populator'
 require 'populate/invoices_populator'
-require 'populate/recurring_stats_populator'
 require 'populate/sites_populator'
 require 'populate/feedbacks_populator'
 require 'populate/trends_populator'
@@ -93,12 +91,6 @@ module Populate
     def video_tags(user_login_or_site_token)
       _sites_from_user_login_or_site_token(user_login_or_site_token).each do |site|
         SiteCountersUpdater.new(site).update_last_30_days_video_tags_counters
-      end
-    end
-
-    def stats(user_login_or_site_token)
-      _sites_from_user_login_or_site_token(user_login_or_site_token).each do |site|
-        StatsPopulator.new.execute(site)
       end
     end
 

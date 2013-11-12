@@ -36,7 +36,7 @@ class AdminSublimeVideo.Routers.TrendsRouter extends Backbone.Router
     AdminSublimeVideo.trends["billable_items"]              = new AdminSublimeVideo.Collections.BillableItemsTrends(this.selectedSeriesFor('billable_items'))
     AdminSublimeVideo.trends["users"]                       = new AdminSublimeVideo.Collections.UsersTrends(this.selectedSeriesFor('users'))
     AdminSublimeVideo.trends["sites"]                       = new AdminSublimeVideo.Collections.SitesTrends(this.selectedSeriesFor('sites'))
-    AdminSublimeVideo.trends["site_stats"]                  = new AdminSublimeVideo.Collections.SiteStatsTrends(this.selectedSeriesFor('site_stats'))
+    AdminSublimeVideo.trends["site_admin_stats"]            = new AdminSublimeVideo.Collections.SiteAdminStatsTrends(this.selectedSeriesFor('site_admin_stats'))
     AdminSublimeVideo.trends["site_usages"]                 = new AdminSublimeVideo.Collections.SiteUsagesTrends(this.selectedSeriesFor('site_usages'))
     AdminSublimeVideo.trends["tweets"]                      = new AdminSublimeVideo.Collections.TweetsTrends(this.selectedSeriesFor('tweets'))
     AdminSublimeVideo.trends["tailor_made_player_requests"] = new AdminSublimeVideo.Collections.TailorMadePlayerRequestsTrends(this.selectedSeriesFor('tailor_made_player_requests'))

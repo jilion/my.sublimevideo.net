@@ -4,15 +4,14 @@
 #= require mousetrap.min
 #= require jquery.timeago
 #= require backbone
+#= require jquery.sparkline.min
 #
 #= require_self
 #= require_tree ./helpers
-#= require_tree ./models
 #= require_tree ./ui
 #
-#= require stats
 #= require video_code
-#= require video_stats
+#= require stats
 #
 #= require turbolinks
 #= require google-analytics-turbolinks
@@ -36,7 +35,7 @@ window.spinOptions =
   shadow: false
 
 MySublimeVideo.UI.prepareFakeSelectors = ->
-  $('a.show_button, a.site_select').each ->
+  $('a.show_button, a.fake_select').each ->
     new MySublimeVideo.UI.FakeSelect($(this))
 
 MySublimeVideo.UI.prepareLoaderCodePopups = ->
@@ -93,7 +92,7 @@ MySublimeVideo.Helpers.prepareStatsPoller = ->
     MySublimeVideo.Helpers.statsPoller.teardown()
     delete MySublimeVideo.Helpers.statsPoller
 
-  if ($div = $('.stats.video')).exists()
+  if ($div = $('#stats')).exists()
     MySublimeVideo.Helpers.statsPoller = new MySublimeVideo.Helpers.StatsPoller($div)
 
 MySublimeVideo.documentReady = ->
@@ -112,7 +111,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareVideoTagsTable()
   MySublimeVideo.UI.TableSortLinks.setup()
   MySublimeVideo.Helpers.prepareStatsPoller()
-  MySublimeVideo.videoStatsReady()
+  MySublimeVideo.statsReady()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
@@ -120,7 +119,7 @@ MySublimeVideo.documentReady = ->
 
 MySublimeVideo.prepareVideosAndLightboxes = ->
   sublime.ready ->
-    $(".sublime").each (index, el) ->
+    $('.sublime').each (index, el) ->
       sublime.prepare el
   sublime.load()
 

@@ -17,9 +17,4 @@ namespace :scheduler do
     Scheduler.schedule_hourly_tasks
   end
 
-  desc "Schedule logs recurring download & parsing for the next 10 minures"
-  task :frequent => :environment do
-    Scheduler.schedule_frequent_tasks
-  end
-
 end

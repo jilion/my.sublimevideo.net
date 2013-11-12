@@ -35,7 +35,7 @@ group :backend do
       Thread.new do
         routes = `bundle exec rake routes`
         if $?.success?
-          File.open('routes.txt', 'w') do |f|
+          File.open('doc/routes.txt', 'w') do |f|
             f << routes
           end
           n 'Updated routes.txt', 'Computed new routes', :success

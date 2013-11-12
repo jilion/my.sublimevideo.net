@@ -1,9 +1,9 @@
 class Admin::UsersController < Admin::AdminController
-  respond_to :html, except: [:stats, :invoices, :support_requests]
-  respond_to :js, only: [:index, :stats, :invoices, :support_requests]
+  respond_to :html, except: [:invoices, :support_requests]
+  respond_to :js, only: [:index, :invoices, :support_requests]
 
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :_set_user, only: [:update, :destroy, :become, :stats, :invoices, :support_requests, :new_support_request, :oauth_revoke]
+  before_filter :_set_user, only: [:update, :destroy, :become, :invoices, :support_requests, :new_support_request, :oauth_revoke]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
@@ -66,10 +66,6 @@ class Admin::UsersController < Admin::AdminController
     sign_in(@user, bypass: true)
 
     redirect_to root_url(subdomain: 'my')
-  end
-
-  # GET /users/:id/stats
-  def stats
   end
 
   # GET /users/:id/invoices

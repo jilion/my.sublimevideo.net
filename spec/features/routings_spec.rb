@@ -37,12 +37,11 @@ feature 'Redirects' do
       current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
     end
 
-    %w[stats sites/stats/demo].each do |page|
-      scenario "redirect /#{page} to /stats-demo" do
-        go 'my', page
+    scenario "redirect /stats to /stats-demo" do
+      stub_site_stats
+      go 'my', 'stats'
 
-        current_url.should eq 'http://my.sublimevideo.dev/stats-demo'
-      end
+      current_url.should eq 'http://my.sublimevideo.dev/stats-demo'
     end
 
     scenario 'redirect /support to /help' do
@@ -76,21 +75,6 @@ feature 'Redirects' do
       go 'my', "/sites/#{@site.to_param}/publish-video"
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
-    end
-
-    scenario 'redirect /sites/stats to /sites' do
-      go 'my', 'sites/stats'
-
-      current_url.should eq 'http://my.sublimevideo.dev/sites'
-    end
-
-    scenario 'redirect /sites/stats/:site_id to /sites' do
-      go 'my', "/sites/#{@site.to_param}/addons"
-      check "addon_plans_stats_#{@stats_addon_plan_2.name}"
-      click_button 'Confirm selection'
-      go 'my', "sites/stats/#{@site.to_param}"
-
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/stats"
     end
   end
 end

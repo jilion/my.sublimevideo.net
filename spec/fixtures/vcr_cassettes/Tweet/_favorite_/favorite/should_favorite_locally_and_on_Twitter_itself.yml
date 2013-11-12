@@ -1,0 +1,162 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.twitter.com/1.1/favorites/create.json
+    body:
+      encoding: US-ASCII
+      string: id=56351930166935552
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Twitter Ruby Gem 4.8.1
+      Authorization:
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="bc3b9879230d454875a02e7c7527b56c",
+        oauth_signature="AHKnUvTvOj1dNDW%2FBIeHTfrwfN0%3D", oauth_signature_method="HMAC-SHA1",
+        oauth_timestamp="1380202179", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI",
+        oauth_version="1.0"
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Content-Length:
+      - '1156'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 26 Sep 2013 13:29:40 GMT
+      Etag:
+      - '"eaeefc06f4de78d3af5ffad85c4aec52"'
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Thu, 26 Sep 2013 13:29:40 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tfe
+      Set-Cookie:
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCIPwdVpBAToHaWQiJWM1NGJiMTU0OTFjN2Nj%250AYTFhOTg1ZTdmZTVjYjVkZWIyOgxjc3JmX2lkIiUyMTU1MTI4ZDlhZmM3NjU3%250AMDcwZWM1MGQ0ODAzM2M0Mg%253D%253D--ee6a5adafa8d6bef63381dcec559d3e2e21fec8b;
+        domain=.twitter.com; path=/; secure; HttpOnly
+      - dnt=; domain=.twitter.com; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      - guest_id=v1%3A138020218067835191; Domain=.twitter.com; Path=/; Expires=Sat,
+        26-Sep-2015 13:29:40 UTC
+      - lang=en; path=/
+      - lang=en; path=/
+      - lang=en; path=/
+      - twid=u%3D6797462%7C52a3%2B5i8pZ1S5jIP7%2BLjrSWj1x8%3D; domain=.twitter.com;
+        path=/; secure
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      Vary:
+      - Accept-Encoding
+      X-Access-Level:
+      - read-write
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Mid:
+      - a20a6380cea0178214427c499260f0ed21ee1834
+      X-Runtime:
+      - '0.19234'
+      X-Transaction:
+      - 276cb3818ce57b94
+      X-Transaction-Mask:
+      - a6183ffa5f8ca943ff1b53b5644ef114c7ca9a44
+      X-Xss-Protection:
+      - 1; mode=block
+    body:
+      encoding: UTF-8
+      string: '{"in_reply_to_status_id":null,"possibly_sensitive":false,"entities":{"user_mentions":[],"urls":[],"hashtags":[]},"user":{"friends_count":194,"entities":{"url":{"urls":[{"url":"http:\/\/t.co\/KjAxCKmUWZ","indices":[0,22],"display_url":"aheadcreative.com","expanded_url":"http:\/\/www.aheadcreative.com"}]},"description":{"urls":[{"expanded_url":"http:\/\/findmebyip.com","url":"http:\/\/t.co\/f3SP6miAA7","indices":[80,102],"display_url":"findmebyip.com"},{"expanded_url":"http:\/\/wordpress.org\/plugins\/bc-responsive-images","url":"http:\/\/t.co\/rRBZQvWKnQ","indices":[115,137],"display_url":"wordpress.org\/plugins\/bc-res\u2026"}]}},"default_profile_image":false,"name":"David
+        Smith","profile_background_image_url_https":"https:\/\/twimg0-a.akamaihd.net\/profile_background_images\/709482016\/e7a0a6c99a81f5039658bfc150d7257d.png","created_at":"Mon
+        Sep 08 15:31:49 +0000 2008","profile_background_image_url":"http:\/\/a0.twimg.com\/profile_background_images\/709482016\/e7a0a6c99a81f5039658bfc150d7257d.png","geo_enabled":false,"profile_link_color":"720505","screen_name":"get_dave","profile_image_url":"http:\/\/a0.twimg.com\/profile_images\/766381875\/ma20okv7_normal.jpg","id_str":"16185920","id":16185920,"default_profile":false,"profile_use_background_image":true,"statuses_count":5923,"lang":"en","verified":false,"profile_text_color":"3E4415","url":"http:\/\/t.co\/KjAxCKmUWZ","listed_count":43,"profile_sidebar_border_color":"FFFFFF","utc_offset":0,"is_translator":false,"followers_count":531,"location":"Bath,
+        UK","contributors_enabled":false,"following":false,"profile_background_tile":false,"protected":false,"notifications":false,"description":"Frontend
+        Developer living and working [just outside] Bath. Original designer of http:\/\/t.co\/f3SP6miAA7.
+        Creator of http:\/\/t.co\/rRBZQvWKnQ. Tech lead @ Burfield","profile_sidebar_fill_color":"99CC33","follow_request_sent":false,"time_zone":"London","favourites_count":370,"profile_background_color":"FFFFFF","profile_image_url_https":"https:\/\/twimg0-a.akamaihd.net\/profile_images\/766381875\/ma20okv7_normal.jpg"},"in_reply_to_screen_name":null,"place":null,"created_at":"Fri
+        Apr 08 13:45:21 +0000 2011","contributors":null,"favorited":true,"source":"\u003Ca
+        href=\"http:\/\/www.tweetdeck.com\" rel=\"nofollow\"\u003ETweetDeck\u003C\/a\u003E","id":56351930166935552,"possibly_sensitive_editable":true,"geo":null,"in_reply_to_user_id":null,"in_reply_to_status_id_str":null,"retweet_count":0,"truncated":false,"text":"SublimeVideo
+        looks like a neat resource for serving HTML5 video in a way that''s always
+        up to date and reliable http:\/\/bit.ly\/i8kVKt","in_reply_to_user_id_str":null,"id_str":"56351930166935552","retweeted":false,"coordinates":null}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 13:29:41 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/56351930166935552.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - Twitter Ruby Gem 4.8.1
+      Authorization:
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="bf5c0e8a581635110c86c6451155ca8d",
+        oauth_signature="%2FJqzm77lZ0EKUPFjSu1BfAYswRY%3D", oauth_signature_method="HMAC-SHA1",
+        oauth_timestamp="1380202181", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI",
+        oauth_version="1.0"
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Content-Length:
+      - '1132'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Thu, 26 Sep 2013 13:29:41 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Thu, 26 Sep 2013 13:29:41 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tfe
+      Set-Cookie:
+      - guest_id=v1%3A138020218160080413; Domain=.twitter.com; Path=/; Expires=Sat,
+        26-Sep-2015 13:29:41 UTC
+      - lang=en
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Access-Level:
+      - read-write
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Rate-Limit-Limit:
+      - '180'
+      X-Rate-Limit-Remaining:
+      - '177'
+      X-Rate-Limit-Reset:
+      - '1380203077'
+      X-Transaction:
+      - 256190938f96b6a6
+    body:
+      encoding: UTF-8
+      string: '{"created_at":"Fri Apr 08 13:45:21 +0000 2011","id":56351930166935552,"id_str":"56351930166935552","text":"SublimeVideo
+        looks like a neat resource for serving HTML5 video in a way that''s always
+        up to date and reliable http:\/\/bit.ly\/i8kVKt","source":"\u003ca href=\"http:\/\/www.tweetdeck.com\"
+        rel=\"nofollow\"\u003eTweetDeck\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":16185920,"id_str":"16185920","name":"David
+        Smith","screen_name":"get_dave","location":"Bath, UK","description":"Frontend
+        Developer living and working [just outside] Bath. Original designer of http:\/\/t.co\/f3SP6miAA7.
+        Creator of http:\/\/t.co\/rRBZQvWKnQ. Tech lead @ Burfield","url":"http:\/\/t.co\/KjAxCKmUWZ","entities":{"url":{"urls":[{"url":"http:\/\/t.co\/KjAxCKmUWZ","expanded_url":"http:\/\/www.aheadcreative.com","display_url":"aheadcreative.com","indices":[0,22]}]},"description":{"urls":[{"url":"http:\/\/t.co\/f3SP6miAA7","expanded_url":"http:\/\/findmebyip.com","display_url":"findmebyip.com","indices":[80,102]},{"url":"http:\/\/t.co\/rRBZQvWKnQ","expanded_url":"http:\/\/wordpress.org\/plugins\/bc-responsive-images","display_url":"wordpress.org\/plugins\/bc-res\u2026","indices":[115,137]}]}},"protected":false,"followers_count":531,"friends_count":194,"listed_count":43,"created_at":"Mon
+        Sep 08 15:31:49 +0000 2008","favourites_count":370,"utc_offset":3600,"time_zone":"London","geo_enabled":false,"verified":false,"statuses_count":5923,"lang":"en","contributors_enabled":false,"is_translator":false,"profile_background_color":"FFFFFF","profile_background_image_url":"http:\/\/a0.twimg.com\/profile_background_images\/709482016\/e7a0a6c99a81f5039658bfc150d7257d.png","profile_background_image_url_https":"https:\/\/si0.twimg.com\/profile_background_images\/709482016\/e7a0a6c99a81f5039658bfc150d7257d.png","profile_background_tile":false,"profile_image_url":"http:\/\/a0.twimg.com\/profile_images\/766381875\/ma20okv7_normal.jpg","profile_image_url_https":"https:\/\/si0.twimg.com\/profile_images\/766381875\/ma20okv7_normal.jpg","profile_link_color":"720505","profile_sidebar_border_color":"FFFFFF","profile_sidebar_fill_color":"99CC33","profile_text_color":"3E4415","profile_use_background_image":true,"default_profile":false,"default_profile_image":false,"following":false,"follow_request_sent":false,"notifications":false},"geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":0,"favorite_count":3,"entities":{"hashtags":[],"symbols":[],"urls":[],"user_mentions":[]},"favorited":true,"retweeted":false,"lang":"en"}'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 13:29:41 GMT
+recorded_with: VCR 2.6.0

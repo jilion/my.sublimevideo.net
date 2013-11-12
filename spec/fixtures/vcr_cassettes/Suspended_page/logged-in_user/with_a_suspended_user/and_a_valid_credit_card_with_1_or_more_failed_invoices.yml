@@ -1,0 +1,47 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/orderdirect.asp
+    body:
+      encoding: UTF-8
+      string: ALIAS=GM582C3J&COM=%23571yuzjz&ECI=9&EMAIL=email2%40user.com&Operation=SAL&OwnerZip=1004&Owneraddress=Avenue+de+France+71&PSPID=jilion&PSWD=WWQMNC89&SHASign=99E554CB0607B568E4E5B70F0294BBFCA3CC9BDB05BD9D0817E77AA90887977425377DD6C5127BD132C4BBF8E44F817F25186A10798EC858EE456CD1EA479092&USERID=sublime&amount=1990&currency=USD&orderID=9c51pgysbapcyx5wwz6g46f8z36amz&ownercty=CH&ownertown=Lausanne
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 02 Oct 2013 07:25:07 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '283'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 02 Oct 2013 07:24:07 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_485090132_0=1888819849_2211618;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?>\r\n<ncresponse\r\n\t\t\t\r\norderID=\"9c51pgysbapcyx5wwz6g46f8z36amz\"\r\nPAYID=\"0\"\r\nNCSTATUS=\"5\"\r\nNCERROR=\"50001111\"\r\nACCEPTANCE=\"\"\r\nSTATUS=\"0\"\r\nECI=\"9\"\r\namount=\"\"\r\ncurrency=\"USD\"\r\nPM=\"\"\r\nBRAND=\"\"\r\nALIAS=\"GM582C3J\"\r\nNCERRORPLUS=\"
+        Alias GM582C3J not Found\">\r\n</ncresponse>\r\n"
+    http_version: 
+  recorded_at: Wed, 02 Oct 2013 07:25:08 GMT
+recorded_with: VCR 2.6.0

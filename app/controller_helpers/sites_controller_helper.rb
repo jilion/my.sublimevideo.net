@@ -1,7 +1,7 @@
 module SitesControllerHelper
 
   def demo_site?
-    params[:site_id] == 'demo'
+    params[:site_id] == SiteToken[:www] && params[:demo]
   end
 
   def public_page?
@@ -35,7 +35,7 @@ module SitesControllerHelper
     return if public_page?
 
     @site = if demo_site?
-      Site.where(token: SiteToken[:www]).first!
+      Site.where(token: params[:site_id]).first!
     else
       current_user.sites.not_archived.where(token: params[:site_id] || params[:id]).first!
     end

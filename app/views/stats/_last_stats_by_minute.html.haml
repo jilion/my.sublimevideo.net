@@ -1,0 +1,13 @@
+%h3.title Last 60 minutes
+
+#last_60_minutes_plays_and_loads= render 'stats/last_60_minutes_plays_and_loads', stats_presenter: stats_presenter
+
+#last_plays
+  .graph_box
+    %h4.title Last plays
+    .content_wrap
+      - if stats_presenter.last_plays.empty?
+        %p.empty No plays.
+      - else
+        %ul= render partial: 'last_play', collection: stats_presenter.last_plays
+  .spacer

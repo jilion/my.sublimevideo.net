@@ -6,25 +6,17 @@ class SiteStatsController < ApplicationController
 
   # GET /sites/:site_id/stats
   def index
-    stats = Stat::Site.json(@site.token, period: params[:period] || 'minutes', demo: demo_site?)
+    @stats_presenter = SiteStatsPresenter.new(@site, params)
 
-    respond_to do |format|
-      format.html
-      format.json { render json: stats }
+    if stale?(last_modified: @stats_presenter.last_modified, etag: @stats_presenter.etag)
+      respond_to do |format|
+        format.html
+        format.js { render 'stats/index' }
+        format.csv do
+          send_file(*SiteStatsCsvPresenter.new(@site, @stats_presenter).as_sent_file)
+        end
+      end
     end
-  end
-
-  # GET /sites/:site_id/stats/videos
-  def videos
-    respond_to do |format|
-      format.json { render json: Stat::Video.top_videos(@site, params) }
-    end
-  end
-
-  private
-
-  def _redirect_user_without_stats_addon
-    redirect_to root_url unless @site.subscribed_to?(AddonPlan.get('stats', 'realtime'))
   end
 
 end

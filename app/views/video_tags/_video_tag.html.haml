@@ -15,12 +15,12 @@
               = 'Untitled Video'
           .hosted_on
             = "Hosted on"
-            %em= video_tag.hosted_by || 'unknown domain'
+            %em= truncate(video_tag.hosted_by, length: 39) || 'unknown domain'
           .uid
             uid:
             %strong= video_tag.uid
-    - cache [video_tag, last_starts_days, 'td_usage'] do
-      = render 'td_usage', site: @site, video_tag: video_tag
+    - cache [video_tag, last_starts_days, 'td_stats'] do
+      = render 'td_stats', site: @site, video_tag: video_tag
     - cache [video_tag, 'code_and_status'] do
       %td.code
         .wrap

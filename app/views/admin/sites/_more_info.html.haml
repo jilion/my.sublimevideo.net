@@ -1,0 +1,36 @@
+%h3 More info
+
+%table.left
+  %tr
+    %th
+      %h3 Starts
+    %th
+      %h3 App loads
+    %th
+      %h3 Video tags
+  %tr
+    %td
+      %p
+        Last 30 days:
+        = display_integer(site.last_30_days_admin_starts)
+      %p
+        All time:
+        = display_integer(SiteAdminStat.total_admin_starts(site))
+
+    %td
+      - %w[main extra staging dev invalid].each do |type|
+        %p
+          = "Last 30 days (#{type}):"
+          = display_integer(SiteAdminStat.last_30_days_admin_app_loads(site, type[0]))
+      %p
+        All time:
+        = display_integer(SiteAdminStat.total_admin_app_loads(site))
+
+    %td
+      %p
+        Last 30 days:
+        = display_integer(site.last_30_days_video_tags)
+      %p
+        All time:
+        = display_integer(VideoTag.count(_site_token: site.token))
+

@@ -1,1 +1,1 @@
-$('#active_pages').html "<%= j(render 'referrers_table', site: @site) %>"
+$('#active_pages').html "<%= j(render 'active_pages_table', site: @site) %>"

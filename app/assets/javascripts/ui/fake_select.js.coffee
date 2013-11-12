@@ -1,10 +1,11 @@
 class MySublimeVideo.UI.FakeSelect
-  constructor: (@handler) ->
+  constructor: (@$handler) ->
     this.setupObservers()
 
   setupObservers: ->
-    @handler.on 'click', =>
-      $actionList = @handler.siblings('ul.actions')
+    @$handler.off 'click'
+    @$handler.on 'click', =>
+      $actionList = @$handler.siblings('ul.actions')
       $allActionsList = $('ul.actions')
 
       $allActionsList.each (index, el) =>

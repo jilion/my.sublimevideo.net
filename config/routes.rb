@@ -22,7 +22,6 @@ def https_if_prod_or_staging
 end
 
 MySublimeVideo::Application.routes.draw do
-
   # Redirect to subdomains
   get '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
@@ -49,7 +48,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do
-          get :videos_infos
+          get :more_info
           get :invoices
           get :active_pages
           patch :generate_loader
@@ -58,16 +57,10 @@ MySublimeVideo::Application.routes.draw do
           patch :update_addon_plan_subscription
         end
       end
-      resources :referrers, only: [] do
-        collection do
-          get :pages
-        end
-      end
 
       resources :users, only: [:index, :show, :edit, :update, :destroy] do
         member do
           get :become
-          get :stats
           get :invoices
           get :support_requests
           get :new_support_request
@@ -99,13 +92,12 @@ MySublimeVideo::Application.routes.draw do
 
       resources :trends, only: [:index] do
         collection do
-          get :more
           get :billings
           get :revenues
           get :billable_items
           get :users
           get :sites
-          get :site_stats
+          get :site_admin_stats
           get :site_usages
           get :tweets
           get :tailor_made_player_requests
@@ -153,7 +145,6 @@ MySublimeVideo::Application.routes.draw do
         resources :kits, only: [:index]
       end
       resources :oauth2_tokens, only: [:show]
-      resources :referrers, only: [:index]
     end
 
     devise_for :users, module: 'users', controllers: { passwords: 'devise/passwords' }, path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
@@ -251,17 +242,8 @@ MySublimeVideo::Application.routes.draw do
     get  '/sites/new' => redirect('/assistant/new-site')
 
     get '/videos/new' => 'video_codes#new', as: 'new_video_code'
-    get '/stats-demo' => 'site_stats#index', site_id: 'demo'
+    get '/stats-demo' => 'site_stats#index', site_id: SiteToken[:www], demo: true
     get '/stats' => redirect('/stats-demo')
-
-    # old backbone route
-    scope 'sites/stats' do
-      get '/' => redirect('/sites')
-      get 'demo' => redirect('/stats-demo')
-      get ':site_id' => redirect { |params, req| "/sites/#{params[:site_id]}/stats" }
-    end
-
-    resources :stats_exports, only: [:create, :show], path: 'stats/exports'
 
     resources :invoices, only: [:show] do
       put :retry_all, on: :collection

@@ -1,5 +1,4 @@
 - if demo_site?
-  - @site.token = 'demo'
   - @body_class = @body_class.to_s + ' stats_demo'
   - title('Universal Real-Time Statistics', prefix: 'SublimeVideo')
   = content_for :header do
@@ -19,75 +18,18 @@
       This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on
       = link_to 'sublimevideo.net', layout_url('')
       from any device and see your activity logged in real-time on this page. Enjoy!
+
 - else
   - title("Stats for #{hostname_or_token(@site)}")
 
-.stats
-  :coffee
-    $(document).ready ->
-      # Enable pusher logging - don't include this in production
-      # Pusher.log = (message) ->
-      #  window.console.log(message) if (window.console && window.console.log)
-      # Flash fallback logging - don't include this in production
-      # WEB_SOCKET_DEBUG = true
+  = render '/layouts/site_header'
+  .big_break
 
-      window.MSVStats.pusher = new Pusher("#{PusherWrapper.key}", encrypted: true)
-      # window.MSVStats.pusherKey = "#{PusherWrapper.key}"
-      # MSVStats.pusher.connection.bind 'connected', ->
-      #   console.log 'Pusher connection connected'
-      # MSVStats.pusher.connection.bind 'failed', ->
-      #   console.log 'Pusher connection failed'
-
-      window.MSVStats.site = new MSVStats.Models.Site(#{@site.to_backbone_json})
-      window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
-
-  #trial
-
+#stats.stats{ data: { pusher_channel: pusher_channel } }
   - if demo_site?
-    #sites_select_title
-      %h2 Stats for sublimevideo.net
-  - else
-    = render '/layouts/site_header'
+    = content_header("Stats for #{hostname_or_token(@site)}")
 
-  #notices
-
-  %ul#period_selectors
-    %li.days365
-    %li.days30
-    %li.hours
-    %li.minutes
-    %li.seconds
-
-  .spacer
-  %p.days_period_note * Day periods are in UTC
-  #dates_range
-    %h3#time_range_title
-    #date_pickers
-  %ul#plays_and_loads_graph_legend
-  .spacer
-  #plays_and_loads
-    #plays_and_loads_graph
-    %p.note Note: Plays and visits from embeds are not considered.
-
+  #last_stats_by_minute= render 'stats/last_stats_by_minute', site: @site, stats_presenter: @stats_presenter
   .spacer
 
-  #top_videos
-    %h3.title#top_videos_title Most played videos
-    #top_videos_content
-    #playable_video
-  #top_videos_posterframe_cache{ style: "display: none" }
-
-  #browsers_and_platforms.graph_box
-    %h3.title Browser + OS
-    %h5.sub_title Based on page visits
-    #browsers_and_platforms_content.content
-
-  #md.graph_box
-    %h3.title HTML5 / Flash
-    %h5.sub_title Based on video loads
-    #md_content.content
-      #md_legend
-      #md_pie_chart
-
-  .spacer
-  #export_wrap
+  #last_stats_by_hour_or_day= render 'stats/last_stats_by_hour_or_day', site: @site, video_tag: nil, stats_presenter: @stats_presenter

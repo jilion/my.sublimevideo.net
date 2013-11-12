@@ -113,7 +113,7 @@ class LoaderGenerator
 
     initial_scope.all.where.not(token: (SiteToken.tokens + IMPORTANT_SITE_TOKENS)) # not important sites
     .select(:id).active.where(accessible_stage: Stage.stages_equal_or_less_stable_than(args[:stage]))
-    .order(last_30_days_main_video_views: :desc, created_at: :desc)
+    .order(last_30_days_admin_starts: :desc, created_at: :desc)
   end
 
   def _file

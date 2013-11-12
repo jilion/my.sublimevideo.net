@@ -3,8 +3,8 @@
 - sites = @sites.select { |site| site.id != @site.id && (request.url =~ /\/stats/ ? site.realtime_stats_active? : true) }
 
 - unless sites.empty?
-  .site_select_wrap
-    = link_to '', class: 'site_select' do
+  .fake_select_wrap
+    = link_to '', class: 'fake_select' do
       %span Show sites
     %ul.actions{ id: ['site_actions', @site.id], style: 'display:none' }
       - sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|

@@ -24,14 +24,12 @@ SitesTrend = Class.new unless defined?(SitesTrend)
 BillingsTrend = Class.new unless defined?(BillingsTrend)
 RevenuesTrend = Class.new unless defined?(RevenuesTrend)
 BillableItemsTrend = Class.new unless defined?(BillableItemsTrend)
-SiteStatsTrend = Class.new unless defined?(SiteStatsTrend)
+SiteAdminStatsTrend = Class.new unless defined?(SiteAdminStatsTrend)
 SiteUsagesTrend = Class.new unless defined?(SiteUsagesTrend)
 TweetsTrend = Class.new unless defined?(TweetsTrend)
 TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
 Tweet = Class.new unless defined?(Tweet)
 Tweet::KEYWORDS = ['rymai'] unless defined?(Tweet::KEYWORDS)
-Log = Class.new unless defined?(Log)
-Log::Voxcast = Class.new unless defined?(Log::Voxcast)
 
 
 describe Scheduler do
@@ -67,7 +65,7 @@ describe Scheduler do
 
     it "schedules TrialHandler.send_trial_will_expire_emails" do
       TrialHandler.should delay(:send_trial_will_expire_emails,
-        queue: 'my',
+        queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -75,23 +73,15 @@ describe Scheduler do
 
     it "schedules TrialHandler.activate_billable_items_out_of_trial" do
       TrialHandler.should delay(:activate_billable_items_out_of_trial,
-        queue: 'my',
+        queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules SiteCountersUpdater.set_first_billable_plays_at_for_not_archived_sites" do
-      SiteCountersUpdater.should delay(:set_first_billable_plays_at_for_not_archived_sites,
-        queue: 'my',
-        at: Time.now.utc.tomorrow.midnight.to_i
-      )
-      described_class.schedule_daily_tasks
-    end
-
-    it "schedules SiteCountersUpdater.update_last_30_days_counters_for_not_archived_sites" do
-      SiteCountersUpdater.should delay(:update_last_30_days_counters_for_not_archived_sites,
-        queue: 'my',
+    it "schedules SiteCountersUpdater.update_not_archived_sites" do
+      SiteCountersUpdater.should delay(:update_not_archived_sites,
+        queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -107,7 +97,7 @@ describe Scheduler do
 
     it "schedules User.send_emails" do
       CreditCardExpirationNotifier.should delay(:send_emails,
-        queue: 'my',
+        queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -115,7 +105,7 @@ describe Scheduler do
 
     it "schedules NewInactiveUserNotifier.send_emails" do
       NewInactiveUserNotifier.should delay(:send_emails,
-        queue: 'my',
+        queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
@@ -161,16 +151,8 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules SiteStatsTrend.create_trends" do
-      SiteStatsTrend.should delay(:create_trends,
-        at: Time.now.utc.tomorrow.midnight.to_i,
-        queue: 'my-low'
-      )
-      described_class.schedule_daily_tasks
-    end
-
-    it "schedules SiteUsagesTrend.create_trends" do
-      SiteUsagesTrend.should delay(:create_trends,
+    it "schedules SiteAdminStatsTrend.create_trends" do
+      SiteAdminStatsTrend.should delay(:create_trends,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: 'my-low'
       )
@@ -202,21 +184,6 @@ describe Scheduler do
     it "schedules TweetsSyncerWorker.perform_async" do
       TweetsSyncerWorker.should receive(:perform_in)
       described_class.schedule_hourly_tasks
-    end
-  end
-
-  describe ".schedule_frequent_tasks" do
-    it "schedules 10 times Log::Voxcast.delay_download_and_create_new_logs" do
-      Timecop.freeze do
-        10.times do |i|
-          Log::Voxcast.should delay(:download_and_create_new_logs,
-            queue: 'my-high',
-            at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
-          )
-        end
-
-        described_class.schedule_frequent_tasks
-      end
     end
   end
 end

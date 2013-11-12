@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://8844ec1803ffbe65bf192aa910e53d18:x@api.createsend.com/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body:
+      encoding: UTF-8
+      string: '{"EmailAddress":"user_subscribe3@example.org","Name":"User Subscribe","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":12},{"Key":"beta","Value":true},{"Key":"billable","Value":null}],"Resubscribe":true,"RestartSubscriptionBasedAutoresponders":false}'
+    headers:
+      User-Agent:
+      - createsend-ruby-3.4.0-2.0.0-p247-x86_64-darwin12.4.0
+      Content-Type:
+      - application/json; charset=utf-8
+      Accept-Encoding:
+      - gzip, deflate
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - csw
+      Cache-Control:
+      - private, s-maxage=0
+      Content-Type:
+      - application/json; charset=utf-8
+      P3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      Date:
+      - Thu, 26 Sep 2013 13:12:20 GMT
+      Content-Length:
+      - '29'
+    body:
+      encoding: UTF-8
+      string: '"user_subscribe3@example.org"'
+    http_version: 
+  recorded_at: Thu, 26 Sep 2013 13:12:20 GMT
+recorded_with: VCR 2.6.0

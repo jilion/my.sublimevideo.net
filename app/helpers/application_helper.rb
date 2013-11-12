@@ -6,35 +6,62 @@ module ApplicationHelper
     boolean == 0 || boolean.blank? || !boolean ? '–' : '✓'
   end
 
-  def display_date(date, options = { format: :d_b_Y })
-    content_tag(:strong, display_time(date, options))
+  def display_date(date, opts = {})
+    opts.reverse_merge!(format: :d_b_Y)
+
+    content_tag(:strong, display_time(date, opts))
   end
 
-  def display_time(date, options = { format: :minutes_y })
-    date ? l(date, format: options[:format]) : '–'
+  def display_time(date, opts = {})
+    opts.reverse_merge!(format: :minutes_y)
+
+    date ? l(date, format: opts[:format]) : '–'
   end
 
-  def display_integer(number, options = { significant: false, precision: 2 })
-    number_with_delimiter(number, options)
+  def display_integer(number, opts = {})
+    opts.reverse_merge!(precision: 2, significant: false)
+    number = number.to_i
+    thousand = number > 1_000_000
+
+    number = (number / 1_000_000.0).round(3) if thousand
+    number = number_with_delimiter(number, opts)
+    number += 'M' if thousand
+
+    number
   end
 
-  def display_percentage(fraction, options = {})
-    number_to_percentage(fraction * 100.0, precision: options[:precision] || 2, strip_insignificant_zeros: true)
+  def display_percentage(fraction, opts = {})
+    opts.reverse_merge!(precision: 2, strip_insignificant_zeros: true)
+    fraction ||= 0
+
+    percent = number_to_percentage(fraction * 100.0, precision: opts[:precision], strip_insignificant_zeros: opts[:strip_insignificant_zeros])
+
+    if !fraction.zero? && percent.sub(/%/, '').to_f < 0.01
+      '< 0.01%'
+    else
+      percent
+    end
   end
 
   def display_vat_percentage
     number_to_percentage(Vat.for_country(current_user.billing_country) * 100, precision: 0, strip_insignificant_zeros: true)
   end
 
-  def display_amount(amount_in_cents, options = {})
+  def display_amount(amount_in_cents, opts = {})
     number = amount_in_cents / 100.0
-    number_to_currency(number, precision: (!options[:decimals] && number == number.to_i ? 0 : options[:decimals] || 2))
+    decimals = !opts[:decimals] && number == number.to_i ? 0 : opts[:decimals] || 2
+
+    number_to_currency(number, precision: decimals)
   end
 
   def display_amount_with_sup(amount_in_cents)
     units    = amount_in_cents.to_i / 100
     decimals = amount_in_cents.to_i - (units * 100)
     "#{number_to_currency(units, precision: 0)}#{content_tag(:sup, ".#{decimals}") unless decimals.zero?}#{content_tag(:small, '/mo')}".html_safe
+  end
+
+  def formatted_pluralize(count, singular, plural = nil)
+    pluralize(count, singular, plural).sub(/\d+/) { |number| display_integer(number) }.html_safe
   end
 
   def info_box(options = {}, &block)
@@ -83,7 +110,7 @@ module ApplicationHelper
   def url_host(url)
     URI(url).host
   rescue
-    url
+    url.gsub(%r{https?://([^/]*)/.*}, '\1')
   end
 
 end

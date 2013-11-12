@@ -22,10 +22,6 @@ module Admin::AdminHelper
     end
   end
 
-  def formatted_pluralize(count, singular, plural = nil)
-    pluralize(count, singular, plural).sub(/\d+/) { |number| display_integer(number) }.html_safe
-  end
-
   def display_tags_list(tags, filter_name = :tagged_with)
     links = tags.reduce([]) do |a, e|
       a << link_to("#{e.name} (#{display_integer(e.count)})", "/docs?#{filter_name}=#{e.name}")

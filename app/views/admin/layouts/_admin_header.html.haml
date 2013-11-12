@@ -7,7 +7,6 @@
       %h3= link_to "Sites", [:admin, :sites]
       %ul
         %li= link_to "All", [:admin, :sites]
-        %li= link_to "Active pages", [:pages, :admin, :referrers]
 
     .popup_menu
       %h3= link_to "Users", [:admin, :users]
@@ -33,7 +32,6 @@
         %li= link_to "Countries", admin_single_stat_path(page: 'countries')
         %li= link_to "Employees", admin_single_stat_path(page: 'employees')
         %li= link_to "Videos served", admin_single_stat_path(page: 'videos_served')
-        -#%li= link_to "More...", [:more, :admin, :stats]
 
     - if has_role?('god')
       .popup_menu

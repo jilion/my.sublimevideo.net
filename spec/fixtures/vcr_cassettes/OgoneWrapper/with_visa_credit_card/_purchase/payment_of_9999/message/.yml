@@ -1,0 +1,46 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/orderdirect.asp
+    body:
+      encoding: UTF-8
+      string: CARDNO=4111111111111111&CN=John+Doe&CVC=111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=E245E859D8761F31EEAB943FCD67B0917435415F5A18FCDE832CFF9E31E0A993972C67D1170484E5EFB6002347CD011CC974902130BBCBD68683BEC63A346B48&USERID=sublime&amount=999900&currency=USD&orderID=44a793618dceb12b42ad3d5a10613d
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 26 Sep 2013 12:27:34 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '320'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Thu, 26 Sep 2013 12:26:33 GMT
+      Cache-Control:
+      - private, max-age=0
+      Set-Cookie:
+      - avr_581370806_0_0_4294901760_4218234546_0=1867979462_1711365;max-age=600;path=/
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"44a793618dceb12b42ad3d5a10613d\"\r\nPAYID=\"23934802\"\r\nNCSTATUS=\"2\"\r\nNCERROR=\"20001001\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"92\"\r\nIPCTY=\"99\"\r\nCCCTY=\"US\"\r\nECI=\"7\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"9999\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"VISA\"\r\nNCERRORPLUS=\"We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later.\">\r\n</ncresponse>"
+    http_version:
+  recorded_at: Thu, 26 Sep 2013 12:27:34 GMT
+recorded_with: VCR 2.6.0

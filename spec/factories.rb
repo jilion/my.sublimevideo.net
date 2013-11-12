@@ -36,7 +36,6 @@ FactoryGirl.define do
     end
   end
 
-
   factory :admin do
     sequence(:email) { |n| "email#{n}@admin.com" }
     password         "123456"
@@ -61,24 +60,6 @@ FactoryGirl.define do
     name                  { "Kit #{identifier}" }
     site
     design
-  end
-
-
-  # ==============
-  # = Log models =
-  # ==============
-  factory :log_voxcast, class: Log::Voxcast do
-    name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
-  end
-
-  factory :site_usage do
-    site
-  end
-
-  factory :referrer do
-    url              "http://bob.com"
-    sequence(:token) { |n| n }
-    hits             12
   end
 
   # ===============
@@ -204,54 +185,18 @@ FactoryGirl.define do
     favorited         false
   end
 
-  # ===================
-  # = My stats models =
-  # ===================
-  factory :site_second_stat, class: Stat::Site::Second do
-  end
-  factory :site_minute_stat, class: Stat::Site::Minute do
-  end
-  factory :site_hour_stat, class: Stat::Site::Hour do
-  end
-  factory :site_day_stat, class: Stat::Site::Day do
-  end
-  factory :video_second_stat, class: Stat::Video::Second do
-  end
-  factory :video_minute_stat, class: Stat::Video::Minute do
-  end
-  factory :video_hour_stat, class: Stat::Video::Hour do
-  end
-  factory :video_day_stat, class: Stat::Video::Day do
-  end
-
-  factory :stats_export do
-    st   { FactoryGirl.create(:site).token }
-    from { 30.days.ago.midnight.to_i }
-    to   { 1.days.ago.midnight.to_i }
-    file { File.new(Rails.root.join('spec/fixtures/zip.zip')) }
-  end
-
-  # ================
-  # = Stats models =
-  # ================
-  factory :billable_items_trend do
-  end
-  factory :billings_trend do
-  end
-  factory :revenues_trend do
-  end
-  factory :site_stats_trend do
-  end
-  factory :site_usages_trend do
-  end
-  factory :sites_trend do
-  end
-  factory :tailor_made_player_requests_trend do
-  end
-  factory :tweets_trend do
-  end
-  factory :users_trend do
-  end
+  # =================
+  # = Trends models =
+  # =================
+  factory :billable_items_trend
+  factory :billings_trend
+  factory :revenues_trend
+  factory :site_admin_stats_trend
+  factory :site_usages_trend
+  factory :sites_trend
+  factory :tailor_made_player_requests_trend
+  factory :tweets_trend
+  factory :users_trend
 
   # ==============
   # = API models =

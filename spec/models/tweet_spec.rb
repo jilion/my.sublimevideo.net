@@ -127,12 +127,10 @@ describe Tweet do
     end
   end
 
-  describe "#favorite!" do
+  describe "#favorite!", :vcr do
     subject { create(:tweet, tweet_id: 56351930166935552) }
 
     describe "favorite" do
-      use_vcr_cassette "twitter/favorite"
-
       it "should favorite locally and on Twitter itself" do
         subject.should_not be_favorited
         subject.favorite!
@@ -142,8 +140,6 @@ describe Tweet do
     end
 
     describe "un-favorite" do
-      use_vcr_cassette "twitter/unfavorite"
-
       it "should un-favorite locally and on Twitter if already favorited" do
         subject.should_not be_favorited
         subject.favorite!

@@ -1,0 +1,191 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com/api/v2/users/59438671
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - ZendeskAPI API 1.0.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.2
+      Date:
+      - Tue, 01 Oct 2013 13:30:40 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Zendesk-Api-Version:
+      - v2
+      X-Runtime:
+      - '48'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      X-Zendesk-Origin-Server:
+      - app21.pod1.ord.zdsys.com
+      X-Zendesk-User-Id:
+      - '15308267'
+      X-Zendesk-Request-Id:
+      - 0b1129fb1fe20a73bd86
+      X-Content-Type-Options:
+      - nosniff
+      Content-Encoding:
+      - gzip
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA1VS21LjMAz9Fz83Td3LpviJ2U/YhRcYxiMSkRp8ydpyBtrp
+        v6/ctKW8WZbORcc+iJwwCnUQphNqc7debX81ciZytEKJHdGQVF2n/GqNw9F0
+        GOZ79B2mj3kbXA2DqcdlXThSfUHP31PwYiY8OGSSP+i+uEIHpnDebZvmHj/B
+        DRbnIfbcaiMCYaeBuL9cSFktNpVsHqRUm7WSyyeeyUP3Y2ZVyUW1kA9ypZaN
+        Wm/LDLFHvQ++qP7GWDwMu1Pps7WngsKlsKEFi7qsPXWnC4airx7/MpbNgTd7
+        IBP8zVwMtghwCtUpu5kYMZo3g8xEMSOv+kmsDvYGRNAnoZ5fZgKsAT5OmtCS
+        GZltwqUdxMLyBjYxzVRq6NFzMOdLC4m0Db3xp7gmmmR6D5TjddMOidO+yvhA
+        eC3anCg4Xda4MehChxEo8F84K5FpP5B0xETRsE9+UyUi/st8wS45H2+/9BDN
+        yA+j+Tc49skqZ/gFV9512uC8ZE5D+UHfe5YUNednO0Yfjsfjf4neEISVAgAA
+    http_version: 
+  recorded_at: Tue, 01 Oct 2013 13:30:40 GMT
+- request:
+    method: put
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com/api/v2/users/59438671.json
+    body:
+      encoding: UTF-8
+      string: '{"user":{"role":{"name":"end-user"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - ZendeskAPI API 1.0.5
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.2
+      Date:
+      - Tue, 01 Oct 2013 13:30:41 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Zendesk-Api-Version:
+      - v2
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Zendesk-Origin-Server:
+      - app42.pod1.ord.zdsys.com
+      X-Zendesk-User-Id:
+      - '15308267'
+      X-Request-Id:
+      - d13d4c66301bacdcfdb839b1f2d65de5
+      X-Runtime:
+      - '0.289098'
+      X-Rack-Cache:
+      - invalidate, pass
+      X-Zendesk-Request-Id:
+      - 25a693ac73a3ee08b92c
+      X-Content-Type-Options:
+      - nosniff
+      Content-Encoding:
+      - gzip
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA1VS21LjMAz9Fz83Td3LpviJ2U/YhRcYxiMSkRp8ydpyBtrp
+        v6/ctKW8WZbORcc+iJwwCnUQphNqc7debX81ciZytEKJHdGQVF2n/GqNw9F0
+        GOZ79B2mj3kbXA2DqcdlXThSfUHP31PwYiY8OGSSP+i+uEIHpnDebZvmHj/B
+        DRbnIfbcaiMCYaeBuL9cSFktNpVsHqRUm7WSyyeeyUP3Y2ZVyUW1kA9ypZaN
+        Wm/LDLFHvQ++qP7GWDwMu1Pps7WngsKlsKEFi7qsPXWnC4airx7/MpbNgTd7
+        IBP8zVwMtghwCtUpu5kYMZo3g8xEMSOv+kmsDvYGRNAnoZ5fZgKsAT5OmtCS
+        GZltwqUdxMLyBjYxzVRq6NFzMOdLC4m0Db3xp7gmmmR6D5TjddMOidO+yvhA
+        eC3anCg4Xda4MehChxEo8F84K5FpP5B0xETRsE9+UyUi/st8wS45H2+/9BDN
+        yA+j+Tc49skqZ/gFV9512uC8ZE5D+UHfe5YUNednO0Yfjsfjf4neEISVAgAA
+    http_version: 
+  recorded_at: Tue, 01 Oct 2013 13:30:41 GMT
+- request:
+    method: get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com/api/v2/users/59438671
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - ZendeskAPI API 1.0.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.4.2
+      Date:
+      - Tue, 01 Oct 2013 13:30:42 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Status:
+      - 200 OK
+      X-Zendesk-Api-Version:
+      - v2
+      X-Runtime:
+      - '72'
+      Cache-Control:
+      - private, max-age=0, must-revalidate
+      X-Zendesk-Origin-Server:
+      - app37.pod1.ord.zdsys.com
+      X-Zendesk-User-Id:
+      - '15308267'
+      X-Zendesk-Request-Id:
+      - e16278c4bbcd8bfae283
+      X-Content-Type-Options:
+      - nosniff
+      Content-Encoding:
+      - gzip
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA1VS21LjMAz9Fz83Td3LpviJ2U/YhRcYxiMSkRp8ydpyBtrp
+        v6/ctKW8WZbORcc+iJwwCnUQphNqc7debX81ciZytEKJHdGQVF2n/GqNw9F0
+        GOZ79B2mj3kbXA2DqcdlXThSfUHP31PwYiY8OGSSP+i+uEIHpnDebZvmHj/B
+        DRbnIfbcaiMCYaeBuL9cSFktNpVsHqRUm7WSyyeeyUP3Y2ZVyUW1kA9ypZaN
+        Wm/LDLFHvQ++qP7GWDwMu1Pps7WngsKlsKEFi7qsPXWnC4airx7/MpbNgTd7
+        IBP8zVwMtghwCtUpu5kYMZo3g8xEMSOv+kmsDvYGRNAnoZ5fZgKsAT5OmtCS
+        GZltwqUdxMLyBjYxzVRq6NFzMOdLC4m0Db3xp7gmmmR6D5TjddMOidO+yvhA
+        eC3anCg4Xda4MehChxEo8F84K5FpP5B0xETRsE9+UyUi/st8wS45H2+/9BDN
+        yA+j+Tc49skqZ/gFV9512uC8ZE5D+UHfe5YUNednO0Yfjsfjf4neEISVAgAA
+    http_version: 
+  recorded_at: Tue, 01 Oct 2013 13:30:42 GMT
+recorded_with: VCR 2.6.0

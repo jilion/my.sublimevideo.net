@@ -68,15 +68,18 @@ module Spec
         resource_options = { resource_or_resource_name => options }
 
         resource = case resource_or_resource_name
-                   when :user
-                     create_user(resource_options)
-                   when :user_with_site
-                     create_user(resource_options).tap { |u| create_site_for(u) }
-                   when :user_with_sites
-                     create_user(resource_options).tap { |u| 2.times { create_site_for(u) } }
-                   when :admin
-                     create_admin(resource_options)
-                   end
+        when :user
+          create_user(resource_options)
+        when :user_with_site
+          create_user(resource_options).tap { |u| create_site_for(u) }
+        when :user_with_sites
+          create_user(resource_options).tap { |u| 2.times { create_site_for(u) } }
+        when :user_with_aliased_cc
+          @current_user = create(:user_no_cc, valid_cc_attributes).reload
+        when :admin
+          create_admin(resource_options)
+        end
+
         sign_in(resource.class == Admin ? 'admin' : 'my', resource, options)
         resource
       end
@@ -184,4 +187,8 @@ end
 
 RSpec.configure do |config|
   config.include Spec::Support::FeaturesHelpers, type: :feature
+
+  config.before :each, type: :feature do
+    SiteAdminStat.stub(:total_admin_starts) { 1 }
+  end
 end

@@ -5,16 +5,16 @@ module VideoTagsHelper
         ['Last 30 days active', :last_30_days_active],
         ['Last 90 days active', :last_90_days_active],
         ['Last 365 days active', :last_365_days_active],
-        ['Show all', :all], # inactive include
-        ['Inactive only', :inactive]
       ],
       (params[:filter] || :last_30_days_active)
   end
 
   def last_starts_days
-    return 90 if params[:filter].in?(%w[last_90_days_active])
-    return 365 if params[:filter].in?(%w[last_365_days_active all inactive])
-    30
+    case params[:filter]
+    when 'last_90_days_active' then 90
+    when 'last_365_days_active' then 365
+    else 30
+    end
   end
 
   def last_grouped_starts(starts, days)
@@ -44,6 +44,7 @@ module VideoTagsHelper
 
   def video_tag_thumbnail(video_tag, options = {})
     if video_tag.poster_url?
+      options.merge!(onerror: "this.onerror=null;this.src='#{image_path('video_tag/no-poster.png')}';")
       proxied_image_tag(video_tag.poster_url, options)
     else
       image_tag('video_tag/no-poster.png', { alt: 'no poster' }.merge(options))

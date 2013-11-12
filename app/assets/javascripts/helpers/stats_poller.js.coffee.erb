@@ -1,12 +1,12 @@
 class MySublimeVideo.Helpers.StatsPoller
-  constructor: (@stats) ->
+  constructor: (@$statsDiv) ->
     @subscribeToPusherChannel()
     @lastSecond = @currentSecond()
     @lastMinute = @currentMinute()
     @loopAndRefresh()
 
   subscribeToPusherChannel: ->
-    channelName = @stats.data('pusher-channel')
+    channelName = @$statsDiv.data('pusher-channel')
 
     @pusher = new Pusher('<%= PusherWrapper.key %>', encrypted: true)
     channel = @pusher.subscribe(channelName)
@@ -20,10 +20,10 @@ class MySublimeVideo.Helpers.StatsPoller
     @timeout = setTimeout this.loopAndRefresh, 1000
 
   refreshTopStatsPage: ->
-    MySublimeVideo.videoStats.refreshTopStats()
+    MySublimeVideo.stats.refreshTopStats()
 
   refreshBottomStatsPage: ->
-    MySublimeVideo.videoStats.refreshBottomStats()
+    MySublimeVideo.stats.refreshBottomStats()
 
   isNewSecond: ->
     if @lastSecond isnt @currentSecond()

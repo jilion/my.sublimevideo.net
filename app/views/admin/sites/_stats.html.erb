@@ -1,13 +1,13 @@
 <h3>Page visits & Video plays</h3>
 <%
-stats_timeline = SiteStatsTimelineBuilder.new(token: site.token, from: graph_start_date, to: graph_end_date)
+stats_timeline = SiteAdminStatsTimelineBuilder.new(site, days: 90, moving_average: 30)
 
 graph = HighchartsGraphBuilder.new do |g|
-  g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Video plays & Page visits for #{admin_pretty_hostname(site, site.hostname)}"})
-  g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
+  g.option(chart: chart('timeline_stats'))
+  g.option(title: { text: "Video loads and starts for #{admin_pretty_hostname(site, site.hostname)} (last 90d)"})
+  g.option(subtitle: stats_date_subtitle(start_at: stats_timeline.start_at, end_at: stats_timeline.end_at))
   g.option(legend: legend)
-  g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
+  g.option(xAxis: x_axis(start_at: stats_timeline.start_at, end_at: stats_timeline.end_at))
   g.raw_option(y_axis(""))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
@@ -20,19 +20,17 @@ graph = HighchartsGraphBuilder.new do |g|
   )))
 
   g.option(series: [
-    serie(stats_timeline.d_vv[moving_average_length-1..-1], 'Dev (plays)', type: 'column', visible: false, stack: 1),
-    serie(stats_timeline.normal_vv[moving_average_length-1..-1], 'Normal (plays)', type: 'column', stack: 1),
-    serie(stats_timeline.em_vv[moving_average_length-1..-1], 'Embed (plays)', type: 'column', stack: 1),
-    serie(moving_average(stats_timeline.billable_vv, moving_average_length), 'Average (plays)', type: 'line', stack: 2),
+    serie(stats_timeline.loads(:website), 'Loads (website)', type: 'column', visible: false, stack: 1),
+    serie(stats_timeline.loads(:external), 'Loads (external)', type: 'column', visible: false, stack: 1),
+    serie(moving_average(stats_timeline.all_loads, stats_timeline.moving_average), 'Loads (30d average)', visible: false, type: 'line', stack: 2),
 
-    serie(stats_timeline.d_pv[moving_average_length-1..-1], 'Dev (visits)', type: 'column', visible: false, stack: 3),
-    serie(stats_timeline.normal_pv[moving_average_length-1..-1], 'Normal (visits)', type: 'column', visible: false, stack: 3),
-    serie(stats_timeline.em_pv[moving_average_length-1..-1], 'Embed (visits)', type: 'column', visible: false, stack: 3),
-    serie(moving_average(stats_timeline.billable_pv, moving_average_length), 'Average (visits)', type: 'line', visible: false, stack: 4)
-    ])
-  g.option(plotOptions: plot_options(range_start_date))
+    serie(stats_timeline.starts(:website), 'Starts (website)', type: 'column', stack: 3),
+    serie(stats_timeline.starts(:external), 'Starts (external)', type: 'column', stack: 3),
+    serie(moving_average(stats_timeline.all_starts, stats_timeline.moving_average), 'Starts (30d average)', type: 'line', stack: 4),
+  ])
+  g.option(plotOptions: plot_options(stats_timeline.start_at))
   g.option(credits: credits)
 end
 %>
 
-<div id="timeline_usage" style="width: 100%; height: 300px;"><%= raw graph.draw %></div>
+<div id="timeline_stats" style="width: 100%; height: 300px;"><%= raw graph.draw %></div>

@@ -1,9 +1,0 @@
-- last_30_days_count = VideoTag.count(_site_token: site.token, last_30_days_active: true)
-%p
-  Last 30 days:
-  = "#{number_with_delimiter(last_30_days_count, significant: false, precision: 2, delimiter: "'")} video tags"
-
-- all_count = VideoTag.count(_site_token: site.token)
-%p
-  All time:
-  = "#{number_with_delimiter(all_count, significant: false, precision: 2, delimiter: "'")} video tags"

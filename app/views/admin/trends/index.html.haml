@@ -241,46 +241,39 @@
                   %a.selector{ href: "?sites.al.pv2", title: "Active sites with at least 2 page visits in the least 30 days" } Sites with ≥ 2 page visits in the least 30 days
                 %li
                   %a.selector{ href: "?sites.al.vv", title: "Active sites with at least 1 video view in the least 30 days" } Alive sites (video views) in the least 30 days
+                %li
+                  %a.selector{ href: "?sites.al.st1", title: "Active sites with at least 1 video start in the least 30 days" } Sites with ≥ 1 video start in the least 30 days
+                %li
+                  %a.selector{ href: "?sites.al.st2", title: "Active sites with at least 2 video starts in the least 30 days" } Sites with ≥ 2 video starts in the least 30 days
+                %li
+                  %a.selector{ href: "?sites.al.st100", title: "Active sites with at least 100 video starts in the least 30 days" } Sites with ≥ 100 video starts in the least 30 days
 
-        %td.site_stats
+        %td.site_admin_stats
           %h2 Site Stats
           %ul
             %li
-              %a.title.selector{ href: "?site_stats.pv.all" } Page visits
+              %a.title.selector{ href: "?site_admin_stats.al.all" } App loads
               %ul
                 %li
-                  %a.selector{ href: "?site_stats.pv.billable" } Billable
-                  %ul
-                    %li
-                      %a.selector{ href: "?site_stats.pv.m" } Main
-                    %li
-                      %a.selector{ href: "?site_stats.pv.e" } Extra
-                    %li
-                      %a.selector{ href: "?site_stats.pv.em", title: "Extra & Main embed only" } Embed
+                  %a.selector{ href: "?site_admin_stats.al.production" } Production
                 %li
-                  %a.selector{ href: "?site_stats.pv.d" } Dev
+                  %a.selector{ href: "?site_admin_stats.al.development" } Development
                 %li
-                  %a.selector{ href: "?site_stats.pv.i" } Invalid
+                  %a.selector{ href: "?site_admin_stats.al.i" } Invalid
             %li
-              %a.title.selector{ href: "?site_stats.vv.all" } Video plays
+              %a.title.selector{ href: "?site_admin_stats.lo.all" } Video loads
               %ul
                 %li
-                  %a.selector{ href: "?site_stats.vv.billable" } Billable
-                  %ul
-                    %li
-                      %a.selector{ href: "?site_stats.vv.m" } Main
-                    %li
-                      %a.selector{ href: "?site_stats.vv.e" } Extra
-                    %li
-                      %a.selector{ href: "?site_stats.vv.em", title: "Extra & Main embed only" } Embed
+                  %a.selector{ href: "?site_admin_stats.lo.w" } Website
                 %li
-                  %a.selector{ href: "?site_stats.vv.d" } Dev
+                  %a.selector{ href: "?site_admin_stats.lo.e" } External
+            %li
+              %a.title.selector{ href: "?site_admin_stats.st.all" } Video starts
+              %ul
                 %li
-                  %a.selector{ href: "?site_stats.vv.i" } Invalid
-            %li
-              %a.title.selector{ href: "?site_stats.md.html5_proportion" } HTML5 Mode %
-            %li
-              %a.title.selector{ href: "?site_stats.md.mobile_proportion", title: "Mobile (tablet included) %" } Mobile %
+                  %a.selector{ href: "?site_admin_stats.st.w" } Website
+                %li
+                  %a.selector{ href: "?site_admin_stats.st.e" } External
 
           %h2 Site Usages (old)
           %ul

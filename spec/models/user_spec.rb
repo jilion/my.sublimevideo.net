@@ -129,8 +129,7 @@ describe User do
 
     describe "before_save :prepare_pending_credit_card & after_save :register_credit_card_on_file" do
 
-      context "when user had no cc info before" do
-        use_vcr_cassette "ogone/void_authorization"
+      context "when user had no cc info before", :vcr do
         subject do
           user = create(:user_no_cc)
           user.reload
@@ -148,7 +147,7 @@ describe User do
         its(:pending_cc_expire_on)   { should be_nil }
       end
 
-      context "when user has cc info before" do
+      context "when user has cc info before", :vcr do
         subject { create(:user) }
         before do
           subject.cc_type.should eq 'visa'
@@ -156,7 +155,7 @@ describe User do
           subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
 
           subject.attributes = valid_cc_attributes_master
-          VCR.use_cassette("ogone/void_authorization") { subject.save! }
+          subject.save!
           subject.reload
         end
 
@@ -230,11 +229,11 @@ describe User do
         end
       end
 
-      context "user has a zendesk_id" do
+      context "user has a zendesk_id", :vcr do
         before { user.update_attribute(:zendesk_id, 59438671) }
 
         context "user updated his email" do
-          let(:new_email) { "9876@example.org" }
+          let(:new_email) { "9877@example.org" }
 
           it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
             user.update_attribute(:email, new_email)
@@ -247,10 +246,8 @@ describe User do
             Sidekiq::Worker.clear_all
             user.confirm!
 
-            VCR.use_cassette("user/zendesk_update") do
-              Sidekiq::Worker.drain_all
-              ZendeskWrapper.user(59438671).identities.first.value.should eq new_email
-            end
+            Sidekiq::Worker.drain_all
+            ZendeskWrapper.user(59438671).identities.last.value.should eq new_email
           end
         end
 
@@ -262,14 +259,12 @@ describe User do
             user.update_attribute(:name, new_name)
           end
 
-          it "updates user's name on Zendesk" do
+          it "updates user's name on Zendesk", :vcr do
             Sidekiq::Worker.clear_all
             user.update_attribute(:name, new_name)
 
-            VCR.use_cassette("user/zendesk_update") do
-              Sidekiq::Worker.drain_all
-              ZendeskWrapper.user(59438671).name.should eq new_name
-            end
+            Sidekiq::Worker.drain_all
+            ZendeskWrapper.user(59438671).name.should eq new_name
           end
 
           context "name has changed to ''" do
@@ -672,24 +667,6 @@ describe User do
         Site.tagged_with('bar').should eq [@site]
         User.sites_tagged_with('bar').should eq [@user]
       end
-    end
-
-    describe '.with_page_loads_in_the_last_30_days' do
-      let(:user1) { create(:user) }
-      let(:user2) { create(:user) }
-      let(:user3) { create(:user) }
-      let(:site1) { create(:site, user: user1) }
-      let(:site2) { create(:site, user: user1) }
-      let(:site3) { create(:site, user: user2) }
-      let(:site4) { create(:site, user: user3) }
-      before do
-        create(:site_day_stat, t: site1.token, d: 3.days.ago.midnight, pv: { m: 1 })
-        create(:site_day_stat, t: site2.token, d: 1.day.ago.midnight, pv: { e: 1 })
-        create(:site_day_stat, t: site3.token, d: Time.now.utc.midnight, pv: { em: 1 })
-        create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
-      end
-
-      specify { User.with_page_loads_in_the_last_30_days.should =~ [user1, user2] }
     end
   end # Scopes
 

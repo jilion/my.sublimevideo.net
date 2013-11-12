@@ -157,13 +157,13 @@ header, header .shadow, header .lights {
 }
 */
 
-.site_select_wrap {
+.fake_select_wrap {
   float:left;
   position:relative;
   margin:39px 0 0 20px;
 }
 
-.site_select {
+.fake_select {
   display:block;
   background:url(<%= asset_path "select_arrow.png" %>) no-repeat 50% 56%;
   width:25px;
@@ -173,11 +173,11 @@ header, header .shadow, header .lights {
   @include box-shadow((inset rgba(255,255,255,0.4) 0 1px 0, rgba(255,255,255,0.4) 0 1px 0));
 }
 
-.site_select span {
+.fake_select span {
   display:none;
 }
 
-.site_select_wrap ul.actions {
+.fake_select_wrap ul.actions {
   position:absolute;
   right:0;
   top:30px;
@@ -188,7 +188,7 @@ header, header .shadow, header .lights {
   @include box-shadow(rgba(9,23,69,0.6) 0 2px 8px);
 }
 
-.site_select_wrap ul.actions li a {
+.fake_select_wrap ul.actions li a {
   display:block;
   padding:8px 50px 8px 10px;
   min-width:120px;
@@ -196,18 +196,19 @@ header, header .shadow, header .lights {
   color:#1E3966;
   font-size:18px;
   font-weight:600;
+  white-space:nowrap;
   @include transition(background, .25s, linear);
 }
 
-.site_select_wrap ul.actions li.alt a {background:#dae5f6}
-.site_select_wrap ul.actions li a:hover {background:#f2f7ff}
+.fake_select_wrap ul.actions li.alt a {background:#dae5f6}
+.fake_select_wrap ul.actions li a:hover {background:#f2f7ff}
 
-.site_select_wrap ul.actions li:first-child a {
+.fake_select_wrap ul.actions li:first-child a {
   @include border-radius(4px 4px 0 0);
   @include box-shadow(inset rgba(255,255,255,0.3) 0 1px 0)
 }
 
-.site_select_wrap ul.actions li:last-child a {
+.fake_select_wrap ul.actions li:last-child a {
   @include border-radius(0 0 4px 4px)
 }
 

@@ -11,7 +11,7 @@ gem 'sublime_video_private_api', '~> 1.6' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid', ref: 'f91fe' # Rails 4 support
+gem 'mongoid', github: 'mongoid' # Rails 4 support
 
 # Views
 gem 'haml'
@@ -42,7 +42,7 @@ gem 'oauth-plugin', github: 'pelle/oauth-plugin' # Rails 4 support
 
 # Internals
 gem 'sidekiq'
-gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
+# gem 'kiqstand', github: 'mongoid/kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
@@ -61,19 +61,12 @@ gem 'has_scope'
 gem 'fog'
 gem 'unf' # encoding for fog
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
-gem 'request-log-analyzer', require: 'request_log_analyzer'
 gem 'cocaine'
 
-# CDN
-gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'edge_cast'
 
 gem 'activemerchant'
 
 gem 'public_suffix'
-gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
-gem 'stat_request_parser' # hosted on gemfury
 
 gem 'rubyzip'
 gem 'mime-types'
@@ -111,14 +104,7 @@ gem 'solve'
 gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
-
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'uglifier'
-  gem 'sass-rails'
-end
-
+gem 'sass-rails'
 gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails'
 
@@ -142,10 +128,10 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'launchy'
-  gem 'quiet_assets'
   gem 'bullet'
-  gem 'annotate'
+  gem 'annotate', require: false
 
+  gem 'quiet_assets'
   gem 'better_errors'
   gem 'binding_of_caller'
 
@@ -180,9 +166,9 @@ group :test do
   gem 'capybara-email'
   gem 'poltergeist'
   gem 'show_me_the_cookies'
-  gem 'webmock',             '~> 1.6.0'
-  gem 'typhoeus',            '~> 0.2.0'
-  gem 'vcr',                 '~> 1.10.3'
+  gem 'webmock'
+  gem 'typhoeus'
+  gem 'vcr'
   gem 'codeclimate-test-reporter', require: false
 
   gem 'database_cleaner'

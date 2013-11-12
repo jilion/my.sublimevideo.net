@@ -87,22 +87,6 @@ describe VideoTagsHelper do
         expect(Helper.last_starts_days).to eq 365
       end
     end
-
-    context "filter is all" do
-      let(:params) { { filter: 'all' } }
-
-      it "returns 365" do
-        expect(Helper.last_starts_days).to eq 365
-      end
-    end
-
-    context "filter is inactive" do
-      let(:params) { { filter: 'inactive' } }
-
-      it "returns 365" do
-        expect(Helper.last_starts_days).to eq 365
-      end
-    end
   end
 
   describe "last_grouped_starts" do

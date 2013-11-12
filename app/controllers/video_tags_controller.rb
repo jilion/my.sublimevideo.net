@@ -17,8 +17,6 @@ class VideoTagsController < ApplicationController
     last_30_days_active
     last_90_days_active
     last_365_days_active
-    all
-    inactive
   ]
   SORT_PARAMS = %w[
     by_date
@@ -55,8 +53,7 @@ class VideoTagsController < ApplicationController
     end
     if sort_key = params.keys.detect { |k| k.in?(SORT_PARAMS) }
       if sort_key == 'by_last_days_starts'
-        days = last_starts_days
-        index_params["by_last_#{days}_days_starts"] = params[sort_key]
+        index_params["by_last_#{last_starts_days}_days_starts"] = params[sort_key]
       else
         index_params[sort_key] = params[sort_key]
       end

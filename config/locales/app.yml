@@ -3,9 +3,6 @@ en:
     am: AM # fundamental !!!!!!!!
     pm: PM # fundamental !!!!!!!!
     formats:
-      tweet: "%b %{ordinal_day} %Y"
-      deal: "%B %{ordinal_day}, %Y"
-      feed: "%B %d, %Y - %H:%M"
       date: "%B %e, %Y"
       named_date: "%a, %e %b %Y"
       minutes: "%d %b %Y, %R"
@@ -15,16 +12,11 @@ en:
       seconds_timezone_y: "%d %b %y, %R:%S %Z"
       month_fullyear: "%B %Y"
       fullyear: "%Y"
-      Y_m_d: "%Y/%m/%d"
       d_b_Y: "%d %b %Y"
-      b_Y: "%b %Y"
-      year_month_day: "%Y %b %d"
 
   date:
     formats:
       default: "%B %e, %Y"
-      small:   "%m/%d/%Y"
-      b_Y:     "%b %Y"
       month_fullyear: "%B %Y"
 
   number:
