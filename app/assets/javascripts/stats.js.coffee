@@ -117,7 +117,7 @@ class MySublimeVideo.Helpers.VideoStatsChartsHelper
         enabled: false
     }]
 
-    new_stats_date = Date.UTC(2013, 8, 10)
+    new_stats_date = Date.UTC(2013, 9, 23)
     if new_stats_date >= new Date(new Date() - hours * 3600 * 1000)
       series.push
         type: 'flags'
