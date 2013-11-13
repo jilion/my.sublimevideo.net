@@ -22,10 +22,10 @@
       .spacer
 
   %ul#plays_and_loads_graph_legend.graph_legend
-    %li.graph_label_color_1<
+    %li.graph_label_color_1
       = display_integer(stats_presenter.plays.sum { |a| a[1] })
       %span plays
-    %li.graph_label_color_2<
+    %li.graph_label_color_2
       = display_integer(stats_presenter.loads.sum { |a| a[1] })
       %span loads
   .spacer
