@@ -84,6 +84,12 @@ describe 'Private API Sites requests', :addons do
       response.status.should eq 200
     end
 
+    it 'supports :by_last_30_days_starts scope' do
+      get url, { by_last_30_days_starts: 'desc' }, @env
+      MultiJson.load(response.body).should have(2).sites
+      response.status.should eq 200
+    end
+
     it 'supports :user_id scope' do
       get url, { user_id: site1.user_id }, @env
       body = MultiJson.load(response.body)
