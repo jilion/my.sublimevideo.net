@@ -50,14 +50,4 @@ module VideoTagsHelper
       image_tag('video_tag/no-poster.png', { alt: 'no poster' }.merge(options))
     end
   end
-
-  def proxied_image_tag(source, options = {})
-    image_url = source.gsub(/^(http)?s?:?\/\//, '')
-    url = "https://images.weserv.nl?url=#{URI::escape(image_url)}"
-    if options[:size]
-      dimension = options[:size].split('x')
-      url += "&w=#{dimension[0]}&h=#{dimension[1]}"
-    end
-    image_tag(url, options)
-  end
 end

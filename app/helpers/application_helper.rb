@@ -64,12 +64,6 @@ module ApplicationHelper
     pluralize(count, singular, plural).sub(/\d+/) { |number| display_integer(number) }.html_safe
   end
 
-  def info_box(options = {}, &block)
-    content_tag(:div, class: 'info_box' + (options[:class] ? " #{options[:class]}" : '')) do
-      capture_haml(&block).chomp.html_safe + content_tag(:span, nil, class: 'arrow')
-    end
-  end
-
   def full_days_until_date(date)
     ((date - Time.now.utc.midnight) / (3600 * 24)).to_i
   end
@@ -111,6 +105,16 @@ module ApplicationHelper
     URI(url).host
   rescue
     url.gsub(%r{https?://([^/]*)/.*}, '\1')
+  end
+
+  def proxied_image_tag(source, options = {})
+    image_url = source.gsub(/^(http)?s?:?\/\//, '')
+    url = "https://images.weserv.nl?url=#{URI::escape(image_url)}"
+    if options[:size]
+      dimension = options[:size].split('x')
+      url += "&w=#{dimension[0]}&h=#{dimension[1]}"
+    end
+    image_tag(url, options)
   end
 
 end

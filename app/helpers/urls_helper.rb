@@ -11,12 +11,6 @@ module UrlsHelper
     cdn_url(path)
   end
 
-  def proxied_https_url(url)
-    return url if url.blank? || url =~ /^https/
-
-    "https://data.sublimevideo.net/proxy?u=#{URI.encode(url || '')}"
-  end
-
   def docs_page_url(path)
     page_url(path, subdomain: 'docs', protocol: 'http')
   end

@@ -3,7 +3,7 @@
     %small= tweet.keywords.join(', ')
   %td.favorite= render 'favorite_td', tweet: tweet
   %td.content{ style: "text-align:left;" }
-    %img{ src: proxied_https_url(tweet.profile_image_url), alt: tweet.from_user, width: 30, height: 30 }
+    = proxied_image_tag tweet.profile_image_url, alt: tweet.from_user, size: '30x30'
     = auto_link tweet.content
     = "—"
     = link_to tweet.from_user || tweet.from_user_id, "https://twitter.com/#{tweet.from_user}"
