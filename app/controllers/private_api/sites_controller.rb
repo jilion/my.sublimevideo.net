@@ -8,7 +8,7 @@ class PrivateApi::SitesController < SublimeVideoPrivateApiController
 
   has_scope :per, :created_on, :created_after, :not_tagged_with, :with_addon_plan,
             :with_min_admin_starts, :first_admin_starts_on_week, :user_id
-  has_scope :by_date, :by_last_30_days_starts
+  has_scope :by_date, :by_last_30_days_admin_starts, :by_last_30_days_starts
   has_scope :select, :without_hostnames, type: :array
   has_scope :not_archived, type: :boolean
 
