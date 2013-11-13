@@ -31,77 +31,77 @@ describe 'Private API Sites requests', :addons do
 
     it 'supports :per scope' do
       get url, { per: 2 }, @env
-      MultiJson.load(response.body).should have(2).sites
+      expect(MultiJson.load(response.body).size).to eq(2)
     end
 
     it 'supports :not_archived scope' do
       get url, { not_archived: true }, @env
       body = MultiJson.load(response.body)
-      body.should have(2).sites
-      body[0]['token'].should eq site1.token
-      body[1]['token'].should eq site2.token
-      response.status.should eq 200
+      expect(body.size).to eq(2)
+      expect(body[0]['token']).to eq site1.token
+      expect(body[1]['token']).to eq site2.token
+      expect(response.status).to eq 200
     end
 
     it 'supports :created_on scope' do
       get url, { created_on: 2.days.ago }, @env
       body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site2.token
-      response.status.should eq 200
+      expect(body.size).to eq(1)
+      expect(body[0]['token']).to eq site2.token
+      expect(response.status).to eq 200
     end
 
     it 'supports :not_tagged_with scope' do
       get url, { not_tagged_with: 'adult' }, @env
       body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site2.token
-      response.status.should eq 200
+      expect(body.size).to eq(1)
+      expect(body[0]['token']).to eq site2.token
+      expect(response.status).to eq 200
     end
 
     it 'supports :select scope' do
       get url, { select: %w[token hostname] }, @env
       video_tag = MultiJson.load(response.body).first
-      video_tag.should have_key('token')
-      video_tag.should have_key('hostname')
-      video_tag.should_not have_key('dev_hostnames')
-      response.status.should eq 200
+      expect(video_tag).to have_key('token')
+      expect(video_tag).to have_key('hostname')
+      expect(video_tag).not_to have_key('dev_hostnames')
+      expect(response.status).to eq 200
     end
 
     it 'supports :without_hostnames scope' do
       get url, { without_hostnames: %w[google.com facebook.com] }, @env
       body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site2.token
-      response.status.should eq 200
+      expect(body.size).to eq(1)
+      expect(body[0]['token']).to eq site2.token
+      expect(response.status).to eq 200
     end
 
     it 'supports :first_admin_starts_on_week scope' do
       get url, { first_admin_starts_on_week: Time.now.utc }, @env
       body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site2.token
-      response.status.should eq 200
+      expect(body.size).to eq(1)
+      expect(body[0]['token']).to eq site2.token
+      expect(response.status).to eq 200
     end
 
     it 'supports :by_last_30_days_admin_starts scope' do
       get url, { by_last_30_days_admin_starts: 'desc' }, @env
-      MultiJson.load(response.body).should have(2).sites
-      response.status.should eq 200
+      expect(MultiJson.load(response.body).size).to eq(2)
+      expect(response.status).to eq 200
     end
 
     it 'supports :by_last_30_days_starts scope' do
       get url, { by_last_30_days_starts: 'desc' }, @env
-      MultiJson.load(response.body).should have(2).sites
-      response.status.should eq 200
+      expect(MultiJson.load(response.body).size).to eq(2)
+      expect(response.status).to eq 200
     end
 
     it 'supports :user_id scope' do
       get url, { user_id: site1.user_id }, @env
       body = MultiJson.load(response.body)
-      body.should have(1).site
-      body[0]['token'].should eq site1.token
-      response.status.should eq 200
+      expect(body.size).to eq(1)
+      expect(body[0]['token']).to eq site1.token
+      expect(response.status).to eq 200
     end
   end
 
@@ -114,7 +114,7 @@ describe 'Private API Sites requests', :addons do
       get url, { with_addon_plan: 'stats-realtime' }, @env
       body = MultiJson.load(response.body)
       expect(body).to eq []
-      response.status.should eq 200
+      expect(response.status).to eq 200
     end
   end
 
@@ -128,8 +128,8 @@ describe 'Private API Sites requests', :addons do
     context 'non existing site' do
       it 'returns 404' do
         get 'private_api/sites/42.json', {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
@@ -137,13 +137,13 @@ describe 'Private API Sites requests', :addons do
       it 'finds site per token' do
         get url, {}, @env
         body = MultiJson.load(response.body)
-        body['token'].should eq site1.token
-        body['tags'].should eq ['adult']
-        body['default_kit']['identifier'].should eq site1.default_kit.identifier
-        body['default_kit']['name'].should eq site1.default_kit.name
-        body['default_kit']['settings'].should eq site1.default_kit.settings
-        body['default_kit']['design']['name'].should eq site1.default_kit.design.name
-        response.status.should eq 200
+        expect(body['token']).to eq site1.token
+        expect(body['tags']).to eq ['adult']
+        expect(body['default_kit']['identifier']).to eq site1.default_kit.identifier
+        expect(body['default_kit']['name']).to eq site1.default_kit.name
+        expect(body['default_kit']['settings']).to eq site1.default_kit.settings
+        expect(body['default_kit']['design']['name']).to eq site1.default_kit.design.name
+        expect(response.status).to eq 200
       end
     end
 
@@ -151,16 +151,16 @@ describe 'Private API Sites requests', :addons do
       it 'supports :user_id scope' do
         get url, { user_id: site1.user_id }, @env
         body = MultiJson.load(response.body)
-        body['token'].should eq site1.token
-        response.status.should eq 200
+        expect(body['token']).to eq site1.token
+        expect(response.status).to eq 200
       end
     end
 
     context 'site do not belong to given user' do
       it 'returns 404' do
         get url, { user_id: site2.user_id }, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
   end
@@ -169,8 +169,8 @@ describe 'Private API Sites requests', :addons do
     it 'adds tag to site' do
       put "private_api/sites/#{site2.token}/add_tag.json", { tag: 'adult' }, @env
 
-      site2.tag_list.should include('adult')
-      response.status.should eq 204
+      expect(site2.tag_list).to include('adult')
+      expect(response.status).to eq 204
     end
   end
 end

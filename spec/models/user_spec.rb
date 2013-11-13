@@ -13,21 +13,80 @@ describe User do
   context "Factory" do
     subject { build(:user) }
 
-    its(:terms_and_conditions) { should be_true }
-    its(:name)                 { should eq "John Doe" }
-    its(:billing_email)        { should match /email\d+@user.com/ }
-    its(:billing_name)         { should eq "Remy Coutable" }
-    its(:billing_address_1)    { should eq "Avenue de France 71" }
-    its(:billing_address_2)    { should eq "Batiment B" }
-    its(:billing_postal_code)  { should eq "1004" }
-    its(:billing_city)         { should eq "Lausanne" }
-    its(:billing_region)       { should eq "VD" }
-    its(:billing_country)      { should eq "CH" }
-    its(:use_personal)         { should be_true }
-    its(:newsletter)           { should be_false }
-    its(:email)                { should match /email\d+@user.com/ }
-    its(:hidden_notice_ids)    { should eq [] }
-    its(:vip)                  { should be_false }
+    describe '#terms_and_conditions' do
+      subject { super().terms_and_conditions }
+      it { should be_truthy }
+    end
+
+    describe '#name' do
+      subject { super().name }
+      it                 { should eq "John Doe" }
+    end
+
+    describe '#billing_email' do
+      subject { super().billing_email }
+      it        { should match /email\d+@user.com/ }
+    end
+
+    describe '#billing_name' do
+      subject { super().billing_name }
+      it         { should eq "Remy Coutable" }
+    end
+
+    describe '#billing_address_1' do
+      subject { super().billing_address_1 }
+      it    { should eq "Avenue de France 71" }
+    end
+
+    describe '#billing_address_2' do
+      subject { super().billing_address_2 }
+      it    { should eq "Batiment B" }
+    end
+
+    describe '#billing_postal_code' do
+      subject { super().billing_postal_code }
+      it  { should eq "1004" }
+    end
+
+    describe '#billing_city' do
+      subject { super().billing_city }
+      it         { should eq "Lausanne" }
+    end
+
+    describe '#billing_region' do
+      subject { super().billing_region }
+      it       { should eq "VD" }
+    end
+
+    describe '#billing_country' do
+      subject { super().billing_country }
+      it      { should eq "CH" }
+    end
+
+    describe '#use_personal' do
+      subject { super().use_personal }
+      it         { should be_truthy }
+    end
+
+    describe '#newsletter' do
+      subject { super().newsletter }
+      it           { should be_falsey }
+    end
+
+    describe '#email' do
+      subject { super().email }
+      it                { should match /email\d+@user.com/ }
+    end
+
+    describe '#hidden_notice_ids' do
+      subject { super().hidden_notice_ids }
+      it    { should eq [] }
+    end
+
+    describe '#vip' do
+      subject { super().vip }
+      it                  { should be_falsey }
+    end
 
     it { should be_valid }
   end
@@ -55,8 +114,8 @@ describe User do
         it "is not valid" do
           active_user = create(:user, state: 'active', email: "john@doe.com")
           user = build(:user, email: active_user.email)
-          user.should_not be_valid
-          user.should have(1).error_on(:email)
+          expect(user).not_to be_valid
+          expect(user.errors[:email].size).to eq(1)
         end
       end
 
@@ -64,7 +123,7 @@ describe User do
         it "is valid" do
           archived_user = create(:user, state: 'archived', email: "john@doe.com")
           user = build(:user, email: archived_user.email)
-          user.should be_valid
+          expect(user).to be_valid
         end
       end
     end
@@ -73,15 +132,15 @@ describe User do
       context "is present" do
         it "is not valid" do
           user = build(:user, use_company: true, company_url: "http://localhost")
-          user.should_not be_valid
-          user.should have(1).error_on(:company_url)
+          expect(user).not_to be_valid
+          expect(user.errors[:company_url].size).to eq(1)
         end
       end
 
       context "is not present" do
         it "is valid" do
           user = build(:user, use_company: true, company_url: "")
-          user.should be_valid
+          expect(user).to be_valid
         end
       end
     end
@@ -104,21 +163,21 @@ describe User do
           before { user.update_attribute(:state, state) }
 
           it "sets the user to archived" do
-            user.state.should eq state
+            expect(user.state).to eq state
             user.current_password = "123456"
 
             user.archive!
 
-            user.should be_archived
+            expect(user).to be_archived
           end
 
           it 'touches archived_at' do
-            user.archived_at.should be_nil
+            expect(user.archived_at).to be_nil
             user.current_password = "123456"
 
             user.archive!
 
-            user.archived_at.should be_present
+            expect(user.archived_at).to be_present
           end
         end
       end
@@ -138,21 +197,44 @@ describe User do
         end
 
         it { should be_valid }
-        its(:cc_type)        { should eq 'visa' }
-        its(:cc_last_digits) { should eq '1111' }
-        its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
 
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
+        describe '#cc_type' do
+          subject { super().cc_type }
+          it        { should eq 'visa' }
+        end
+
+        describe '#cc_last_digits' do
+          subject { super().cc_last_digits }
+          it { should eq '1111' }
+        end
+
+        describe '#cc_expire_on' do
+          subject { super().cc_expire_on }
+          it   { should eq 1.year.from_now.end_of_month.to_date }
+        end
+
+        describe '#pending_cc_type' do
+          subject { super().pending_cc_type }
+          it        { should be_nil }
+        end
+
+        describe '#pending_cc_last_digits' do
+          subject { super().pending_cc_last_digits }
+          it { should be_nil }
+        end
+
+        describe '#pending_cc_expire_on' do
+          subject { super().pending_cc_expire_on }
+          it   { should be_nil }
+        end
       end
 
       context "when user has cc info before", :vcr do
         subject { create(:user) }
         before do
-          subject.cc_type.should eq 'visa'
-          subject.cc_last_digits.should eq '1111'
-          subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
+          expect(subject.cc_type).to eq 'visa'
+          expect(subject.cc_last_digits).to eq '1111'
+          expect(subject.cc_expire_on).to eq 1.year.from_now.end_of_month.to_date
 
           subject.attributes = valid_cc_attributes_master
           subject.save!
@@ -160,13 +242,36 @@ describe User do
         end
 
         it { should be_valid }
-        its(:cc_type)        { should eq 'master' }
-        its(:cc_last_digits) { should eq '9999' }
-        its(:cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
 
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
+        describe '#cc_type' do
+          subject { super().cc_type }
+          it        { should eq 'master' }
+        end
+
+        describe '#cc_last_digits' do
+          subject { super().cc_last_digits }
+          it { should eq '9999' }
+        end
+
+        describe '#cc_expire_on' do
+          subject { super().cc_expire_on }
+          it   { should eq 2.years.from_now.end_of_month.to_date }
+        end
+
+        describe '#pending_cc_type' do
+          subject { super().pending_cc_type }
+          it        { should be_nil }
+        end
+
+        describe '#pending_cc_last_digits' do
+          subject { super().pending_cc_last_digits }
+          it { should be_nil }
+        end
+
+        describe '#pending_cc_expire_on' do
+          subject { super().pending_cc_expire_on }
+          it   { should be_nil }
+        end
       end
     end
 
@@ -176,7 +281,7 @@ describe User do
           let(:user) { create(:user, id: 1, newsletter: true, email: "newsletter_sign_up@jilion.com") }
 
           it 'calls NewsletterSubscriptionManager.subscribe' do
-            NewsletterSubscriptionManager.should delay(:subscribe).with(1)
+            expect(NewsletterSubscriptionManager).to delay(:subscribe).with(1)
             user
           end
         end
@@ -185,7 +290,7 @@ describe User do
           let(:user) { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't calls NewsletterSubscriptionManager.subscribe" do
-            NewsletterSubscriptionManager.should_not delay(:subscribe)
+            expect(NewsletterSubscriptionManager).not_to delay(:subscribe)
             user
           end
         end
@@ -198,19 +303,19 @@ describe User do
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           user.update_attribute(:email, "newsletter_update2@jilion.com")
-          NewsletterSubscriptionManager.should delay(:update).with(user.id, "newsletter_update@jilion.com")
+          expect(NewsletterSubscriptionManager).to delay(:update).with(user.id, "newsletter_update@jilion.com")
           user.confirm!
         end
 
         it "updates info in Campaign Monitor if user change his name" do
           user
-          NewsletterSubscriptionManager.should delay(:update).with(user.id, "newsletter_update@jilion.com")
+          expect(NewsletterSubscriptionManager).to delay(:update).with(user.id, "newsletter_update@jilion.com")
           user.update_attribute(:name, 'bob')
         end
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
           user
-          NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
+          expect(NewsletterSubscriptionManager).to delay(:unsubscribe).with(user.id)
           user.update_attribute(:newsletter, false)
         end
       end
@@ -219,12 +324,12 @@ describe User do
     describe "after_update :_zendesk_update" do
       let(:user) { create(:user) }
       before do
-        NewsletterSubscriptionManager.stub(:sync_from_service)
+        allow(NewsletterSubscriptionManager).to receive(:sync_from_service)
       end
 
       context "user has no zendesk_id" do
         it "doesn't delay ZendeskWrapper.update_user" do
-          ZendeskWrapper.should_not delay(:update_user)
+          expect(ZendeskWrapper).not_to delay(:update_user)
           user.update_attribute(:email, '9876@example.org')
         end
       end
@@ -237,7 +342,7 @@ describe User do
 
           it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
             user.update_attribute(:email, new_email)
-            ZendeskWrapper.should delay(:update_user).with(user.zendesk_id, email: new_email)
+            expect(ZendeskWrapper).to delay(:update_user).with(user.zendesk_id, email: new_email)
             user.confirm!
           end
 
@@ -247,7 +352,7 @@ describe User do
             user.confirm!
 
             Sidekiq::Worker.drain_all
-            ZendeskWrapper.user(59438671).identities.last.value.should eq new_email
+            expect(ZendeskWrapper.user(59438671).identities.last.value).to eq new_email
           end
         end
 
@@ -255,7 +360,7 @@ describe User do
           let(:new_name) { "Remy" }
 
           it "delays ZendeskWrapper.update_user" do
-            ZendeskWrapper.should delay(:update_user).with(user.zendesk_id, name: new_name)
+            expect(ZendeskWrapper).to delay(:update_user).with(user.zendesk_id, name: new_name)
             user.update_attribute(:name, new_name)
           end
 
@@ -264,12 +369,12 @@ describe User do
             user.update_attribute(:name, new_name)
 
             Sidekiq::Worker.drain_all
-            ZendeskWrapper.user(59438671).name.should eq new_name
+            expect(ZendeskWrapper.user(59438671).name).to eq new_name
           end
 
           context "name has changed to ''" do
             it "doesn't update user's name on Zendesk" do
-              ZendeskWrapper.should_not delay(:update_user)
+              expect(ZendeskWrapper).not_to delay(:update_user)
               user.update_attribute(:name, '')
             end
           end
@@ -284,18 +389,18 @@ describe User do
 
     describe "email=" do
       it "downcases email" do
-        user.email.should eq "bob@cool.com"
+        expect(user.email).to eq "bob@cool.com"
       end
     end
 
     describe "hidden_notice_ids" do
       it "initialize as an array if nil" do
-        user.hidden_notice_ids.should eq []
+        expect(user.hidden_notice_ids).to eq []
       end
 
       it "doesn't cast given value" do
         user.hidden_notice_ids << 1 << "foo"
-        user.hidden_notice_ids.should eq [1, "foo"]
+        expect(user.hidden_notice_ids).to eq [1, "foo"]
       end
     end
   end
@@ -306,28 +411,28 @@ describe User do
     describe "#notice_hidden?" do
       before do
         user.hidden_notice_ids << 1
-        user.hidden_notice_ids.should eq [1]
+        expect(user.hidden_notice_ids).to eq [1]
       end
 
-      specify { user.notice_hidden?(1).should be_true }
-      specify { user.notice_hidden?("1").should be_true }
-      specify { user.notice_hidden?(2).should be_false }
-      specify { user.notice_hidden?('foo').should be_false }
+      specify { expect(user.notice_hidden?(1)).to be_truthy }
+      specify { expect(user.notice_hidden?("1")).to be_truthy }
+      specify { expect(user.notice_hidden?(2)).to be_falsey }
+      specify { expect(user.notice_hidden?('foo')).to be_falsey }
     end
 
     describe "#active_for_authentication?" do
       it "should be active for authentication when active" do
-        user.should be_active_for_authentication
+        expect(user).to be_active_for_authentication
       end
 
       it "should be active for authentication when suspended in order to allow login" do
         user.suspend
-        user.should be_active_for_authentication
+        expect(user).to be_active_for_authentication
       end
 
       it "should not be active for authentication when archived" do
         user.archive
-        user.should_not be_active_for_authentication
+        expect(user).not_to be_active_for_authentication
       end
     end
 
@@ -335,46 +440,74 @@ describe User do
       context "with active beta user" do
         subject { create(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
-        its(:beta?) { should be_true }
+        describe '#beta?' do
+          subject { super().beta? }
+          it { should be_truthy }
+        end
       end
       context "with un active beta user" do
         subject { create(:user, created_at: Time.utc(2010,10,10), invitation_token: 'xxx') }
 
-        its(:beta?) { should be_false }
+        describe '#beta?' do
+          subject { super().beta? }
+          it { should be_falsey }
+        end
       end
       context "with a standard user (limit)" do
         subject { create(:user, created_at: Time.utc(2011,3,29).midnight, invitation_token: nil) }
 
-        its(:beta?) { should be_false }
+        describe '#beta?' do
+          subject { super().beta? }
+          it { should be_falsey }
+        end
       end
       context "with a standard user" do
         subject { create(:user, created_at: Time.utc(2011,3,30), invitation_token: nil) }
 
-        its(:beta?) { should be_false }
+        describe '#beta?' do
+          subject { super().beta? }
+          it { should be_falsey }
+        end
       end
     end
 
     describe "#name_or_email" do
       context "user has no name" do
         subject { create(:user, name: nil, email: 'john@doe.com') }
-        its(:name_or_email) { should eq 'john@doe.com' }
+
+        describe '#name_or_email' do
+          subject { super().name_or_email }
+          it { should eq 'john@doe.com' }
+        end
       end
 
       context "user has a name" do
         subject { create(:user, name: 'John Doe', email: 'john@doe.com') }
-        its(:name_or_email) { should eq 'John Doe' }
+
+        describe '#name_or_email' do
+          subject { super().name_or_email }
+          it { should eq 'John Doe' }
+        end
       end
     end
 
     describe '#billing_name_or_billing_email' do
       context "user has no billing_name" do
         subject { create(:user, billing_name: nil, billing_email: 'dan@jack.com') }
-        its(:billing_name_or_billing_email) { should eq 'dan@jack.com' }
+
+        describe '#billing_name_or_billing_email' do
+          subject { super().billing_name_or_billing_email }
+          it { should eq 'dan@jack.com' }
+        end
       end
 
       context "user has a billing_name" do
         subject { create(:user, billing_name: 'John Doe', billing_email: 'dan@jack.com') }
-        its(:billing_name_or_billing_email) { should eq 'John Doe' }
+
+        describe '#billing_name_or_billing_email' do
+          subject { super().billing_name_or_billing_email }
+          it { should eq 'John Doe' }
+        end
       end
     end
 
@@ -382,25 +515,37 @@ describe User do
       context "delegates to snail using billing info" do
         subject { create(:user, full_billing_address) }
 
-        its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
+        describe '#billing_address' do
+          subject { super().billing_address }
+          it { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
+        end
       end
 
       context "billing_name is missing" do
         subject { create(:user, full_billing_address.merge(billing_name: "")) }
 
-        its(:billing_address) { should eq "John Doe\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
+        describe '#billing_address' do
+          subject { super().billing_address }
+          it { should eq "John Doe\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
+        end
       end
 
       context "billing_postal_code is missing" do
         subject { create(:user, full_billing_address.merge(billing_postal_code: "")) }
 
-        its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  \nUNITED STATES" }
+        describe '#billing_address' do
+          subject { super().billing_address }
+          it { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  \nUNITED STATES" }
+        end
       end
 
       context "billing_country is missing" do
         subject { create(:user, full_billing_address.merge(billing_country: "")) }
 
-        its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015" }
+        describe '#billing_address' do
+          subject { super().billing_address }
+          it { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015" }
+        end
       end
     end
 
@@ -579,7 +724,7 @@ describe User do
       end
 
       describe ".active" do
-        specify { User.active.should =~ [@user_active] }
+        specify { expect(User.active).to match_array([@user_active]) }
       end
     end
 
@@ -592,16 +737,16 @@ describe User do
       end
 
       describe ".with_cc" do
-        specify { User.with_cc.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
+        specify { expect(User.with_cc).to match_array([@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice]) }
       end
 
       describe ".cc_expire_this_month" do
-        specify { User.cc_expire_this_month.should =~ [@user_cc_expire_on] }
+        specify { expect(User.cc_expire_this_month).to match_array([@user_cc_expire_on]) }
       end
 
       describe ".last_credit_card_expiration_notice_sent_before" do
-        specify { User.last_credit_card_expiration_notice_sent_before(15.days.ago).should =~ [@user_last_credit_card_expiration_notice] }
-        specify { User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second).should be_empty }
+        specify { expect(User.last_credit_card_expiration_notice_sent_before(15.days.ago)).to match_array([@user_last_credit_card_expiration_notice]) }
+        specify { expect(User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second)).to be_empty }
       end
     end
 
@@ -622,11 +767,11 @@ describe User do
       end
 
       describe ".free" do
-        specify { User.free.should =~ [site1.user, site2.user, site3.user] }
+        specify { expect(User.free).to match_array([site1.user, site2.user, site3.user]) }
       end
 
       describe ".paying" do
-        specify { User.paying.should =~ [site6.user] }
+        specify { expect(User.paying).to match_array([site6.user]) }
       end
     end
 
@@ -636,8 +781,8 @@ describe User do
         @user2 = create(:user, created_at: 2.days.ago)
       end
 
-      specify { User.created_on(3.days.ago).should eq [@user1] }
-      specify { User.created_on(2.days.ago).should eq [@user2] }
+      specify { expect(User.created_on(3.days.ago)).to eq [@user1] }
+      specify { expect(User.created_on(2.days.ago)).to eq [@user2] }
     end
 
     describe ".search" do
@@ -649,12 +794,12 @@ describe User do
         create(:site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
       end
 
-      specify { User.search("remy").should eq [@user1] }
-      specify { User.search("bob").should eq [@user1] }
+      specify { expect(User.search("remy")).to eq [@user1] }
+      specify { expect(User.search("bob")).to eq [@user1] }
       # specify { User.search(".dev").should eq [@user1] }
-      specify { User.search("192.168").should eq [@user1] }
-      specify { User.search("marcel").should eq [@user1] }
-      specify { User.search("jacques").should eq [@user1] }
+      specify { expect(User.search("192.168")).to eq [@user1] }
+      specify { expect(User.search("marcel")).to eq [@user1] }
+      specify { expect(User.search("jacques")).to eq [@user1] }
     end
 
     describe ".sites_tagged_with" do
@@ -664,8 +809,8 @@ describe User do
       end
 
       it "returns the user that has a site with the given word" do
-        Site.tagged_with('bar').should eq [@site]
-        User.sites_tagged_with('bar').should eq [@user]
+        expect(Site.tagged_with('bar')).to eq [@site]
+        expect(User.sites_tagged_with('bar')).to eq [@user]
       end
     end
   end # Scopes

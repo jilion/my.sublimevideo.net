@@ -4,8 +4,15 @@ describe Admin do
   context "Factory" do
     subject { create(:admin) }
 
-    its(:email) { should match /email\d+@admin.com/ }
-    its(:roles) { should eq [] }
+    describe '#email' do
+      subject { super().email }
+      it { should match /email\d+@admin.com/ }
+    end
+
+    describe '#roles' do
+      subject { super().roles }
+      it { should eq [] }
+    end
 
     it { should be_valid }
   end # Factory
@@ -21,12 +28,12 @@ describe Admin do
 
     it "can have defined roles" do
       Admin.roles.each do |role|
-        build(:admin, roles: [role]).should be_valid
+        expect(build(:admin, roles: [role])).to be_valid
       end
     end
 
     it "cannot have undefined roles" do
-      build(:admin, roles: ['foo']).should_not be_valid
+      expect(build(:admin, roles: ['foo'])).not_to be_valid
     end
   end # Validations
 
@@ -65,7 +72,7 @@ describe Admin do
   end
 
   it "activates remember_me checkbox by default" do
-    build(:admin).remember_me.should be_true
+    expect(build(:admin).remember_me).to be_truthy
   end
 end
 

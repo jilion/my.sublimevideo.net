@@ -19,9 +19,20 @@ describe BillableItem do
   context 'Factory' do
     subject { build(:addon_plan_billable_item) }
 
-    its(:state) { should eq 'subscribed' }
-    its(:site)  { should be_present }
-    its(:item)  { should be_present }
+    describe '#state' do
+      subject { super().state }
+      it { should eq 'subscribed' }
+    end
+
+    describe '#site' do
+      subject { super().site }
+      it  { should be_present }
+    end
+
+    describe '#item' do
+      subject { super().item }
+      it  { should be_present }
+    end
 
     it { should be_valid }
   end
@@ -35,12 +46,12 @@ describe BillableItem do
           }.to change(BillableItemActivity, :count).by(1)
           last_billable_item_activity = BillableItemActivity.last
 
-          last_billable_item_activity.item.should eq @logo_addon_plan_1
-          last_billable_item_activity.state.should eq new_state
+          expect(last_billable_item_activity.item).to eq @logo_addon_plan_1
+          expect(last_billable_item_activity.state).to eq new_state
         end
 
         it "increments metrics with #{new_state}" do
-          Librato.should_receive(:increment).with("addons.#{new_state}", source: "free.#{@logo_addon_plan_1.addon_name}-#{@logo_addon_plan_1.name}")
+          expect(Librato).to receive(:increment).with("addons.#{new_state}", source: "free.#{@logo_addon_plan_1.addon_name}-#{@logo_addon_plan_1.name}")
 
           create(:billable_item, site: site, item: @logo_addon_plan_1, state: new_state)
         end
@@ -58,12 +69,12 @@ describe BillableItem do
           }.to change(BillableItemActivity, :count).by(1)
           last_billable_item_activity = BillableItemActivity.last
 
-          last_billable_item_activity.item.should eq @logo_addon_plan_2
-          last_billable_item_activity.state.should eq new_state
+          expect(last_billable_item_activity.item).to eq @logo_addon_plan_2
+          expect(last_billable_item_activity.state).to eq new_state
         end
 
         it "increments metrics with #{new_state}" do
-          Librato.should_receive(:increment).with("addons.#{new_state}", source: "paid.#{@logo_addon_plan_2.addon_name}-#{@logo_addon_plan_2.name}")
+          expect(Librato).to receive(:increment).with("addons.#{new_state}", source: "paid.#{@logo_addon_plan_2.addon_name}-#{@logo_addon_plan_2.name}")
 
           create(:billable_item, site: site, item: @logo_addon_plan_2, state: new_state)
         end
@@ -80,13 +91,13 @@ describe BillableItem do
         }.to change(BillableItemActivity, :count).by(1)
         last_billable_item_activity = BillableItemActivity.last
 
-        last_billable_item_activity.item.should eq @logo_addon_plan_3
-        last_billable_item_activity.state.should eq 'canceled'
+        expect(last_billable_item_activity.item).to eq @logo_addon_plan_3
+        expect(last_billable_item_activity.state).to eq 'canceled'
       end
 
       it "increments metrics with canceled" do
         billable_item # eager load!
-        Librato.should_receive(:increment).with('addons.canceled', source: "paid.#{@logo_addon_plan_3.addon_name}-#{@logo_addon_plan_3.name}")
+        expect(Librato).to receive(:increment).with('addons.canceled', source: "paid.#{@logo_addon_plan_3.addon_name}-#{@logo_addon_plan_3.name}")
 
         billable_item.destroy
       end
@@ -107,15 +118,15 @@ describe BillableItem do
     end
 
     describe '.active addons' do
-      it { described_class.active.should =~ [@billable_item1, @billable_item2, @billable_item3, @billable_item5, @billable_item6] }
+      it { expect(described_class.active).to match_array([@billable_item1, @billable_item2, @billable_item3, @billable_item5, @billable_item6]) }
     end
 
     describe '.subscribed addons' do
-      it { described_class.subscribed.should =~ [@billable_item1, @billable_item2, @billable_item5, @billable_item6] }
+      it { expect(described_class.subscribed).to match_array([@billable_item1, @billable_item2, @billable_item5, @billable_item6]) }
     end
 
     describe '.paid addons' do
-      it { described_class.paid.should =~ [@billable_item2, @billable_item4] }
+      it { expect(described_class.paid).to match_array([@billable_item2, @billable_item4]) }
     end
   end
 

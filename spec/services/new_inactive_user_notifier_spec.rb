@@ -10,7 +10,7 @@ describe NewInactiveUserNotifier do
       }
 
       it "doesn't send emails" do
-        UserMailer.should_not delay(:inactive_account)
+        expect(UserMailer).not_to delay(:inactive_account)
         NewInactiveUserNotifier.send_emails
       end
     end
@@ -26,7 +26,7 @@ describe NewInactiveUserNotifier do
       it "sends email to users without page visits" do
         NewInactiveUserNotifier.send_emails
         Sidekiq::Worker.drain_all
-        last_delivery.to.should eq [@user2.email]
+        expect(last_delivery.to).to eq [@user2.email]
       end
     end
   end

@@ -13,21 +13,21 @@ feature 'OAuth applications' do
     describe 'list OAuth applications' do
       scenario 'shows a list of applications' do
         go 'my', '/account/applications'
-        current_url.should eq 'http://my.sublimevideo.dev/account'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account'
       end
     end
 
     describe 'new OAuth applications' do
       scenario 'shows a list of applications' do
         go 'my', '/account/applications/new'
-        current_url.should eq 'http://my.sublimevideo.dev/account'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account'
       end
     end
 
     describe 'edit an OAuth applications' do
       scenario 'shows a list of applications' do
         go 'my', "/account/applications/#{@application.id}/edit"
-        current_url.should eq 'http://my.sublimevideo.dev/account'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account'
       end
     end
   end
@@ -43,9 +43,9 @@ feature 'OAuth applications' do
     describe 'list OAuth applications' do
       scenario 'shows a list of applications' do
         go 'my', '/account/applications'
-        current_url.should eq 'http://my.sublimevideo.dev/account/applications'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/applications'
 
-        page.should have_content('Agree2')
+        expect(page).to have_content('Agree2')
       end
     end
 
@@ -54,14 +54,14 @@ feature 'OAuth applications' do
         go 'my', '/account/applications'
 
         click_link 'Register a new application'
-        current_url.should eq 'http://my.sublimevideo.dev/account/applications/new'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/applications/new'
 
         fill_in 'Name', with: 'WordPress'
         fill_in 'Url',  with: 'http://wordpress.com'
         click_button 'Register'
 
-        current_url.should eq "http://my.sublimevideo.dev/account/applications/#{ClientApplication.last.id}"
-        page.should have_content('WordPress')
+        expect(current_url).to eq "http://my.sublimevideo.dev/account/applications/#{ClientApplication.last.id}"
+        expect(page).to have_content('WordPress')
       end
     end
 
@@ -71,28 +71,28 @@ feature 'OAuth applications' do
 
         click_link 'Edit'
 
-        current_url.should eq "http://my.sublimevideo.dev/account/applications/#{@application.id}/edit"
-        page.should have_content('Edit the application “Agree2”')
+        expect(current_url).to eq "http://my.sublimevideo.dev/account/applications/#{@application.id}/edit"
+        expect(page).to have_content('Edit the application “Agree2”')
 
         fill_in 'Name',         with: 'Agree3'
         fill_in 'Callback url', with: 'http://test.fr'
         click_button 'Update'
 
-        page.should have_content('Agree3')
-        page.should have_content('http://test.com')
-        page.should have_content('http://test.fr')
+        expect(page).to have_content('Agree3')
+        expect(page).to have_content('http://test.com')
+        expect(page).to have_content('http://test.fr')
       end
     end
 
     describe 'delete an OAuth applications' do
       scenario 'shows a list of applications' do
         go 'my', '/account/applications'
-        page.should have_content('Agree2')
+        expect(page).to have_content('Agree2')
 
         click_button 'Delete'
 
-        current_url.should =~ %r(^http://[^/]+/account/applications$)
-        page.should have_no_content('Agree2')
+        expect(current_url).to match(%r(^http://[^/]+/account/applications$))
+        expect(page).to have_no_content('Agree2')
       end
     end
   end

@@ -11,8 +11,8 @@ describe VideoTagsController do
     let(:site) { create(:site, user: user) }
     before do
       sign_in user
-      VideoTag.stub(:all).and_return([])
-      VideoTag.stub(:find).and_return(double('VideoTag'))
+      allow(VideoTag).to receive(:all).and_return([])
+      allow(VideoTag).to receive(:find).and_return(double('VideoTag'))
     end
 
     context "with last_90_days_active filter, by_last_days_starts sort and page params" do

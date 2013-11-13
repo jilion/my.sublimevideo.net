@@ -7,35 +7,35 @@ describe AdminRolesValidator do
   describe "empty roles 1" do
     it "should not add an error" do
       validate_admin_roles(admin, :roles, [])
-      admin.errors[:roles].should be_empty
+      expect(admin.errors[:roles]).to be_empty
     end
   end
 
   describe "empty roles 2" do
     it "should not add an error" do
       validate_admin_roles(admin, :roles, [''])
-      admin.errors[:roles].should be_empty
+      expect(admin.errors[:roles]).to be_empty
     end
   end
 
   describe "valid admin roles" do
     it "should not add an error" do
       validate_admin_roles(admin, :roles, Admin.roles)
-      admin.errors[:roles].should be_empty
+      expect(admin.errors[:roles]).to be_empty
     end
   end
 
   describe "roles that include undefined roles" do
     it "should add an error" do
       validate_admin_roles(admin, :roles, ['foo'])
-      admin.errors[:roles].should have(1).item
+      expect(admin.errors[:roles].size).to eq(1)
     end
   end
 
   describe "duplicated roles" do
     it "should add an error" do
       validate_admin_roles(admin, :roles, [Admin.roles.first, Admin.roles.first])
-      admin.errors[:roles].should have(1).item
+      expect(admin.errors[:roles].size).to eq(1)
     end
   end
 

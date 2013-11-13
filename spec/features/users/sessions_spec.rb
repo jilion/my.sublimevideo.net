@@ -12,7 +12,7 @@ feature 'Log in' do
 
       click_button "Log In"
 
-      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+      expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
     end
 
     scenario "is able log in using the Get Satisfaction login route" do
@@ -23,7 +23,7 @@ feature 'Log in' do
 
       click_button "Log In"
 
-      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+      expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
     end
   end
 
@@ -40,7 +40,7 @@ feature 'Log in' do
 
       click_button "Log In"
 
-      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+      expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
     end
   end
 end
@@ -48,9 +48,9 @@ end
 feature 'Log out' do
   scenario "the logged-in user is able log out" do
     sign_in_as :user, { name: "John Doe" }
-    page.should have_content "John Doe"
+    expect(page).to have_content "John Doe"
     click_link "logout"
 
-    page.should_not have_content "John Doe"
+    expect(page).not_to have_content "John Doe"
   end
 end

@@ -27,7 +27,7 @@ describe CreditCardExpirationNotifier do
     end
 
     it "sends 'cc will expire' email when user's credit card will expire at the end of the current month and the last notice he received is at least 15 days old" do
-      BillingMailer.should delay(:credit_card_will_expire).with(@user_cc_will_expire_and_last_credit_card_expiration_notice_1.id)
+      expect(BillingMailer).to delay(:credit_card_will_expire).with(@user_cc_will_expire_and_last_credit_card_expiration_notice_1.id)
 
       described_class.send_emails
     end

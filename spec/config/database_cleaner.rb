@@ -3,7 +3,7 @@ RSpec.configure do |config|
     DatabaseCleaner[:mongoid].strategy = :truncation
   end
 
-  config.before do
+  config.before do |example|
     with_transaction_callbacks = example.metadata[:with_transaction_callbacks]
 
     config.use_transactional_fixtures = !with_transaction_callbacks
@@ -16,7 +16,7 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
 
-  config.after do
+  config.after do |example|
     DatabaseCleaner.clean
   end
 end

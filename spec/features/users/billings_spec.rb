@@ -6,7 +6,7 @@ feature 'Billing address update', :vcr do
       background do
         sign_in_as :user, billing_address_1: '', without_cc: true
         go 'my', 'account/billing/edit'
-        current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit'
       end
 
       scenario 'Updates his billing address and credit card successfully' do
@@ -20,11 +20,11 @@ feature 'Billing address update', :vcr do
 
       scenario 'Updates his billing address and credit card successfully with a return_to path' do
         go 'my', 'account/billing/edit?return_to=/account/cancel'
-        current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
         fields = fill_billing_address
         fill_credit_card
         click_button 'billing_info_submit'
-        current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/cancel'
       end
 
       scenario 'Update billing address and credit card unsuccessfully' do
@@ -32,12 +32,12 @@ feature 'Billing address update', :vcr do
         fill_credit_card(type: 'master')
         click_button 'billing_info_submit'
 
-        page.should have_css '.inline_errors'
-        page.should have_content 'Billing email address is invalid'
-        page.should have_content 'Postal code is too long (maximum is 20 characters)'
+        expect(page).to have_css '.inline_errors'
+        expect(page).to have_content 'Billing email address is invalid'
+        expect(page).to have_content 'Postal code is too long (maximum is 20 characters)'
 
         go 'my', 'account'
-        page.should have_no_content '1'*21
+        expect(page).to have_no_content '1'*21
       end
     end
 
@@ -45,9 +45,9 @@ feature 'Billing address update', :vcr do
       background do
         sign_in_as :user, billing_address_1: ''
         go 'my', 'account'
-        page.should have_no_content 'Your billing address is incomplete.'
+        expect(page).to have_no_content 'Your billing address is incomplete.'
         go 'my', 'account/billing/edit'
-        current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit'
       end
 
       UserModules::CreditCard::BRANDS.each do |brand|
@@ -65,11 +65,11 @@ feature 'Billing address update', :vcr do
           fill_credit_card(type: brand)
           click_button 'billing_info_submit'
 
-          page.should have_css '.inline_errors'
-          page.should have_content 'Postal code is too long (maximum is 20 characters)'
+          expect(page).to have_css '.inline_errors'
+          expect(page).to have_content 'Postal code is too long (maximum is 20 characters)'
 
           go 'my', 'account'
-          page.should have_no_content '1'*21
+          expect(page).to have_no_content '1'*21
         end
       end
     end
@@ -80,13 +80,13 @@ feature 'Billing address update', :vcr do
       background do
         sign_in_as :user_with_site
         create(:billable_item, site: @current_user.sites.first, item: create(:addon_plan), state: 'subscribed')
-        @current_user.should be_billable
+        expect(@current_user).to be_billable
         @current_user.update(billing_address_1: '', billing_email: '')
         go 'my', 'account'
-        page.should have_content 'Your billing address is incomplete.'
-        page.should have_content 'No billing email address specified.'
+        expect(page).to have_content 'Your billing address is incomplete.'
+        expect(page).to have_content 'No billing email address specified.'
         click_link 'Update billing address'
-        current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit'
       end
 
       scenario 'Update billing address successfully' do
@@ -99,11 +99,11 @@ feature 'Billing address update', :vcr do
       scenario 'Update billing address unsuccessfully' do
         fill_and_submit_billing_address(email: 'foo', name: '', zip: '1'*21, region: '')
 
-        page.should have_css '.inline_errors'
-        page.should have_content 'Postal code is too long (maximum is 20 characters)'
+        expect(page).to have_css '.inline_errors'
+        expect(page).to have_content 'Postal code is too long (maximum is 20 characters)'
 
         go 'my', 'account'
-        page.should have_no_content '1'*21
+        expect(page).to have_no_content '1'*21
       end
     end
   end
@@ -114,19 +114,19 @@ feature 'Credit cards update', :vcr do
     background do
       sign_in_as :user, without_cc: true
       go 'my', 'account'
-      page.should have_content 'No credit card on file.'
+      expect(page).to have_content 'No credit card on file.'
     end
 
     UserModules::CreditCard::BRANDS.each do |brand|
       scenario "And update is successful (#{brand})" do
         click_link 'Register credit card'
-        current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit'
 
         fill_credit_card(type: brand)
         click_button 'credit_card_submit'
 
-        @current_user.reload.cc_type.should eql brand
-        @current_user.cc_last_digits.should eql send("valid_cc_attributes_#{brand}")[:cc_number][-4,4]
+        expect(@current_user.reload.cc_type).to eql brand
+        expect(@current_user.cc_last_digits).to eql send("valid_cc_attributes_#{brand}")[:cc_number][-4,4]
         should_save_billing_info_successfully(brand)
       end
     end
@@ -138,7 +138,7 @@ feature 'Credit cards update', :vcr do
       go 'my', 'account'
       should_display_credit_card
       click_link 'Update credit card'
-      current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit'
     end
 
     scenario 'update is successful' do
@@ -153,36 +153,36 @@ feature 'Credit cards update', :vcr do
 
       click_button 'credit_card_submit'
 
-      @current_user.reload.pending_cc_type.should eq 'visa'
-      @current_user.pending_cc_last_digits.should eq '0002'
+      expect(@current_user.reload.pending_cc_type).to eq 'visa'
+      expect(@current_user.pending_cc_last_digits).to eq '0002'
 
-      page.should have_content 'Please click on the "Continue" button to continue the processing of your 3-D secure transaction.'
+      expect(page).to have_content 'Please click on the "Continue" button to continue the processing of your 3-D secure transaction.'
 
       # fake payment succeeded callback (and thus skip the d3d redirection)
       @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '5')
-      @current_user.cc_type.should eq 'visa'
-      @current_user.cc_last_digits.should eq '0002'
-      @current_user.pending_cc_type.should be_nil
-      @current_user.pending_cc_last_digits.should be_nil
+      expect(@current_user.cc_type).to eq 'visa'
+      expect(@current_user.cc_last_digits).to eq '0002'
+      expect(@current_user.pending_cc_type).to be_nil
+      expect(@current_user.pending_cc_last_digits).to be_nil
 
       go 'my', '/account'
 
       should_display_credit_card 'd3d'
-      page.should have_no_content I18n.t('flash.billings.update.notice')
+      expect(page).to have_no_content I18n.t('flash.billings.update.notice')
     end
 
     scenario 'update is waiting after a successful 3-D Secure identification', :vcr do
       fill_credit_card(type: 'd3d')
       click_button 'credit_card_submit'
-      @current_user.reload.pending_cc_type.should eq 'visa'
-      @current_user.pending_cc_last_digits.should eq '0002'
+      expect(@current_user.reload.pending_cc_type).to eq 'visa'
+      expect(@current_user.pending_cc_last_digits).to eq '0002'
 
       # fake payment waiting callback (and thus skip the d3d redirection)
       @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '51')
-      @current_user.reload.cc_type.should eq 'visa'
-      @current_user.cc_last_digits.should eq '1111'
-      @current_user.pending_cc_type.should eq 'visa'
-      @current_user.pending_cc_last_digits.should eq '0002'
+      expect(@current_user.reload.cc_type).to eq 'visa'
+      expect(@current_user.cc_last_digits).to eq '1111'
+      expect(@current_user.pending_cc_type).to eq 'visa'
+      expect(@current_user.pending_cc_last_digits).to eq '0002'
 
       go 'my', '/account'
 
@@ -192,31 +192,31 @@ feature 'Credit cards update', :vcr do
     scenario 'update is unsuccessful after an unsuccessful 3-D Secure identification' do
       fill_credit_card type: 'd3d'
       click_button 'credit_card_submit'
-      @current_user.reload.pending_cc_type.should eq 'visa'
-      @current_user.pending_cc_last_digits.should eq '0002'
+      expect(@current_user.reload.pending_cc_type).to eq 'visa'
+      expect(@current_user.pending_cc_last_digits).to eq '0002'
 
       # fake payment failed callback (and thus skip the d3d redirection)
       @current_user.process_credit_card_authorization_response('BRAND' => 'American Express', 'PAYID' => '1234', 'STATUS' => '0')
 
-      @current_user.reload.cc_type.should eq 'visa'
-      @current_user.cc_last_digits.should eq '1111'
-      @current_user.pending_cc_type.should eq 'visa'
-      @current_user.pending_cc_last_digits.should eq '0002'
+      expect(@current_user.reload.cc_type).to eq 'visa'
+      expect(@current_user.cc_last_digits).to eq '1111'
+      expect(@current_user.pending_cc_type).to eq 'visa'
+      expect(@current_user.pending_cc_last_digits).to eq '0002'
 
       go 'my', '/account'
 
       should_display_credit_card
-      page.should have_no_content I18n.t('flash.billings.update.notice')
+      expect(page).to have_no_content I18n.t('flash.billings.update.notice')
     end
 
     scenario 'update is successful with a failed attempt first' do
       fill_in 'Card number', with: '123123'
       click_button 'credit_card_submit'
 
-      current_url.should eq 'http://my.sublimevideo.dev/account/billing'
-      page.should have_content "Name on card can't be blank"
-      page.should have_content 'Card number is invalid'
-      page.should have_content 'CSC is required'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing'
+      expect(page).to have_content "Name on card can't be blank"
+      expect(page).to have_content 'Card number is invalid'
+      expect(page).to have_content 'CSC is required'
 
       fill_credit_card
       click_button 'credit_card_submit'
@@ -226,18 +226,18 @@ feature 'Credit cards update', :vcr do
 
     scenario 'update is successful with a failed attempt first with a return_to path' do
       go 'my', 'account/billing/edit?return_to=/account/cancel'
-      current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit?return_to=%2Faccount%2Fcancel'
       fill_in 'Card number', with: '123123'
       click_button 'credit_card_submit'
 
-      current_url.should eq 'http://my.sublimevideo.dev/account/billing'
-      page.should have_content "Name on card can't be blank"
-      page.should have_content 'Card number is invalid'
-      page.should have_content 'CSC is required'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing'
+      expect(page).to have_content "Name on card can't be blank"
+      expect(page).to have_content 'Card number is invalid'
+      expect(page).to have_content 'CSC is required'
 
       fill_credit_card
       click_button 'credit_card_submit'
-      current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account/cancel'
     end
 
     scenario 'update does nothing if credit card number is not present' do
@@ -251,17 +251,17 @@ end
 
 def should_display_all_values_from_hash(hash)
   hash.each do |k, v|
-    page.should have_content v
+    expect(page).to have_content v
   end
 end
 
 def should_display_credit_card(type = 'visa')
-  page.should have_content(I18n.t("user.credit_card.type.#{type == 'd3d' ? 'visa' : type}"))
-  page.should have_content(last_digits(type))
+  expect(page).to have_content(I18n.t("user.credit_card.type.#{type == 'd3d' ? 'visa' : type}"))
+  expect(page).to have_content(last_digits(type))
 end
 
 def should_save_billing_info_successfully(type = 'visa')
-  current_url.should eq "http://my.sublimevideo.dev/account"
+  expect(current_url).to eq "http://my.sublimevideo.dev/account"
   should_display_credit_card(type)
-  page.should have_content I18n.t('flash.billings.update.notice')
+  expect(page).to have_content I18n.t('flash.billings.update.notice')
 end

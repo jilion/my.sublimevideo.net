@@ -5,56 +5,56 @@ describe Admin::MailTemplatesController do
   context "with logged in admin with the god role" do
     before do
       sign_in :admin, authenticated_admin(roles: ['god'])
-      MailTemplate.stub(:find).with('1') { mock_mail_template }
+      allow(MailTemplate).to receive(:find).with('1') { mock_mail_template }
     end
 
     it "should render :new on GET :new" do
       get :new
-      response.should be_success
-      response.should render_template(:new)
+      expect(response).to be_success
+      expect(response).to render_template(:new)
     end
 
     describe "POST :create" do
-      before { MailTemplate.stub(:new) { mock_mail_template } }
+      before { allow(MailTemplate).to receive(:new) { mock_mail_template } }
 
       it "responds with redirect when save succeed" do
-        mock_mail_template.stub(:save) { true }
+        allow(mock_mail_template).to receive(:save) { true }
 
         post :create, mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
-        response.should redirect_to(admin_mails_path)
+        expect(response).to redirect_to(admin_mails_path)
       end
 
       it "responds with success when save fails" do
-        mock_mail_template.stub(:save) { false }
-        mock_mail_template.stub(:errors) { ["error"] }
+        allow(mock_mail_template).to receive(:save) { false }
+        allow(mock_mail_template).to receive(:errors) { ["error"] }
 
         post :create, mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
-        response.should be_success
-        response.should render_template(:new)
+        expect(response).to be_success
+        expect(response).to render_template(:new)
       end
     end
 
     it "should render :edit on GET :edit" do
       get :edit, id: '1'
-      response.should be_success
-      response.should render_template(:edit)
+      expect(response).to be_success
+      expect(response).to render_template(:edit)
     end
 
     describe "PUT :update" do
       it "responds with redirect when update succeed" do
-        mock_mail_template.stub(:update) { true }
+        allow(mock_mail_template).to receive(:update) { true }
 
         put :update, id: '1', mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
-        response.should redirect_to(edit_admin_mail_template_path(mock_mail_template.id))
+        expect(response).to redirect_to(edit_admin_mail_template_path(mock_mail_template.id))
       end
 
       it "responds with success when update fails" do
-        mock_mail_template.stub(:update) { false }
-        mock_mail_template.stub(:errors) { ["error"] }
+        allow(mock_mail_template).to receive(:update) { false }
+        allow(mock_mail_template).to receive(:errors) { ["error"] }
 
         put :update, id: '1', mail_template: { title: 'AAA', subject: 'BBB', body: 'CCC' }
-        response.should be_success
-        response.should render_template(:edit)
+        expect(response).to be_success
+        expect(response).to render_template(:edit)
       end
     end
   end

@@ -7,7 +7,7 @@ feature 'Account deletion' do
     click_link 'John Doe'
     click_link 'Cancel account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
+    expect(current_url).to eq 'http://my.sublimevideo.dev/account/cancel'
   end
 
   scenario 'shows a feedback form before deleting the account and succeeds with a reason and a valid current password' do
@@ -17,24 +17,24 @@ feature 'Account deletion' do
     # -> { page.driver.click_button 'Cancel my account' }.should delay('%Class%account_archived%', '%Class%unsubscribe%')
     click_button 'Cancel my account'
 
-    current_url.should eq 'http://sublimevideo.dev/'
-    get_me_the_cookies.map { |c| c['name'] }.should_not include('l')
+    expect(current_url).to eq 'http://sublimevideo.dev/'
+    expect(get_me_the_cookies.map { |c| c['name'] }).not_to include('l')
 
     go 'my', 'sites'
-    current_url.should eq 'http://my.sublimevideo.dev/login'
+    expect(current_url).to eq 'http://my.sublimevideo.dev/login'
 
-    @current_user.reload.should be_archived
+    expect(@current_user.reload).to be_archived
     feedback = Feedback.last
-    feedback.reason.should eq 'price'
-    feedback.user.should eq @current_user
+    expect(feedback.reason).to eq 'price'
+    expect(feedback.user).to eq @current_user
   end
 
   scenario 'shows a feedback form before deleting the account but shows an error without a valid reason' do
     fill_in 'user_current_password', with: '123456'
     click_button 'Cancel my account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
-    page.should have_content 'Reason must be given'
+    expect(current_url).to eq 'http://my.sublimevideo.dev/account/cancel'
+    expect(page).to have_content 'Reason must be given'
   end
 
   scenario 'shows a feedback form before deleting the account but shows an error without a valid current password' do
@@ -42,7 +42,7 @@ feature 'Account deletion' do
     fill_in 'user_current_password', with: '654321'
     click_button 'Cancel my account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
-    page.should have_content 'Please enter your current password to confirm the cancellation'
+    expect(current_url).to eq 'http://my.sublimevideo.dev/account/cancel'
+    expect(page).to have_content 'Please enter your current password to confirm the cancellation'
   end
 end

@@ -15,12 +15,12 @@ describe SiteStatsController do
     end
 
     context 'not subscribed to the stats addon' do
-      before { site.stub(:realtime_stats_active?).and_return(false) }
+      before { allow(site).to receive(:realtime_stats_active?).and_return(false) }
     end
 
     context 'subscribed to the stats addon' do
       it_behaves_like 'responds to formats', [:html, :js, :csv], :get, [:index] do
-        before { SiteExhibit.any_instance.should_receive(:realtime_stats_active?).and_return(true) }
+        before { expect_any_instance_of(SiteExhibit).to receive(:realtime_stats_active?).and_return(true) }
         let(:params) { { site_id: site.token } }
       end
     end

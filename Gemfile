@@ -142,7 +142,7 @@ end
 
 group :development, :test do
   gem 'dotenv-rails'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 2.99.0.beta1'
   gem 'timecop'
 
   # Javascript test

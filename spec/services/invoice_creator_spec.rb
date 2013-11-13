@@ -60,11 +60,11 @@ describe InvoiceCreator do
       it 'takes in account only billable items with a price > 0' do
         invoice = described_class.build_for_month(1.month.ago, site).invoice
 
-        invoice.invoice_items.should have(3).items
+        expect(invoice.invoice_items.size).to eq(3)
 
-        invoice.invoice_items[0].item.should eq hidden_addon_plan_paid
-        invoice.invoice_items[1].item.should eq public_addon_plan_paid
-        invoice.invoice_items[2].item.should eq custom_addon_plan_paid
+        expect(invoice.invoice_items[0].item).to eq hidden_addon_plan_paid
+        expect(invoice.invoice_items[1].item).to eq public_addon_plan_paid
+        expect(invoice.invoice_items[2].item).to eq custom_addon_plan_paid
       end
     end
 
@@ -76,28 +76,28 @@ describe InvoiceCreator do
       context 'for 4 months ago' do
         it 'creates 1 period that last the whole month' do
           invoice = described_class.build_for_month(4.months.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 4.months.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 4.months.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].started_at).to eq 4.months.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 4.months.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq public_addon_plan_paid.price
         end
       end
 
       context 'for 2 months ago' do
         it 'creates 1 period that last the whole month' do
           invoice = described_class.build_for_month(2.months.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 2.months.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 2.months.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].started_at).to eq 2.months.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 2.months.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq public_addon_plan_paid.price
         end
       end
     end
@@ -113,34 +113,34 @@ describe InvoiceCreator do
       context 'for 2 months ago' do
         it 'creates 1 period that last the whole month' do
           invoice = described_class.build_for_month(2.months.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 2.months.ago.beginning_of_month + 15.days
-          invoice.invoice_items[0].ended_at.should eq 2.months.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(2.months.ago)) * (days_in_month(2.months.ago) - 15)).round
+          expect(invoice.invoice_items[0].started_at).to eq 2.months.ago.beginning_of_month + 15.days
+          expect(invoice.invoice_items[0].ended_at).to eq 2.months.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(2.months.ago)) * (days_in_month(2.months.ago) - 15)).round
         end
       end
 
       context 'for 1 month ago' do
         it 'creates 2 periods, with the second one starting on the 10th day and ending at the end of the month' do
           invoice = described_class.build_for_month(1.month.ago, site).invoice
-          invoice.invoice_items.should have(2).items
+          expect(invoice.invoice_items.size).to eq(2)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
-          invoice.invoice_items[1].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
+          expect(invoice.invoice_items[1].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 1.month.ago.beginning_of_month + 5.days
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 5).round
+          expect(invoice.invoice_items[0].started_at).to eq 1.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 1.month.ago.beginning_of_month + 5.days
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 5).round
 
-          invoice.invoice_items[1].started_at.should eq 1.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[1].ended_at.should eq 1.month.ago.end_of_month
-          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 10)).round
+          expect(invoice.invoice_items[1].started_at).to eq 1.month.ago.beginning_of_month + 10.days
+          expect(invoice.invoice_items[1].ended_at).to eq 1.month.ago.end_of_month
+          expect(invoice.invoice_items[1].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[1].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 10)).round
         end
       end
     end
@@ -160,21 +160,21 @@ describe InvoiceCreator do
       context 'for 2 months ago' do
         it 'doesnt create any invoice items' do
           invoice = described_class.build_for_month(2.months.ago, site).invoice
-          invoice.invoice_items.should be_empty
+          expect(invoice.invoice_items).to be_empty
         end
       end
 
       context 'for 1 month ago' do
         it 'creates 1 period, starting on the 15th day and ending at the end of the month' do
           invoice = described_class.build_for_month(1.month.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month + 15.days
-          invoice.invoice_items[0].ended_at.should eq 1.month.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
+          expect(invoice.invoice_items[0].started_at).to eq 1.month.ago.beginning_of_month + 15.days
+          expect(invoice.invoice_items[0].ended_at).to eq 1.month.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
         end
       end
     end
@@ -189,14 +189,14 @@ describe InvoiceCreator do
       context 'for 1 month ago' do
         it 'creates 1 period, starting on the 5th day and ending at the end of the month' do
           invoice = described_class.build_for_month(1.month.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 1.month.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].started_at).to eq 1.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 1.month.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq public_addon_plan_paid.price
         end
       end
     end
@@ -210,14 +210,14 @@ describe InvoiceCreator do
       context 'for 1 month ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(1.month.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 1.month.ago.beginning_of_month + 15.days
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 15).round
+          expect(invoice.invoice_items[0].started_at).to eq 1.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 1.month.ago.beginning_of_month + 15.days
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 15).round
         end
       end
     end
@@ -232,20 +232,20 @@ describe InvoiceCreator do
       context 'for 1 month ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(1.month.ago, site).invoice
-          invoice.invoice_items.should have(2).item
+          expect(invoice.invoice_items.size).to eq(2)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
-          invoice.invoice_items[1].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
+          expect(invoice.invoice_items[1].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 1.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 10).round
+          expect(invoice.invoice_items[0].started_at).to eq 1.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 1.month.ago.beginning_of_month + 10.days
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 10).round
 
-          invoice.invoice_items[1].started_at.should eq 1.month.ago.beginning_of_month + 15.days
-          invoice.invoice_items[1].ended_at.should eq 1.month.ago.end_of_month
-          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
+          expect(invoice.invoice_items[1].started_at).to eq 1.month.ago.beginning_of_month + 15.days
+          expect(invoice.invoice_items[1].ended_at).to eq 1.month.ago.end_of_month
+          expect(invoice.invoice_items[1].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[1].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
         end
       end
     end
@@ -274,101 +274,101 @@ describe InvoiceCreator do
       context 'for 6 months ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(6.month.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 6.month.ago.beginning_of_month + 2.days
-          invoice.invoice_items[0].ended_at.should eq 6.month.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(6.month.ago)) * (days_in_month(6.month.ago) - 2)).round
+          expect(invoice.invoice_items[0].started_at).to eq 6.month.ago.beginning_of_month + 2.days
+          expect(invoice.invoice_items[0].ended_at).to eq 6.month.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(6.month.ago)) * (days_in_month(6.month.ago) - 2)).round
         end
       end
 
       context 'for 5 months ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(5.month.ago, site).invoice
-          invoice.invoice_items.should have(1).item
+          expect(invoice.invoice_items.size).to eq(1)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 5.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 5.month.ago.end_of_month
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].started_at).to eq 5.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 5.month.ago.end_of_month
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq public_addon_plan_paid.price
         end
       end
 
       context 'for 4 month ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(4.month.ago, site).invoice
-          invoice.invoice_items.should have(2).item
+          expect(invoice.invoice_items.size).to eq(2)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
-          invoice.invoice_items[1].item.should eq custom_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
+          expect(invoice.invoice_items[1].item).to eq custom_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 4.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 4.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(4.month.ago)) * 10).round
+          expect(invoice.invoice_items[0].started_at).to eq 4.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 4.month.ago.beginning_of_month + 10.days
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(4.month.ago)) * 10).round
 
-          invoice.invoice_items[1].started_at.should eq 4.month.ago.beginning_of_month + 3.days
-          invoice.invoice_items[1].ended_at.should eq 4.month.ago.end_of_month
-          invoice.invoice_items[1].price.should eq custom_addon_plan_paid.price
-          invoice.invoice_items[1].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(4.month.ago)) * (days_in_month(4.month.ago) - 3)).round
+          expect(invoice.invoice_items[1].started_at).to eq 4.month.ago.beginning_of_month + 3.days
+          expect(invoice.invoice_items[1].ended_at).to eq 4.month.ago.end_of_month
+          expect(invoice.invoice_items[1].price).to eq custom_addon_plan_paid.price
+          expect(invoice.invoice_items[1].amount).to eq ((custom_addon_plan_paid.price.to_f / days_in_month(4.month.ago)) * (days_in_month(4.month.ago) - 3)).round
         end
       end
 
       context 'for 3 month ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(3.month.ago, site).invoice
-          invoice.invoice_items.should have(3).item
+          expect(invoice.invoice_items.size).to eq(3)
 
-          invoice.invoice_items[0].item.should eq custom_addon_plan_paid
-          invoice.invoice_items[1].item.should eq public_addon_plan_paid
-          invoice.invoice_items[2].item.should eq custom_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq custom_addon_plan_paid
+          expect(invoice.invoice_items[1].item).to eq public_addon_plan_paid
+          expect(invoice.invoice_items[2].item).to eq custom_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 3.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 3.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[0].price.should eq custom_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * 10).round
+          expect(invoice.invoice_items[0].started_at).to eq 3.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 3.month.ago.beginning_of_month + 10.days
+          expect(invoice.invoice_items[0].price).to eq custom_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((custom_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * 10).round
 
-          invoice.invoice_items[1].started_at.should eq 3.month.ago.beginning_of_month + 2.days
-          invoice.invoice_items[1].ended_at.should eq 3.month.ago.end_of_month
-          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * (days_in_month(3.month.ago) - 2)).round
+          expect(invoice.invoice_items[1].started_at).to eq 3.month.ago.beginning_of_month + 2.days
+          expect(invoice.invoice_items[1].ended_at).to eq 3.month.ago.end_of_month
+          expect(invoice.invoice_items[1].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[1].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * (days_in_month(3.month.ago) - 2)).round
 
-          invoice.invoice_items[2].started_at.should eq 3.month.ago.beginning_of_month + 20.days
-          invoice.invoice_items[2].ended_at.should eq 3.month.ago.end_of_month
-          invoice.invoice_items[2].price.should eq custom_addon_plan_paid.price
-          invoice.invoice_items[2].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * (days_in_month(3.month.ago) - 20)).round
+          expect(invoice.invoice_items[2].started_at).to eq 3.month.ago.beginning_of_month + 20.days
+          expect(invoice.invoice_items[2].ended_at).to eq 3.month.ago.end_of_month
+          expect(invoice.invoice_items[2].price).to eq custom_addon_plan_paid.price
+          expect(invoice.invoice_items[2].amount).to eq ((custom_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * (days_in_month(3.month.ago) - 20)).round
         end
       end
 
       context 'for 2 month ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(2.month.ago, site).invoice
-          invoice.invoice_items.should have(2).item
+          expect(invoice.invoice_items.size).to eq(2)
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
-          invoice.invoice_items[1].item.should eq custom_addon_plan_paid
+          expect(invoice.invoice_items[0].item).to eq public_addon_plan_paid
+          expect(invoice.invoice_items[1].item).to eq custom_addon_plan_paid
 
-          invoice.invoice_items[0].started_at.should eq 2.month.ago.beginning_of_month
-          invoice.invoice_items[0].ended_at.should eq 2.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(2.month.ago)) * 10).round
+          expect(invoice.invoice_items[0].started_at).to eq 2.month.ago.beginning_of_month
+          expect(invoice.invoice_items[0].ended_at).to eq 2.month.ago.beginning_of_month + 10.days
+          expect(invoice.invoice_items[0].price).to eq public_addon_plan_paid.price
+          expect(invoice.invoice_items[0].amount).to eq ((public_addon_plan_paid.price.to_f / days_in_month(2.month.ago)) * 10).round
 
-          invoice.invoice_items[1].started_at.should eq 2.month.ago.beginning_of_month
-          invoice.invoice_items[1].ended_at.should eq 2.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[1].price.should eq custom_addon_plan_paid.price
-          invoice.invoice_items[1].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(2.month.ago)) * 10).round
+          expect(invoice.invoice_items[1].started_at).to eq 2.month.ago.beginning_of_month
+          expect(invoice.invoice_items[1].ended_at).to eq 2.month.ago.beginning_of_month + 10.days
+          expect(invoice.invoice_items[1].price).to eq custom_addon_plan_paid.price
+          expect(invoice.invoice_items[1].amount).to eq ((custom_addon_plan_paid.price.to_f / days_in_month(2.month.ago)) * 10).round
         end
       end
 
       context 'for 1 month ago' do
         it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
           invoice = described_class.build_for_month(1.month.ago, site).invoice
-          invoice.invoice_items.should be_empty
+          expect(invoice.invoice_items).to be_empty
         end
       end
     end
@@ -409,11 +409,11 @@ describe InvoiceCreator do
       it 'has no VAT' do
         expect { service.save }.to change(Invoice, :count).by(1)
 
-        service.invoice.invoice_items_amount.should eq 995
-        service.invoice.vat_rate.should eq 0
-        service.invoice.vat_amount.should eq 0
-        service.invoice.balance_deduction_amount.should eq 0
-        service.invoice.amount.should eq 995
+        expect(service.invoice.invoice_items_amount).to eq 995
+        expect(service.invoice.vat_rate).to eq 0
+        expect(service.invoice.vat_amount).to eq 0
+        expect(service.invoice.balance_deduction_amount).to eq 0
+        expect(service.invoice.amount).to eq 995
       end
     end
 
@@ -423,11 +423,11 @@ describe InvoiceCreator do
       it 'has VAT' do
         expect { service.save }.to change(Invoice, :count).by(1)
 
-        service.invoice.invoice_items_amount.should eq 995
-        service.invoice.vat_rate.should eq 0.08
-        service.invoice.vat_amount.should eq (995 * 0.08).round
-        service.invoice.balance_deduction_amount.should eq 0
-        service.invoice.amount.should eq (995 + 995 * 0.08).round
+        expect(service.invoice.invoice_items_amount).to eq 995
+        expect(service.invoice.vat_rate).to eq 0.08
+        expect(service.invoice.vat_amount).to eq (995 * 0.08).round
+        expect(service.invoice.balance_deduction_amount).to eq 0
+        expect(service.invoice.amount).to eq (995 + 995 * 0.08).round
       end
     end
 
@@ -437,11 +437,11 @@ describe InvoiceCreator do
       it 'deduct from balance' do
         expect { service.save }.to change(Invoice, :count).by(1)
 
-        service.invoice.invoice_items_amount.should eq 995
-        service.invoice.vat_rate.should eq 0
-        service.invoice.vat_amount.should eq 0
-        service.invoice.balance_deduction_amount.should eq 500
-        service.invoice.amount.should eq 995 - 500
+        expect(service.invoice.invoice_items_amount).to eq 995
+        expect(service.invoice.vat_rate).to eq 0
+        expect(service.invoice.vat_amount).to eq 0
+        expect(service.invoice.balance_deduction_amount).to eq 500
+        expect(service.invoice.amount).to eq 995 - 500
       end
     end
 
@@ -449,7 +449,7 @@ describe InvoiceCreator do
       it 'sets renew to false' do
         expect { service.save }.to change(Invoice, :count).by(1)
 
-        service.invoice.should_not be_renew
+        expect(service.invoice).not_to be_renew
       end
     end
 
@@ -461,7 +461,7 @@ describe InvoiceCreator do
       it 'sets renew to true' do
         expect { service.save }.to change(Invoice, :count).by(1)
 
-        service.invoice.should be_renew
+        expect(service.invoice).to be_renew
       end
     end
   end

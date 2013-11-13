@@ -12,12 +12,12 @@ describe Administration::EmailSender do
     subject { service.deliver_and_log }
 
     it "should save all the data" do
-      user.should be_beta
-      subject.admin.should    eq admin
-      subject.template.should eq mail_template
-      subject.criteria.should eq "not_archived"
-      subject.user_ids.should eq [user.id]
-      subject.snapshot.should eq mail_template.snapshotize
+      expect(user).to be_beta
+      expect(subject.admin).to    eq admin
+      expect(subject.template).to eq mail_template
+      expect(subject.criteria).to eq "not_archived"
+      expect(subject.user_ids).to eq [user.id]
+      expect(subject.snapshot).to eq mail_template.snapshotize
     end
 
     it "should keep a snapshot that doesn't change when the original template is modified" do
@@ -25,8 +25,8 @@ describe Administration::EmailSender do
       old_snapshot = mail_template.snapshotize
       mail_template.reload.update(title: "foo", subject: "bar", body: "John Doe")
 
-      subject.snapshot.should_not eq mail_template.snapshotize
-      subject.snapshot.should eq old_snapshot
+      expect(subject.snapshot).not_to eq mail_template.snapshotize
+      expect(subject.snapshot).to eq old_snapshot
     end
 
     context "with multiple users to send emails to" do
@@ -39,7 +39,7 @@ describe Administration::EmailSender do
         end
 
         it "delays delivery of mails" do
-          MailMailer.should delay(:send_mail_with_template).with(@dev_user.id, mail_template.id)
+          expect(MailMailer).to delay(:send_mail_with_template).with(@dev_user.id, mail_template.id)
           subject
         end
 
@@ -51,8 +51,8 @@ describe Administration::EmailSender do
         it "sends email to user with activity sites and should send appropriate template" do
           subject
           Sidekiq::Worker.drain_all
-          ActionMailer::Base.deliveries.last.to.should eq [@dev_user.email]
-          ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
+          expect(ActionMailer::Base.deliveries.last.to).to eq [@dev_user.email]
+          expect(ActionMailer::Base.deliveries.last.subject).to match(/help us shaping the right pricing/)
         end
 
         it "doesn't create a new MailLog record" do
@@ -75,15 +75,15 @@ describe Administration::EmailSender do
           let(:service) { described_class.new(attributes.merge(criteria: 'paying')).deliver_and_log }
 
           it "delays delivery of mails" do
-            MailMailer.should delay(:send_mail_with_template).with(@paying_user.id, mail_template.id)
+            expect(MailMailer).to delay(:send_mail_with_template).with(@paying_user.id, mail_template.id)
             service
           end
 
           it "sends email when workers do their jobs" do
             service
             expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :size).by(1)
-            ActionMailer::Base.deliveries.map(&:to).should =~ [[@paying_user.email]]
-            ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
+            expect(ActionMailer::Base.deliveries.map(&:to)).to match_array([[@paying_user.email]])
+            expect(ActionMailer::Base.deliveries.last.subject).to match(/help us shaping the right pricing/)
           end
 
           it "creates a new MailLog record" do
@@ -95,15 +95,15 @@ describe Administration::EmailSender do
           let(:service) { described_class.new(attributes.merge(criteria: 'free')).deliver_and_log }
 
           it "delays delivery of mails" do
-            MailMailer.should delay(:send_mail_with_template).with(@free_user.id, mail_template.id)
+            expect(MailMailer).to delay(:send_mail_with_template).with(@free_user.id, mail_template.id)
             service
           end
 
           it "sends email when workers do their jobs" do
             service
             expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :size).by(2)
-            ActionMailer::Base.deliveries.map(&:to).should =~ [[@free_user.email], [user.email]]
-            ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
+            expect(ActionMailer::Base.deliveries.map(&:to)).to match_array([[@free_user.email], [user.email]])
+            expect(ActionMailer::Base.deliveries.last.subject).to match(/help us shaping the right pricing/)
           end
 
           it "creates a new MailLog record" do

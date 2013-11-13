@@ -6,7 +6,7 @@ describe PusherWrapper do
 
   describe '.authenticated_response' do
     it 'generates an authentication endpoint response' do
-      described_class.authenticated_response('channel_name', 'socket_id').should eq(
+      expect(described_class.authenticated_response('channel_name', 'socket_id')).to eq(
         auth: 'c76b85222fbec28c8508:2d6bed1ddb62cbefcd919bec6894905e5e9a053d1871f29956cb05f788dbe353'
       )
     end
@@ -14,7 +14,7 @@ describe PusherWrapper do
 
   describe '.key' do
     it 'extracts key from url' do
-      described_class.key.should eq('c76b85222fbec28c8508')
+      expect(described_class.key).to eq('c76b85222fbec28c8508')
     end
   end
 
@@ -23,7 +23,7 @@ describe PusherWrapper do
     let(:channel_name) { 'channel_name' }
     let(:channel) { double(PusherChannel) }
 
-    before { PusherChannel.should_receive(:new).with(channel_name) { channel } }
+    before { expect(PusherChannel).to receive(:new).with(channel_name) { channel } }
 
     context 'with "channel_occupied" event' do
       let(:event) { {
@@ -32,7 +32,7 @@ describe PusherWrapper do
       } }
 
       it 'set channel occupied' do
-        channel.should_receive(:occupied!)
+        expect(channel).to receive(:occupied!)
         described_class.handle_webhook(webhook)
       end
     end
@@ -44,7 +44,7 @@ describe PusherWrapper do
       } }
 
       it 'set channel vacated' do
-        channel.should_receive(:vacated!)
+        expect(channel).to receive(:vacated!)
         described_class.handle_webhook(webhook)
       end
     end
@@ -55,35 +55,35 @@ describe PusherWrapper do
     let(:data) { { some: 'data' } }
     let(:channel_name) { 'channel_name' }
     let(:channel) { double(PusherChannel, to_s: channel_name) }
-    before { PusherChannel.should_receive(:new).with(channel_name) { channel } }
+    before { expect(PusherChannel).to receive(:new).with(channel_name) { channel } }
 
     context 'with public channel' do
-      before { channel.stub(:public?) { true } }
+      before { allow(channel).to receive(:public?) { true } }
 
       it 'do not triggers Pusher channel_name' do
-        Pusher.should_receive(:trigger).with(channel_name, event_name, data)
-        described_class.trigger(channel_name, event_name, data).should be_true
+        expect(Pusher).to receive(:trigger).with(channel_name, event_name, data)
+        expect(described_class.trigger(channel_name, event_name, data)).to be_truthy
       end
     end
 
     context 'with private channel' do
-      before { channel.stub(:public?) { false } }
+      before { allow(channel).to receive(:public?) { false } }
 
       context 'occupied' do
-        before { channel.stub(:occupied?) { true } }
+        before { allow(channel).to receive(:occupied?) { true } }
 
         it 'triggers Pusher channel_name' do
-          Pusher.should_receive(:trigger).with(channel_name, event_name, data)
-          described_class.trigger(channel_name, event_name, data).should be_true
+          expect(Pusher).to receive(:trigger).with(channel_name, event_name, data)
+          expect(described_class.trigger(channel_name, event_name, data)).to be_truthy
         end
       end
 
       context 'vacated' do
-        before { channel.stub(:occupied?) { false } }
+        before { allow(channel).to receive(:occupied?) { false } }
 
         it 'doe not triggers Pusher channel_name' do
-          Pusher.should_not_receive(:trigger)
-          described_class.trigger(channel_name, event_name, data).should be_false
+          expect(Pusher).not_to receive(:trigger)
+          expect(described_class.trigger(channel_name, event_name, data)).to be_falsey
         end
       end
     end

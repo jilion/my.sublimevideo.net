@@ -7,22 +7,22 @@ describe Admin::UsersController do
 
     describe "PUT :update" do
       before do
-        User.stub(:find).with('1') { mock_user }
+        allow(User).to receive(:find).with('1') { mock_user }
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.stub(:update) { true }
+        allow(mock_site).to receive(:update) { true }
 
         put :update, id: '1', user: { name: 'foo' }
-        response.should redirect_to(edit_admin_user_url(mock_user))
+        expect(response).to redirect_to(edit_admin_user_url(mock_user))
       end
 
       it "responds with success to failing PUT :update" do
-        mock_site.stub(:update) { false }
+        allow(mock_site).to receive(:update) { false }
 
         put :update, id: '1', user: { name: 'foo' }
-        response.should_not be_success
-        response.should redirect_to(edit_admin_user_url(mock_user))
+        expect(response).not_to be_success
+        expect(response).to redirect_to(edit_admin_user_url(mock_user))
       end
     end
   end

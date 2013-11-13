@@ -24,7 +24,11 @@ describe OgoneWrapper, :vcr do
         subject { described_class.store(cc, currency: 'USD', billing_id: 'sublime_33') }
 
         it { should be_success }
-        its(:message) { should eq 'The transaction was successful' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'The transaction was successful' }
+        end
       end
     end
 
@@ -33,35 +37,55 @@ describe OgoneWrapper, :vcr do
         subject { described_class.purchase(1000, cc, currency: 'USD') }
 
         it { should be_success }
-        its(:message) { should eq 'The transaction was successful' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'The transaction was successful' }
+        end
       end
 
       describe 'payment of $20 via alias' do
         subject { described_class.purchase(2000, 'sublime_33', currency: 'USD') }
 
         it { should be_success }
-        its(:message) { should eq 'The transaction was successful' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'The transaction was successful' }
+        end
       end
 
       describe 'payment of $9999' do
         subject { described_class.purchase(999900, cc, currency: 'USD') }
 
         it { should_not be_success }
-        its(:message) { should eq 'We received an unknown status for the transaction. we will contact your acquirer and update the status of the transaction within one working day. please check the status later.' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'We received an unknown status for the transaction. we will contact your acquirer and update the status of the transaction within one working day. please check the status later.' }
+        end
       end
 
       describe 'payment of €20' do
         subject { described_class.purchase(2000, cc, currency: 'EUR') }
 
         it { should_not be_success }
-        its(:message) { should eq 'The currency is not accepted by the merchant:eur' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'The currency is not accepted by the merchant:eur' }
+        end
       end
 
       describe 'payment of $10000' do
         subject { described_class.purchase(1000000, cc, currency: 'USD') }
 
         it { should_not be_success }
-        its(:message) { should eq 'Card refused' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'Card refused' }
+        end
       end
     end
 
@@ -70,14 +94,14 @@ describe OgoneWrapper, :vcr do
         before { @purchase = described_class.purchase(1000, cc, currency: 'USD') }
         subject { described_class.refund(1000, @purchase.authorization) }
 
-        it { subject.should be_success }
+        it { expect(subject).to be_success }
       end
 
       describe 'refund of $10 via a transaction pay_id that fails' do
         before { @purchase = described_class.purchase(1000, cc, currency: 'USD') }
         subject { described_class.refund(3000, @purchase.authorization) } # amount bigger than the original sale
 
-        it { subject.should_not be_success }
+        it { expect(subject).not_to be_success }
       end
     end
   end
@@ -100,7 +124,11 @@ describe OgoneWrapper, :vcr do
         subject { described_class.purchase(10000, cc, currency: 'USD') }
 
         it { should be_success }
-        its(:message) { should eq 'The transaction was successful' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'The transaction was successful' }
+        end
       end
     end
   end
@@ -123,7 +151,11 @@ describe OgoneWrapper, :vcr do
         subject { described_class.purchase(10000, cc, currency: 'USD') }
 
         it { should be_success }
-        its(:message) { should eq 'The transaction was successful' }
+
+        describe '#message' do
+          subject { super().message }
+          it { should eq 'The transaction was successful' }
+        end
       end
     end
   end

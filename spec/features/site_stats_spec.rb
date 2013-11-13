@@ -11,16 +11,16 @@ feature 'Stats page' do
   scenario 'user dont see the Stats tab' do
     go 'my', "/sites/#{@site.token}/edit"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.token}/edit"
-    page.should have_content 'Settings'
-    page.should have_no_link 'Stats'
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.token}/edit"
+    expect(page).to have_content 'Settings'
+    expect(page).to have_no_link 'Stats'
   end
 
   context 'user has not activated the stats add-on' do
     scenario 'redirect to /sites' do
       go 'my', "/sites/#{@site.token}/stats"
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
     end
   end
 
@@ -28,7 +28,7 @@ feature 'Stats page' do
     scenario 'redirect to /sites' do
       go 'my', "/sites/#{@site.token}/stats"
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
     end
   end
 
@@ -41,7 +41,7 @@ feature 'Stats page' do
       go 'my', "/sites/#{@site.token}/edit"
       click_link 'Stats'
 
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.token}/stats"
+      expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.token}/stats"
     end
   end
 
@@ -54,7 +54,7 @@ feature 'Stats page' do
       go 'my', "/sites/#{@site.token}/edit"
       click_link 'Stats'
 
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.token}/stats"
+      expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.token}/stats"
     end
   end
 

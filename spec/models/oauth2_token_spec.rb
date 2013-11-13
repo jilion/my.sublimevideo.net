@@ -5,10 +5,25 @@ describe Oauth2Token do
   context "Factory" do
     subject { create(:oauth2_token) }
 
-    its(:user)               { should be_present }
-    its(:client_application) { should be_present }
-    its(:token)              { should be_present }
-    its(:secret)             { should be_present }
+    describe '#user' do
+      subject { super().user }
+      it               { should be_present }
+    end
+
+    describe '#client_application' do
+      subject { super().client_application }
+      it { should be_present }
+    end
+
+    describe '#token' do
+      subject { super().token }
+      it              { should be_present }
+    end
+
+    describe '#secret' do
+      subject { super().secret }
+      it             { should be_present }
+    end
 
     it { should be_valid }
     it { should be_authorized }

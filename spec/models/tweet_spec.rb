@@ -5,17 +5,60 @@ describe Tweet do
   context "Factory" do
     subject { build(:tweet) }
 
-    its(:tweet_id)          { should be_present }
-    its(:keywords)          { should eq %w[sublimevideo jilion] }
-    its(:from_user_id)      { should eq 1 }
-    its(:from_user)         { should eq 'toto' }
-    its(:to_user_id)        { should eq 2 }
-    its(:to_user)           { should eq 'tata' }
-    its(:iso_language_code) { should eq 'en' }
-    its(:profile_image_url) { should eq 'http://yourimage.com/img.jpg' }
-    its(:content)           { should eq 'This is my first tweet!' }
-    its(:tweeted_at)        { should be_present }
-    its(:favorited)         { should be_false }
+    describe '#tweet_id' do
+      subject { super().tweet_id }
+      it          { should be_present }
+    end
+
+    describe '#keywords' do
+      subject { super().keywords }
+      it          { should eq %w[sublimevideo jilion] }
+    end
+
+    describe '#from_user_id' do
+      subject { super().from_user_id }
+      it      { should eq 1 }
+    end
+
+    describe '#from_user' do
+      subject { super().from_user }
+      it         { should eq 'toto' }
+    end
+
+    describe '#to_user_id' do
+      subject { super().to_user_id }
+      it        { should eq 2 }
+    end
+
+    describe '#to_user' do
+      subject { super().to_user }
+      it           { should eq 'tata' }
+    end
+
+    describe '#iso_language_code' do
+      subject { super().iso_language_code }
+      it { should eq 'en' }
+    end
+
+    describe '#profile_image_url' do
+      subject { super().profile_image_url }
+      it { should eq 'http://yourimage.com/img.jpg' }
+    end
+
+    describe '#content' do
+      subject { super().content }
+      it           { should eq 'This is my first tweet!' }
+    end
+
+    describe '#tweeted_at' do
+      subject { super().tweeted_at }
+      it        { should be_present }
+    end
+
+    describe '#favorited' do
+      subject { super().favorited }
+      it         { should be_falsey }
+    end
 
     it { should be_valid }
   end
@@ -27,7 +70,7 @@ describe Tweet do
       tweet2.retweeted_tweet = tweet1
       tweet2.save
 
-      tweet2.retweeted_tweet.should eq tweet1
+      expect(tweet2.retweeted_tweet).to eq tweet1
     end
 
     it "retweets should be the inverse of retweeted_tweet" do
@@ -36,7 +79,7 @@ describe Tweet do
       tweet2.retweeted_tweet = tweet1
       tweet2.save
 
-      tweet1.retweets.should eq [tweet2]
+      expect(tweet1.retweets).to eq [tweet2]
     end
 
     it "should have many retweets" do
@@ -48,7 +91,7 @@ describe Tweet do
       tweet1.retweets << tweet3
       tweet1.save
 
-      tweet1.retweets.entries.sort_by(&:tweet_id).should eq [tweet2, tweet3]
+      expect(tweet1.retweets.entries.sort_by(&:tweet_id)).to eq [tweet2, tweet3]
     end
 
     it "retweeted_tweet should be the inverse of retweets" do
@@ -60,8 +103,8 @@ describe Tweet do
       tweet1.retweets << tweet3
       tweet1.save
 
-      tweet2.retweeted_tweet.should eq tweet1
-      tweet3.retweeted_tweet.should eq tweet1
+      expect(tweet2.retweeted_tweet).to eq tweet1
+      expect(tweet3.retweeted_tweet).to eq tweet1
     end
   end
 
@@ -77,8 +120,8 @@ describe Tweet do
     it "should validate uniqueness of tweet_id" do
       create(:tweet, tweet_id: 1)
       tweet = build(:tweet, tweet_id: 1)
-      tweet.should_not be_valid
-      tweet.should have(1).error_on(:tweet_id)
+      expect(tweet).not_to be_valid
+      expect(tweet.errors[:tweet_id].size).to eq(1)
     end
   end
 
@@ -116,7 +159,7 @@ describe Tweet do
     end
 
     context 'twitter tweet has no from_user_id' do
-      before { twitter_tweet.stub(from_user_id: nil) }
+      before { allow(twitter_tweet).to receive(:from_user_id).and_return(nil) }
 
       it 'uses tweet.user.id instead of tweet.from_user_id' do
         described_class.create_from_twitter_tweet!(twitter_tweet)
@@ -132,22 +175,22 @@ describe Tweet do
 
     describe "favorite" do
       it "should favorite locally and on Twitter itself" do
-        subject.should_not be_favorited
+        expect(subject).not_to be_favorited
         subject.favorite!
-        subject.should be_favorited
-        TwitterWrapper.status(56351930166935552).favorited.should be_true
+        expect(subject).to be_favorited
+        expect(TwitterWrapper.status(56351930166935552).favorited).to be_truthy
       end
     end
 
     describe "un-favorite" do
       it "should un-favorite locally and on Twitter if already favorited" do
-        subject.should_not be_favorited
+        expect(subject).not_to be_favorited
         subject.favorite!
-        subject.should be_favorited
-        TwitterWrapper.status(56351930166935552).favorited.should be_true
+        expect(subject).to be_favorited
+        expect(TwitterWrapper.status(56351930166935552).favorited).to be_truthy
         subject.favorite!
-        subject.should_not be_favorited
-        TwitterWrapper.status(56351930166935552).favorited.should be_false
+        expect(subject).not_to be_favorited
+        expect(TwitterWrapper.status(56351930166935552).favorited).to be_falsey
       end
     end
   end

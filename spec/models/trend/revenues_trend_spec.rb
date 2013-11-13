@@ -25,53 +25,53 @@ describe RevenuesTrend do
       end
 
       it 'creates revenues_stats stats for the last 5 days' do
-        described_class.count.should eq 5
+        expect(described_class.count).to eq 5
       end
 
       it 'creates revenues_stats stats for 5 days ago' do
         billings_stat = described_class.all.entries[0]
-        billings_stat['d'].should eq 5.days.ago.midnight
-        billings_stat['r'].should == {
+        expect(billings_stat['d']).to eq 5.days.ago.midnight
+        expect(billings_stat['r']).to eq({
           'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
           'stats' => { 'realtime' => (@stats_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        })
       end
 
       it 'creates revenues_stats stats for 4 days ago' do
         billings_stat = described_class.all.entries[1]
-        billings_stat['d'].should eq 4.days.ago.midnight
-        billings_stat['r'].should == {
+        expect(billings_stat['d']).to eq 4.days.ago.midnight
+        expect(billings_stat['r']).to eq({
           'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
           'stats' => { 'realtime' => (@stats_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        })
       end
 
       it 'creates revenues_stats stats for 3 days ago' do
         billings_stat = described_class.all.entries[2]
-        billings_stat['d'].should eq 3.days.ago.midnight
-        billings_stat['r'].should == {
+        expect(billings_stat['d']).to eq 3.days.ago.midnight
+        expect(billings_stat['r']).to eq({
           'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
           'support' => { 'vip' => (@support_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        })
       end
 
       it 'creates revenues_stats stats for 2 days ago' do
         billings_stat = described_class.all.entries[3]
-        billings_stat['d'].should eq 2.days.ago.midnight
-        billings_stat['r'].should == {
+        expect(billings_stat['d']).to eq 2.days.ago.midnight
+        expect(billings_stat['r']).to eq({
           'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
           'support' => { 'vip' => (@support_addon_plan_2.price.to_f * 12 / 365).round },
           'logo' => { 'disabled' => (@logo_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        })
       end
 
       it 'creates revenues_stats stats for 1 day ago' do
         billings_stat = described_class.all.entries[4]
-        billings_stat['d'].should eq 1.day.ago.midnight
-        billings_stat['r'].should == {
+        expect(billings_stat['d']).to eq 1.day.ago.midnight
+        expect(billings_stat['r']).to eq({
           'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
           'logo' => { 'disabled' => (@logo_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        })
       end
     end
   end
@@ -82,9 +82,12 @@ describe RevenuesTrend do
     end
     subject { JSON.parse(described_class.json) }
 
-    its(:size) { should eq 1 }
-    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
-    it { subject[0].should have_key('r') }
+    describe '#size' do
+      subject { super().size }
+      it { should eq 1 }
+    end
+    it { expect(subject[0]['id']).to eq(Time.now.utc.midnight.to_i) }
+    it { expect(subject[0]).to have_key('r') }
   end
 
 end

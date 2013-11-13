@@ -21,7 +21,7 @@ describe VideoStat do
     end
 
     it "returns stats array" do
-      described_class.last_hours_stats(video_tag, 24)[0].attributes.should eq({ 'st' => { 'w' => 1, 'e' => 1 }, 'co' => { 'w' => { 'us' => 12, 'fr' => 42 }, 'e' => { 'us' => 13, 'fr' => 43 } } })
+      expect(described_class.last_hours_stats(video_tag, 24)[0].attributes).to eq({ 'st' => { 'w' => 1, 'e' => 1 }, 'co' => { 'w' => { 'us' => 12, 'fr' => 42 }, 'e' => { 'us' => 13, 'fr' => 43 } } })
     end
   end
 end

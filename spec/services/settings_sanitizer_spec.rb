@@ -91,7 +91,7 @@ describe SettingsSanitizer do
     end
 
     it 'returns sanitize settings' do
-      service.sanitize.should == {
+      expect(service.sanitize).to eq({
         'addonName1' => {
           booleanSetting: true,
           floatSetting: 0.8,
@@ -113,7 +113,7 @@ describe SettingsSanitizer do
         'addonName3' => {
           sizeSetting: '640'
         }
-      }
+      })
     end
   end
 

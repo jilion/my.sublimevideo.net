@@ -22,7 +22,7 @@ describe App::ComponentVersionZipContentUploader, :fog_mock do
 
   describe '.store_zip_content' do
     it 'sends all zip files in sublimvideo S3 bucket' do
-      uploader.should_receive(:put_object).exactly(4).times
+      expect(uploader).to receive(:put_object).exactly(4).times
       uploader.store_zip_content(zip.path)
     end
 
@@ -31,17 +31,17 @@ describe App::ComponentVersionZipContentUploader, :fog_mock do
 
       it 'is public' do
         object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, js_object_path).body
-        object_acl['AccessControlList'].should include(
+        expect(object_acl['AccessControlList']).to include(
           {'Permission'=>'READ', 'Grantee'=>{'URI'=>'http://acs.amazonaws.com/groups/global/AllUsers'}}
         )
       end
       it 'have good content_type public' do
         object_headers = S3Wrapper.fog_connection.get_object(bucket, js_object_path).headers
-        object_headers['Content-Type'].should eq 'text/javascript'
+        expect(object_headers['Content-Type']).to eq 'text/javascript'
       end
       it 'have long max-age cache control' do
         object_headers = S3Wrapper.fog_connection.get_object(bucket, js_object_path).headers
-        object_headers['Cache-Control'].should eq 'max-age=29030400, public'
+        expect(object_headers['Cache-Control']).to eq 'max-age=29030400, public'
       end
     end
   end
@@ -51,10 +51,10 @@ describe App::ComponentVersionZipContentUploader, :fog_mock do
 
     it 'removes all files in sublimevideo S3 bucket' do
       uploader.remove_zip_content
-      S3Wrapper.fog_connection.directories.get(
+      expect(S3Wrapper.fog_connection.directories.get(
         S3Wrapper.buckets[:sublimevideo],
         prefix: upload_path.to_s
-      ).files.should have(0).files
+      ).files.size).to eq(0)
     end
   end
 

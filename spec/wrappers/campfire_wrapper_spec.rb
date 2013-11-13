@@ -10,7 +10,7 @@ describe CampfireWrapper, :vcr do
       let(:wrapper) { described_class.new }
 
       it 'has SV Dev room' do
-        wrapper.room.name.should eq 'SV Dev'
+        expect(wrapper.room.name).to eq 'SV Dev'
       end
     end
 
@@ -18,7 +18,7 @@ describe CampfireWrapper, :vcr do
       let(:wrapper) { described_class.new('Jilion') }
 
       it 'has SV Dev room' do
-        wrapper.room.name.should eq 'Jilion'
+        expect(wrapper.room.name).to eq 'Jilion'
       end
     end
   end
@@ -28,26 +28,26 @@ describe CampfireWrapper, :vcr do
     let(:room_name) { 'Jilion'}
 
     context 'in production' do
-      before { Rails.stub(:env) { 'production' } }
+      before { allow(Rails).to receive(:env) { 'production' } }
 
       it 'speaks to the room' do
         described_class.post(message, room: room_name)
-        described_class.new(room_name).room.recent(limit: 1).first.body.should eq message
+        expect(described_class.new(room_name).room.recent(limit: 1).first.body).to eq message
       end
     end
 
     context 'in staging' do
-      before { Rails.stub(:env) { 'staging' } }
+      before { allow(Rails).to receive(:env) { 'staging' } }
 
       it 'speaks to the room' do
         described_class.post(message, room: room_name)
-        described_class.new(room_name).room.recent(limit: 1).first.body.should eq "[STAGING] #{message}"
+        expect(described_class.new(room_name).room.recent(limit: 1).first.body).to eq "[STAGING] #{message}"
       end
     end
 
     it 'posts only on Production or Staging env' do
-      Rails.stub(:env) { 'test' }
-      described_class.should_not_receive(:new)
+      allow(Rails).to receive(:env) { 'test' }
+      expect(described_class).not_to receive(:new)
       described_class.post(message, room: room_name)
     end
   end

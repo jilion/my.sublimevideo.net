@@ -6,20 +6,39 @@ describe Plan do
   context "Factory" do
     subject { create(:plan) }
 
-    its(:name)                 { should =~ /plus\d+/ }
-    its(:cycle)                { should eq "month" }
-    its(:video_views)          { should eq 10_000 }
-    its(:stats_retention_days) { should eq 365 }
-    its(:price)                { should eq 1000 }
+    describe '#name' do
+      subject { super().name }
+      it                 { should =~ /plus\d+/ }
+    end
+
+    describe '#cycle' do
+      subject { super().cycle }
+      it                { should eq "month" }
+    end
+
+    describe '#video_views' do
+      subject { super().video_views }
+      it          { should eq 10_000 }
+    end
+
+    describe '#stats_retention_days' do
+      subject { super().stats_retention_days }
+      it { should eq 365 }
+    end
+
+    describe '#price' do
+      subject { super().price }
+      it                { should eq 1000 }
+    end
 
     it { should be_valid }
   end
 
   describe "Instance Methods" do
     describe "#title" do
-      specify { custom_plan.title.should eq "Custom Plan" }
-      specify { build(:plan, cycle: "month", name: "comet").title.should eq "Comet Plan" }
-      specify { build(:plan, cycle: "year", name: "comet").title.should eq "Comet Plan (yearly)" }
+      specify { expect(custom_plan.title).to eq "Custom Plan" }
+      specify { expect(build(:plan, cycle: "month", name: "comet").title).to eq "Comet Plan" }
+      specify { expect(build(:plan, cycle: "year", name: "comet").title).to eq "Comet Plan (yearly)" }
     end
   end
 

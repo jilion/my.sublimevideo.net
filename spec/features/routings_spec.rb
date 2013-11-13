@@ -17,37 +17,37 @@ feature 'Redirects' do
     scenario 'redirect / to /assistant/new-site' do
       go 'my', ''
 
-      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/assistant/new-site'
     end
     scenario 'redirect /video-code-generator to /assistant/new-site' do
       go 'my', 'video-code-generator'
 
-      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/assistant/new-site'
     end
 
     scenario 'redirect /account/edit to /account' do
       go 'my', 'account/edit'
 
-      current_url.should eq 'http://my.sublimevideo.dev/account'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account'
     end
 
     scenario 'redirect /card/foo/bar to /account/billing/edit' do
       go 'my', 'card/foo/bar'
 
-      current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/account/billing/edit'
     end
 
     scenario "redirect /stats to /stats-demo" do
       stub_site_stats
       go 'my', 'stats'
 
-      current_url.should eq 'http://my.sublimevideo.dev/stats-demo'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/stats-demo'
     end
 
     scenario 'redirect /support to /help' do
       go 'my', 'support'
 
-      current_url.should eq 'http://my.sublimevideo.dev/help'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/help'
     end
   end
 
@@ -60,21 +60,21 @@ feature 'Redirects' do
     scenario 'redirect / to /sites' do
       go 'my', ''
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
     end
 
     %w[video-code-generator publish-video].each do |page|
       scenario "redirect /#{page} to /sites/:token/videos/new" do
         go 'my', page
 
-        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
+        expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
       end
     end
 
     scenario 'redirect /sites/:site_id/publish-video to /sites/:site_id/videos/new' do
       go 'my', "/sites/#{@site.to_param}/publish-video"
 
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
+      expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/videos/new"
     end
   end
 end

@@ -13,18 +13,18 @@ describe ZendeskWrapper, :vcr do
   let(:ticket_response)     { described_class.ticket(ticket_id) }
   let(:user_response)       { described_class.user(requester_id) }
 
-  before { Librato.stub(:increment) }
+  before { allow(Librato).to receive(:increment) }
 
   describe '.tickets' do
     it 'returns the wanted ticket' do
       tickets = described_class.tickets.page(1).per_page(100)
-      tickets.first.should be_a(ZendeskAPI::Ticket)
+      expect(tickets.first).to be_a(ZendeskAPI::Ticket)
     end
   end
 
   describe '.ticket' do
     it 'returns the wanted ticket' do
-      ticket_response.subject.should eq 'SUBJECT'
+      expect(ticket_response.subject).to eq 'SUBJECT'
     end
   end
 
@@ -34,10 +34,10 @@ describe ZendeskWrapper, :vcr do
         @zd_ticket = described_class.create_ticket(ticket_params)
 
         @zd_ticket = described_class.ticket(@zd_ticket.id)
-        @zd_ticket.description.should eq 'DESCRIPTION'
-        @zd_ticket.tags.map(&:name).should eq ['email-support']
-        @zd_ticket.requester.name.should eq 'Remy'
-        @zd_ticket.requester.email.should eq 'user@example.com'
+        expect(@zd_ticket.description).to eq 'DESCRIPTION'
+        expect(@zd_ticket.tags.map(&:name)).to eq ['email-support']
+        expect(@zd_ticket.requester.name).to eq 'Remy'
+        expect(@zd_ticket.requester.email).to eq 'user@example.com'
       end
     end
 
@@ -49,15 +49,15 @@ describe ZendeskWrapper, :vcr do
 
       it 'returns the created ticket' do
         @zd_ticket = described_class.create_ticket(ticket_params.merge(uploads: [@foo, @bar]))
-        @zd_ticket.comment[:uploads].map(&:class).should eq [String, String] # upload was sent as tokens
+        expect(@zd_ticket.comment[:uploads].map(&:class)).to eq [String, String] # upload was sent as tokens
       end
     end
   end
 
   describe '.user' do
     it 'returns the user' do
-      user_response.email.should eq 'remy@jilion.com'
-      user_response.id.should eq 17650353
+      expect(user_response.email).to eq 'remy@jilion.com'
+      expect(user_response.id).to eq 17650353
     end
   end
 
@@ -69,10 +69,10 @@ describe ZendeskWrapper, :vcr do
       it 'creates the user and verifies him' do
         @zd_user = described_class.create_user(user)
         @zd_user = described_class.user(@zd_user.id)
-        @zd_user.external_id.should eq '1234'
-        @zd_user.email.should eq 'user10@example.org'
-        @zd_user.name.should eq 'user10@example.org'
-        @zd_user.verified.should be_true
+        expect(@zd_user.external_id).to eq '1234'
+        expect(@zd_user.email).to eq 'user10@example.org'
+        expect(@zd_user.name).to eq 'user10@example.org'
+        expect(@zd_user.verified).to be_truthy
       end
     end
 
@@ -83,10 +83,10 @@ describe ZendeskWrapper, :vcr do
       it 'creates the user and verifies him' do
         @zd_user = described_class.create_user(user)
         @zd_user = described_class.user(@zd_user.id)
-        @zd_user.external_id.should eq '1234'
-        @zd_user.email.should eq 'user7@example.org'
-        @zd_user.name.should eq 'User Example'
-        @zd_user.verified.should be_true
+        expect(@zd_user.external_id).to eq '1234'
+        expect(@zd_user.email).to eq 'user7@example.org'
+        expect(@zd_user.name).to eq 'User Example'
+        expect(@zd_user.verified).to be_truthy
       end
     end
   end
@@ -100,7 +100,7 @@ describe ZendeskWrapper, :vcr do
 
       it 'updates the user name' do
         described_class.update_user(@zd_user.id, name: 'John Doe')
-        described_class.user(@zd_user.id).name.should eq 'John Doe'
+        expect(described_class.user(@zd_user.id).name).to eq 'John Doe'
       end
     end
 
@@ -113,9 +113,9 @@ describe ZendeskWrapper, :vcr do
         described_class.update_user(@zd_user.id, email: 'user43210@example.org')
 
         identity = described_class.user(@zd_user.id).identities.first
-        identity.value.should eq 'user43210@example.org'
-        identity.verified.should be_true
-        identity.primary.should be_true
+        expect(identity.value).to eq 'user43210@example.org'
+        expect(identity.verified).to be_truthy
+        expect(identity.primary).to be_truthy
       end
     end
   end
@@ -128,14 +128,14 @@ describe ZendeskWrapper, :vcr do
       it 'creates the user and verifies him' do
         described_class.destroy_user(@zd_user.id)
 
-        described_class.user(@zd_user.id).active.should be_false
+        expect(described_class.user(@zd_user.id).active).to be_falsey
       end
     end
   end
 
   describe '.search' do
     it 'returns the wanted tickets' do
-      described_class.search(query: "requester_id:#{requester_id}").should have(6).item
+      expect(described_class.search(query: "requester_id:#{requester_id}").size).to eq(6)
     end
   end
 
@@ -143,14 +143,14 @@ describe ZendeskWrapper, :vcr do
     it 'verify the user' do
       described_class.verify_user(requester_id)
 
-      described_class.user(requester_id).verified.should be_true
+      expect(described_class.user(requester_id).verified).to be_truthy
     end
   end
 
   describe '.extract_ticket_id_from_location' do
     it 'retrieve a ticket from a full location' do
       location = "https://sublimevideo.zendesk.com/tickets/#{ticket_id}.json"
-      described_class.send(:extract_ticket_id_from_location, location).should eq ticket_id
+      expect(described_class.send(:extract_ticket_id_from_location, location)).to eq ticket_id
     end
   end
 end

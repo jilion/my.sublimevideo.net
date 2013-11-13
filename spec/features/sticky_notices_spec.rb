@@ -10,9 +10,9 @@ feature "Sticky notices" do
     end
 
     scenario "no notice" do
-      page.should have_no_content I18n.t("user.credit_card.will_expire")
-      page.should have_no_content I18n.t("user.credit_card.expired")
-      page.should have_no_content I18n.t("user.credit_card.add")
+      expect(page).to have_no_content I18n.t("user.credit_card.will_expire")
+      expect(page).to have_no_content I18n.t("user.credit_card.expired")
+      expect(page).to have_no_content I18n.t("user.credit_card.add")
     end
   end
 
@@ -21,20 +21,20 @@ feature "Sticky notices" do
       sign_in_as :user, cc_expire_on: Time.utc(Time.now.utc.year, Time.now.utc.month).end_of_month.to_date
       @site = build(:site, user: @current_user)
       SiteManager.new(@site).create
-      @current_user.should be_cc_expire_this_month
+      expect(@current_user).to be_cc_expire_this_month
       go 'my', '/sites'
     end
 
     context "user is billable" do
       background do
         create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
-        @current_user.should be_billable
+        expect(@current_user).to be_billable
         go 'my', '/sites'
       end
 
       scenario "shows a notice" do
-        page.should have_content I18n.t("user.credit_card.will_expire")
-        page.should have_content I18n.t("user.credit_card.add")
+        expect(page).to have_content I18n.t("user.credit_card.will_expire")
+        expect(page).to have_content I18n.t("user.credit_card.add")
       end
     end
   end
@@ -47,8 +47,8 @@ feature "Sticky notices" do
 
     context "user is not billable" do
       scenario "doesn't show a notice" do
-        @current_user.should_not be_billable
-        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+        expect(@current_user).not_to be_billable
+        expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
       end
     end
 
@@ -57,13 +57,13 @@ feature "Sticky notices" do
         @site = build(:site, user: @current_user)
         SiteManager.new(@site).create
         create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
-        @current_user.should be_billable
+        expect(@current_user).to be_billable
         go 'my', '/sites'
       end
 
       scenario "shows a notice" do
-        page.should have_content I18n.t("user.credit_card.expired")
-        page.should have_content I18n.t("user.credit_card.add")
+        expect(page).to have_content I18n.t("user.credit_card.expired")
+        expect(page).to have_content I18n.t("user.credit_card.add")
       end
     end
   end
@@ -72,17 +72,17 @@ feature "Sticky notices" do
     context "user is not billable" do
       background do
         sign_in_as :user, billing_address_1: ''
-        @current_user.should_not be_billable
-        @current_user.should be_cc
-        @current_user.should_not be_billing_address_complete
+        expect(@current_user).not_to be_billable
+        expect(@current_user).to be_cc
+        expect(@current_user).not_to be_billing_address_complete
         go 'my', '/sites'
       end
 
       scenario "doesn't show a notice" do
-        @current_user.should_not be_billable
+        expect(@current_user).not_to be_billable
 
-        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
-        page.should have_no_content I18n.t("user.billing_address.incomplete")
+        expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
+        expect(page).to have_no_content I18n.t("user.billing_address.incomplete")
       end
     end
 
@@ -93,14 +93,14 @@ feature "Sticky notices" do
           @site = build(:site, user: @current_user)
           SiteManager.new(@site).create
           create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
-          @current_user.should be_billable
-          @current_user.should be_cc
-          @current_user.should_not be_billing_address_complete
+          expect(@current_user).to be_billable
+          expect(@current_user).to be_cc
+          expect(@current_user).not_to be_billing_address_complete
           go 'my', '/sites'
         end
 
         scenario "shows a notice" do
-          page.should have_content I18n.t("user.billing_address.complete_it")
+          expect(page).to have_content I18n.t("user.billing_address.complete_it")
         end
       end
 
@@ -110,14 +110,14 @@ feature "Sticky notices" do
           @site = build(:site, user: @current_user)
           SiteManager.new(@site).create
           create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
-          @current_user.should be_billable
-          @current_user.should_not be_cc
-          @current_user.should_not be_billing_address_complete
+          expect(@current_user).to be_billable
+          expect(@current_user).not_to be_cc
+          expect(@current_user).not_to be_billing_address_complete
           go 'my', '/sites'
         end
 
         scenario "shows a notice" do
-          page.should have_content I18n.t("user.billing_address.complete_it")
+          expect(page).to have_content I18n.t("user.billing_address.complete_it")
         end
       end
     end

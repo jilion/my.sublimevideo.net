@@ -8,18 +8,18 @@ feature "Newsletter subscription" do
     scenario 'subscribed to the newsletter after log-in' do
       go 'my', '/newsletter/subscribe'
 
-      current_url.should eq 'http://my.sublimevideo.dev/login'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/login'
 
       fill_in 'user[email]',    with: user.email
       fill_in 'user[password]', with: '123456'
 
-      NewsletterSubscriptionManager.should delay(:subscribe, queue: 'my').with(user.id)
+      expect(NewsletterSubscriptionManager).to delay(:subscribe, queue: 'my').with(user.id)
 
       click_button 'Log In'
 
-      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/assistant/new-site'
 
-      page.should have_content I18n.t('flash.newsletter.subscribe')
+      expect(page).to have_content I18n.t('flash.newsletter.subscribe')
     end
   end
 
@@ -30,13 +30,13 @@ feature "Newsletter subscription" do
     end
 
     scenario 'subscribed to the newsletter after log-in' do
-      NewsletterSubscriptionManager.should delay(:subscribe, queue: 'my').with(@current_user.id)
+      expect(NewsletterSubscriptionManager).to delay(:subscribe, queue: 'my').with(@current_user.id)
 
       go 'my', '/newsletter/subscribe'
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
 
-      page.should have_content I18n.t('flash.newsletter.subscribe')
+      expect(page).to have_content I18n.t('flash.newsletter.subscribe')
     end
   end
 

@@ -7,16 +7,16 @@ describe Admin::TweetsController do
 
     it "responds with success to GET :index" do
       get :index
-      response.should be_success
-      response.should render_template(:index)
+      expect(response).to be_success
+      expect(response).to render_template(:index)
     end
 
     it "responds with success to PUT :favorite" do
-      Tweet.should_receive(:find).with('1') { mock_tweet }
-      mock_tweet.should_receive(:favorite!)
+      expect(Tweet).to receive(:find).with('1') { mock_tweet }
+      expect(mock_tweet).to receive(:favorite!)
 
       put :favorite, id: '1'
-      response.should redirect_to admin_tweets_path
+      expect(response).to redirect_to admin_tweets_path
     end
   end
 

@@ -21,7 +21,7 @@ describe VideoStatsController do
 
       it 'redirects' do
         get :index, site_id: @site.token, video_tag_id: '1'
-        response.should redirect_to root_path
+        expect(response).to redirect_to root_path
       end
     end
 
@@ -33,12 +33,12 @@ describe VideoStatsController do
 
       it 'responds with HTML format' do
         get :index, site_id: @site.token, video_tag_id: '1'
-        response.should be_success
+        expect(response).to be_success
       end
 
       it 'responds to CSV format' do
         get :index, site_id: @site.token, video_tag_id: '1', format: 'csv'
-        response.should be_success
+        expect(response).to be_success
       end
     end
   end

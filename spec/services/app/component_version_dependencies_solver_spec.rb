@@ -48,7 +48,7 @@ describe App::ComponentVersionDependenciesSolver do
 
   describe '.components_dependencies' do
     before do
-      App::Component.stub(:app_component) { app_component }
+      allow(App::Component).to receive(:app_component) { app_component }
     end
 
     context 'with stage is stable' do
@@ -57,23 +57,23 @@ describe App::ComponentVersionDependenciesSolver do
       end
 
       context 'with no custom design components' do
-        before { site.stub(:designs) { [classic_design] } }
+        before { allow(site).to receive(:designs) { [classic_design] } }
 
         it 'depends only on app' do
-          described_class.components_dependencies(site, 'stable').should eq('a' => '2.0.0')
+          expect(described_class.components_dependencies(site, 'stable')).to eq('a' => '2.0.0')
         end
       end
 
       context 'with a custom design component' do
         before do
-          site.stub(:designs) { [twit_design] }
-          twit_component.stub(:versions_for_stage).with('stable')  { [twit_component_200] }
-          twit_component_200.stub(:dependencies) { {} }
+          allow(site).to receive(:designs) { [twit_design] }
+          allow(twit_component).to receive(:versions_for_stage).with('stable')  { [twit_component_200] }
+          allow(twit_component_200).to receive(:dependencies) { {} }
           expect_any_instance_of(described_class).to receive(:_current_component_version).with(twit_component) { twit_component_200 }
         end
 
         it 'depends on app and design component' do
-          described_class.components_dependencies(site, 'stable').should eq('a' => '2.0.0', 'twit' => '2.0.0')
+          expect(described_class.components_dependencies(site, 'stable')).to eq('a' => '2.0.0', 'twit' => '2.0.0')
         end
       end
     end
@@ -84,35 +84,35 @@ describe App::ComponentVersionDependenciesSolver do
       end
 
       context 'with no custom design components' do
-        before { site.stub(:designs) { [classic_design] } }
+        before { allow(site).to receive(:designs) { [classic_design] } }
 
         it 'depends only on app' do
-          described_class.components_dependencies(site, 'beta').should eq('a' => '2.0.0-beta.1')
+          expect(described_class.components_dependencies(site, 'beta')).to eq('a' => '2.0.0-beta.1')
         end
       end
 
       context 'with a custom design component without a beta version' do
         before do
-          site.stub(:designs) { [twit_design] }
-          twit_component.stub(:versions_for_stage).with('beta')  { [] }
+          allow(site).to receive(:designs) { [twit_design] }
+          allow(twit_component).to receive(:versions_for_stage).with('beta')  { [] }
           expect_any_instance_of(described_class).to_not receive(:_current_component_version).with(twit_component)
         end
 
         it 'depends only on app' do
-          described_class.components_dependencies(site, 'beta').should eq('a' => '2.0.0-beta.1')
+          expect(described_class.components_dependencies(site, 'beta')).to eq('a' => '2.0.0-beta.1')
         end
       end
 
       context 'with a custom design component with a beta version' do
         before do
-          site.stub(:designs) { [twit_design] }
-          twit_component.stub(:versions_for_stage).with('beta')  { [twit_component_200beta1] }
-          twit_component_200beta1.stub(:dependencies) { {} }
+          allow(site).to receive(:designs) { [twit_design] }
+          allow(twit_component).to receive(:versions_for_stage).with('beta')  { [twit_component_200beta1] }
+          allow(twit_component_200beta1).to receive(:dependencies) { {} }
           expect_any_instance_of(described_class).to receive(:_current_component_version).with(twit_component) { twit_component_200beta1 }
         end
 
         it 'depends on app and design component' do
-          described_class.components_dependencies(site, 'beta').should eq('a' => '2.0.0-beta.1', 'twit' => '2.0.0-beta.1')
+          expect(described_class.components_dependencies(site, 'beta')).to eq('a' => '2.0.0-beta.1', 'twit' => '2.0.0-beta.1')
         end
       end
     end
@@ -123,35 +123,35 @@ describe App::ComponentVersionDependenciesSolver do
       end
 
       context 'with no custom design components' do
-        before { site.stub(:designs) { [classic_design] } }
+        before { allow(site).to receive(:designs) { [classic_design] } }
 
         it 'depends only on app' do
-          described_class.components_dependencies(site, 'alpha').should eq('a' => '2.0.0-alpha.1')
+          expect(described_class.components_dependencies(site, 'alpha')).to eq('a' => '2.0.0-alpha.1')
         end
       end
 
       context 'with a custom design component without a alpha version' do
         before do
-          site.stub(:designs) { [twit_design] }
-          twit_component.stub(:versions_for_stage).with('alpha')  { [] }
+          allow(site).to receive(:designs) { [twit_design] }
+          allow(twit_component).to receive(:versions_for_stage).with('alpha')  { [] }
           expect_any_instance_of(described_class).to_not receive(:_current_component_version).with(twit_component)
         end
 
         it 'depends only on app' do
-          described_class.components_dependencies(site, 'alpha').should eq('a' => '2.0.0-alpha.1')
+          expect(described_class.components_dependencies(site, 'alpha')).to eq('a' => '2.0.0-alpha.1')
         end
       end
 
       context 'with a custom design component with a alpha version' do
         before do
-          site.stub(:designs) { [twit_design] }
-          twit_component.stub(:versions_for_stage).with('alpha')  { [twit_component_200alpha1] }
-          twit_component_200alpha1.stub(:dependencies) { {} }
+          allow(site).to receive(:designs) { [twit_design] }
+          allow(twit_component).to receive(:versions_for_stage).with('alpha')  { [twit_component_200alpha1] }
+          allow(twit_component_200alpha1).to receive(:dependencies) { {} }
           expect_any_instance_of(described_class).to receive(:_current_component_version).with(twit_component) { twit_component_200alpha1 }
         end
 
         it 'depends on app and design component' do
-          described_class.components_dependencies(site, 'alpha').should eq('a' => '2.0.0-alpha.1', 'twit' => '2.0.0-alpha.1')
+          expect(described_class.components_dependencies(site, 'alpha')).to eq('a' => '2.0.0-alpha.1', 'twit' => '2.0.0-alpha.1')
         end
       end
     end

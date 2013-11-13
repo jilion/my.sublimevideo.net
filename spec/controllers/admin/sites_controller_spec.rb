@@ -7,19 +7,19 @@ describe Admin::SitesController do
 
     it "responds with success to GET :index" do
       get :index
-      response.should render_template(:index)
+      expect(response).to render_template(:index)
     end
 
     it "responds with redirect to GET :show" do
       get :show, id: 'abc123'
-      response.should redirect_to(edit_admin_site_url('abc123'))
+      expect(response).to redirect_to(edit_admin_site_url('abc123'))
     end
 
     it "responds with success to GET :edit" do
       Site.stub_chain(:where, :first!) { mock_site }
 
       get :edit, id: 'abc123'
-      response.should render_template(:edit)
+      expect(response).to render_template(:edit)
     end
 
     describe "PUT :update" do
@@ -28,30 +28,30 @@ describe Admin::SitesController do
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update).with('mode' => 'beta', 'tag_list' => ['foo']) { true }
+        expect(mock_site).to receive(:update).with('mode' => 'beta', 'tag_list' => ['foo']) { true }
 
         put :update, id: 'abc123', site: { mode: 'beta', tag_list: ['foo'] }
-        response.should redirect_to(edit_admin_site_url(mock_site))
+        expect(response).to redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds with success to failing PUT :update" do
-        mock_site.should_receive(:update) { false }
+        expect(mock_site).to receive(:update) { false }
 
         put :update, id: 'abc123', site: { mode: 'beta' }
-        response.should redirect_to(edit_admin_site_url(mock_site))
+        expect(response).to redirect_to(edit_admin_site_url(mock_site))
       end
     end
 
     it "responds with redirect to successful PUT :update_design_subscription" do
       Site.stub_chain(:where, :first!) { mock_site }
-      Design.stub(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
+      allow(Design).to receive(:find).with('42') { mock_design(id: 42, name: 'foo_design', title: 'Foo Design') }
       mock_service = double('SiteManager')
-      SiteManager.stub(:new).with(mock_site) { mock_service }
+      allow(SiteManager).to receive(:new).with(mock_site) { mock_service }
 
-      mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
+      expect(mock_service).to receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true, force: false })
 
       put :update_design_subscription, id: 'abc123', design_id: 42
-      response.should redirect_to(edit_admin_site_url(mock_site))
+      expect(response).to redirect_to(edit_admin_site_url(mock_site))
     end
   end
 
@@ -62,17 +62,17 @@ describe Admin::SitesController do
       before { Site.stub_chain(:where, :first!) { mock_site } }
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.should_receive(:update).with('tag_list' => ['foo']) { true }
+        expect(mock_site).to receive(:update).with('tag_list' => ['foo']) { true }
 
         put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
-        response.should redirect_to(edit_admin_site_url(mock_site))
+        expect(response).to redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds without success to failing PUT :update" do
-        mock_site.should_receive(:update) { false }
+        expect(mock_site).to receive(:update) { false }
 
         put :update, id: 'abc123', site: { foo: 'bar' }
-        response.should redirect_to(edit_admin_site_url(mock_site))
+        expect(response).to redirect_to(edit_admin_site_url(mock_site))
       end
     end
   end

@@ -18,109 +18,109 @@ describe UserManager do
   let(:feedback)       { double }
 
   before {
-    Librato.stub(:increment)
+    allow(Librato).to receive(:increment)
   }
 
   describe '#create' do
     it 'saves user' do
-      user.should_receive(:save!)
+      expect(user).to receive(:save!)
       service.create
     end
 
     pending 'delays the sending of the welcome email' do
-      UserMailer.should delay(:welcome).with(user.id)
+      expect(UserMailer).to delay(:welcome).with(user.id)
       service.create
     end
 
     it 'delays the synchronization with the newsletter service' do
-      NewsletterSubscriptionManager.should delay(:sync_from_service).with(user.id)
+      expect(NewsletterSubscriptionManager).to delay(:sync_from_service).with(user.id)
       service.create
     end
 
     it "increments metrics" do
-      Librato.should_receive(:increment).with('users.events', source: 'create')
+      expect(Librato).to receive(:increment).with('users.events', source: 'create')
       service.create
     end
   end
 
   describe '#suspend' do
     before do
-      User.should_receive(:transaction).and_yield
+      expect(User).to receive(:transaction).and_yield
       user.stub_chain(:sites, :active) { [site1, site2] }
-      user.stub(:suspend!)
-      site1.stub(:suspend!)
-      site2.stub(:suspend!)
+      allow(user).to receive(:suspend!)
+      allow(site1).to receive(:suspend!)
+      allow(site2).to receive(:suspend!)
     end
 
     it 'suspends user' do
-      user.should_receive(:suspend!)
+      expect(user).to receive(:suspend!)
       service.suspend
     end
 
     it 'suspends active sites' do
-      site1.should_receive(:suspend!)
-      site2.should_receive(:suspend!)
+      expect(site1).to receive(:suspend!)
+      expect(site2).to receive(:suspend!)
       service.suspend
     end
 
     it 'delays the sending of the account suspended email' do
-      UserMailer.should delay(:account_suspended).with(user.id)
+      expect(UserMailer).to delay(:account_suspended).with(user.id)
       service.suspend
     end
 
     it "increments metrics" do
-      Librato.should_receive(:increment).with('users.events', source: 'suspend')
+      expect(Librato).to receive(:increment).with('users.events', source: 'suspend')
       service.suspend
     end
   end
 
   describe '#unsuspend' do
     before do
-      User.should_receive(:transaction).and_yield
+      expect(User).to receive(:transaction).and_yield
       user.stub_chain(:sites, :suspended) { [site1, site2] }
-      user.stub(:unsuspend!)
-      site1.stub(:unsuspend!)
-      site2.stub(:unsuspend!)
+      allow(user).to receive(:unsuspend!)
+      allow(site1).to receive(:unsuspend!)
+      allow(site2).to receive(:unsuspend!)
     end
 
     it 'unsuspends user' do
-      user.should_receive(:unsuspend!)
+      expect(user).to receive(:unsuspend!)
       service.unsuspend
     end
 
     it 'suspends active sites' do
-      site1.should_receive(:unsuspend!)
-      site2.should_receive(:unsuspend!)
+      expect(site1).to receive(:unsuspend!)
+      expect(site2).to receive(:unsuspend!)
       service.unsuspend
     end
 
     it 'delays the sending of the account unsuspended email' do
-      UserMailer.should delay(:account_unsuspended).with(user.id)
+      expect(UserMailer).to delay(:account_unsuspended).with(user.id)
       service.unsuspend
     end
 
     it "increments metrics" do
-      Librato.should_receive(:increment).with('users.events', source: 'unsuspend')
+      expect(Librato).to receive(:increment).with('users.events', source: 'unsuspend')
       service.unsuspend
     end
   end
 
   describe '#archive' do
     before do
-      User.should_receive(:transaction).and_yield
-      user.stub(:valid_password?) { true }
-      user.stub(:current_password)
+      expect(User).to receive(:transaction).and_yield
+      allow(user).to receive(:valid_password?) { true }
+      allow(user).to receive(:current_password)
       user.stub_chain(:sites, :not_archived) { [site1, site2] }
       user.stub_chain(:tokens) { tokens }
-      tokens.stub(:update_all)
-      user.stub(:archive!)
-      feedback.stub(:save!)
-      site1.stub(:archive!)
-      site2.stub(:archive!)
+      allow(tokens).to receive(:update_all)
+      allow(user).to receive(:archive!)
+      allow(feedback).to receive(:save!)
+      allow(site1).to receive(:archive!)
+      allow(site2).to receive(:archive!)
     end
 
     it 'increments metrics' do
-      Librato.should_receive(:increment).with('users.events', source: 'archive')
+      expect(Librato).to receive(:increment).with('users.events', source: 'archive')
 
       service.archive
     end
@@ -129,7 +129,7 @@ describe UserManager do
       describe ':feedback option' do
         context 'with a feedback' do
           it 'saves feedback' do
-            feedback.should_receive(:save!)
+            expect(feedback).to receive(:save!)
 
             service.archive(feedback: feedback)
           end
@@ -139,16 +139,16 @@ describe UserManager do
       describe ':skip_password option' do
         context 'set to true' do
           it 'calls skip_password(:archive!)' do
-            user.should_not_receive(:valid_password?)
-            user.should_receive(:archive!)
+            expect(user).not_to receive(:valid_password?)
+            expect(user).to receive(:archive!)
 
             service.archive(skip_password: true)
           end
         end
         context 'set to false' do
           it 'calls skip_password(:archive!)' do
-            user.should_receive(:valid_password?)
-            user.should_receive(:archive!)
+            expect(user).to receive(:valid_password?)
+            expect(user).to receive(:archive!)
 
             service.archive(skip_password: false)
           end
@@ -158,54 +158,54 @@ describe UserManager do
 
     context 'with an invalid current password' do
       before do
-        user.should_receive(:valid_password?) { false }
-        user.stub(:current_password) { double(blank?: true) }
+        expect(user).to receive(:valid_password?) { false }
+        allow(user).to receive(:current_password) { double(blank?: true) }
       end
 
       it 'adds an error and returns false' do
-        user.should_receive(:errors) { double.as_null_object }
+        expect(user).to receive(:errors) { double.as_null_object }
 
-        service.archive(skip_password: false).should be_false
+        expect(service.archive(skip_password: false)).to be_falsey
       end
     end
 
     context 'with an valid current password' do
-      before { user.should_receive(:valid_password?) { true } }
+      before { expect(user).to receive(:valid_password?) { true } }
 
       it 'adds an error and returns false' do
-        user.should_not_receive(:errors)
+        expect(user).not_to receive(:errors)
 
-        service.archive(skip_password: false).should be_true
+        expect(service.archive(skip_password: false)).to be_truthy
       end
     end
 
     it 'archives the user' do
-      user.should_receive(:archive!)
+      expect(user).to receive(:archive!)
 
       service.archive
     end
 
     it 'archives the sites' do
-      site1.should_receive(:archive!)
-      site2.should_receive(:archive!)
+      expect(site1).to receive(:archive!)
+      expect(site2).to receive(:archive!)
 
       service.archive
     end
 
     it 'invalidates tokens' do
-      tokens.should_receive(:update_all).with(invalidated_at: an_instance_of(Time))
+      expect(tokens).to receive(:update_all).with(invalidated_at: an_instance_of(Time))
 
       service.archive
     end
 
     it 'delays the unsubscription from the newsletter' do
-      NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
+      expect(NewsletterSubscriptionManager).to delay(:unsubscribe).with(user.id)
 
       service.archive
     end
 
     it 'delays the sending of the account archived email' do
-      UserMailer.should delay(:account_archived).with(user.id)
+      expect(UserMailer).to delay(:account_archived).with(user.id)
 
       service.archive
     end

@@ -19,7 +19,7 @@ describe Design do
       @custom = create(:design, availability: 'custom')
     end
 
-    it { described_class.custom.should eq [@custom] }
+    it { expect(described_class.custom).to eq [@custom] }
   end
 
   describe '.paid' do
@@ -28,20 +28,20 @@ describe Design do
       @paid = create(:design, price: 99)
     end
 
-    it { described_class.paid.should eq [@paid] }
+    it { expect(described_class.paid).to eq [@paid] }
   end
 
   describe '#available_for_subscription?' do
     let(:site) { create(:site) }
     let(:custom_design) { create(:design, availability: 'custom') }
 
-    it { create(:design, availability: 'public').available_for_subscription?(site).should be_true }
-    it { custom_design.available_for_subscription?(site).should be_false }
+    it { expect(create(:design, availability: 'public').available_for_subscription?(site)).to be_truthy }
+    it { expect(custom_design.available_for_subscription?(site)).to be_falsey }
 
     context 'site has a billable item for this design' do
       before { create(:billable_item, item: custom_design, site: site) }
 
-      it { custom_design.available_for_subscription?(site).should be_true }
+      it { expect(custom_design.available_for_subscription?(site)).to be_truthy }
     end
   end
 end

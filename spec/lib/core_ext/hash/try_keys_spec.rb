@@ -8,25 +8,25 @@ describe Hash do
 
   context 'key is found' do
     it 'returns the correct value' do
-      hash.try_keys('x', :y).should eq 1
+      expect(hash.try_keys('x', :y)).to eq 1
     end
 
     it 'returns the correct value even with a default block' do
-      hash.try_keys('x', :y) { 42 }.should eq 1
+      expect(hash.try_keys('x', :y) { 42 }).to eq 1
     end
 
     it 'returns the correct value even with a default block' do
-      hash.try_keys('x').should eq({ y: 1 })
+      expect(hash.try_keys('x')).to eq({ y: 1 })
     end
   end
 
   context 'key is not found' do
     it 'returns nil if key is not found' do
-      hash.try_keys('x', :z).should be_nil
+      expect(hash.try_keys('x', :z)).to be_nil
     end
 
     it 'returns the given block result if key is not found' do
-      hash.try_keys('x', :z) { 42 }.should eq 42
+      expect(hash.try_keys('x', :z) { 42 }).to eq 42
     end
   end
 

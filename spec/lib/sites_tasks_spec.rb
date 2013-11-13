@@ -9,9 +9,9 @@ describe SitesTasks do
     let!(:archived_site) { create(:site, state: 'archived') }
 
     it 'regenerates loader and license of all sites' do
-      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+      expect(LoaderGenerator).to delay(:update_all_stages!).with(site.id)
       described_class.regenerate_templates(loaders: true)
-      SettingsGenerator.should delay(:update_all!).with(site.id)
+      expect(SettingsGenerator).to delay(:update_all!).with(site.id)
 
       described_class.regenerate_templates(settings: true)
     end
@@ -27,7 +27,7 @@ describe SitesTasks do
     end
 
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      SiteManager.should delay(:subscribe_site_to_addon).with(site2.id, beta_addon_plan.addon_name, beta_addon_plan.id)
+      expect(SiteManager).to delay(:subscribe_site_to_addon).with(site2.id, beta_addon_plan.addon_name, beta_addon_plan.id)
 
       described_class.subscribe_all_sites_to_free_addon(beta_addon_plan.addon_name, beta_addon_plan.name)
     end
@@ -92,86 +92,86 @@ describe SitesTasks do
       create(:billable_item_activity, site: site4, item: addon_plan_2, state: 'beta', created_at: (BusinessModel.days_for_trial / 2).days.ago) # in trial
       create(:billable_item, site: site4, item: addon_plan_2, state: 'beta') # in trial
 
-      LoaderGenerator.stub(:update_all_stages!)
-      SettingsGenerator.stub(:update_all!)
+      allow(LoaderGenerator).to receive(:update_all_stages!)
+      allow(SettingsGenerator).to receive(:update_all!)
     end
 
     it 'do many things' do
-      design.stable_at.should be_nil
-      custom_design.stable_at.should be_nil
-      addon_plan_1.stable_at.should be_nil
-      addon_plan_2.stable_at.should be_nil
-      addon_plan_3.stable_at.should be_nil
+      expect(design.stable_at).to be_nil
+      expect(custom_design.stable_at).to be_nil
+      expect(addon_plan_1.stable_at).to be_nil
+      expect(addon_plan_2.stable_at).to be_nil
+      expect(addon_plan_3.stable_at).to be_nil
 
-      design.required_stage.should eq 'beta'
-      custom_design.required_stage.should eq 'beta'
-      addon_plan_1.required_stage.should eq 'beta'
-      addon_plan_2.required_stage.should eq 'beta'
-      addon_plan_3.required_stage.should eq 'beta'
+      expect(design.required_stage).to eq 'beta'
+      expect(custom_design.required_stage).to eq 'beta'
+      expect(addon_plan_1.required_stage).to eq 'beta'
+      expect(addon_plan_2.required_stage).to eq 'beta'
+      expect(addon_plan_3.required_stage).to eq 'beta'
 
-      site1.billable_items.with_item(addon_plan_1).state('beta').should have(1).item
-      site2.billable_items.with_item(addon_plan_2).state('beta').should have(1).item
-      site3.billable_items.with_item(addon_plan_1).state('beta').should have(1).item
-      site4.billable_items.with_item(addon_plan_2).state('beta').should have(1).item
+      expect(site1.billable_items.with_item(addon_plan_1).state('beta').size).to eq(1)
+      expect(site2.billable_items.with_item(addon_plan_2).state('beta').size).to eq(1)
+      expect(site3.billable_items.with_item(addon_plan_1).state('beta').size).to eq(1)
+      expect(site4.billable_items.with_item(addon_plan_2).state('beta').size).to eq(1)
 
-      site1.billable_items.with_item(design).state('beta').should have(1).item
-      site2.billable_items.with_item(design).state('beta').should have(1).item
-      site3.billable_items.with_item(design).state('beta').should be_empty
-      site4.billable_items.with_item(design).state('beta').should be_empty
+      expect(site1.billable_items.with_item(design).state('beta').size).to eq(1)
+      expect(site2.billable_items.with_item(design).state('beta').size).to eq(1)
+      expect(site3.billable_items.with_item(design).state('beta').size).to eq(0)
+      expect(site4.billable_items.with_item(design).state('beta').size).to eq(0)
 
-      site1.billable_items.with_item(custom_design).state('beta').should have(1).item
-      site2.billable_items.with_item(custom_design).should be_empty
-      site3.billable_items.with_item(custom_design).should be_empty
-      site4.billable_items.with_item(custom_design).should be_empty
+      expect(site1.billable_items.with_item(custom_design).state('beta').size).to eq(1)
+      expect(site2.billable_items.with_item(custom_design).size).to eq(0)
+      expect(site3.billable_items.with_item(custom_design).size).to eq(0)
+      expect(site4.billable_items.with_item(custom_design).size).to eq(0)
 
       Sidekiq::Worker.clear_all
       described_class.exit_beta
       Sidekiq::Worker.drain_all
 
       # it moves beta addon plans out of beta
-      design.reload.stable_at.should be_present
-      custom_design.reload.stable_at.should be_present
-      addon_plan_2.reload.stable_at.should be_present
-      addon_plan_1.reload.stable_at.should be_present
-      addon_plan_3.reload.stable_at.should be_present
+      expect(design.reload.stable_at).to be_present
+      expect(custom_design.reload.stable_at).to be_present
+      expect(addon_plan_2.reload.stable_at).to be_present
+      expect(addon_plan_1.reload.stable_at).to be_present
+      expect(addon_plan_3.reload.stable_at).to be_present
 
-      design.reload.required_stage.should eq 'stable'
-      custom_design.reload.required_stage.should eq 'stable'
-      addon_plan_2.reload.required_stage.should eq 'stable'
-      addon_plan_1.reload.required_stage.should eq 'stable'
-      addon_plan_3.reload.required_stage.should eq 'stable'
+      expect(design.reload.required_stage).to eq 'stable'
+      expect(custom_design.reload.required_stage).to eq 'stable'
+      expect(addon_plan_2.reload.required_stage).to eq 'stable'
+      expect(addon_plan_1.reload.required_stage).to eq 'stable'
+      expect(addon_plan_3.reload.required_stage).to eq 'stable'
 
-      site1.reload.billable_items.with_item(design).state('subscribed').should have(1).item
-      site2.reload.billable_items.with_item(design).state('subscribed').should have(1).item
-      site3.reload.billable_items.with_item(design).state('subscribed').should be_empty
-      site4.reload.billable_items.with_item(design).state('subscribed').should be_empty
+      expect(site1.reload.billable_items.with_item(design).state('subscribed').size).to eq(1)
+      expect(site2.reload.billable_items.with_item(design).state('subscribed').size).to eq(1)
+      expect(site3.reload.billable_items.with_item(design).state('subscribed').size).to eq(0)
+      expect(site4.reload.billable_items.with_item(design).state('subscribed').size).to eq(0)
 
       # updates free add-ons subscriptions to the "subscribed" state
-      site1.billable_items.with_item(addon_plan_3).state('subscribed').should have(1).item
-      site2.billable_items.with_item(addon_plan_3).state('subscribed').should have(1).item
-      site3.billable_items.with_item(addon_plan_3).state('subscribed').should be_empty
-      site4.billable_items.with_item(addon_plan_3).state('subscribed').should be_empty
+      expect(site1.billable_items.with_item(addon_plan_3).state('subscribed').size).to eq(1)
+      expect(site2.billable_items.with_item(addon_plan_3).state('subscribed').size).to eq(1)
+      expect(site3.billable_items.with_item(addon_plan_3).state('subscribed').size).to eq(0)
+      expect(site4.billable_items.with_item(addon_plan_3).state('subscribed').size).to eq(0)
 
       # updates subscriptions to the "trial" state for beta subscriptions subscribed less than 30 days ago
-      site1.billable_items.with_item(addon_plan_1).state('trial').should have(1).item
-      site2.billable_items.with_item(addon_plan_2).state('trial').should have(1).item
-      site3.billable_items.with_item(addon_plan_1).state('trial').should have(1).item
-      site4.billable_items.with_item(addon_plan_2).state('trial').should have(1).item
+      expect(site1.billable_items.with_item(addon_plan_1).state('trial').size).to eq(1)
+      expect(site2.billable_items.with_item(addon_plan_2).state('trial').size).to eq(1)
+      expect(site3.billable_items.with_item(addon_plan_1).state('trial').size).to eq(1)
+      expect(site4.billable_items.with_item(addon_plan_2).state('trial').size).to eq(1)
 
       # updates subscriptions to free plan (or cancel plan) for beta subscriptions subscribed more than 30 days ago when user has no credit card
-      site1.billable_items.with_item(addon_plan_2).should be_empty
-      site1.billable_items.with_item(addon_plan_2_free).state('subscribed').should have(1).item
-      site2.billable_items.with_item(addon_plan_1).should be_empty
+      expect(site1.billable_items.with_item(addon_plan_2).size).to eq(0)
+      expect(site1.billable_items.with_item(addon_plan_2_free).state('subscribed').size).to eq(1)
+      expect(site2.billable_items.with_item(addon_plan_1).size).to eq(0)
 
       # updates subscriptions to the "subscribed" state for beta subscriptions subscribed more than 30 days ago when user has a credit card
-      site3.billable_items.with_item(addon_plan_2).state('subscribed').should have(1).item
-      site4.billable_items.with_item(addon_plan_1).state('subscribed').should have(1).item
+      expect(site3.billable_items.with_item(addon_plan_2).state('subscribed').size).to eq(1)
+      expect(site4.billable_items.with_item(addon_plan_1).state('subscribed').size).to eq(1)
 
       # does not subscribe site to custom add-ons for which it was not subscribed before
-      site1.billable_items.with_item(custom_design).state('subscribed').should have(1).item
-      site2.billable_items.with_item(custom_design).should be_empty
-      site3.billable_items.with_item(custom_design).should be_empty
-      site4.billable_items.with_item(custom_design).should be_empty
+      expect(site1.billable_items.with_item(custom_design).state('subscribed').size).to eq(1)
+      expect(site2.billable_items.with_item(custom_design).size).to eq(0)
+      expect(site3.billable_items.with_item(custom_design).size).to eq(0)
+      expect(site4.billable_items.with_item(custom_design).size).to eq(0)
     end
   end
 

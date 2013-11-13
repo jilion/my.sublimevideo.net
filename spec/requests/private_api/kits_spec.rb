@@ -20,28 +20,28 @@ describe 'Private API Kits requests' do
     context 'non existing site' do
       it 'returns 404' do
         get 'private_api/sites/42/addons.json', {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
     it 'supports :per scope' do
       get url, { per: 2 }, @env
       body = MultiJson.load(response.body)
-      body.should have(2).kits
-      body[0]['design'].should eq({
+      expect(body.size).to eq(2)
+      expect(body[0]['design']).to eq({
         'name' => kit1.design.name
       })
-      body[0]['identifier'].should eq kit1.identifier
-      body[0]['name'].should eq kit1.name
-      body[0]['settings'].should eq kit1.settings
-      body[0]['created_at'].should be_present
-      body[0]['updated_at'].should be_present
-      body[0]['default'].should be_true
+      expect(body[0]['identifier']).to eq kit1.identifier
+      expect(body[0]['name']).to eq kit1.name
+      expect(body[0]['settings']).to eq kit1.settings
+      expect(body[0]['created_at']).to be_present
+      expect(body[0]['updated_at']).to be_present
+      expect(body[0]['default']).to be_truthy
 
-      body[1]['default'].should be_false
+      expect(body[1]['default']).to be_falsey
 
-      response.status.should eq 200
+      expect(response.status).to eq 200
     end
   end
 end

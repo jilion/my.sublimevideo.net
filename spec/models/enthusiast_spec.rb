@@ -4,7 +4,10 @@ describe Enthusiast do
   subject { create(:enthusiast) }
 
   context "with valid attributes" do
-    its(:email) { should match /email\d+@enthusiast.com/ }
+    describe '#email' do
+      subject { super().email }
+      it { should match /email\d+@enthusiast.com/ }
+    end
     it { should be_valid }
   end
 

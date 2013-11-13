@@ -17,24 +17,24 @@ describe App::ComponentVersionManager do
 
   describe '#create' do
     before {
-      app_component_version.stub(:save!)
-      app_component_version.stub(:component) { app_component }
-      other_component_version.stub(:save!)
+      allow(app_component_version).to receive(:save!)
+      allow(app_component_version).to receive(:component) { app_component }
+      allow(other_component_version).to receive(:save!)
     }
 
     it 'saves component_version' do
-      app_component_version.should_receive(:save!)
+      expect(app_component_version).to receive(:save!)
       service.create
     end
 
     context 'app component version' do
       it 'delays the update of all dependant sites loaders' do
-        LoaderGenerator.should delay(:update_all_dependant_sites, queue: 'my').with(app_component_version.component_id, app_component_version.stage)
+        expect(LoaderGenerator).to delay(:update_all_dependant_sites, queue: 'my').with(app_component_version.component_id, app_component_version.stage)
         service.create
       end
 
       it 'delays Campfire message' do
-        CampfireWrapper.should delay(:post).with("App player component version 1.0.0 released")
+        expect(CampfireWrapper).to delay(:post).with("App player component version 1.0.0 released")
         service.create
       end
     end
@@ -43,12 +43,12 @@ describe App::ComponentVersionManager do
       let(:service) { described_class.new(other_component_version) }
 
       it 'does not the update of all dependant sites loaders' do
-        LoaderGenerator.should_not delay(:update_all_dependant_sites)
+        expect(LoaderGenerator).not_to delay(:update_all_dependant_sites)
         service.create
       end
 
       it 'does not delay Campfire message' do
-        CampfireWrapper.should_not delay(:post)
+        expect(CampfireWrapper).not_to delay(:post)
         service.create
       end
     end
@@ -56,22 +56,22 @@ describe App::ComponentVersionManager do
 
   describe '#destroy' do
     before do
-      app_component_version.stub(:destroy)
-      other_component_version.stub(:destroy)
+      allow(app_component_version).to receive(:destroy)
+      allow(other_component_version).to receive(:destroy)
     end
 
     it 'saves component_version' do
-      app_component_version.should_receive(:destroy)
+      expect(app_component_version).to receive(:destroy)
       service.destroy
     end
 
     it 'delays the update of all dependant sites loaders' do
-      LoaderGenerator.should delay(:update_all_dependant_sites).with(app_component_version.component_id, app_component_version.stage)
+      expect(LoaderGenerator).to delay(:update_all_dependant_sites).with(app_component_version.component_id, app_component_version.stage)
       service.destroy
     end
 
     it 'delays Campfire message' do
-      CampfireWrapper.should delay(:post).with("App player component version 1.0.0 DELETED!")
+      expect(CampfireWrapper).to delay(:post).with("App player component version 1.0.0 DELETED!")
       service.destroy
     end
   end

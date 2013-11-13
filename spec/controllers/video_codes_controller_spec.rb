@@ -18,12 +18,12 @@ describe VideoCodesController do
       context 'without any site' do
         it "is success when :new, site_id: nil" do
           get :new, site_id: nil
-          response.should redirect_to assistant_new_site_path
+          expect(response).to redirect_to assistant_new_site_path
         end
 
         it "redirects when :new, site_id: '1'" do
           get :new, site_id: '1'
-          response.should redirect_to assistant_new_site_path
+          expect(response).to redirect_to assistant_new_site_path
         end
       end
 
@@ -35,12 +35,12 @@ describe VideoCodesController do
 
         it "redirects when :new, site_id: nil" do
           get :new, site_id: nil
-          response.should redirect_to new_site_video_code_path(@site2.token)
+          expect(response).to redirect_to new_site_video_code_path(@site2.token)
         end
 
         it "is success when :new, site_id: 'site.token'" do
           get :new, site_id: @site2.token
-          response.should be_success
+          expect(response).to be_success
         end
       end
     end
@@ -53,12 +53,12 @@ describe VideoCodesController do
 
       it "redirects when :new, site_id: nil" do
         get :new, site_id: nil
-        response.should redirect_to new_site_video_code_path(@site.token)
+        expect(response).to redirect_to new_site_video_code_path(@site.token)
       end
 
       it "is success when :new, site_id: 'site.token'" do
         get :new, site_id: @site.token
-        response.should be_success
+        expect(response).to be_success
       end
     end
   end

@@ -1,0 +1,45 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://secure.ogone.com/ncol/test/orderdirect.asp
+    body:
+      encoding: UTF-8
+      string: CARDNO=374111111111111&CN=John+Doe&CVC=1111&ECI=7&ED=1014&Operation=SAL&PSPID=jilion&PSWD=WWQMNC89&SHASign=13B2D572BA05CBBE23314B41F760234AC5F0EEA4EC9B14975E7379460F51C391EF693821066BC88D87B2DCB630B30BB54E354E3D4208014D3A6E67653302DDB6&USERID=sublime&amount=10000&currency=USD&orderID=cb86d39de9e5403e7822b6007bfee6
+    headers:
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 13 Nov 2013 15:56:10 GMT
+      Server:
+      - Microsoft-IIS/6.0
+      X-Powered-By:
+      - ASP.NET
+      Connection:
+      - close
+      Content-Length:
+      - '331'
+      Content-Type:
+      - text/XML; Charset=iso-8859-1
+      Expires:
+      - Wed, 13 Nov 2013 15:55:09 GMT
+      Cache-Control:
+      - private, max-age=0
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\"?><ncresponse\r\norderID=\"cb86d39de9e5403e7822b6007bfee6\"\r\nPAYID=\"25313602\"\r\nNCSTATUS=\"0\"\r\nNCERROR=\"0\"\r\nACCEPTANCE=\"test123\"\r\nSTATUS=\"9\"\r\nIPCTY=\"99\"\r\nCCCTY=\"BE\"\r\nECI=\"7\"\r\nCVCCheck=\"NO\"\r\nAAVCheck=\"NO\"\r\nVC=\"NO\"\r\namount=\"100\"\r\ncurrency=\"USD\"\r\nPM=\"CreditCard\"\r\nBRAND=\"American
+        Express\"\r\nNCERRORPLUS=\"!\">\r\n</ncresponse>"
+    http_version: 
+  recorded_at: Wed, 13 Nov 2013 15:56:10 GMT
+recorded_with: VCR 2.7.0

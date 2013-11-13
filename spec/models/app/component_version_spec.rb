@@ -15,17 +15,36 @@ describe App::ComponentVersion, :fog_mock do
   context "Object" do
     subject { component_version }
 
-    its(:token)        { should eq component.token }
-    its(:name)         { should eq component.name }
-    its(:version)      { should eq '2.0.0' }
-    its(:zip)          { should be_present }
-    its(:dependencies) { should eq({ app: "1.0.0" }) }
+    describe '#token' do
+      subject { super().token }
+      it        { should eq component.token }
+    end
+
+    describe '#name' do
+      subject { super().name }
+      it         { should eq component.name }
+    end
+
+    describe '#version' do
+      subject { super().version }
+      it      { should eq '2.0.0' }
+    end
+
+    describe '#zip' do
+      subject { super().zip }
+      it          { should be_present }
+    end
+
+    describe '#dependencies' do
+      subject { super().dependencies }
+      it { should eq({ app: "1.0.0" }) }
+    end
 
     it { should be_valid }
 
     it "has empty hash dependencies by default" do
       attributes.delete(:dependencies)
-      App::ComponentVersion.create(attributes).dependencies.should eq({})
+      expect(App::ComponentVersion.create(attributes).dependencies).to eq({})
     end
   end
 
@@ -46,37 +65,37 @@ describe App::ComponentVersion, :fog_mock do
   end
 
   it "delegates token to component" do
-    component_version.token.should eq component.token
+    expect(component_version.token).to eq component.token
   end
 
   it "delegates name to component" do
-    component_version.name.should eq component.name
+    expect(component_version.name).to eq component.name
   end
 
   it "overwrites to_param" do
-    component_version.to_param.should eq '2_0_0'
+    expect(component_version.to_param).to eq '2_0_0'
   end
 
   it "supports json for dependencies" do
     version = App::ComponentVersion.create(attributes.merge(dependencies: {app: "1.0.0"}.to_json))
-    version.dependencies.should eq({"app" => "1.0.0"})
+    expect(version.dependencies).to eq({"app" => "1.0.0"})
   end
 
   describe "#stage" do
     it "uses Stage.version_stage method" do
-      build(:app_component_version, version: '1.0.0').stage.should eq 'stable'
+      expect(build(:app_component_version, version: '1.0.0').stage).to eq 'stable'
     end
   end
 
   describe "#component_id" do
     it "returns app_component_id" do
-      component_version.component_id.should eq component.id
+      expect(component_version.component_id).to eq component.id
     end
   end
 
   describe "#solve_version" do
     it "returns Solve::Version instance" do
-      build(:app_component_version, version: '1.0.0').solve_version.should eq Solve::Version.new('1.0.0')
+      expect(build(:app_component_version, version: '1.0.0').solve_version).to eq Solve::Version.new('1.0.0')
     end
   end
 
@@ -85,9 +104,9 @@ describe App::ComponentVersion, :fog_mock do
 
     it "doesn't removes zip content" do
       prefix = "c/#{component.token}/#{component_version.version}/"
-      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(4).files
+      expect(S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.size).to eq(4)
       App::ComponentVersion.find(component_version).destroy
-      S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.should have(4).files
+      expect(S3Wrapper.fog_connection.directories.get(bucket, prefix: prefix).files.size).to eq(4)
     end
   end
 

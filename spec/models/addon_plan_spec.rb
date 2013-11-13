@@ -31,11 +31,11 @@ describe AddonPlan do
     end
 
     it 'returns a subscriptions hash with all the free addon plans' do
-      described_class.free_addon_plans.should =~ [@addon_plan1, @addon_plan2]
+      expect(described_class.free_addon_plans).to match_array([@addon_plan1, @addon_plan2])
     end
 
     it 'returns a subscriptions hash with all the free addon plans minus the one for which the add-on should be rejected' do
-      described_class.free_addon_plans(reject: [@addon_plan1.addon_name]).should =~ [@addon_plan2]
+      expect(described_class.free_addon_plans(reject: [@addon_plan1.addon_name])).to match_array([@addon_plan2])
     end
   end
 
@@ -44,12 +44,11 @@ describe AddonPlan do
       @addon_plan = create(:addon_plan, name: 'bar', addon: create(:addon, name: 'foo'))
     end
 
-    it { described_class.get('foo', 'bar').should eq @addon_plan }
+    it { expect(described_class.get('foo', 'bar')).to eq @addon_plan }
   end
 
   describe '#addon_name' do
-    subject { addon_plan1 }
-    its(:addon_name) { should eq addon_plan1.addon.name }
+    it { expect(addon_plan1.addon_name).to eq addon_plan1.addon.name }
   end
 
   describe '#available_for_subscription?' do
@@ -57,16 +56,16 @@ describe AddonPlan do
       create(:billable_item, site: site, item: addon_plan1, state: 'sponsored')
     end
 
-    it { create(:addon_plan, availability: 'hidden').available_for_subscription?(site).should be_false }
-    it { create(:addon_plan, availability: 'public').available_for_subscription?(site).should be_true }
-    it { addon_plan1.available_for_subscription?(site).should be_true }
-    it { addon_plan2.available_for_subscription?(site).should be_false }
-    it { addon_plan3.available_for_subscription?(site).should be_false }
+    it { expect(create(:addon_plan, availability: 'hidden').available_for_subscription?(site)).to be_falsey }
+    it { expect(create(:addon_plan, availability: 'public').available_for_subscription?(site)).to be_truthy }
+    it { expect(addon_plan1.available_for_subscription?(site)).to be_truthy }
+    it { expect(addon_plan2.available_for_subscription?(site)).to be_falsey }
+    it { expect(addon_plan3.available_for_subscription?(site)).to be_falsey }
 
     context 'site has a billable item for this addon plan' do
       before { create(:billable_item, item: addon_plan3, site: site) }
 
-      it { addon_plan3.available_for_subscription?(site).should be_true }
+      it { expect(addon_plan3.available_for_subscription?(site)).to be_truthy }
     end
   end
 end

@@ -19,12 +19,12 @@ describe App::ComponentVersionManager, :addons do
     before { Sidekiq::Worker.clear_all }
 
     it "updates site loader" do
-      component.versions.last.version.should_not eq component_version.version
+      expect(component.versions.last.version).not_to eq component_version.version
 
       App::ComponentVersionManager.new(component_version).create
       Sidekiq::Worker.drain_all
 
-      S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include component_version.version
+      expect(S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body).to include component_version.version
     end
   end
 
@@ -39,8 +39,8 @@ describe App::ComponentVersionManager, :addons do
       App::ComponentVersionManager.new(component_version).destroy
       Sidekiq::Worker.drain_all
 
-      S3Wrapper.fog_connection.head_object(bucket, "c/#{component.token}/#{component_version.version}/bA.js").headers.should be_present
-      S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include '1.0.0'
+      expect(S3Wrapper.fog_connection.head_object(bucket, "c/#{component.token}/#{component_version.version}/bA.js").headers).to be_present
+      expect(S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body).to include '1.0.0'
     end
   end
 

@@ -18,8 +18,8 @@ describe SettingsGenerator, :fog_mock do
   before {
     site.stub_chain(:addon_plans, :includes, :order) { [] }
     site.stub_chain(:kits, :includes, :order) { [] }
-    AddonPlan.stub(:get)
-    Librato.stub(:increment)
+    allow(AddonPlan).to receive(:get)
+    allow(Librato).to receive(:increment)
   }
 
   let(:site) { double("Site",
@@ -38,38 +38,38 @@ describe SettingsGenerator, :fog_mock do
   let(:settings) { described_class.new(site) }
 
   describe ".update_all!" do
-    before { Site.stub(:find) { site } }
+    before { allow(Site).to receive(:find) { site } }
 
     context "site active" do
-      before { site.stub(:active?) { true } }
+      before { allow(site).to receive(:active?) { true } }
 
       it "uploads all settings types when accessible_stage is 'beta'" do
-        site.stub(:accessible_stage) { 'beta' }
-        site.stub(:player_mode) { 'beta' }
+        allow(site).to receive(:accessible_stage) { 'beta' }
+        allow(site).to receive(:player_mode) { 'beta' }
         described_class.update_all!(site.id)
-        described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should be_present }
+        described_class.new(site).cdn_files.all? { |cdn_file| expect(cdn_file).to be_present }
       end
 
       it "uploads all settings types when accessible_stage is 'stable'" do
         described_class.update_all!(site.id)
-        described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should be_present }
+        described_class.new(site).cdn_files.all? { |cdn_file| expect(cdn_file).to be_present }
       end
 
       it "increments metrics" do
-        Librato.should_receive(:increment).with('settings.update', source: 'settings')
+        expect(Librato).to receive(:increment).with('settings.update', source: 'settings')
         described_class.update_all!(site.id)
       end
 
       context "when suspended" do
-        before { site.stub(:active?) { false } }
+        before { allow(site).to receive(:active?) { false } }
 
         it "removes all settings types" do
           described_class.update_all!(site.id)
-          described_class.new(site).cdn_files.all? { |cdn_file| cdn_file.should_not be_present }
+          described_class.new(site).cdn_files.all? { |cdn_file| expect(cdn_file).not_to be_present }
         end
 
         it "increments metrics" do
-          Librato.should_receive(:increment).with('settings.delete', source: 'settings')
+          expect(Librato).to receive(:increment).with('settings.delete', source: 'settings')
           described_class.update_all!(site.id)
         end
       end
@@ -81,12 +81,12 @@ describe SettingsGenerator, :fog_mock do
       let(:cdn_file) { described_class.new(site).cdn_files[0] }
 
       it 'has new path' do
-        cdn_file.path.should eq "s2/abcd1234.js"
+        expect(cdn_file.path).to eq "s2/abcd1234.js"
       end
 
       it 'new settings have non-mangled content' do
         File.open(cdn_file.file) do |f|
-          f.read.should eq "/*! SublimeVideo settings  | (c) 2013 Jilion SA | http://sublimevideo.net\n*/(function(){ sublime_.define(\"settings\",[],function(){var e,t,i;return t={},e={},i={license:{\"hosts\":[\"test.com\",\"test.net\"],\"stagingHosts\":[\"test-staging.net\"],\"devHosts\":[\"test.dev\"],\"path\":\"path\",\"wildcard\":true,\"stage\":\"stable\"},app:{},kits:{},defaultKit:\"1\"},t.exports=i,t.exports||e});;sublime_.component('settings');})();"
+          expect(f.read).to eq "/*! SublimeVideo settings  | (c) 2013 Jilion SA | http://sublimevideo.net\n*/(function(){ sublime_.define(\"settings\",[],function(){var e,t,i;return t={},e={},i={license:{\"hosts\":[\"test.com\",\"test.net\"],\"stagingHosts\":[\"test-staging.net\"],\"devHosts\":[\"test.dev\"],\"path\":\"path\",\"wildcard\":true,\"stage\":\"stable\"},app:{},kits:{},defaultKit:\"1\"},t.exports=i,t.exports||e});;sublime_.component('settings');})();"
         end
       end
     end
@@ -115,7 +115,7 @@ describe SettingsGenerator, :fog_mock do
       end
 
       it "includes template of this addon_plan addon_plan_settings" do
-        settings.app_settings.should eq({
+        expect(settings.app_settings).to eq({
           'stats' => {
             settings: {
               enabled: true,
@@ -136,7 +136,7 @@ describe SettingsGenerator, :fog_mock do
 
     context "with no addon_plans" do
       it "returns a empty hash" do
-        settings.app_settings.should eq({})
+        expect(settings.app_settings).to eq({})
       end
     end
   end
@@ -193,12 +193,12 @@ describe SettingsGenerator, :fog_mock do
       before do
         site.stub_chain(:addon_plans, :includes, :order) { [addon_plan1, addon_plan2, addon_plan3] }
         site.stub_chain(:kits, :includes, :order) { [kit1, kit2] }
-        addon_plan2.stub(:settings_for).with(design1) { addon_plan_settings2_1 }
-        addon_plan2.stub(:settings_for).with(design2) { addon_plan_settings2_2 }
+        allow(addon_plan2).to receive(:settings_for).with(design1) { addon_plan_settings2_1 }
+        allow(addon_plan2).to receive(:settings_for).with(design2) { addon_plan_settings2_2 }
       end
 
       it "includes template of this addon_plan addon_plan_settings without the plugin's modules" do
-        settings.kits(false).should eq({
+        expect(settings.kits(false)).to eq({
           "1" => {
             skin: { id: "skin_token1" },
             plugins: {
@@ -261,7 +261,7 @@ describe SettingsGenerator, :fog_mock do
       end
 
       it "includes template of this addon_plan addon_plan_settings with the plugin's modules" do
-        settings.kits(true).should eq({
+        expect(settings.kits(true)).to eq({
           "1" => {
             skin: { module: 'foo/bar' },
             plugins: {
@@ -326,7 +326,7 @@ describe SettingsGenerator, :fog_mock do
 
     context "with no kits" do
       it "returns a empty hash" do
-        settings.kits.should eq({})
+        expect(settings.kits).to eq({})
       end
     end
   end

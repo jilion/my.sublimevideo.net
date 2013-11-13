@@ -18,9 +18,9 @@ describe CDNFile, :fog_mock do
 
   describe '#upload!' do
     it 'uploads files' do
-      cdn_file.should_not be_present
+      expect(cdn_file).not_to be_present
       cdn_file.upload!
-      cdn_file.should be_present
+      expect(cdn_file).to be_present
     end
 
     describe 's3 object(s)' do
@@ -29,33 +29,33 @@ describe CDNFile, :fog_mock do
 
       it 'is public' do
         object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body
-        object_acl['AccessControlList'].should include(
+        expect(object_acl['AccessControlList']).to include(
           {'Permission'=>'READ', 'Grantee'=>{'URI'=>'http://acs.amazonaws.com/groups/global/AllUsers'}}
         )
       end
       it 'have good content_type public' do
         object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
-        object_headers['Content-Type'].should eq 'text/javascript'
+        expect(object_headers['Content-Type']).to eq 'text/javascript'
       end
       it 'have 5 min max-age cache control' do
         object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
-        object_headers['Cache-Control'].should eq 'max-age=60, public'
+        expect(object_headers['Cache-Control']).to eq 'max-age=60, public'
       end
       it 'have ETag' do
         object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
-        object_headers['ETag'].should be_present
+        expect(object_headers['ETag']).to be_present
       end
     end
 
     describe 'respond' do
       it 'is true when file was not present before' do
-        cdn_file.upload!.should be_true
+        expect(cdn_file.upload!).to be_truthy
       end
 
       it 'is true when an other file is present' do
         cdn_file.upload!
         cdn_file.file = file2
-        cdn_file.upload!.should be_true
+        expect(cdn_file.upload!).to be_truthy
       end
     end
   end
@@ -66,11 +66,11 @@ describe CDNFile, :fog_mock do
 
       it 'remove S3 object' do
         cdn_file.delete!
-        cdn_file.should_not be_present
+        expect(cdn_file).not_to be_present
       end
 
       it 'returns true' do
-        cdn_file.delete!.should be_true
+        expect(cdn_file.delete!).to be_truthy
       end
     end
   end

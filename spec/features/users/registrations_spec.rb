@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Sign Up' do
   background do
     go 'my', '/signup'
-    current_url.should eq "http://my.sublimevideo.dev/signup"
+    expect(current_url).to eq "http://my.sublimevideo.dev/signup"
   end
 
   scenario 'display errors if any' do
@@ -11,21 +11,21 @@ feature 'Sign Up' do
     fill_in 'user[password]', with: "123456"
     click_button "Sign Up"
 
-    current_url.should eq "http://my.sublimevideo.dev/signup"
-    page.should have_content 'Terms & Conditions must be accepted'
+    expect(current_url).to eq "http://my.sublimevideo.dev/signup"
+    expect(page).to have_content 'Terms & Conditions must be accepted'
 
     fill_in "Password", with: "123456"
     check "user_terms_and_conditions"
     click_button "Sign Up"
 
     user = User.last
-    user.name.should be_nil
-    user.email.should eq 'user@example.org'
+    expect(user.name).to be_nil
+    expect(user.email).to eq 'user@example.org'
 
-    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
-    get_me_the_cookie("l")[:value].should eq '1'
-    page.should have_content I18n.t("devise.users.signed_up")
-    page.should have_content user.email
+    expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
+    expect(get_me_the_cookie("l")[:value]).to eq '1'
+    expect(page).to have_content I18n.t("devise.users.signed_up")
+    expect(page).to have_content user.email
   end
 
   scenario 'accepts new sign up with the email of an archived user' do
@@ -39,13 +39,13 @@ feature 'Sign Up' do
     click_button "Sign Up"
 
     new_user = User.last
-    new_user.should_not eq archived_user
-    new_user.name.should be_nil
-    new_user.email.should eq archived_user.email
+    expect(new_user).not_to eq archived_user
+    expect(new_user.name).to be_nil
+    expect(new_user.email).to eq archived_user.email
 
-    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
-    get_me_the_cookie("l")[:value].should eq '1'
-    page.should have_content I18n.t("devise.users.signed_up")
-    page.should have_content archived_user.email
+    expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
+    expect(get_me_the_cookie("l")[:value]).to eq '1'
+    expect(page).to have_content I18n.t("devise.users.signed_up")
+    expect(page).to have_content archived_user.email
   end
 end

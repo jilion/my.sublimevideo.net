@@ -16,25 +16,25 @@ feature 'Deal activation' do
 
     scenario 'deal is activated with a after-login redirect' do
       expect { go 'my', '/d/rts1' }.to_not change(DealActivation, :count)
-      current_url.should eq 'http://my.sublimevideo.dev/login'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/login'
 
       fill_in 'user[email]',    with: @user.email
       fill_in 'user[password]', with: '123456'
 
       expect { click_button 'Log In' }.to change(DealActivation, :count).by(1)
-      current_url.should eq 'http://my.sublimevideo.dev/sites'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
     end
   end
 
   context 'user has no account' do
     scenario 'deal is activated through a cookie' do
-      DealActivation.count.should eq 0
+      expect(DealActivation.count).to eq 0
       expect { go 'my', '/d/rts3' }.to_not change(DealActivation, :count)
-      get_me_the_cookie('d')[:value].should eq 'rts3'
-      current_url.should eq 'http://my.sublimevideo.dev/login'
+      expect(get_me_the_cookie('d')[:value]).to eq 'rts3'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/login'
 
       visit '/signup'
-      get_me_the_cookie('d')[:value].should eq 'rts3'
+      expect(get_me_the_cookie('d')[:value]).to eq 'rts3'
 
       fill_in 'user[email]',    with: 'toto@titi.com'
       fill_in 'user[password]', with: '123456'
@@ -48,13 +48,13 @@ feature 'Deal activation' do
         cc_type: 'visa'
       )
 
-      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
-      get_me_the_cookie('d')[:value].should eq 'rts3'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/assistant/new-site'
+      expect(get_me_the_cookie('d')[:value]).to eq 'rts3'
 
       expect { visit '/sites' }.to change(DealActivation, :count).by(1)
 
-      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
-      get_me_the_cookies.map { |c| c['name'] }.should_not include('d')
+      expect(current_url).to eq 'http://my.sublimevideo.dev/assistant/new-site'
+      expect(get_me_the_cookies.map { |c| c['name'] }).not_to include('d')
     end
   end
 
@@ -67,14 +67,14 @@ feature 'Deal activation' do
     context 'and can activate the deal' do
       scenario 'the deal activation is successful' do
         expect { go 'my', '/d/rts1' }.to change(DealActivation, :count).by(1)
-        current_url.should eq 'http://my.sublimevideo.dev/sites'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
       end
     end
 
     context "and can't activate the deal" do
       scenario "the deal activation isn't successful" do
         expect { go 'my', '/d/rts2' }.to_not change(DealActivation, :count)
-        current_url.should eq 'http://my.sublimevideo.dev/sites'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/sites'
       end
     end
   end

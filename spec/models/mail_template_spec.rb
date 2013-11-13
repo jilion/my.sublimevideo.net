@@ -5,9 +5,20 @@ describe MailTemplate do
   context "Factory" do
     subject { create(:mail_template) }
 
-    its(:title)   { should =~ /Pricing survey \d+/ }
-    its(:subject) { should include "{{user.name}} ({{user.email}}), help us shaping the right pricing" }
-    its(:body)    { should include "Please respond to the survey, by clicking on the following url: http://survey.com" }
+    describe '#title' do
+      subject { super().title }
+      it   { should =~ /Pricing survey \d+/ }
+    end
+
+    describe '#subject' do
+      subject { super().subject }
+      it { should include "{{user.name}} ({{user.email}}), help us shaping the right pricing" }
+    end
+
+    describe '#body' do
+      subject { super().body }
+      it    { should include "Please respond to the survey, by clicking on the following url: http://survey.com" }
+    end
 
     it { should be_valid }
   end

@@ -6,11 +6,11 @@ describe Admin::MailLogsController do
     before { sign_in :admin, authenticated_admin(roles: ['god']) }
 
     it "responds with success to GET :show" do
-      MailLog.stub(:find).with("1") { mock_mail_log }
+      allow(MailLog).to receive(:find).with("1") { mock_mail_log }
 
       get :show, id: '1'
-      response.should be_success
-      response.should render_template(:show)
+      expect(response).to be_success
+      expect(response).to render_template(:show)
     end
   end
 

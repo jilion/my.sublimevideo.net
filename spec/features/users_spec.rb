@@ -9,24 +9,24 @@ feature 'Redirections' do
 
     describe "log-out redirections" do
       scenario "redirect /log_out to /logout" do
-        page.should have_content @current_user.name
+        expect(page).to have_content @current_user.name
         go 'my', '/log_out'
-        page.should have_no_content @current_user.name
-        get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
+        expect(page).to have_no_content @current_user.name
+        expect(get_me_the_cookies.map { |c| c['name'] }).not_to include("l")
       end
 
       scenario "redirect /sign_out to /logout" do
-        page.should have_content @current_user.name
+        expect(page).to have_content @current_user.name
         go 'my', '/sign_out'
-        page.should have_no_content @current_user.name
-        get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
+        expect(page).to have_no_content @current_user.name
+        expect(get_me_the_cookies.map { |c| c['name'] }).not_to include("l")
       end
 
       scenario "redirect /signout to /logout" do
-        page.should have_content @current_user.name
+        expect(page).to have_content @current_user.name
         go 'my', '/signout'
-        page.should have_no_content @current_user.name
-        get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
+        expect(page).to have_no_content @current_user.name
+        expect(get_me_the_cookies.map { |c| c['name'] }).not_to include("l")
       end
     end
   end
@@ -41,7 +41,7 @@ feature 'Account page access' do
     scenario "is redirected to log in page" do
       go 'my', 'account'
 
-      current_url.should eq "http://my.sublimevideo.dev/login"
+      expect(current_url).to eq "http://my.sublimevideo.dev/login"
     end
   end
 
@@ -53,14 +53,14 @@ feature 'Account page access' do
     scenario "can access the page directly" do
       go 'my', 'account'
 
-      current_url.should eq "http://my.sublimevideo.dev/account"
+      expect(current_url).to eq "http://my.sublimevideo.dev/account"
     end
 
     scenario "can access the page via a link in the menu" do
       within '#menu' do
         click_link @current_user.name
 
-        current_url.should eq "http://my.sublimevideo.dev/account"
+        expect(current_url).to eq "http://my.sublimevideo.dev/account"
       end
     end
   end
@@ -81,18 +81,18 @@ feature 'Email update' do
         click_button 'Update'
       end
 
-      User.last.email.should eq "old@jilion.com"
-      User.last.unconfirmed_email.should eq "new@jilion.com"
+      expect(User.last.email).to eq "old@jilion.com"
+      expect(User.last.unconfirmed_email).to eq "new@jilion.com"
 
       Sidekiq::Worker.drain_all
       last_delivery = ActionMailer::Base.deliveries.last
-      last_delivery.to.should eq [User.last.unconfirmed_email]
-      last_delivery.subject.should eq "Confirm your email address"
+      expect(last_delivery.to).to eq [User.last.unconfirmed_email]
+      expect(last_delivery.subject).to eq "Confirm your email address"
 
       go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
 
-      User.last.email.should eq "new@jilion.com"
-      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site" # redirected from /sites
+      expect(User.last.email).to eq "new@jilion.com"
+      expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site" # redirected from /sites
     end
   end
 end
@@ -108,7 +108,7 @@ feature 'Password update' do
       click_button 'Update'
     end
 
-    User.last.valid_password?("abc'def").should be_true
+    expect(User.last.valid_password?("abc'def")).to be_truthy
   end
 end
 
@@ -129,11 +129,11 @@ feature "'More info' update" do
       click_button "Update"
     end
 
-    @current_user.reload.name.should eq "Bob Doe"
-    @current_user.postal_code.should eq "91470"
-    @current_user.country.should eq "fr"
-    @current_user.company_name.should eq "Jilion"
-    @current_user.company_employees.should eq "6-20 employees"
+    expect(@current_user.reload.name).to eq "Bob Doe"
+    expect(@current_user.postal_code).to eq "91470"
+    expect(@current_user.country).to eq "fr"
+    expect(@current_user.company_name).to eq "Jilion"
+    expect(@current_user.company_employees).to eq "6-20 employees"
   end
 
   scenario "It's possible to update only certain fields" do
@@ -147,10 +147,10 @@ feature "'More info' update" do
       click_button "Update"
     end
 
-    @current_user.reload.name.should eq "Bob Doe"
-    @current_user.postal_code.should eq ""
-    @current_user.country.should eq "fr"
-    @current_user.company_name.should eq ""
-    @current_user.company_employees.should eq "6-20 employees"
+    expect(@current_user.reload.name).to eq "Bob Doe"
+    expect(@current_user.postal_code).to eq ""
+    expect(@current_user.country).to eq "fr"
+    expect(@current_user.company_name).to eq ""
+    expect(@current_user.company_employees).to eq "6-20 employees"
   end
 end

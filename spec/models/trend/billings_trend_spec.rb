@@ -66,23 +66,23 @@ describe BillingsTrend do
     describe '.create_trends' do
       it 'creates billings_stats stats for the last 5 days' do
         described_class.create_trends
-        described_class.count.should eq 5
+        expect(described_class.count).to eq 5
       end
 
       it 'creates billings_stats stats for the last day' do
         described_class.create_trends
         billings_stat = described_class.last
-        billings_stat["d"].should eq 1.day.ago.midnight
-        billings_stat["ne"].should == {
+        expect(billings_stat["d"]).to eq 1.day.ago.midnight
+        expect(billings_stat["ne"]).to eq({
           'plus' => { 'm' => 2 },
           'design' => { 'twit' => 4 },
           'logo'   => { 'disabled' => 0, 'custom' => 2 }
-        }
-        billings_stat["re"].should == {
+        })
+        expect(billings_stat["re"]).to eq({
           'design'  => { 'twit' => 4 },
           'logo'    => { 'custom' => 4 },
           'support' => { 'vip' => 3 }
-        }
+        })
       end
     end
   end
@@ -93,10 +93,13 @@ describe BillingsTrend do
     end
     subject { JSON.parse(described_class.json) }
 
-    its(:size) { should eq 1 }
-    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
-    it { subject[0].should have_key('ne') }
-    it { subject[0].should have_key('re') }
+    describe '#size' do
+      subject { super().size }
+      it { should eq 1 }
+    end
+    it { expect(subject[0]['id']).to eq(Time.now.utc.midnight.to_i) }
+    it { expect(subject[0]).to have_key('ne') }
+    it { expect(subject[0]).to have_key('re') }
   end
 
 end

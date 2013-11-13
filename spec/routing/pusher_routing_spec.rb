@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PusherController do
 
-  it { post(with_subdomain('my', 'pusher/auth')).should route_to('pusher#auth') }
-  it { post(with_subdomain('my', 'pusher/webhook')).should route_to('pusher#webhook') }
+  it { expect(post(with_subdomain('my', 'pusher/auth'))).to route_to('pusher#auth') }
+  it { expect(post(with_subdomain('my', 'pusher/webhook'))).to route_to('pusher#webhook') }
 
 end

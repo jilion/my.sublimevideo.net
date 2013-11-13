@@ -18,24 +18,24 @@ describe 'Private API Users requests' do
     context 'non existing user' do
       it 'returns 404' do
         get 'private_api/users/42.json', {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
     context 'existing user' do
       it 'finds user per id' do
         get "private_api/users/#{user1.id}.json", {}, @env
-        MultiJson.load(response.body)['id'].should eq user1.id
-        response.status.should eq 200
+        expect(MultiJson.load(response.body)['id']).to eq user1.id
+        expect(response.status).to eq 200
       end
     end
 
     context 'archived user' do
       it 'returns 404' do
         get "private_api/users/#{user2.id}.json", {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
   end

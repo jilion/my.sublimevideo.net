@@ -8,7 +8,7 @@ describe ProwlWrapper do
   describe '#notify' do
 
     it 'speaks to the room' do
-      described_class.client.should_receive(:add).with(event: 'Alert', priority: 2, description: message)
+      expect(described_class.client).to receive(:add).with(event: 'Alert', priority: 2, description: message)
 
       described_class.new(message).notify
     end
@@ -17,8 +17,8 @@ describe ProwlWrapper do
   describe '.notify' do
     it 'create a new instance and sends it #notify' do
       wrapper = double('SettingsFormatter')
-      described_class.should_receive(:new).with(message) { wrapper }
-      wrapper.should_receive(:notify)
+      expect(described_class).to receive(:new).with(message) { wrapper }
+      expect(wrapper).to receive(:notify)
 
       described_class.notify(message)
     end

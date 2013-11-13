@@ -16,46 +16,46 @@ feature "Hidable notices" do
         background do
           @current_user.company_name = ""
           @current_user.save
-          @current_user.reload.should be_more_info_incomplete
+          expect(@current_user.reload).to be_more_info_incomplete
         end
 
         context "and user is not billable" do
           background do
-            @current_user.should_not be_billable
+            expect(@current_user).not_to be_billable
             go 'my', '/sites'
           end
 
           scenario "notice is visible and hidable" do
-            page.should have_css '#hidable_notice_2'
+            expect(page).to have_css '#hidable_notice_2'
 
             within '#hidable_notice_2' do
               click_button 'close'
             end
 
-            page.should have_no_css '#hidable_notice_2'
+            expect(page).to have_no_css '#hidable_notice_2'
           end
         end
 
         context "and user is billable" do
           background do
             create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
-            @current_user.should be_billable
+            expect(@current_user).to be_billable
           end
 
           context "and user has a complete billing address" do
             background do
-              @current_user.should be_billing_address_complete
+              expect(@current_user).to be_billing_address_complete
               go 'my', '/sites'
             end
 
             scenario "notice is visible and hidable" do
-              page.should have_css '#hidable_notice_2'
+              expect(page).to have_css '#hidable_notice_2'
 
               within '#hidable_notice_2' do
                 click_button 'close'
               end
 
-              page.should have_no_css '#hidable_notice_2'
+              expect(page).to have_no_css '#hidable_notice_2'
             end
           end
 
@@ -63,12 +63,12 @@ feature "Hidable notices" do
             background do
               @current_user.billing_postal_code = ""
               @current_user.save
-              @current_user.reload.should_not be_billing_address_complete
+              expect(@current_user.reload).not_to be_billing_address_complete
               go 'my', '/sites'
             end
 
             scenario "notice is not visible (we focus the user on filling its billing address)" do
-              page.should have_no_css '#hidable_notice_2'
+              expect(page).to have_no_css '#hidable_notice_2'
             end
           end
         end
@@ -76,12 +76,12 @@ feature "Hidable notices" do
 
       context "and has 'More info' complete" do
         background do
-          @current_user.should_not be_more_info_incomplete
+          expect(@current_user).not_to be_more_info_incomplete
           go 'my', '/sites'
         end
 
         scenario "notice is not visible" do
-          page.should have_no_css '#hidable_notice_2'
+          expect(page).to have_no_css '#hidable_notice_2'
         end
       end
     end
@@ -90,18 +90,18 @@ feature "Hidable notices" do
       background do
         @current_user.hidden_notice_ids = [2]
         @current_user.save
-        @current_user.reload.hidden_notice_ids.should eq [2]
+        expect(@current_user.reload.hidden_notice_ids).to eq [2]
       end
 
       context "and has 'More info' incomplete" do
         background do
           @current_user.company_name = ""
-          @current_user.should be_more_info_incomplete
+          expect(@current_user).to be_more_info_incomplete
           go 'my', '/sites'
         end
 
         scenario "notice is not visible" do
-          page.should have_no_css '#hidable_notice_2'
+          expect(page).to have_no_css '#hidable_notice_2'
         end
       end
     end

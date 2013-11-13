@@ -5,10 +5,25 @@ describe MailLog do
   context "Factory" do
     subject { create(:mail_log) }
 
-    its(:template) { should be_present }
-    its(:admin)    { should be_present }
-    its(:criteria) { should == ["all"] }
-    its(:user_ids) { should == [1,2,3,4,5] }
+    describe '#template' do
+      subject { super().template }
+      it { should be_present }
+    end
+
+    describe '#admin' do
+      subject { super().admin }
+      it    { should be_present }
+    end
+
+    describe '#criteria' do
+      subject { super().criteria }
+      it { should == ["all"] }
+    end
+
+    describe '#user_ids' do
+      subject { super().user_ids }
+      it { should == [1,2,3,4,5] }
+    end
 
     it { should be_valid }
   end

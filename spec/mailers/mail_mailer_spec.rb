@@ -17,11 +17,11 @@ describe MailMailer do
     end
 
     it "should set subject to Liquidified template.subject" do
-      last_delivery.subject.should eq Liquid::Template.parse(@template.subject).render('user' => subject)
+      expect(last_delivery.subject).to eq Liquid::Template.parse(@template.subject).render('user' => subject)
     end
 
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
-      last_delivery.body.encoded.gsub(/\r\n/, ' ').should include Liquid::Template.parse(@template.body).render('user' => subject)
+      expect(last_delivery.body.encoded.gsub(/\r\n/, ' ')).to include Liquid::Template.parse(@template.body).render('user' => subject)
     end
   end
 

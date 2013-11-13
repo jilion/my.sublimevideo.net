@@ -10,22 +10,22 @@ describe EarlyAccessControllerHelper do
 
   describe "current_user_early_access" do
     let(:current_user) { double('user', early_access: ['video']) }
-    before { Controller.stub(:current_user) { current_user } }
+    before { allow(Controller).to receive(:current_user) { current_user } }
 
     context "in dev mode" do
       before { Rails.stub_chain(:env, :production?) { false } }
       after { Rails.stub_chain(:env, :production?) { true } }
 
       it "overwrites current_user_early_access with params[:early_access]" do
-        current_user.stub(:early_access) { ['video'] }
-        Controller.stub(:params) { { early_access: 'custom_player' } }
-        Controller.current_user_early_access.should eq ['custom_player']
+        allow(current_user).to receive(:early_access) { ['video'] }
+        allow(Controller).to receive(:params) { { early_access: 'custom_player' } }
+        expect(Controller.current_user_early_access).to eq ['custom_player']
       end
 
       it "returns current_user_early_access if params[:early_access] is nil" do
-        current_user.should_receive(:try).with(:early_access) { ['video'] }
-        Controller.stub(:params) { {} }
-        Controller.current_user_early_access.should eq ['video']
+        expect(current_user).to receive(:try).with(:early_access) { ['video'] }
+        allow(Controller).to receive(:params) { {} }
+        expect(Controller.current_user_early_access).to eq ['video']
       end
     end
 
@@ -33,28 +33,28 @@ describe EarlyAccessControllerHelper do
       before { Rails.stub_chain(:env, :production?) { true } }
 
       it "returns current_user_early_access" do
-        current_user.should_receive(:try).with(:early_access) { ['video'] }
-        Controller.current_user_early_access.should eq ['video']
+        expect(current_user).to receive(:try).with(:early_access) { ['video'] }
+        expect(Controller.current_user_early_access).to eq ['video']
       end
     end
   end
 
   describe "early_access?" do
     it "returns true if current_user have access to early feature" do
-      Controller.stub(:current_user_early_access) { ['video'] }
-      Controller.early_access?('video').should be_true
+      allow(Controller).to receive(:current_user_early_access) { ['video'] }
+      expect(Controller.early_access?('video')).to be_truthy
     end
 
     it "returns false if current_user doesn't have access to early feature" do
-      Controller.stub(:current_user_early_access) { [] }
-      Controller.early_access?('videos').should be_false
+      allow(Controller).to receive(:current_user_early_access) { [] }
+      expect(Controller.early_access?('videos')).to be_falsey
     end
   end
 
   describe "early_access_body_class" do
     it "add 'early_access' to each feature access" do
-      Controller.stub(:current_user_early_access) { ['video', 'custom_player'] }
-      Controller.early_access_body_class.should eq('early_access_video early_access_custom_player')
+      allow(Controller).to receive(:current_user_early_access) { ['video', 'custom_player'] }
+      expect(Controller.early_access_body_class).to eq('early_access_video early_access_custom_player')
     end
   end
 

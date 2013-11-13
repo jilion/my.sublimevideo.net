@@ -12,20 +12,20 @@ describe SiteAdminStatsTimelineBuilder do
   let(:null_stat) { double("SiteAdminStat", loads: {}, starts: {}) }
 
   before {
-    SiteAdminStat.stub(:all).with(site_token: site.token, days: 60) { [stat1, stat2] }
-    SiteAdminStat.stub(:new) { null_stat }
+    allow(SiteAdminStat).to receive(:all).with(site_token: site.token, days: 60) { [stat1, stat2] }
+    allow(SiteAdminStat).to receive(:new) { null_stat }
   }
 
   describe "#loads" do
     describe "with all sites" do
       it "returns 30 stats array" do
-        expect(builder.loads).to have(30).stats
+        expect(builder.loads.size).to eq(30)
         expect(builder.loads.last).to eq 7
       end
     end
     describe "with only website sources" do
       it "returns 30 stats array" do
-        expect(builder.loads(:website)).to have(30).stats
+        expect(builder.loads(:website).size).to eq(30)
         expect(builder.loads(:website).last).to eq 2
       end
     end
@@ -34,13 +34,13 @@ describe SiteAdminStatsTimelineBuilder do
   describe "#starts" do
     describe "with all sites" do
       it "returns 30 stats array" do
-        expect(builder.starts).to have(30).stats
+        expect(builder.starts.size).to eq(30)
         expect(builder.starts[15]).to eq 7
       end
     end
     describe "with only external sources" do
       it "returns 30 stats array" do
-        expect(builder.starts(:external)).to have(30).stats
+        expect(builder.starts(:external).size).to eq(30)
         expect(builder.starts(:external)[15]).to eq 3
       end
     end

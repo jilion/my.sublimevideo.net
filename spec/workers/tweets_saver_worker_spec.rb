@@ -15,7 +15,7 @@ describe TweetsSaverWorker do
   end
 
   it 'delays job in low (mysv) queue' do
-    described_class.get_sidekiq_options['queue'].should eq 'my-low'
+    expect(described_class.get_sidekiq_options['queue']).to eq 'my-low'
   end
 
   describe 'actual work' do
@@ -25,7 +25,7 @@ describe TweetsSaverWorker do
     end
 
     context 'tweet does not exist in the DB yet' do
-      before { worker.stub(:_find_tweet) { nil } }
+      before { allow(worker).to receive(:_find_tweet) { nil } }
 
       it 'creates tweets in the DB from real tweets' do
         expect(Tweet).to receive(:create_from_twitter_tweet!).once
@@ -35,7 +35,7 @@ describe TweetsSaverWorker do
     end
 
     context 'tweet exists in the DB' do
-      before { worker.stub(:_find_tweet) { local_tweet } }
+      before { allow(worker).to receive(:_find_tweet) { local_tweet } }
 
       context 'tweet does not have the keyword yet' do
         let(:local_tweet) { double('Tweet', keywords: []) }

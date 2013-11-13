@@ -19,33 +19,33 @@ describe 'Private API Add-ons requests' do
     context 'non existing site' do
       it 'returns 404' do
         get 'private_api/sites/42/addons.json', {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
     it 'supports :per scope' do
       get url, { per: 2 }, @env
-      MultiJson.load(response.body).should have(2).addon_plans
+      expect(MultiJson.load(response.body).size).to eq(2)
     end
 
     it 'supports :state scope' do
       get url, { state: 'subscribed' }, @env
       body = MultiJson.load(response.body)
-      body.should have(1).addon_plan
-      body[0]['addon'].should eq({
+      expect(body.size).to eq(1)
+      expect(body[0]['addon']).to eq({
         'name' => subscribed_addon_plan_billable_item.item.addon_name
       })
-      body[0]['name'].should eq subscribed_addon_plan_billable_item.item.name
-      body[0]['title'].should eq subscribed_addon_plan_billable_item.item.title
-      body[0]['price'].should eq subscribed_addon_plan_billable_item.item.price
-      body[0]['availability'].should eq subscribed_addon_plan_billable_item.item.availability
-      body[0]['required_stage'].should eq subscribed_addon_plan_billable_item.item.required_stage
-      body[0]['stable_at'].should be_present
-      body[0]['created_at'].should be_present
-      body[0]['updated_at'].should be_present
+      expect(body[0]['name']).to eq subscribed_addon_plan_billable_item.item.name
+      expect(body[0]['title']).to eq subscribed_addon_plan_billable_item.item.title
+      expect(body[0]['price']).to eq subscribed_addon_plan_billable_item.item.price
+      expect(body[0]['availability']).to eq subscribed_addon_plan_billable_item.item.availability
+      expect(body[0]['required_stage']).to eq subscribed_addon_plan_billable_item.item.required_stage
+      expect(body[0]['stable_at']).to be_present
+      expect(body[0]['created_at']).to be_present
+      expect(body[0]['updated_at']).to be_present
 
-      response.status.should eq 200
+      expect(response.status).to eq 200
     end
   end
 end

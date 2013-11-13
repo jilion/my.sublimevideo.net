@@ -8,20 +8,20 @@ describe EmailUniquenessValidator do
     it "should check uniqueness" do
       user2 = build(:user)
       validate_email_uniqueness(user2, :email, user.email)
-      user2.errors[:email].should have(1).item
+      expect(user2.errors[:email].size).to eq(1)
     end
 
     it "should compare case insensitive" do
       user2 = build(:user)
       validate_email_uniqueness(user2, :email, user.email.upcase)
-      user2.errors[:email].should have(1).item
+      expect(user2.errors[:email].size).to eq(1)
     end
 
     it "should ignore archived user" do
       user.reload.update_attribute(:state, 'archived')
       user = build(:user)
       validate_email_uniqueness(user, :email, user.email)
-      user.errors.should be_empty
+      expect(user.errors).to be_empty
     end
   end
 
@@ -30,26 +30,26 @@ describe EmailUniquenessValidator do
 
     it "should check uniqueness not including himself" do
       validate_email_uniqueness(user, :email, user.email)
-      user.errors.should be_empty
+      expect(user.errors).to be_empty
     end
 
     it "should check uniqueness" do
       user2 = create(:user, email: "john2@doe.com")
       validate_email_uniqueness(user2, :email, user.email)
-      user2.errors[:email].should have(1).item
+      expect(user2.errors[:email].size).to eq(1)
     end
 
     it "should compare case insensitive" do
       user2 = create(:user, email: "john2@doe.com")
       validate_email_uniqueness(user2, :email, user.email.upcase)
-      user2.errors[:email].should have(1).item
+      expect(user2.errors[:email].size).to eq(1)
     end
 
     it "should ignore archived user" do
       user.reload.update_attribute(:state, 'archived')
       user = create(:user, email: "john2@doe.com")
       validate_email_uniqueness(user, :email, user.email)
-      user.errors.should be_empty
+      expect(user.errors).to be_empty
     end
   end
 end

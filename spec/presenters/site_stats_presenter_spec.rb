@@ -51,7 +51,7 @@ describe SiteStatsPresenter do
     it 'delegates to VideoStat.last_hours_stats' do
       expect(SiteStat).to receive(:last_hours_stats).with(site, presenter.options[:hours]) { stats_by_hour }
 
-      presenter.send(:_last_stats_by_hour).should eq stats_by_hour.reverse
+      expect(presenter.send(:_last_stats_by_hour)).to eq stats_by_hour.reverse
     end
   end
 
@@ -59,7 +59,7 @@ describe SiteStatsPresenter do
     it 'delegates to VideoStat.last_stats' do
       expect(LastSiteStat).to receive(:last_stats).with(site) { stats_by_minute }
 
-      presenter.send(:_last_stats_by_minute).should eq stats_by_minute.reverse
+      expect(presenter.send(:_last_stats_by_minute)).to eq stats_by_minute.reverse
     end
   end
 
@@ -67,7 +67,7 @@ describe SiteStatsPresenter do
     it 'delegates to VideoStat.last_stats' do
       expect(LastSitePlay).to receive(:last_plays).with(site, presenter.options[:since]) { last_plays }
 
-      presenter.last_plays.should eq last_plays
+      expect(presenter.last_plays).to eq last_plays
     end
   end
 

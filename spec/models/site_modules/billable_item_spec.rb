@@ -13,30 +13,30 @@ describe SiteModules::BillableItem, :addons do
 
   describe '#subscribed_to?' do
     it 'returns true when the item is beta, trial, sponsored or paying, false otherwise' do
-      site.subscribed_to?(@logo_addon_plan_2).should be_true
-      site.subscribed_to?(@stats_addon_plan_2).should be_true
-      site.subscribed_to?(@support_addon_plan_2).should be_false
-      site.subscribed_to?(@classic_design).should be_true
-      site.subscribed_to?(@light_design).should be_true
-      site.subscribed_to?(@flat_design).should be_false
+      expect(site.subscribed_to?(@logo_addon_plan_2)).to be_truthy
+      expect(site.subscribed_to?(@stats_addon_plan_2)).to be_truthy
+      expect(site.subscribed_to?(@support_addon_plan_2)).to be_falsey
+      expect(site.subscribed_to?(@classic_design)).to be_truthy
+      expect(site.subscribed_to?(@light_design)).to be_truthy
+      expect(site.subscribed_to?(@flat_design)).to be_falsey
     end
   end
 
   describe '#sponsored_to?' do
     it 'returns true when the item is beta, trial, sponsored or paying, false otherwise' do
-      site.sponsored_to?(@logo_addon_plan_2).should be_false
-      site.sponsored_to?(@stats_addon_plan_2).should be_true
-      site.sponsored_to?(@support_addon_plan_2).should be_false
-      site.sponsored_to?(@classic_design).should be_false
-      site.sponsored_to?(@light_design).should be_true
-      site.sponsored_to?(@flat_design).should be_false
+      expect(site.sponsored_to?(@logo_addon_plan_2)).to be_falsey
+      expect(site.sponsored_to?(@stats_addon_plan_2)).to be_truthy
+      expect(site.sponsored_to?(@support_addon_plan_2)).to be_falsey
+      expect(site.sponsored_to?(@classic_design)).to be_falsey
+      expect(site.sponsored_to?(@light_design)).to be_truthy
+      expect(site.sponsored_to?(@flat_design)).to be_falsey
     end
   end
 
   describe '#addon_plan_for_addon_name' do
     it 'returns the addon plan currently used for the given addon id' do
-      site.addon_plan_for_addon_name(@logo_addon.name).should eq @logo_addon_plan_2
-      site.addon_plan_for_addon_name(@stats_addon.name).should eq @stats_addon_plan_2
+      expect(site.addon_plan_for_addon_name(@logo_addon.name)).to eq @logo_addon_plan_2
+      expect(site.addon_plan_for_addon_name(@stats_addon.name)).to eq @stats_addon_plan_2
     end
   end
 
@@ -46,7 +46,7 @@ describe SiteModules::BillableItem, :addons do
       create(:billable_item, site: site, item: @addon_plan, state: 'trial')
     end
 
-    it { site.total_billable_items_price.should eq @classic_design.price + @logo_addon_plan_2.price + @addon_plan.price }
+    it { expect(site.total_billable_items_price).to eq @classic_design.price + @logo_addon_plan_2.price + @addon_plan.price }
   end
 
 end

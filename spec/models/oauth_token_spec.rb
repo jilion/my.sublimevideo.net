@@ -5,11 +5,30 @@ describe OauthToken do
   context "Factory" do
     subject { create(:oauth_token) }
 
-    its(:user)               { should be_present }
-    its(:client_application) { should be_present }
-    its(:token)              { should be_present }
-    its(:secret)             { should be_present }
-    its(:verifier)           { should be_nil }
+    describe '#user' do
+      subject { super().user }
+      it               { should be_present }
+    end
+
+    describe '#client_application' do
+      subject { super().client_application }
+      it { should be_present }
+    end
+
+    describe '#token' do
+      subject { super().token }
+      it              { should be_present }
+    end
+
+    describe '#secret' do
+      subject { super().secret }
+      it             { should be_present }
+    end
+
+    describe '#verifier' do
+      subject { super().verifier }
+      it           { should be_nil }
+    end
 
     it { should be_valid }
     it { should_not be_authorized }
@@ -39,7 +58,7 @@ describe OauthToken do
     end
 
     describe ".valid" do
-      specify { OauthToken.valid.map(&:id).should eql [@authorized_token.id] }
+      specify { expect(OauthToken.valid.map(&:id)).to eql [@authorized_token.id] }
     end
   end
 

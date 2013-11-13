@@ -18,23 +18,23 @@ describe Kit do
     describe 'uniqueness of identifier by site_id' do
       it 'adds an error if identifier is not unique for this site' do
         kit = Kit.create(site: site, design_id: design.id, name: 'My player 1')
-        kit.identifier.should eq '1'
+        expect(kit.identifier).to eq '1'
 
         kit2 = Kit.new(site: site, design_id: design.id, name: 'My player 2')
         kit2.identifier = kit.identifier
-        kit2.should_not be_valid
-        kit2.should have(1).error_on(:identifier)
+        expect(kit2).not_to be_valid
+        expect(kit2.errors[:identifier].size).to eq(1)
       end
     end
 
     describe 'uniqueness of name by site_id' do
       it 'adds an error if name is not unique for this site' do
         kit = Kit.create(site: site, design_id: design.id, name: 'My player')
-        kit.name.should eq 'My player'
+        expect(kit.name).to eq 'My player'
 
         kit2 = Kit.new(site: site, design_id: design.id, name: 'My player')
-        kit2.should_not be_valid
-        kit2.should have(1).error_on(:name)
+        expect(kit2).not_to be_valid
+        expect(kit2.errors[:name].size).to eq(1)
       end
     end
   end
@@ -48,7 +48,7 @@ describe Kit do
 
     describe 'set default design' do
       specify do
-        kit.design_id.should eq @classic_design.id
+        expect(kit.design_id).to eq @classic_design.id
       end
     end
 
@@ -57,18 +57,18 @@ describe Kit do
 
       context 'site has no kit yet' do
         specify do
-          kit.identifier.should eq '1'
+          expect(kit.identifier).to eq '1'
         end
       end
 
       context 'site has kits' do
         before do
           site.kits.create!(name: 'My player')
-          site.kits.should have(1).item
+          expect(site.kits.size).to eq(1)
         end
 
         specify do
-          kit.identifier.should eq '2'
+          expect(kit.identifier).to eq('2')
         end
       end
     end
@@ -79,13 +79,13 @@ describe Kit do
     let(:kit)  { Kit.create!(site: site, design_id: design.id, name: 'My player') }
     let(:site) { create(:site) }
     context 'kit is not default' do
-      it { kit.should_not be_default }
+      it { expect(kit).not_to be_default }
     end
 
     context 'kit is default' do
       before { site.default_kit_id = kit.id }
 
-      it { kit.should be_default }
+      it { expect(kit).to be_default }
     end
 
   end

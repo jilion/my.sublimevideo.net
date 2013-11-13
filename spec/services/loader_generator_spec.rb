@@ -38,10 +38,10 @@ describe LoaderGenerator, :fog_mock do
   let(:v2_5_0) { double(version: '2.5.0', solve_version: Solve::Version.new('2.5.0')) }
   let(:v2_5_1) { double(version: '2.5.1', solve_version: Solve::Version.new('2.5.1')) }
   before do
-    Librato.stub(:increment)
-    App::Component.stub(:app_component) { app_component }
-    app_component.stub(:versions_for_stage) { [v2_4_0, v2_5_0, v2_5_1] }
-    App::ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
+    allow(Librato).to receive(:increment)
+    allow(App::Component).to receive(:app_component) { app_component }
+    allow(app_component).to receive(:versions_for_stage) { [v2_4_0, v2_5_0, v2_5_1] }
+    allow(App::ComponentVersionDependenciesSolver).to receive(:components_dependencies) { {
       'e' => '1.0.0',
       'c1' => '1.2.3',
       'c2' => '1.2.4'
@@ -49,99 +49,99 @@ describe LoaderGenerator, :fog_mock do
   end
 
   describe '.update_stage!' do
-    before { Site.stub(:find) { site } }
+    before { allow(Site).to receive(:find) { site } }
 
     context 'site created with accessible_stage stable' do
-      before { site.stub(:accessible_stage) { 'stable' } }
+      before { allow(site).to receive(:accessible_stage) { 'stable' } }
 
       it 'uploads stable loader' do
         described_class.update_stage!(site.id, 'stable')
-        described_class.new(site, 'stable').cdn_file.should be_present
+        expect(described_class.new(site, 'stable').cdn_file).to be_present
       end
 
       it 'do not upload beta loader' do
         described_class.update_stage!(site.id, 'beta')
-        described_class.new(site, 'beta').cdn_file.should_not be_present
+        expect(described_class.new(site, 'beta').cdn_file).not_to be_present
       end
 
       it 'do not upload alpha loader' do
         described_class.update_stage!(site.id, 'alpha')
-        described_class.new(site, 'alpha').cdn_file.should_not be_present
+        expect(described_class.new(site, 'alpha').cdn_file).not_to be_present
       end
     end
 
     context 'site created with accessible_stage beta' do
-      before { site.stub(:accessible_stage) { 'beta' } }
+      before { allow(site).to receive(:accessible_stage) { 'beta' } }
 
       it 'do not upload stable loader' do
         described_class.update_stage!(site.id, 'stable')
-        described_class.new(site, 'stable').cdn_file.should be_present
+        expect(described_class.new(site, 'stable').cdn_file).to be_present
       end
 
       it 'uploads beta loader' do
         described_class.update_stage!(site.id, 'beta')
-        described_class.new(site, 'beta').cdn_file.should be_present
+        expect(described_class.new(site, 'beta').cdn_file).to be_present
       end
 
       it 'do not upload alpha loader' do
         described_class.update_stage!(site.id, 'alpha')
-        described_class.new(site, 'alpha').cdn_file.should_not be_present
+        expect(described_class.new(site, 'alpha').cdn_file).not_to be_present
       end
     end
 
     context 'site created with accessible_stage alpha' do
-      before { site.stub(:accessible_stage) { 'alpha' } }
+      before { allow(site).to receive(:accessible_stage) { 'alpha' } }
 
       it 'do not upload stable loader' do
         described_class.update_stage!(site.id, 'stable')
-        described_class.new(site, 'stable').cdn_file.should be_present
+        expect(described_class.new(site, 'stable').cdn_file).to be_present
       end
 
       it 'uploads beta loader' do
         described_class.update_stage!(site.id, 'beta')
-        described_class.new(site, 'beta').cdn_file.should be_present
+        expect(described_class.new(site, 'beta').cdn_file).to be_present
       end
 
       it 'uploads alpha loader' do
         described_class.update_stage!(site.id, 'alpha')
-        described_class.new(site, 'alpha').cdn_file.should be_present
+        expect(described_class.new(site, 'alpha').cdn_file).to be_present
       end
     end
 
     context 'site.accessible_stage changed from beta to stable' do
       before do
-        site.stub(:accessible_stage) { 'alpha' }
+        allow(site).to receive(:accessible_stage) { 'alpha' }
         described_class.update_all_stages!(site.id)
-        site.stub(:accessible_stage) { 'stable' }
+        allow(site).to receive(:accessible_stage) { 'stable' }
       end
 
       context 'loaders are deletable' do
         it 'keeps the stable loader' do
           described_class.update_stage!(site.id, 'stable', deletable: true)
-          described_class.new(site, 'stable').cdn_file.should be_present
+          expect(described_class.new(site, 'stable').cdn_file).to be_present
         end
         it 'do not keep the beta loader' do
           described_class.update_stage!(site.id, 'beta', deletable: true)
-          described_class.new(site, 'beta').cdn_file.should_not be_present
+          expect(described_class.new(site, 'beta').cdn_file).not_to be_present
         end
         it 'do not keep the alpha loader' do
           described_class.update_stage!(site.id, 'alpha', deletable: true)
-          described_class.new(site, 'alpha').cdn_file.should_not be_present
+          expect(described_class.new(site, 'alpha').cdn_file).not_to be_present
         end
       end
 
       context 'loaders are not deletable' do
         it 'keeps the stable loader' do
           described_class.update_stage!(site.id, 'stable')
-          described_class.new(site, 'stable').cdn_file.should be_present
+          expect(described_class.new(site, 'stable').cdn_file).to be_present
         end
         it 'keeps the beta loader' do
           described_class.update_stage!(site.id, 'beta')
-          described_class.new(site, 'beta').cdn_file.should be_present
+          expect(described_class.new(site, 'beta').cdn_file).to be_present
         end
         it 'keeps the alpha loader' do
           described_class.update_stage!(site.id, 'alpha')
-          described_class.new(site, 'alpha').cdn_file.should be_present
+          expect(described_class.new(site, 'alpha').cdn_file).to be_present
         end
       end
     end
@@ -149,51 +149,51 @@ describe LoaderGenerator, :fog_mock do
     context 'non-active site' do
       before do
         described_class.update_all_stages!(site.id)
-        described_class.new(site, 'stable').cdn_file.should be_present
-        described_class.new(site, 'beta').cdn_file.should be_present
-        described_class.new(site, 'alpha').cdn_file.should_not be_present
-        site.stub(:active?) { false }
+        expect(described_class.new(site, 'stable').cdn_file).to be_present
+        expect(described_class.new(site, 'beta').cdn_file).to be_present
+        expect(described_class.new(site, 'alpha').cdn_file).not_to be_present
+        allow(site).to receive(:active?) { false }
       end
 
       context 'loaders are deletable' do
         it 'removes the stable loader' do
           described_class.update_stage!(site.id, 'stable', deletable: true)
-          described_class.new(site, 'stable').cdn_file.should_not be_present
+          expect(described_class.new(site, 'stable').cdn_file).not_to be_present
         end
         it 'removes the beta loader' do
           described_class.update_stage!(site.id, 'beta', deletable: true)
-          described_class.new(site, 'beta').cdn_file.should_not be_present
+          expect(described_class.new(site, 'beta').cdn_file).not_to be_present
         end
         it 'removes the alpha loader' do
           described_class.update_stage!(site.id, 'alpha', deletable: true)
-          described_class.new(site, 'alpha').cdn_file.should_not be_present
+          expect(described_class.new(site, 'alpha').cdn_file).not_to be_present
         end
       end
 
       context 'loaders are not deletable' do
         it 'removes the stable loader' do
           described_class.update_stage!(site.id, 'stable')
-          described_class.new(site, 'stable').cdn_file.should be_present
+          expect(described_class.new(site, 'stable').cdn_file).to be_present
         end
         it 'removes the beta loader' do
           described_class.update_stage!(site.id, 'beta')
-          described_class.new(site, 'beta').cdn_file.should be_present
+          expect(described_class.new(site, 'beta').cdn_file).to be_present
         end
         it 'removes the alpha loader' do
           described_class.update_stage!(site.id, 'alpha')
-          described_class.new(site, 'alpha').cdn_file.should_not be_present
+          expect(described_class.new(site, 'alpha').cdn_file).not_to be_present
         end
       end
     end
   end
 
   describe '.update_all_stages!' do
-    before { Site.stub(:find) { site } }
+    before { allow(Site).to receive(:find) { site } }
 
     it 'calls .update_stage! 3 times' do
-      described_class.should_receive(:update_stage!).with(site.id, 'stable', deletable: true)
-      described_class.should_receive(:update_stage!).with(site.id, 'beta', deletable: true)
-      described_class.should_receive(:update_stage!).with(site.id, 'alpha', deletable: true)
+      expect(described_class).to receive(:update_stage!).with(site.id, 'stable', deletable: true)
+      expect(described_class).to receive(:update_stage!).with(site.id, 'beta', deletable: true)
+      expect(described_class).to receive(:update_stage!).with(site.id, 'alpha', deletable: true)
 
       described_class.update_all_stages!(site.id, deletable: true)
     end
@@ -202,29 +202,29 @@ describe LoaderGenerator, :fog_mock do
   describe '.update_all_dependant_sites' do
     let(:all_sites) { double }
     before do
-      App::Component.stub(:find) { app_component }
-      described_class.stub(:_sites_non_important) { all_sites }
-      all_sites.should_receive(:count) { 42 }
-      all_sites.should_receive(:find_each).and_yield(site)
+      allow(App::Component).to receive(:find) { app_component }
+      allow(described_class).to receive(:_sites_non_important) { all_sites }
+      expect(all_sites).to receive(:count) { 42 }
+      expect(all_sites).to receive(:find_each).and_yield(site)
     end
 
     it "clears caches of component" do
-      app_component.should_receive(:clear_caches)
+      expect(app_component).to receive(:clear_caches)
       described_class.update_all_dependant_sites(app_component.id, 'beta')
     end
 
     it 'delays notification to Campfire' do
-      CampfireWrapper.should delay(:post)
+      expect(CampfireWrapper).to delay(:post)
       described_class.update_all_dependant_sites(app_component.id, 'beta')
     end
 
     context "with app_component version" do
       before do
-        described_class.should_receive(:_sites_non_important).with(component: app_component, stage: 'beta') { all_sites }
+        expect(described_class).to receive(:_sites_non_important).with(component: app_component, stage: 'beta') { all_sites }
       end
 
       it "delays important sites update" do
-        described_class.should delay(:update_important_sites, queue: 'my')
+        expect(described_class).to delay(:update_important_sites, queue: 'my')
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
 
@@ -233,24 +233,24 @@ describe LoaderGenerator, :fog_mock do
       end
 
       it "delays update_all_stages! on loader queue" do
-        described_class.should delay(:update_all_stages!, queue: 'my-loader').with(site.id)
+        expect(described_class).to delay(:update_all_stages!, queue: 'my-loader').with(site.id)
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
     end
 
     context "with non app_component version" do
       before do
-        App::Component.stub(:find) { component }
-        described_class.should_receive(:_sites_non_important).with(component: component, stage: 'beta') { all_sites }
+        allow(App::Component).to receive(:find) { component }
+        expect(described_class).to receive(:_sites_non_important).with(component: component, stage: 'beta') { all_sites }
       end
 
       it "delays important sites update" do
-        described_class.should delay(:update_important_sites, queue: 'my')
+        expect(described_class).to delay(:update_important_sites, queue: 'my')
         described_class.update_all_dependant_sites(component.id, 'beta')
       end
 
       it "delays update_all_stages! on loader queue" do
-        described_class.should delay(:update_all_stages!, queue: 'my-loader').with(site.id)
+        expect(described_class).to delay(:update_all_stages!, queue: 'my-loader').with(site.id)
         described_class.update_all_dependant_sites(component.id, 'beta')
       end
     end
@@ -261,13 +261,13 @@ describe LoaderGenerator, :fog_mock do
 
     describe "#app_component_version" do
       it "returns only app component version " do
-        generator.app_component_version.should eq('1.0.0')
+        expect(generator.app_component_version).to eq('1.0.0')
       end
     end
 
     describe "#components_versions" do
       it "returns all components expecting the app component" do
-        generator.components_versions.should eq({
+        expect(generator.components_versions).to eq({
           'c1' => '1.2.3',
           'c2' => '1.2.4'
         })
@@ -286,24 +286,24 @@ describe LoaderGenerator, :fog_mock do
 
           it "is public" do
             object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body
-            object_acl['AccessControlList'].should include(
+            expect(object_acl['AccessControlList']).to include(
               {"Permission"=>"READ", "Grantee"=>{"URI"=>"http://acs.amazonaws.com/groups/global/AllUsers"}}
             )
           end
           it "has good content_type public" do
             object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
-            object_headers['Content-Type'].should eq 'text/javascript'
+            expect(object_headers['Content-Type']).to eq 'text/javascript'
           end
           it "has 1 min max-age cache control" do
             object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
-            object_headers['Cache-Control'].should eq 's-maxage=300, max-age=120, public'
+            expect(object_headers['Cache-Control']).to eq 's-maxage=300, max-age=120, public'
           end
         end
       end
 
       context "when site accessible_stage is alpha" do
         before do
-          site.stub(:accessible_stage) { 'alpha' }
+          allow(site).to receive(:accessible_stage) { 'alpha' }
         end
 
         describe "S3 object" do
@@ -314,14 +314,14 @@ describe LoaderGenerator, :fog_mock do
 
             it "has no-cache control" do
               object_headers = S3Wrapper.fog_connection.head_object(bucket, "js/#{site.token}-alpha.js").headers
-              object_headers['Cache-Control'].should eq 'no-cache'
+              expect(object_headers['Cache-Control']).to eq 'no-cache'
             end
           end
         end
       end
 
       it 'increments delete metrics for loader' do
-        Librato.should_receive(:increment).with('loader.update', source: 'beta')
+        expect(Librato).to receive(:increment).with('loader.update', source: 'beta')
 
         described_class.new(site, 'beta').upload!
       end
@@ -338,19 +338,19 @@ describe LoaderGenerator, :fog_mock do
         let(:s3_object) { S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js") }
 
         it "includes app version" do
-          s3_object.body.should include "version:\"1.0.0\""
+          expect(s3_object.body).to include "version:\"1.0.0\""
         end
 
         it "includes site token" do
-          s3_object.body.should include "token:\"#{site.token}\""
+          expect(s3_object.body).to include "token:\"#{site.token}\""
         end
 
         it "includes sublinevideo host" do
-          s3_object.body.should include "host:\"//cdn.sublimevideo.net\""
+          expect(s3_object.body).to include "host:\"//cdn.sublimevideo.net\""
         end
 
         it "includes components versions" do
-          s3_object.body.should include "components:{'c1':'1.2.3','c2':'1.2.4'}"
+          expect(s3_object.body).to include "components:{'c1':'1.2.3','c2':'1.2.4'}"
         end
       end
     end
@@ -358,7 +358,7 @@ describe LoaderGenerator, :fog_mock do
 
   describe '#delete!' do
     it 'increments delete metrics for loader' do
-      Librato.should_receive(:increment).with('loader.delete', source: 'beta')
+      expect(Librato).to receive(:increment).with('loader.delete', source: 'beta')
 
       described_class.new(site, 'beta').delete!
     end
@@ -368,33 +368,33 @@ describe LoaderGenerator, :fog_mock do
     context 'alpha stage' do
     let(:generator) { described_class.new(site, 'alpha') }
       before do
-        app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
+        allow(app_component).to receive(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
       end
 
       it 'returns the new loader' do
-        generator.template_file.should eq 'loader-alpha.js.erb'
+        expect(generator.template_file).to eq 'loader-alpha.js.erb'
       end
     end
 
     context 'beta stage' do
       let(:generator) { described_class.new(site, 'beta') }
       before do
-        app_component.stub(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
+        allow(app_component).to receive(:versions_for_stage) { [v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
       end
 
       it 'returns the new loader' do
-        generator.template_file.should eq 'loader-beta.js.erb'
+        expect(generator.template_file).to eq 'loader-beta.js.erb'
       end
     end
 
     context 'stable stage' do
       let(:generator) { described_class.new(site, 'stable') }
       before do
-        app_component.stub(:versions_for_stage) { [v2_5_1, v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
+        allow(app_component).to receive(:versions_for_stage) { [v2_5_1, v2_5_0, v2_4_0, v2_5_1_beta, v2_5_0_beta, v2_4_0_beta, v2_5_1_alpha, v2_5_0_alpha, v2_4_0_alpha] }
       end
 
       it 'returns the new loader' do
-        generator.template_file.should eq 'loader-stable.js.erb'
+        expect(generator.template_file).to eq 'loader-stable.js.erb'
       end
     end
   end

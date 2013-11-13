@@ -13,47 +13,47 @@ describe UserSupportManager do
 
   describe '#level' do
     before do
-      AddonPlan.should_receive(:get).with('support', 'vip') { addon }
+      expect(AddonPlan).to receive(:get).with('support', 'vip') { addon }
       user.stub_chain(:sites, :not_archived) { [site] }
     end
 
     it 'returns nil if site dont have the VIP email support add-on active & not subscribed (or trial) to any paid add-on' do
-      site.should_receive(:subscribed_to?).with(addon) { false }
-      site.should_receive(:sponsored_to?).with(addon) { false }
-      user.should_receive(:trial_or_billable?) { false }
-      user.should_receive(:sponsored?) { false }
+      expect(site).to receive(:subscribed_to?).with(addon) { false }
+      expect(site).to receive(:sponsored_to?).with(addon) { false }
+      expect(user).to receive(:trial_or_billable?) { false }
+      expect(user).to receive(:sponsored?) { false }
 
-      manager.level.should be_nil
+      expect(manager.level).to be_nil
     end
 
     it 'returns email if site dont have the VIP email support add-on active, not subscribed (or trial) to any paid add-on but sponsored' do
-      site.should_receive(:subscribed_to?).with(addon) { false }
-      site.should_receive(:sponsored_to?).with(addon) { false }
-      user.should_receive(:trial_or_billable?) { false }
-      user.should_receive(:sponsored?) { true }
+      expect(site).to receive(:subscribed_to?).with(addon) { false }
+      expect(site).to receive(:sponsored_to?).with(addon) { false }
+      expect(user).to receive(:trial_or_billable?) { false }
+      expect(user).to receive(:sponsored?) { true }
 
-      manager.level.should eq 'email'
+      expect(manager.level).to eq 'email'
     end
 
     it 'returns email if site dont have the VIP email support add-on active but subscribed (or trial) to a paid add-on' do
-      site.should_receive(:subscribed_to?).with(addon) { false }
-      site.should_receive(:sponsored_to?).with(addon) { false }
-      user.should_receive(:trial_or_billable?) { true }
+      expect(site).to receive(:subscribed_to?).with(addon) { false }
+      expect(site).to receive(:sponsored_to?).with(addon) { false }
+      expect(user).to receive(:trial_or_billable?) { true }
 
-      manager.level.should eq 'email'
+      expect(manager.level).to eq 'email'
     end
 
     it 'returns vip_email if site has the VIP email support add-on active' do
-      site.should_receive(:subscribed_to?).with(addon) { true }
+      expect(site).to receive(:subscribed_to?).with(addon) { true }
 
-      manager.level.should eq 'vip_email'
+      expect(manager.level).to eq 'vip_email'
     end
 
     it 'returns vip_email if site has the VIP email support add-on active' do
-      site.should_receive(:subscribed_to?).with(addon) { false }
-      site.should_receive(:sponsored_to?) { true }
+      expect(site).to receive(:subscribed_to?).with(addon) { false }
+      expect(site).to receive(:sponsored_to?) { true }
 
-      manager.level.should eq 'vip_email'
+      expect(manager.level).to eq 'vip_email'
     end
   end
 

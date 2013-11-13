@@ -5,8 +5,15 @@ describe Feedback do
   describe 'Factory' do
     subject { build(:feedback) }
 
-    its(:user_id) { should be_present }
-    its(:reason)  { should eq 'support' }
+    describe '#user_id' do
+      subject { super().user_id }
+      it { should be_present }
+    end
+
+    describe '#reason' do
+      subject { super().reason }
+      it  { should eq 'support' }
+    end
   end
 
   describe 'Validations' do
@@ -19,11 +26,11 @@ describe Feedback do
   end # Validations
 
   describe '.new_trial_feedback' do
-    it { described_class.new_trial_feedback(build(:user)).kind.should eq :trial }
+    it { expect(described_class.new_trial_feedback(build(:user)).kind).to eq :trial }
   end
 
   describe '.new_account_cancellation_feedback' do
-    it { described_class.new_account_cancellation_feedback(build(:user)).kind.should eq :account_cancellation }
+    it { expect(described_class.new_account_cancellation_feedback(build(:user)).kind).to eq :account_cancellation }
   end
 
 end

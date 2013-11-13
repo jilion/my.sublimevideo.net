@@ -4,9 +4,20 @@ describe DealActivation do
   context "Factory" do
     subject { create(:deal_activation) }
 
-    its(:deal_id)      { should be_present }
-    its(:user_id)      { should be_present }
-    its(:activated_at) { should be_present }
+    describe '#deal_id' do
+      subject { super().deal_id }
+      it      { should be_present }
+    end
+
+    describe '#user_id' do
+      subject { super().user_id }
+      it      { should be_present }
+    end
+
+    describe '#activated_at' do
+      subject { super().activated_at }
+      it { should be_present }
+    end
 
     it { should be_valid }
   end # Factory
@@ -32,7 +43,7 @@ describe DealActivation do
         Timecop.travel(2.days.ago) { create(:deal_activation, deal: create(:deal, started_at: 1.day.ago, ended_at: 1.day.from_now)) }
       end
 
-      it { described_class.active.should eq [@deal_activation] }
+      it { expect(described_class.active).to eq [@deal_activation] }
     end
   end
 
@@ -41,17 +52,17 @@ describe DealActivation do
       let(:deal) { create(:deal) }
 
       context "deal is not active" do
-        before { deal.should_receive(:active?) { false } }
+        before { expect(deal).to receive(:active?) { false } }
 
         it "doesn't create a DealActivation record" do
           deal_activation = build(:deal_activation, deal: deal)
-          deal_activation.should_not be_valid
-          deal_activation.should have(1).error
+          expect(deal_activation).not_to be_valid
+          expect(deal_activation.errors.size).to eq(1)
         end
       end
 
       context "deal is active" do
-        before { deal.should_receive(:active?) { true } }
+        before { expect(deal).to receive(:active?) { true } }
 
         it "creates a DealActivation record" do
           expect { create(:deal_activation, deal: deal) }.to change(DealActivation, :count).by(1)
@@ -63,17 +74,17 @@ describe DealActivation do
       let(:deal) { create(:deal, availability_scope: 'vip') }
 
       context "user isn't included in the available_to scope of the deal record" do
-        before { deal.should_receive(:available_to?) { false } }
+        before { expect(deal).to receive(:available_to?) { false } }
 
         it "doesn't create a DealActivation record" do
           deal_activation = build(:deal_activation, deal: deal)
-          deal_activation.should_not be_valid
-          deal_activation.should have(1).error
+          expect(deal_activation).not_to be_valid
+          expect(deal_activation.errors.size).to eq(1)
         end
       end
 
       context "user is included in the available_to scope of the deal record" do
-        before { deal.should_receive(:available_to?) { true } }
+        before { expect(deal).to receive(:available_to?) { true } }
 
         it "creates a DealActivation record" do
           expect { create(:deal_activation, deal: deal) }.to change(DealActivation, :count).by(1)
@@ -83,10 +94,10 @@ describe DealActivation do
 
     it "set activated_at before validations if not present" do
       deal_activation = build(:deal_activation)
-      deal_activation.activated_at.should be_nil
+      expect(deal_activation.activated_at).to be_nil
 
       deal_activation.valid?
-      deal_activation.activated_at.should be_present
+      expect(deal_activation.activated_at).to be_present
     end
   end
 end

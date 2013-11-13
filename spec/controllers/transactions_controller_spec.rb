@@ -13,17 +13,17 @@ describe TransactionsController do
               "CHECK_CC_USER_ID" => "1",
               "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=5"].join(ENV['OGONE_SIGNATURE_OUT']) + ENV['OGONE_SIGNATURE_OUT']).upcase
             }
-            User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: nil))
+            expect(User).to receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: nil))
           end
 
           it "should add a notice and redirect to /account" do
-            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
+            expect(@m).to receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 200
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 200
           end
         end
 
@@ -34,17 +34,17 @@ describe TransactionsController do
               "CHECK_CC_USER_ID" => "1",
               "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=51"].join(ENV['OGONE_SIGNATURE_OUT']) + ENV['OGONE_SIGNATURE_OUT']).upcase
             }
-            User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.waiting") }))
+            expect(User).to receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.waiting") }))
           end
 
           it "should add an alert and redirect to /account" do
-            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
+            expect(@m).to receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 200
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 200
           end
         end
 
@@ -55,17 +55,17 @@ describe TransactionsController do
               "CHECK_CC_USER_ID" => "1",
               "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=0"].join(ENV['OGONE_SIGNATURE_OUT']) + ENV['OGONE_SIGNATURE_OUT']).upcase
             }
-            User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.invalid") }))
+            expect(User).to receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.invalid") }))
           end
 
           it "should add an alert and redirect to /account" do
-            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
+            expect(@m).to receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 200
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 200
           end
         end
 
@@ -76,17 +76,17 @@ describe TransactionsController do
               "CHECK_CC_USER_ID" => "1",
               "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=2"].join(ENV['OGONE_SIGNATURE_OUT']) + ENV['OGONE_SIGNATURE_OUT']).upcase
             }
-            User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.refused") }))
+            expect(User).to receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.refused") }))
           end
 
           it "should add an alert and redirect to /account" do
-            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
+            expect(@m).to receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 200
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 200
           end
         end
 
@@ -97,17 +97,17 @@ describe TransactionsController do
               "CHECK_CC_USER_ID" => "1",
               "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=52"].join(ENV['OGONE_SIGNATURE_OUT']) + ENV['OGONE_SIGNATURE_OUT']).upcase
             }
-            User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.unknown") }))
+            expect(User).to receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.unknown") }))
           end
 
           it "should add an alert and redirect to /account" do
-            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
+            expect(@m).to receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 200
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 200
           end
         end
 
@@ -118,17 +118,17 @@ describe TransactionsController do
               "CHECK_CC_USER_ID" => "1",
               "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=187"].join(ENV['OGONE_SIGNATURE_OUT']) + ENV['OGONE_SIGNATURE_OUT']).upcase
             }
-            User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.unknown") }))
+            expect(User).to receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.unknown") }))
           end
 
           it "should add an alert and redirect to /account" do
-            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
+            expect(@m).to receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 200
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 200
           end
         end
       end
@@ -145,14 +145,14 @@ describe TransactionsController do
         context "transaction is already paid" do
           it "should return" do
             Transaction.stub_chain(:where, :first!) { mock_transaction }
-            mock_transaction.stub(:paid?) { true }
-            mock_transaction.should_not_receive(:process_payment_response)
+            allow(mock_transaction).to receive(:paid?) { true }
+            expect(mock_transaction).not_to receive(:process_payment_response)
 
             post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_nil
-            flash[:alert].should be_nil
-            response.body.should be_blank
-            response.status.should eq 204
+            expect(flash[:notice]).to be_nil
+            expect(flash[:alert]).to be_nil
+            expect(response.body).to be_blank
+            expect(response.status).to eq 204
           end
         end
 
@@ -168,14 +168,14 @@ describe TransactionsController do
 
             it "should add a notice and redirect to /account" do
               Transaction.stub_chain(:where, :first!) { mock_transaction }
-              mock_transaction.stub(:paid?) { false }
-              mock_transaction.stub(:state) { 'paid' }
-              mock_transaction.should_receive(:process_payment_response).with(@sha_params)
+              allow(mock_transaction).to receive(:paid?) { false }
+              allow(mock_transaction).to receive(:state) { 'paid' }
+              expect(mock_transaction).to receive(:process_payment_response).with(@sha_params)
 
               post :callback, @params.merge(@sha_params)
-              flash[:notice].should be_nil
-              flash[:alert].should be_nil
-              response.should redirect_to(sites_url)
+              expect(flash[:notice]).to be_nil
+              expect(flash[:alert]).to be_nil
+              expect(response).to redirect_to(sites_url)
             end
           end
 
@@ -190,14 +190,14 @@ describe TransactionsController do
 
             it "should add an alert and redirect to /account" do
               Transaction.stub_chain(:where, :first!) { mock_transaction }
-              mock_transaction.stub(:paid?) { false }
-              mock_transaction.stub(:state) { 'failed' }
-              mock_transaction.should_receive(:process_payment_response).with(@sha_params)
+              allow(mock_transaction).to receive(:paid?) { false }
+              allow(mock_transaction).to receive(:state) { 'failed' }
+              expect(mock_transaction).to receive(:process_payment_response).with(@sha_params)
 
               post :callback, @params.merge(@sha_params)
-              flash[:notice].should eq ""
-              flash[:alert].should eq I18n.t("transaction.errors.failed")
-              response.should redirect_to(sites_url)
+              expect(flash[:notice]).to eq ""
+              expect(flash[:alert]).to eq I18n.t("transaction.errors.failed")
+              expect(response).to redirect_to(sites_url)
             end
           end
         end
@@ -217,8 +217,8 @@ describe TransactionsController do
       it "should void authorization" do
         post :callback, @params.merge(@sha_params)
 
-        response.body.should be_blank
-        response.status.should eq 204
+        expect(response.body).to be_blank
+        expect(response.status).to eq 204
       end
     end
 

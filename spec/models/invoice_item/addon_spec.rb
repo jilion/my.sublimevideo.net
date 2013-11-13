@@ -6,14 +6,37 @@ describe InvoiceItem::AddonPlan do
     let(:invoice_item) { create(:addon_plan_invoice_item) }
     subject { invoice_item }
 
-    its(:invoice)   { should be_nil }
-    its(:type)      { should eq 'InvoiceItem::AddonPlan' }
-    its(:item_type) { should eq 'AddonPlan' }
-    its(:item_id)   { should be_present }
-    specify         { subject.started_at.to_i.should eq Time.now.utc.beginning_of_month.to_i }
-    specify         { subject.ended_at.to_i.should eq Time.now.utc.end_of_month.to_i }
-    its(:price)     { should be_present }
-    its(:amount)    { should be_present }
+    describe '#invoice' do
+      subject { super().invoice }
+      it   { should be_nil }
+    end
+
+    describe '#type' do
+      subject { super().type }
+      it      { should eq 'InvoiceItem::AddonPlan' }
+    end
+
+    describe '#item_type' do
+      subject { super().item_type }
+      it { should eq 'AddonPlan' }
+    end
+
+    describe '#item_id' do
+      subject { super().item_id }
+      it   { should be_present }
+    end
+    specify         { expect(subject.started_at.to_i).to eq Time.now.utc.beginning_of_month.to_i }
+    specify         { expect(subject.ended_at.to_i).to eq Time.now.utc.end_of_month.to_i }
+
+    describe '#price' do
+      subject { super().price }
+      it     { should be_present }
+    end
+
+    describe '#amount' do
+      subject { super().amount }
+      it    { should be_present }
+    end
 
     it { should be_valid }
   end

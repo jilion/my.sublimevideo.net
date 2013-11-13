@@ -8,20 +8,20 @@ describe SiteSetupAssistant do
 
   describe '#current_step & #current_step_number' do
     context 'current_assistant_step is "addons"' do
-      before { site.stub(current_assistant_step: 'addons')}
+      before { allow(site).to receive(:current_assistant_step).and_return('addons')}
 
       it 'returns "addons"' do
-        service.current_step.should eq 'addons'
-        service.current_step_number.should eq 2
+        expect(service.current_step).to eq 'addons'
+        expect(service.current_step_number).to eq 2
       end
     end
 
     context 'current_assistant_step is "player"' do
-      before { site.stub(current_assistant_step: 'player')}
+      before { allow(site).to receive(:current_assistant_step).and_return('player')}
 
       it 'returns "player"' do
-        service.current_step.should eq 'player'
-        service.current_step_number.should eq 3
+        expect(service.current_step).to eq 'player'
+        expect(service.current_step_number).to eq 3
       end
     end
   end

@@ -19,42 +19,42 @@ describe BillableEntity do
     end
 
     describe '.free' do
-      it { AddonPlan.free.should =~ [@addon_plan7, @addon_plan8, @addon_plan9, @addon_plan10, @addon_plan11, @addon_plan12] }
+      it { expect(AddonPlan.free).to match_array([@addon_plan7, @addon_plan8, @addon_plan9, @addon_plan10, @addon_plan11, @addon_plan12]) }
     end
 
     describe '.paid' do
-      it { AddonPlan.paid.to_a.should =~ [@addon_plan4, @addon_plan5, @addon_plan6] }
+      it { expect(AddonPlan.paid.to_a).to match_array([@addon_plan4, @addon_plan5, @addon_plan6]) }
     end
 
     describe '.custom' do
-      it { AddonPlan.custom.should =~ [@addon_plan3, @addon_plan6, @addon_plan9, @addon_plan12] }
+      it { expect(AddonPlan.custom).to match_array([@addon_plan3, @addon_plan6, @addon_plan9, @addon_plan12]) }
     end
 
     describe '.not_custom' do
-      it { AddonPlan.not_custom.should =~ [@addon_plan1, @addon_plan2, @addon_plan4, @addon_plan5, @addon_plan7, @addon_plan8, @addon_plan10, @addon_plan11] }
+      it { expect(AddonPlan.not_custom).to match_array([@addon_plan1, @addon_plan2, @addon_plan4, @addon_plan5, @addon_plan7, @addon_plan8, @addon_plan10, @addon_plan11]) }
     end
 
     describe '.visible' do
-      it { AddonPlan.visible.should =~ [@addon_plan1, @addon_plan3, @addon_plan4, @addon_plan6, @addon_plan7, @addon_plan9, @addon_plan10, @addon_plan12] }
+      it { expect(AddonPlan.visible).to match_array([@addon_plan1, @addon_plan3, @addon_plan4, @addon_plan6, @addon_plan7, @addon_plan9, @addon_plan10, @addon_plan12]) }
     end
   end
 
   describe '#free?' do
-    it { build(:addon_plan, price: 0).should                           be_free }
-    it { build(:addon_plan, price: 10).should_not                      be_free }
-    it { build(:addon_plan, stable_at: Time.now, price: 0).should      be_free }
-    it { build(:addon_plan, stable_at: Time.now, price: 10).should_not be_free }
+    it { expect(build(:addon_plan, price: 0)).to                           be_free }
+    it { expect(build(:addon_plan, price: 10)).not_to                      be_free }
+    it { expect(build(:addon_plan, stable_at: Time.now, price: 0)).to      be_free }
+    it { expect(build(:addon_plan, stable_at: Time.now, price: 10)).not_to be_free }
   end
 
   describe '#not_custom?' do
-    it { build(:addon_plan, availability: 'hidden').should     be_not_custom }
-    it { build(:addon_plan, availability: 'public').should     be_not_custom }
-    it { build(:addon_plan, availability: 'custom').should_not be_not_custom }
+    it { expect(build(:addon_plan, availability: 'hidden')).to     be_not_custom }
+    it { expect(build(:addon_plan, availability: 'public')).to     be_not_custom }
+    it { expect(build(:addon_plan, availability: 'custom')).not_to be_not_custom }
   end
 
   describe '#beta?' do
-    it { build(:addon_plan, stable_at: nil).should be_beta }
-    it { build(:addon_plan, stable_at: Time.now).should_not be_beta }
+    it { expect(build(:addon_plan, stable_at: nil)).to be_beta }
+    it { expect(build(:addon_plan, stable_at: Time.now)).not_to be_beta }
   end
 
 end

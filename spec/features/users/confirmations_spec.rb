@@ -6,8 +6,8 @@ feature 'Confirmation' do
 
     go 'my', "/confirmation?confirmation_token=#{user.confirmation_token}"
 
-    current_url.should eq "http://my.sublimevideo.dev/account/more-info"
-    page.should have_content I18n.t('devise.confirmations.user.confirmed')
+    expect(current_url).to eq "http://my.sublimevideo.dev/account/more-info"
+    expect(page).to have_content I18n.t('devise.confirmations.user.confirmed')
 
     fill_in "Name",               with: "John Doe"
     fill_in "Zip or Postal Code", with: "2001"
@@ -18,10 +18,10 @@ feature 'Confirmation' do
     fill_in "user_confirmation_comment", with: "I love this player!"
     click_button "Continue"
 
-    page.should have_content I18n.t('devise.users.updated')
+    expect(page).to have_content I18n.t('devise.users.updated')
 
-    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
-    get_me_the_cookie("l")[:value].should eq '1'
-    page.should have_content "John Doe"
+    expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
+    expect(get_me_the_cookie("l")[:value]).to eq '1'
+    expect(page).to have_content "John Doe"
   end
 end

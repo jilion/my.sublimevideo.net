@@ -21,16 +21,19 @@ describe TailorMadePlayerRequest do
   describe "instance" do
     subject { TailorMadePlayerRequest.find(1) }
 
-    its(:document_url) { should eq 'foo' }
+    describe '#document_url' do
+      subject { super().document_url }
+      it { should eq 'foo' }
+    end
 
     it "has a document" do
-      subject.document?.should be_true
+      expect(subject.document?).to be_truthy
     end
   end
 
   describe ".topics" do
     it "returns all topics" do
-      TailorMadePlayerRequest.topics.should eq topics
+      expect(TailorMadePlayerRequest.topics).to eq topics
     end
   end
 end

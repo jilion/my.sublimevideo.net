@@ -2,15 +2,15 @@ RSpec::Matchers.define :delay do |message, *opts|
   match_for_should do |object|
     setup(object, message)
 
-    object.stub(:delay) { @delayed_job_mock }
-    object.should_receive(:delay).with(*opts) { @delayed_job_mock }
+    allow(object).to receive(:delay) { @delayed_job_mock }
+    expect(object).to receive(:delay).with(*opts).and_return(@delayed_job_mock)
 
     if @args.nil?
-      @delayed_job_mock.should_receive(message).with(any_args)
+      expect(@delayed_job_mock).to receive(message).with(any_args)
     else
       @args.each do |args|
         # puts "Array[args].flatten : #{(Array[args].flatten)}"
-        @delayed_job_mock.should_receive(message).with(*Array[args].flatten)
+        expect(@delayed_job_mock).to receive(message).with(*Array[args].flatten)
       end
     end
   end
@@ -18,8 +18,8 @@ RSpec::Matchers.define :delay do |message, *opts|
   match_for_should_not do |object|
     setup(object, message)
 
-    object.stub(:delay) { @delayed_job_mock }
-    object.should_not_receive(:delay).with(*opts) { @delayed_job_mock }
+    allow(object).to receive(:delay) { @delayed_job_mock }
+    expect(object).not_to receive(:delay).with(*opts).and_return(@delayed_job_mock)
   end
 
   description do

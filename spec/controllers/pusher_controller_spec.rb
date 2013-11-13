@@ -11,45 +11,45 @@ describe PusherController do
 
       it "return a json authenticated response" do
         authenticated_response = {}
-        PusherChannel.stub(:new).with(channel_name) { double(accessible?: true) }
-        PusherWrapper.should_receive(:authenticated_response).with(channel_name, socket_id) {
+        allow(PusherChannel).to receive(:new).with(channel_name) { double(accessible?: true) }
+        expect(PusherWrapper).to receive(:authenticated_response).with(channel_name, socket_id) {
           authenticated_response
         }
         post :auth, channel_name: channel_name, socket_id: socket_id
-        response.body.should eq(authenticated_response.to_json)
+        expect(response.body).to eq(authenticated_response.to_json)
       end
     end
 
     context "with a un-accessible channel" do
       it "return 'Not authorized' 403 status" do
-        PusherChannel.stub(:new).with(channel_name) { double(accessible?: false) }
+        allow(PusherChannel).to receive(:new).with(channel_name) { double(accessible?: false) }
         post :auth, channel_name: channel_name
-        response.status.should eq(403)
+        expect(response.status).to eq(403)
       end
     end
   end
 
   describe "webhook" do
     let(:webhook) { double(:webhook) }
-    before { Pusher::WebHook.stub(:new).with(request) { webhook } }
+    before { allow(Pusher::WebHook).to receive(:new).with(request) { webhook } }
 
     context "with valid webhook request" do
-      before { webhook.stub(:valid?) { true } }
+      before { allow(webhook).to receive(:valid?) { true } }
 
       it "handle webhook and render 'ok'" do
-        PusherWrapper.should_receive(:handle_webhook).with(webhook)
+        expect(PusherWrapper).to receive(:handle_webhook).with(webhook)
         post :webhook
-        response.body.should eq('ok')
+        expect(response.body).to eq('ok')
       end
     end
 
     context "with unvalid webhook request" do
-      before { webhook.stub(:valid?) { false } }
+      before { allow(webhook).to receive(:valid?) { false } }
 
       it "return invalid 401 status" do
         post :webhook
-        response.body.should eq('invalid')
-        response.status.should eq(401)
+        expect(response.body).to eq('invalid')
+        expect(response.status).to eq(401)
       end
     end
   end

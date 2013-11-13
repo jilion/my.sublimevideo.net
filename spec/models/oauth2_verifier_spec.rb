@@ -5,11 +5,30 @@ describe Oauth2Verifier do
   context "Factory" do
     subject { create(:oauth2_verifier) }
 
-    its(:user)               { should be_present }
-    its(:client_application) { should be_present }
-    its(:code)               { should be_present }
-    its(:token)              { should be_present }
-    its(:expires_at)         { should be_present }
+    describe '#user' do
+      subject { super().user }
+      it               { should be_present }
+    end
+
+    describe '#client_application' do
+      subject { super().client_application }
+      it { should be_present }
+    end
+
+    describe '#code' do
+      subject { super().code }
+      it               { should be_present }
+    end
+
+    describe '#token' do
+      subject { super().token }
+      it              { should be_present }
+    end
+
+    describe '#expires_at' do
+      subject { super().expires_at }
+      it         { should be_present }
+    end
 
     it { should be_valid }
     it { should be_authorized }
@@ -22,23 +41,23 @@ describe Oauth2Verifier do
 
     it "should invalidate verifier" do
       verifier.exchange!
-      verifier.should be_invalidated
+      expect(verifier).to be_invalidated
     end
 
     it "should set user on token" do
-      token.user.should eql verifier.user
+      expect(token.user).to eql verifier.user
     end
 
     it "should set client application on token" do
-      token.client_application.should eql verifier.client_application
+      expect(token.client_application).to eql verifier.client_application
     end
 
     it "should be authorized" do
-      token.should be_authorized
+      expect(token).to be_authorized
     end
 
     it "should not be invalidated" do
-      token.should_not be_invalidated
+      expect(token).not_to be_invalidated
     end
   end
 

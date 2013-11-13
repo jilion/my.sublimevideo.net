@@ -29,20 +29,20 @@ describe SitesTrend do
     describe '.create_trends' do
       before {
         day = Time.now.utc.midnight.to_date
-        SiteAdminStat.stub(:last_30_days_sites_with_starts).with(day, threshold: 1) { 1 }
-        SiteAdminStat.stub(:last_30_days_sites_with_starts).with(day, threshold: 2) { 2 }
-        SiteAdminStat.stub(:last_30_days_sites_with_starts).with(day, threshold: 100) { 100 }
+        allow(SiteAdminStat).to receive(:last_30_days_sites_with_starts).with(day, threshold: 1) { 1 }
+        allow(SiteAdminStat).to receive(:last_30_days_sites_with_starts).with(day, threshold: 2) { 2 }
+        allow(SiteAdminStat).to receive(:last_30_days_sites_with_starts).with(day, threshold: 100) { 100 }
       }
 
       it 'creates sites stats for states & plans' do
         described_class.create_trends
-        described_class.count.should eq 1
+        expect(described_class.count).to eq 1
         sites_stat = described_class.last
-        sites_stat["fr"].should eq({ 'free' => 3 })
-        sites_stat["pa"].should eq({ 'addons' => 2 })
-        sites_stat["su"].should eq 1
-        sites_stat["ar"].should eq 2
-        sites_stat["al"].should eq({ "st1" => 1, "st2" => 2, "st100" => 100 })
+        expect(sites_stat["fr"]).to eq({ 'free' => 3 })
+        expect(sites_stat["pa"]).to eq({ 'addons' => 2 })
+        expect(sites_stat["su"]).to eq 1
+        expect(sites_stat["ar"]).to eq 2
+        expect(sites_stat["al"]).to eq({ "st1" => 1, "st2" => 2, "st100" => 100 })
       end
     end
 
@@ -51,17 +51,17 @@ describe SitesTrend do
         described_class.create(d: 2.day.ago.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
         described_class.create(d: Time.now.utc.midnight, fr: { 'free' => 3 }, pa: { 'addons' => 2 }, su: 1, ar: 1)
 
-        SiteAdminStat.stub(:last_30_days_sites_with_starts) { 1 }
+        allow(SiteAdminStat).to receive(:last_30_days_sites_with_starts) { 1 }
       end
 
       it 'updates the existing trend to add alive sites trends' do
-        described_class.where(d: 2.day.ago.midnight).first['al'].should be_nil
-        described_class.where(d: Time.now.utc.midnight).first['al'].should be_nil
+        expect(described_class.where(d: 2.day.ago.midnight).first['al']).to be_nil
+        expect(described_class.where(d: Time.now.utc.midnight).first['al']).to be_nil
 
         described_class.update_alive_sites_trends
 
-        described_class.where(d: 2.day.ago.midnight).first['al'].should eq({ 'st1' => 1, 'st2' => 1, 'st100' => 1 })
-        described_class.where(d: Time.now.utc.midnight).first['al'].should eq({ 'st1' => 1, 'st2' => 1, 'st100' => 1 })
+        expect(described_class.where(d: 2.day.ago.midnight).first['al']).to eq({ 'st1' => 1, 'st2' => 1, 'st100' => 1 })
+        expect(described_class.where(d: Time.now.utc.midnight).first['al']).to eq({ 'st1' => 1, 'st2' => 1, 'st100' => 1 })
       end
     end
   end
@@ -72,12 +72,15 @@ describe SitesTrend do
     end
     subject { JSON.parse(described_class.json) }
 
-    its(:size) { should eq 1 }
-    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
-    it { subject[0].should have_key('fr') }
-    it { subject[0].should have_key('pa') }
-    it { subject[0].should have_key('su') }
-    it { subject[0].should have_key('ar') }
-    it { subject[0].should have_key('al') }
+    describe '#size' do
+      subject { super().size }
+      it { should eq 1 }
+    end
+    it { expect(subject[0]['id']).to eq(Time.now.utc.midnight.to_i) }
+    it { expect(subject[0]).to have_key('fr') }
+    it { expect(subject[0]).to have_key('pa') }
+    it { expect(subject[0]).to have_key('su') }
+    it { expect(subject[0]).to have_key('ar') }
+    it { expect(subject[0]).to have_key('al') }
   end
 end

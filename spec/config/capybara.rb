@@ -21,7 +21,7 @@ Capybara.server_port = find_available_port
 Capybara.ignore_hidden_elements = false
 
 RSpec.configure do |config|
-  config.before do
+  config.before do |example|
     if example.metadata[:js]
       # http://docs.tddium.com/troubleshooting/browser-based-integration-tests
       # http://asciicasts.com/episodes/221-subdomains-in-rails-3

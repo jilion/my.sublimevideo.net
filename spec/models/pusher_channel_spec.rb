@@ -49,7 +49,7 @@ describe PusherChannel do
 
   describe "#to_s" do
     it "returns channel name" do
-      PusherChannel.new('stats').to_s.should eq 'stats'
+      expect(PusherChannel.new('stats').to_s).to eq 'stats'
     end
   end
 

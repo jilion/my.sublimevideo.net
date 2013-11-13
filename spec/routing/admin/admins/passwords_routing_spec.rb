@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Admin::Admins::PasswordsController do
 
-  it { post(with_subdomain('admin', 'password')).should     route_to('admin/admins/passwords#create') }
-  it { put(with_subdomain('admin', 'password')).should      route_to('admin/admins/passwords#update') }
-  it { get(with_subdomain('admin', 'password/new')).should  route_to('admin/admins/passwords#new') }
-  it { get(with_subdomain('admin', 'password/edit')).should route_to('admin/admins/passwords#edit') }
+  it { expect(post(with_subdomain('admin', 'password'))).to     route_to('admin/admins/passwords#create') }
+  it { expect(put(with_subdomain('admin', 'password'))).to      route_to('admin/admins/passwords#update') }
+  it { expect(get(with_subdomain('admin', 'password/new'))).to  route_to('admin/admins/passwords#new') }
+  it { expect(get(with_subdomain('admin', 'password/edit'))).to route_to('admin/admins/passwords#edit') }
 
 end

@@ -10,15 +10,15 @@ feature "Mail logs show:" do
   scenario "should be possible to show mail log" do
     go 'admin', "mails/logs/#{@mail_log.id}"
 
-    page.should have_content(@mail_log.admin.email)
-    page.should have_content(@mail_log.template.title)
-    page.should have_content(@mail_log.template.subject)
+    expect(page).to have_content(@mail_log.admin.email)
+    expect(page).to have_content(@mail_log.template.title)
+    expect(page).to have_content(@mail_log.template.subject)
 
-    page.should have_content "Please respond to the survey, by clicking on the following url: http://survey.com"
+    expect(page).to have_content "Please respond to the survey, by clicking on the following url: http://survey.com"
 
-    page.should have_content(@mail_log.admin_id.to_s)
-    page.should have_content(@mail_log.template_id.to_s)
-    page.should have_content(@mail_log.criteria.inspect)
+    expect(page).to have_content(@mail_log.admin_id.to_s)
+    expect(page).to have_content(@mail_log.template_id.to_s)
+    expect(page).to have_content(@mail_log.criteria.inspect)
   end
 
 end

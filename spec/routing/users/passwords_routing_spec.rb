@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Devise::PasswordsController do
 
-  it { get(with_subdomain('my', 'password/new')).should  route_to('devise/passwords#new') }
-  it { post(with_subdomain('my', 'password')).should     route_to('devise/passwords#create') }
-  it { get(with_subdomain('my', 'password/edit')).should route_to('devise/passwords#edit') }
-  it { put(with_subdomain('my', 'password')).should      route_to('devise/passwords#update') }
+  it { expect(get(with_subdomain('my', 'password/new'))).to  route_to('devise/passwords#new') }
+  it { expect(post(with_subdomain('my', 'password'))).to     route_to('devise/passwords#create') }
+  it { expect(get(with_subdomain('my', 'password/edit'))).to route_to('devise/passwords#edit') }
+  it { expect(put(with_subdomain('my', 'password'))).to      route_to('devise/passwords#update') }
 
 end

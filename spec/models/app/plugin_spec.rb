@@ -8,14 +8,14 @@ describe App::Plugin do
     it { should have_many(:sites).through(:addon) }
   end
 
-  it { build(:app_plugin, design: nil).should be_valid }
+  it { expect(build(:app_plugin, design: nil)).to be_valid }
 
   describe '.get' do
     before do
       @app_plugin = create(:app_plugin, name: 'foo')
     end
 
-    it { described_class.get('foo').should eq @app_plugin }
+    it { expect(described_class.get('foo')).to eq @app_plugin }
   end
 
 end

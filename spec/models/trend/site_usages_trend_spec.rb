@@ -8,13 +8,16 @@ describe SiteUsagesTrend do
     end
     subject { JSON.parse(described_class.json) }
 
-    its(:size) { should eq 1 }
-    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
-    it { subject[0].should have_key('lh') }
-    it { subject[0].should have_key('ph') }
-    it { subject[0].should have_key('fh') }
-    it { subject[0].should have_key('sr') }
-    it { subject[0].should have_key('tr') }
+    describe '#size' do
+      subject { super().size }
+      it { should eq 1 }
+    end
+    it { expect(subject[0]['id']).to eq(Time.now.utc.midnight.to_i) }
+    it { expect(subject[0]).to have_key('lh') }
+    it { expect(subject[0]).to have_key('ph') }
+    it { expect(subject[0]).to have_key('fh') }
+    it { expect(subject[0]).to have_key('sr') }
+    it { expect(subject[0]).to have_key('tr') }
   end
 
 end

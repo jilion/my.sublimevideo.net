@@ -23,12 +23,12 @@ describe UsersTrend do
     it "should create users stats for states" do
       described_class.create_trends
 
-      described_class.count.should eq 1
+      expect(described_class.count).to eq 1
       users_stat = described_class.last
-      users_stat.fr.should eq 3
-      users_stat.pa.should eq 1
-      users_stat.su.should eq 1
-      users_stat.ar.should eq 1
+      expect(users_stat.fr).to eq 3
+      expect(users_stat.pa).to eq 1
+      expect(users_stat.su).to eq 1
+      expect(users_stat.ar).to eq 1
     end
   end
 
@@ -38,12 +38,15 @@ describe UsersTrend do
     end
     subject { JSON.parse(described_class.json) }
 
-    its(:size) { should eq 1 }
-    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
-    it { subject[0].should have_key('fr') }
-    it { subject[0].should have_key('pa') }
-    it { subject[0].should have_key('su') }
-    it { subject[0].should have_key('ar') }
+    describe '#size' do
+      subject { super().size }
+      it { should eq 1 }
+    end
+    it { expect(subject[0]['id']).to eq(Time.now.utc.midnight.to_i) }
+    it { expect(subject[0]).to have_key('fr') }
+    it { expect(subject[0]).to have_key('pa') }
+    it { expect(subject[0]).to have_key('su') }
+    it { expect(subject[0]).to have_key('ar') }
   end
 
 end

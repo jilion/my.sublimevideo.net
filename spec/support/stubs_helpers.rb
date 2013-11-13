@@ -3,10 +3,10 @@ module Spec
     module StubsHelpers
 
       def stub_site_stats
-        SiteStat.stub(:last_hours_stats) { [] }
-        LastSiteStat.stub(:last_stats) { [] }
-        LastSitePlay.stub(:last_plays) { [] }
-        SiteAdminStat.stub(:all) { [] }
+        allow(SiteStat).to receive(:last_hours_stats) { [] }
+        allow(LastSiteStat).to receive(:last_stats) { [] }
+        allow(LastSitePlay).to receive(:last_plays) { [] }
+        allow(SiteAdminStat).to receive(:all) { [] }
       end
 
     end

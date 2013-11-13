@@ -21,11 +21,11 @@ module Spec
             end
 
             it "should send an email" do
-              ActionMailer::Base.deliveries.should have(1).item
+              expect(ActionMailer::Base.deliveries.size).to eq(1)
             end
 
             it "should send the mail from #{[options[:from]].flatten}" do
-              last_delivery.from.should eq [options[:from]].flatten
+              expect(last_delivery.from).to eq [options[:from]].flatten
             end
 
             # it "should send the mail to" do
@@ -38,14 +38,14 @@ module Spec
             # end
 
             it "should set content_type to #{options[:content_type]} (set by default by the Mail gem)" do
-              last_delivery.content_type.should =~ options[:content_type]
+              expect(last_delivery.content_type).to match(options[:content_type])
             end
 
             it "should #{'not' if options[:no_signature]} include the default signature" do
               if options[:no_signature]
-                last_delivery.body.encoded.should_not include I18n.t("mailer.signature")
+                expect(last_delivery.body.encoded).not_to include I18n.t("mailer.signature")
               else
-                last_delivery.body.encoded.should include I18n.t("mailer.signature")
+                expect(last_delivery.body.encoded).to include I18n.t("mailer.signature")
               end
             end
           end

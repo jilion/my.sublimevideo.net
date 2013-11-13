@@ -36,20 +36,20 @@ feature 'Edit site' do
       click_link 'Settings'
     end
 
-    page.should have_selector 'input#site_extra_hostnames'
-    page.should have_selector 'input#site_dev_hostnames'
-    page.should have_selector 'input#site_path'
-    page.should have_selector 'input#site_wildcard'
+    expect(page).to have_selector 'input#site_extra_hostnames'
+    expect(page).to have_selector 'input#site_dev_hostnames'
+    expect(page).to have_selector 'input#site_path'
+    expect(page).to have_selector 'input#site_wildcard'
 
     fill_in 'site_extra_hostnames', with: hostname2
     fill_in 'site_dev_hostnames', with: dev_hostname
     click_button 'Save settings'
 
-    current_url.should =~ %r(^http://[^/]+/sites/#{@site.token}/edit$)
+    expect(current_url).to match(%r(^http://[^/]+/sites/#{@site.token}/edit$))
 
-    @site.reload.hostname.should eq hostname1
-    @site.extra_hostnames.should eq hostname2
-    @site.dev_hostnames.should eq dev_hostname
+    expect(@site.reload.hostname).to eq hostname1
+    expect(@site.extra_hostnames).to eq hostname2
+    expect(@site.dev_hostnames).to eq dev_hostname
   end
 end
 
@@ -76,8 +76,8 @@ feature 'Archive site' do
     end
     click_button 'Cancel site'
 
-    page.should have_no_content hostname1
-    @site.reload.should be_archived
+    expect(page).to have_no_content hostname1
+    expect(@site.reload).to be_archived
   end
 
   scenario 'a paid site with only paid invoices' do
@@ -86,15 +86,15 @@ feature 'Archive site' do
     end
     click_button 'Cancel site'
 
-    page.should have_no_content hostname2
-    @paid_site_with_paid_invoices.reload.should be_archived
+    expect(page).to have_no_content hostname2
+    expect(@paid_site_with_paid_invoices.reload).to be_archived
   end
 
   scenario 'a paid site with an open invoice' do
     within "#site_actions_#{@paid_site_with_open_invoices.id}" do
       click_link 'Settings'
     end
-    page.should have_no_content 'Cancel site'
+    expect(page).to have_no_content 'Cancel site'
   end
 
   scenario 'a paid site with a failed invoice' do
@@ -106,7 +106,7 @@ feature 'Archive site' do
     within "#site_actions_#{site.id}" do
       click_link 'Settings'
     end
-    page.should have_no_content 'Cancel site'
+    expect(page).to have_no_content 'Cancel site'
   end
 
   scenario 'a paid site with a waiting invoice' do
@@ -118,7 +118,7 @@ feature 'Archive site' do
     within "#site_actions_#{site.id}" do
       click_link 'Settings'
     end
-    page.should have_no_content 'Cancel site'
+    expect(page).to have_no_content 'Cancel site'
   end
 end
 
@@ -134,7 +134,7 @@ feature 'Sites index' do
 
     scenario 'is redirected to the /suspended page' do
       go 'my', '/sites'
-      current_url.should eq 'http://my.sublimevideo.dev/suspended'
+      expect(current_url).to eq 'http://my.sublimevideo.dev/suspended'
     end
   end
 
@@ -142,7 +142,7 @@ feature 'Sites index' do
     context 'with no sites' do
       scenario 'should redirect to /assistant/new-site' do
         go 'my', '/sites'
-        current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
+        expect(current_url).to eq 'http://my.sublimevideo.dev/assistant/new-site'
       end
     end
 
@@ -154,32 +154,32 @@ feature 'Sites index' do
 
       scenario 'sort buttons displayed only if count of sites > 1' do
         go 'my', '/sites'
-        page.should have_content hostname1
-        page.should have_no_css 'div.sorting'
-        page.should have_no_css 'a.sort'
+        expect(page).to have_content hostname1
+        expect(page).to have_no_css 'div.sorting'
+        expect(page).to have_no_css 'a.sort'
 
         SiteManager.new(build(:site, user: @current_user, hostname: hostname2)).create
         go 'my', '/sites'
 
-        page.should have_content hostname1
-        page.should have_content hostname2
-        page.should have_css 'div.sorting'
-        page.should have_css 'a.sort.date'
-        page.should have_css 'a.sort.hostname'
+        expect(page).to have_content hostname1
+        expect(page).to have_content hostname2
+        expect(page).to have_css 'div.sorting'
+        expect(page).to have_css 'a.sort.date'
+        expect(page).to have_css 'a.sort.hostname'
       end
 
       scenario 'pagination links displayed only if count of sites > Site.per_page' do
-        PaginatedResponder.stub(:per_page).and_return(1)
+        allow(PaginatedResponder).to receive(:per_page).and_return(1)
         go 'my', '/sites'
 
-        page.should have_no_css 'nav.pagination'
-        page.should have_no_selector 'a[rel=\'next\']'
+        expect(page).to have_no_css 'nav.pagination'
+        expect(page).to have_no_selector 'a[rel=\'next\']'
 
         SiteManager.new(build(:site, user: @current_user, hostname: hostname3)).create
         go 'my', '/sites'
 
-        page.should have_css 'nav.pagination'
-        page.should have_selector 'a[rel=\'next\']'
+        expect(page).to have_css 'nav.pagination'
+        expect(page).to have_selector 'a[rel=\'next\']'
       end
     end
   end
@@ -189,15 +189,15 @@ def last_site_should_be_created(hostname)
   site = @current_user.sites.last
   Sidekiq::Worker.clear_all
   site.reload
-  site.hostname.should eq hostname
-  site.kits.should have(1).item
-  site.default_kit.should eq site.kits.first
-  site.designs.should have(3).items
-  site.addon_plans.should have(10).items
+  expect(site.hostname).to eq hostname
+  expect(site.kits.size).to eq(1)
+  expect(site.default_kit).to eq site.kits.first
+  expect(site.designs.size).to eq(3)
+  expect(site.addon_plans.size).to eq(10)
 
-  current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/addons"
-  page.should have_content hostname
-  page.should have_content 'Site has been successfully registered.'
+  expect(current_url).to eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/addons"
+  expect(page).to have_content hostname
+  expect(page).to have_content 'Site has been successfully registered.'
 end
 
 def hostname1;    'rymai.com'; end

@@ -6,49 +6,49 @@ require 'models/stage'
 describe Stage do
   describe ".stages" do
     it "returns all available stages" do
-      Stage.stages.should eq Stage::STAGES
+      expect(Stage.stages).to eq Stage::STAGES
     end
   end
 
   describe ".stages_equal_or_less_stable_than" do
     it "returns all stages less stable than 'stable'" do
-      Stage.stages_equal_or_less_stable_than('stable').should eq %w[stable beta alpha]
+      expect(Stage.stages_equal_or_less_stable_than('stable')).to eq %w[stable beta alpha]
     end
 
     it "returns all stages less stable than 'beta'" do
-      Stage.stages_equal_or_less_stable_than('beta').should eq %w[beta alpha]
+      expect(Stage.stages_equal_or_less_stable_than('beta')).to eq %w[beta alpha]
     end
 
     it "returns all stages less stable than 'alpha'" do
-      Stage.stages_equal_or_less_stable_than('alpha').should eq %w[alpha]
+      expect(Stage.stages_equal_or_less_stable_than('alpha')).to eq %w[alpha]
     end
   end
 
   describe ".stages_equal_or_more_stable_than" do
     it "returns all stages less stable than 'stable'" do
-      Stage.stages_equal_or_more_stable_than('stable').should eq %w[stable]
+      expect(Stage.stages_equal_or_more_stable_than('stable')).to eq %w[stable]
     end
 
     it "returns all stages less stable than 'beta'" do
-      Stage.stages_equal_or_more_stable_than('beta').should eq %w[stable beta]
+      expect(Stage.stages_equal_or_more_stable_than('beta')).to eq %w[stable beta]
     end
 
     it "returns all stages less stable than 'alpha'" do
-      Stage.stages_equal_or_more_stable_than('alpha').should eq %w[stable beta alpha]
+      expect(Stage.stages_equal_or_more_stable_than('alpha')).to eq %w[stable beta alpha]
     end
   end
 
   describe ".version_stage" do
     it "returns stable for 1.0.0" do
-      Stage.version_stage('1.0.0').should eq 'stable'
+      expect(Stage.version_stage('1.0.0')).to eq 'stable'
     end
 
     it "returns beta for 1.0.0-beta.1" do
-      Stage.version_stage('1.0.0-beta.1').should eq 'beta'
+      expect(Stage.version_stage('1.0.0-beta.1')).to eq 'beta'
     end
 
     it "returns alpha for 1.0.0-alpha.1" do
-      Stage.version_stage('1.0.0-alpha.1').should eq 'alpha'
+      expect(Stage.version_stage('1.0.0-alpha.1')).to eq 'alpha'
     end
   end
 end

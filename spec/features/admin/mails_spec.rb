@@ -8,20 +8,20 @@ feature "Mails index" do
     end
 
     scenario "should be 0 template and 0 log created" do
-      MailTemplate.all.should be_empty
-      MailLog.all.should be_empty
+      expect(MailTemplate.all).to be_empty
+      expect(MailLog.all).to be_empty
     end
 
     scenario "should have text instead of tables if no templates or no logs exist" do
       go 'admin', 'mails'
 
-      page.should have_css 'div#mail_logs_table_wrap'
-      page.should have_no_css 'table#mail_logs'
-      page.should have_css 'div#mail_templates_table_wrap'
-      page.should have_no_css 'table#mail_templates'
+      expect(page).to have_css 'div#mail_logs_table_wrap'
+      expect(page).to have_no_css 'table#mail_logs'
+      expect(page).to have_css 'div#mail_templates_table_wrap'
+      expect(page).to have_no_css 'table#mail_templates'
 
-      page.should have_content "No mail sent yet!"
-      page.should have_content "No mail templates yet!"
+      expect(page).to have_content "No mail sent yet!"
+      expect(page).to have_content "No mail templates yet!"
     end
   end
 
@@ -33,26 +33,26 @@ feature "Mails index" do
     end
 
     scenario "should be 1 template and 1 log created" do
-      MailTemplate.should have(1).item
-      MailLog.should have(1).item
+      expect(MailTemplate.count).to eq(1)
+      expect(MailLog.count).to eq(1)
     end
 
     scenario "should have a table containing mail logs and a table containing mail templates" do
       go 'admin', 'mails'
 
-      page.should have_css 'div#mail_logs_table_wrap'
-      page.should have_css 'table#mail_logs'
+      expect(page).to have_css 'div#mail_logs_table_wrap'
+      expect(page).to have_css 'table#mail_logs'
 
-      page.should have_css 'div#mail_templates_table_wrap'
-      page.should have_css 'table#mail_templates'
+      expect(page).to have_css 'div#mail_templates_table_wrap'
+      expect(page).to have_css 'table#mail_templates'
 
-      page.should have_content @mail_log.admin.email
-      page.should have_content @mail_log.template.title
-      page.should have_content @mail_log.user_ids.size.to_s
+      expect(page).to have_content @mail_log.admin.email
+      expect(page).to have_content @mail_log.template.title
+      expect(page).to have_content @mail_log.user_ids.size.to_s
 
-      page.should have_content @mail_template.title
-      page.should have_content @mail_template.subject
-      page.should have_content "{{user.name}} ({{user.email}})"
+      expect(page).to have_content @mail_template.title
+      expect(page).to have_content @mail_template.subject
+      expect(page).to have_content "{{user.name}} ({{user.email}})"
     end
   end
 
@@ -72,8 +72,8 @@ feature "Mails sending" do
     scenario "it's possible to send an email from a template to a selection of users" do
       go 'admin', 'mails/new'
 
-      page.should have_content "Send an email"
-      ActionMailer::Base.deliveries.should be_empty
+      expect(page).to have_content "Send an email"
+      expect(ActionMailer::Base.deliveries).to be_empty
       Sidekiq::Worker.clear_all
 
       select "##{@mail_template.id} - #{@mail_template.title}", from: "Choose a template (very carefully)"
@@ -81,20 +81,20 @@ feature "Mails sending" do
 
       click_button 'Preview email'
 
-      current_url.should eq "http://admin.sublimevideo.dev/mails/confirm"
+      expect(current_url).to eq "http://admin.sublimevideo.dev/mails/confirm"
 
       click_button 'I have triple checked, and want to send this email'
 
-      page.should have_content "Sending in progress..."
+      expect(page).to have_content "Sending in progress..."
 
       Sidekiq::Worker.drain_all
-      ActionMailer::Base.deliveries.should have(1).item
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
 
       latest_log = MailLog.by_date.first
-      latest_log.template_id.should eq @mail_template.id
-      latest_log.admin_id.should eq @current_admin.id
-      latest_log.snapshot.should eq @mail_template.snapshotize
-      latest_log.criteria.should eq "not_archived"
+      expect(latest_log.template_id).to eq @mail_template.id
+      expect(latest_log.admin_id).to eq @current_admin.id
+      expect(latest_log.snapshot).to eq @mail_template.snapshotize
+      expect(latest_log.criteria).to eq "not_archived"
     end
   end
 

@@ -12,9 +12,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it { last_delivery.to.should eq [user.email] }
-    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.welcome') }
-    it { last_delivery.body.encoded.should include "Welcome to SublimeVideo!" }
+    it { expect(last_delivery.to).to eq [user.email] }
+    it { expect(last_delivery.subject).to eq I18n.t('mailer.user_mailer.welcome') }
+    it { expect(last_delivery.body.encoded).to include "Welcome to SublimeVideo!" }
   end
 
   describe "#inactive_account" do
@@ -23,9 +23,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it { last_delivery.to.should eq [user.email] }
-    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.inactive_account') }
-    it { last_delivery.body.encoded.should include "It's been a week since you've signed up to SublimeVideo" }
+    it { expect(last_delivery.to).to eq [user.email] }
+    it { expect(last_delivery.subject).to eq I18n.t('mailer.user_mailer.inactive_account') }
+    it { expect(last_delivery.body.encoded).to include "It's been a week since you've signed up to SublimeVideo" }
   end
 
   describe "#account_suspended" do
@@ -34,9 +34,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it { last_delivery.to.should eq [user.email] }
-    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.account_suspended') }
-    it { last_delivery.body.encoded.should include "Your SublimeVideo account has been suspended due to non-payment." }
+    it { expect(last_delivery.to).to eq [user.email] }
+    it { expect(last_delivery.subject).to eq I18n.t('mailer.user_mailer.account_suspended') }
+    it { expect(last_delivery.body.encoded).to include "Your SublimeVideo account has been suspended due to non-payment." }
   end
 
   describe "#account_unsuspended" do
@@ -45,9 +45,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it { last_delivery.to.should eq [user.email] }
-    it { last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_unsuspended') }
-    it { last_delivery.body.encoded.should include "Your SublimeVideo account has been reactivated." }
+    it { expect(last_delivery.to).to eq [user.email] }
+    it { expect(last_delivery.subject).to eql I18n.t('mailer.user_mailer.account_unsuspended') }
+    it { expect(last_delivery.body.encoded).to include "Your SublimeVideo account has been reactivated." }
   end
 
   describe "#account_archived" do
@@ -56,9 +56,9 @@ describe UserMailer do
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
-    it { last_delivery.to.should eq [user.email] }
-    it { last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_archived') }
-    it { last_delivery.body.encoded.should include "This is to confirm that the cancellation of your SublimeVideo account" }
+    it { expect(last_delivery.to).to eq [user.email] }
+    it { expect(last_delivery.subject).to eql I18n.t('mailer.user_mailer.account_archived') }
+    it { expect(last_delivery.body.encoded).to include "This is to confirm that the cancellation of your SublimeVideo account" }
   end
 
 end

@@ -20,13 +20,13 @@ describe SiteManager do
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
   let(:service) { described_class.new(site) }
 
-  before { Librato.stub(:increment) }
+  before { allow(Librato).to receive(:increment) }
 
   describe '.subscribe_site_to_addon' do
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      Site.should_receive(:find) { site }
-      SiteManager.should_receive(:new).with(site) do |service|
-        service.should_receive(:update_billable_items).with({}, { 'embed' => 42 })
+      expect(Site).to receive(:find) { site }
+      expect(SiteManager).to receive(:new).with(site) do |service|
+        expect(service).to receive(:update_billable_items).with({}, { 'embed' => 42 })
         service
       end
 
@@ -36,161 +36,161 @@ describe SiteManager do
 
   describe '#create' do
     before do
-      Site.stub(:transaction).and_yield
-      service.stub(:_create_default_kit!)
-      service.stub(:_set_default_designs)
-      service.stub(:_set_default_addon_plans)
-      site.stub(:loaders_updated_at=)
-      site.stub(:settings_updated_at=)
-      site.stub(:addons_updated_at=)
-      site.stub(:save!)
+      allow(Site).to receive(:transaction).and_yield
+      allow(service).to receive(:_create_default_kit!)
+      allow(service).to receive(:_set_default_designs)
+      allow(service).to receive(:_set_default_addon_plans)
+      allow(site).to receive(:loaders_updated_at=)
+      allow(site).to receive(:settings_updated_at=)
+      allow(site).to receive(:addons_updated_at=)
+      allow(site).to receive(:save!)
     end
 
     it 'saves site twice' do
-      site.should_receive(:save!).twice
+      expect(site).to receive(:save!).twice
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
 
     pending 'returns false if a ActiveRecord::RecordInvalid is raised' do
-      site.should_receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+      expect(site).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
 
-      service.create.should be_false
+      expect(service.create).to be_falsey
     end
 
     it 'creates a default kit' do
-      service.should_receive(:_create_default_kit!)
-      service.create.should be_true
+      expect(service).to receive(:_create_default_kit!)
+      expect(service.create).to be_truthy
     end
 
     it 'sets default app designs and add-ons to site after creation' do
-      service.should_receive(:_set_default_designs)
-      service.should_receive(:_set_default_addon_plans)
+      expect(service).to receive(:_set_default_designs)
+      expect(service).to receive(:_set_default_addon_plans)
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
 
     it 'touches loaders_updated_at & settings_updated_at' do
-      site.should_receive(:loaders_updated_at=)
-      site.should_receive(:settings_updated_at=)
+      expect(site).to receive(:loaders_updated_at=)
+      expect(site).to receive(:settings_updated_at=)
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
 
     it 'delays the update of all loader stages' do
-      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+      expect(LoaderGenerator).to delay(:update_all_stages!).with(site.id)
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all!).with(site.id)
+      expect(SettingsGenerator).to delay(:update_all!).with(site.id)
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
 
     it 'delays the calculation of google and alexa ranks' do
-      RankSetter.should delay(:set_ranks, queue: 'my-low').with(site.id)
+      expect(RankSetter).to delay(:set_ranks, queue: 'my-low').with(site.id)
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
 
     it "increments metrics" do
-      Librato.should_receive(:increment).with('sites.events', source: 'create')
+      expect(Librato).to receive(:increment).with('sites.events', source: 'create')
 
-      service.create.should be_true
+      expect(service.create).to be_truthy
     end
   end
 
   describe '#update' do
     let(:attributes) { { hostname: 'test.com' } }
     before do
-      Site.stub(:transaction).and_yield
-      site.stub(:attributes=)
-      site.stub(:settings_updated_at=)
-      site.stub(:save!)
+      allow(Site).to receive(:transaction).and_yield
+      allow(site).to receive(:attributes=)
+      allow(site).to receive(:settings_updated_at=)
+      allow(site).to receive(:save!)
     end
 
     it 'assignes attributes' do
-      site.should_receive(:attributes=).with(attributes)
+      expect(site).to receive(:attributes=).with(attributes)
 
-      service.update(attributes).should be_true
+      expect(service.update(attributes)).to be_truthy
     end
 
     it 'saves site' do
-      site.should_receive(:save!)
+      expect(site).to receive(:save!)
 
-      service.update(attributes).should be_true
+      expect(service.update(attributes)).to be_truthy
     end
 
     pending 'returns false if a ActiveRecord::RecordInvalid is raised' do
-      site.should_receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+      expect(site).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
 
-      service.update(attributes).should be_false
+      expect(service.update(attributes)).to be_falsey
     end
 
     it 'touches settings_updated_at' do
-      site.should_receive(:settings_updated_at=)
+      expect(site).to receive(:settings_updated_at=)
 
-      service.update(attributes).should be_true
+      expect(service.update(attributes)).to be_truthy
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all!).with(site.id)
+      expect(SettingsGenerator).to delay(:update_all!).with(site.id)
 
-      service.update(attributes).should be_true
+      expect(service.update(attributes)).to be_truthy
     end
 
     it 'increments metrics' do
-      Librato.should_receive(:increment).with('sites.events', source: 'update')
+      expect(Librato).to receive(:increment).with('sites.events', source: 'update')
 
-      service.update(attributes).should be_true
+      expect(service.update(attributes)).to be_truthy
     end
   end
 
   describe '#update_billable_items' do
     before do
-      Site.stub(:transaction).and_yield
-      service.stub(:_update_design_subscriptions)
-      service.stub(:_update_addon_subscriptions)
-      site.stub(:loaders_updated_at=)
-      site.stub(:settings_updated_at=)
-      site.stub(:addons_updated_at=)
-      site.stub(:save!)
+      allow(Site).to receive(:transaction).and_yield
+      allow(service).to receive(:_update_design_subscriptions)
+      allow(service).to receive(:_update_addon_subscriptions)
+      allow(site).to receive(:loaders_updated_at=)
+      allow(site).to receive(:settings_updated_at=)
+      allow(site).to receive(:addons_updated_at=)
+      allow(site).to receive(:save!)
     end
 
     it 'sets designs billable items' do
-      service.should_receive(:_update_design_subscriptions).with({ foo: '0' }, {})
+      expect(service).to receive(:_update_design_subscriptions).with({ foo: '0' }, {})
 
       service.update_billable_items({ foo: '0' }, {})
     end
 
     it 'sets addon plans billable items' do
-      service.should_receive(:_update_addon_subscriptions).with({ foo: '42' }, {})
+      expect(service).to receive(:_update_addon_subscriptions).with({ foo: '42' }, {})
 
       service.update_billable_items({}, { foo: '42' })
     end
 
     it 'saves site' do
-      site.should_receive(:save!)
+      expect(site).to receive(:save!)
 
       service.update_billable_items({}, {})
     end
 
     it 'touches addons_updated_at' do
-      site.should_receive(:addons_updated_at=)
+      expect(site).to receive(:addons_updated_at=)
 
       service.update_billable_items({}, {})
     end
 
     it 'delays the update of all loader stages' do
-      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+      expect(LoaderGenerator).to delay(:update_all_stages!).with(site.id)
 
       service.update_billable_items({}, {})
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all!).with(site.id)
+      expect(SettingsGenerator).to delay(:update_all!).with(site.id)
 
       service.update_billable_items({}, {})
     end

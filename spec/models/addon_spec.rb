@@ -16,7 +16,10 @@ describe Addon do
   context 'Factory' do
     subject { create(:addon) }
 
-    its(:name) { should be_present }
+    describe '#name' do
+      subject { super().name }
+      it { should be_present }
+    end
 
     it { should be_valid }
   end
@@ -26,7 +29,7 @@ describe Addon do
       @logo_addon = create(:addon, name: 'logo')
     end
 
-    it { described_class.get('logo').should eq @logo_addon }
+    it { expect(described_class.get('logo')).to eq @logo_addon }
   end
 
   describe '#free_plan' do
@@ -37,7 +40,7 @@ describe Addon do
       @free_plan2 = create(:addon_plan, addon: @addon, price: 1995)
     end
 
-    it { @addon.free_plan.should eq @free_plan }
+    it { expect(@addon.free_plan).to eq @free_plan }
   end
 
   describe '.with_paid_plans' do
@@ -53,7 +56,7 @@ describe Addon do
       create(:addon_plan, addon: @addon3, price: 0)
     end
 
-    it { described_class.with_paid_plans.should eq [@addon1, @addon2] }
+    it { expect(described_class.with_paid_plans).to eq [@addon1, @addon2] }
   end
 
   describe '.visible' do
@@ -69,7 +72,7 @@ describe Addon do
       create(:addon_plan, addon: @addon3, price: 0, availability: 'hidden')
     end
 
-    it { described_class.visible.should eq [@addon1, @addon2] }
+    it { expect(described_class.visible).to eq [@addon1, @addon2] }
   end
 
   describe '.not_custom' do
@@ -85,7 +88,7 @@ describe Addon do
       create(:addon_plan, addon: @addon3, price: 0, availability: 'custom')
     end
 
-    it { described_class.not_custom.should eq [@addon1, @addon2] }
+    it { expect(described_class.not_custom).to eq [@addon1, @addon2] }
   end
 
 end

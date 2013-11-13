@@ -78,12 +78,12 @@ describe SiteStatsPresenter do
 
   describe '.initialize' do
     it 'takes a video tag' do
-      presenter.resource.should eq site
+      expect(presenter.resource).to eq site
     end
 
     context 'without options' do
       it 'has default options' do
-        presenter.options.should eq({ hours: 24, source: 'a' })
+        expect(presenter.options).to eq({ hours: 24, source: 'a' })
       end
     end
 
@@ -91,7 +91,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, 'hours' => 48) }
 
       it 'merge given options with default options' do
-        presenter.options.should eq({ hours: 48, source: 'a' })
+        expect(presenter.options).to eq({ hours: 48, source: 'a' })
       end
     end
   end
@@ -173,7 +173,7 @@ describe SiteStatsPresenter do
 
     context 'source == "a"' do
       it 'has 24 items' do
-        expect(presenter.loads).to have(24).items
+        expect(presenter.loads.size).to eq(24)
       end
 
       it 'has a value of 0 for missing hours' do
@@ -189,7 +189,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'w') }
 
       it 'has 24 items' do
-        expect(presenter.loads).to have(24).items
+        expect(presenter.loads.size).to eq(24)
       end
 
       it 'has a value of 0 for missing hours' do
@@ -205,7 +205,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'e') }
 
       it 'has 24 items' do
-        expect(presenter.loads).to have(24).items
+        expect(presenter.loads.size).to eq(24)
       end
 
       it 'has a value of 0 for missing hours' do
@@ -223,7 +223,7 @@ describe SiteStatsPresenter do
 
     context 'source == "a"' do
       it 'has 24 items' do
-        expect(presenter.plays).to have(24).items
+        expect(presenter.plays.size).to eq(24)
       end
 
       it 'has a value of 0 for missing hours' do
@@ -239,7 +239,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'w') }
 
       it 'has 24 items' do
-        expect(presenter.plays).to have(24).items
+        expect(presenter.plays.size).to eq(24)
       end
 
       it 'has a value of 0 for missing hours' do
@@ -255,7 +255,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'e') }
 
       it 'has 24 items' do
-        expect(presenter.plays).to have(24).items
+        expect(presenter.plays.size).to eq(24)
       end
 
       it 'has a value of 0 for missing hours' do
@@ -272,7 +272,7 @@ describe SiteStatsPresenter do
     before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
 
     it 'has 60 items' do
-      expect(presenter.last_60_minutes_loads).to have(60).items
+      expect(presenter.last_60_minutes_loads.size).to eq(60)
     end
 
     it 'has a value of 0 for missing minutes' do
@@ -288,7 +288,7 @@ describe SiteStatsPresenter do
     before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
 
     it 'has 60 items' do
-      expect(presenter.last_60_minutes_plays).to have(60).items
+      expect(presenter.last_60_minutes_plays.size).to eq(60)
     end
 
     it 'has a value of 0 for missing minutes' do
@@ -324,10 +324,10 @@ describe SiteStatsPresenter do
       stats = [[Time.utc(2013, 9, 11, 7).to_i * 1000, 13], [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]]
       filled_stats = presenter.send(:_group_and_fill_missing_values_for_last_stats, stats, field: :lo, from: Time.utc(2013, 9, 11, 6), to: Time.utc(2013, 9, 11, 9), period: :hour)
 
-      filled_stats[0].should eq [Time.utc(2013, 9, 11, 6).to_i * 1000, 0]
-      filled_stats[1].should eq [Time.utc(2013, 9, 11, 7).to_i * 1000, 13]
-      filled_stats[2].should eq [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]
-      filled_stats[3].should eq [Time.utc(2013, 9, 11, 9).to_i * 1000, 0]
+      expect(filled_stats[0]).to eq [Time.utc(2013, 9, 11, 6).to_i * 1000, 0]
+      expect(filled_stats[1]).to eq [Time.utc(2013, 9, 11, 7).to_i * 1000, 13]
+      expect(filled_stats[2]).to eq [Time.utc(2013, 9, 11, 8).to_i * 1000, 42]
+      expect(filled_stats[3]).to eq [Time.utc(2013, 9, 11, 9).to_i * 1000, 0]
     end
   end
 

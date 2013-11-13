@@ -4,7 +4,7 @@ shared_examples 'valid hostnames' do |field, value|
   it 'has no errors' do
     described_class.new(attributes: field).validate_each(@site, field, value)
 
-    @site.errors[field].should be_empty
+    expect(@site.errors[field]).to be_empty
   end
 end
 #
@@ -12,6 +12,6 @@ shared_examples 'invalid hostnames' do |field, value|
   it 'has an error' do
     described_class.new(attributes: field).validate_each(@site, field, value)
 
-    @site.errors[field].should have(1).item
+    expect(@site.errors[field].size).to eq(1)
   end
 end

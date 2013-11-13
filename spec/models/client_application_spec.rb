@@ -4,22 +4,22 @@ describe ClientApplication do
   let(:application) { create(:client_application) }
 
   it "should be valid" do
-    application.should be_valid
+    expect(application).to be_valid
   end
 
   it "should not have errors" do
-    application.errors.full_messages.should be_empty
+    expect(application.errors.full_messages).to be_empty
   end
 
   it "should have key and secret" do
-    application.key.should_not be_nil
-    application.secret.should_not be_nil
+    expect(application.key).not_to be_nil
+    expect(application.secret).not_to be_nil
   end
 
   it "should have credentials" do
-    application.credentials.should_not be_nil
-    application.credentials.key.should eql application.key
-    application.credentials.secret.should eql application.secret
+    expect(application.credentials).not_to be_nil
+    expect(application.credentials.key).to eql application.key
+    expect(application.credentials.secret).to eql application.secret
   end
 
 end

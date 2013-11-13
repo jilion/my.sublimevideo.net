@@ -4,14 +4,45 @@ describe Deal do
   context "Factory" do
     subject { create(:deal) }
 
-    its(:token)              { should be_present }
-    its(:name)               { should be_present }
-    its(:description)        { should be_nil }
-    its(:kind)               { should be_present }
-    its(:value)              { should be_nil }
-    its(:availability_scope) { should be_present }
-    its(:started_at)         { should be_present }
-    its(:ended_at)           { should be_present }
+    describe '#token' do
+      subject { super().token }
+      it              { should be_present }
+    end
+
+    describe '#name' do
+      subject { super().name }
+      it               { should be_present }
+    end
+
+    describe '#description' do
+      subject { super().description }
+      it        { should be_nil }
+    end
+
+    describe '#kind' do
+      subject { super().kind }
+      it               { should be_present }
+    end
+
+    describe '#value' do
+      subject { super().value }
+      it              { should be_nil }
+    end
+
+    describe '#availability_scope' do
+      subject { super().availability_scope }
+      it { should be_present }
+    end
+
+    describe '#started_at' do
+      subject { super().started_at }
+      it         { should be_present }
+    end
+
+    describe '#ended_at' do
+      subject { super().ended_at }
+      it           { should be_present }
+    end
 
     it { should be_valid }
   end # Factory
@@ -38,13 +69,13 @@ describe Deal do
     describe "ensure availability_scope is valid" do
       it "adds an error if availability_scope isn't valid" do
         deal = build(:deal, availability_scope: 'foo')
-        deal.should_not be_valid
-        deal.should have(1).error
+        expect(deal).not_to be_valid
+        expect(deal.errors.size).to eq(1)
       end
 
       it "doesn't add an error if availability_scope is valid" do
         deal = build(:deal, availability_scope: 'vip')
-        deal.should be_valid
+        expect(deal).to be_valid
       end
     end
   end
@@ -58,7 +89,7 @@ describe Deal do
         after { Timecop.return }
 
         it "returns an empty array" do
-          described_class.active.should be_empty
+          expect(described_class.active).to be_empty
         end
       end
 
@@ -67,13 +98,13 @@ describe Deal do
         after { Timecop.return }
 
         it "returns an empty array" do
-          described_class.active.should be_empty
+          expect(described_class.active).to be_empty
         end
       end
 
       context "now is between the deal start and end date" do
         it "returns the deal" do
-          described_class.active.should eq [@deal]
+          expect(described_class.active).to eq [@deal]
         end
       end
     end
@@ -109,15 +140,15 @@ describe Deal do
       let(:deal)                      { create(:deal, availability_scope: 'vip') }
 
       it "return false if user is nil" do
-        deal.available_to?(nil).should be_false
+        expect(deal.available_to?(nil)).to be_falsey
       end
 
       it "return false if user isn't included in the availability_scope" do
-        deal.available_to?(user_dont_use_for_clients).should be_false
+        expect(deal.available_to?(user_dont_use_for_clients)).to be_falsey
       end
 
       it "return true if user is included in the availability_scope" do
-        deal.available_to?(user_use_for_clients).should be_true
+        expect(deal.available_to?(user_use_for_clients)).to be_truthy
       end
     end
   end

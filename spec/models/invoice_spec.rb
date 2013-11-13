@@ -6,13 +6,40 @@ describe Invoice, :addons do
   describe "Factory" do
     subject { create(:invoice) }
 
-    its(:site)                     { should be_present }
-    its(:reference)                { should =~ /^[a-z1-9]{8}$/ }
-    its(:invoice_items_amount)     { should eql 9999 }
-    its(:balance_deduction_amount) { should eql 0 }
-    its(:amount)                   { should eql 9999 }
-    its(:paid_at)                  { should be_nil }
-    its(:last_failed_at)           { should be_nil }
+    describe '#site' do
+      subject { super().site }
+      it                     { should be_present }
+    end
+
+    describe '#reference' do
+      subject { super().reference }
+      it                { should =~ /^[a-z1-9]{8}$/ }
+    end
+
+    describe '#invoice_items_amount' do
+      subject { super().invoice_items_amount }
+      it     { should eql 9999 }
+    end
+
+    describe '#balance_deduction_amount' do
+      subject { super().balance_deduction_amount }
+      it { should eql 0 }
+    end
+
+    describe '#amount' do
+      subject { super().amount }
+      it                   { should eql 9999 }
+    end
+
+    describe '#paid_at' do
+      subject { super().paid_at }
+      it                  { should be_nil }
+    end
+
+    describe '#last_failed_at' do
+      subject { super().last_failed_at }
+      it           { should be_nil }
+    end
 
     it { should be_open } # initial state
     it { should be_valid }
@@ -67,7 +94,7 @@ describe Invoice, :addons do
           @new_invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
         end
 
-        it { @new_invoice.should_not be_valid }
+        it { expect(@new_invoice).not_to be_valid }
       end
     end
   end # Validations
@@ -83,33 +110,33 @@ describe Invoice, :addons do
     describe "Transitions" do
       describe "before_transition on: :succeed" do
         it "sets paid_at" do
-          invoice.paid_at.should be_nil
+          expect(invoice.paid_at).to be_nil
 
           invoice.succeed!
 
-          invoice.paid_at.should be_present
+          expect(invoice.paid_at).to be_present
         end
 
         context "with last_failed_at present" do
           let(:failed_invoice) { create(:failed_invoice) }
 
           it "clears last_failed_at" do
-            failed_invoice.last_failed_at.should be_present
+            expect(failed_invoice.last_failed_at).to be_present
 
             failed_invoice.succeed!
 
-            failed_invoice.last_failed_at.should be_nil
+            expect(failed_invoice.last_failed_at).to be_nil
           end
         end
       end
 
       describe "before_transition on: :fail" do
         it "sets last_failed_at" do
-          invoice.last_failed_at.should be_nil
+          expect(invoice.last_failed_at).to be_nil
 
           invoice.fail!
 
-          invoice.last_failed_at.should be_present
+          expect(invoice.last_failed_at).to be_present
         end
       end
 
@@ -133,8 +160,8 @@ describe Invoice, :addons do
           invoice.succeed!
 
           invoice.user.reload
-          invoice.user.last_invoiced_amount.should_not eq old_user_last_invoiced_amount
-          invoice.user.total_invoiced_amount.should_not eq old_user_total_invoiced_amount
+          expect(invoice.user.last_invoiced_amount).not_to eq old_user_last_invoiced_amount
+          expect(invoice.user.total_invoiced_amount).not_to eq old_user_total_invoiced_amount
         end
       end
 
@@ -144,13 +171,13 @@ describe Invoice, :addons do
             context "from #{state}" do
               before do
                 invoice.reload.update(state: state, amount: 0)
-                invoice.user.should be_active
+                expect(invoice.user).to be_active
               end
 
               it "doesnt un-suspend the user" do
                 invoice.succeed!
 
-                invoice.user.reload.should be_active
+                expect(invoice.user.reload).to be_active
               end
             end
           end
@@ -162,14 +189,14 @@ describe Invoice, :addons do
               before do
                 invoice.reload.update(state: state, amount: 0)
                 invoice.user.update_attribute(:state, 'suspended')
-                invoice.user.should be_suspended
+                expect(invoice.user).to be_suspended
               end
 
               context "with no more open invoice" do
                 it "un-suspends user" do
                   invoice.succeed!
 
-                  invoice.user.reload.should be_active
+                  expect(invoice.user.reload).to be_active
                 end
               end
 
@@ -181,7 +208,7 @@ describe Invoice, :addons do
                 it "doesnt un-suspend the user" do
                   invoice.succeed!
 
-                  invoice.user.reload.should be_suspended
+                  expect(invoice.user.reload).to be_suspended
                 end
               end
             end
@@ -193,11 +220,11 @@ describe Invoice, :addons do
         it "increments user balance" do
           invoice.update_attribute(:balance_deduction_amount, 2000)
           invoice.user.update_attribute(:balance, 1000)
-          invoice.should be_open
+          expect(invoice).to be_open
 
           expect { invoice.cancel! }.to change(invoice.user.reload, :balance).from(1000).to(3000)
 
-          invoice.should be_canceled
+          expect(invoice).to be_canceled
         end
       end
 
@@ -217,42 +244,42 @@ describe Invoice, :addons do
         @canceled_invoice = create(:canceled_invoice, site: site, created_at: 14.hours.ago)
         @refunded_invoice = create(:paid_invoice, site: refunded_site, created_at: 14.hours.ago)
 
-        @open_invoice.should be_open
-        @failed_invoice.should be_failed
-        @waiting_invoice.should be_waiting
-        @paid_invoice.should be_paid
-        @canceled_invoice.should be_canceled
-        @refunded_invoice.should be_refunded
+        expect(@open_invoice).to be_open
+        expect(@failed_invoice).to be_failed
+        expect(@waiting_invoice).to be_waiting
+        expect(@paid_invoice).to be_paid
+        expect(@canceled_invoice).to be_canceled
+        expect(@refunded_invoice).to be_refunded
       end
 
       describe '.between' do
-        specify { described_class.where(created_at: 24.hours.ago..15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
+        specify { expect(described_class.where(created_at: 24.hours.ago..15.hours.ago).order(:id)).to eq [@waiting_invoice, @paid_invoice] }
       end
 
       describe '.with_state' do
-        specify { Invoice.with_state('open').order(:id).should eq [@open_invoice] }
-        specify { Invoice.with_state('failed').order(:id).should eq [@failed_invoice] }
-        specify { Invoice.with_state('waiting').order(:id).should eq [@waiting_invoice] }
+        specify { expect(Invoice.with_state('open').order(:id)).to eq [@open_invoice] }
+        specify { expect(Invoice.with_state('failed').order(:id)).to eq [@failed_invoice] }
+        specify { expect(Invoice.with_state('waiting').order(:id)).to eq [@waiting_invoice] }
       end
 
       describe '.paid' do
-        specify { Invoice.paid.order(:id).should eq [@paid_invoice] }
+        specify { expect(Invoice.paid.order(:id)).to eq [@paid_invoice] }
       end
 
       describe '.refunded' do
-        specify { described_class.refunded.order(:id).should eq [@refunded_invoice] }
+        specify { expect(described_class.refunded.order(:id)).to eq [@refunded_invoice] }
       end
 
       describe '.open_or_failed' do
-        specify { described_class.open_or_failed.order(:id).should eq [@open_invoice, @failed_invoice] }
+        specify { expect(described_class.open_or_failed.order(:id)).to eq [@open_invoice, @failed_invoice] }
       end
 
       describe '.not_canceled' do
-        specify { described_class.not_canceled.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
+        specify { expect(described_class.not_canceled.order(:id)).to eq [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
       end
 
       describe '.not_paid' do
-        specify { described_class.not_paid.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice] }
+        specify { expect(described_class.not_paid.order(:id)).to eq [@open_invoice, @failed_invoice, @waiting_invoice] }
       end
 
       describe '.for_month & .for_period' do
@@ -266,11 +293,11 @@ describe Invoice, :addons do
         end
 
         describe '.for_month' do
-          specify { described_class.for_month(1.months.ago).order(:id).should eq [open_invoice, paid_invoice] }
+          specify { expect(described_class.for_month(1.months.ago).order(:id)).to eq [open_invoice, paid_invoice] }
         end
 
         describe '.for_period' do
-          specify { described_class.for_period(1.months.ago.all_month).order(:id).should eq [open_invoice, paid_invoice] }
+          specify { expect(described_class.for_period(1.months.ago.all_month).order(:id)).to eq [open_invoice, paid_invoice] }
         end
       end
     end
@@ -278,11 +305,11 @@ describe Invoice, :addons do
     describe '.search' do
       let!(:invoice) { create(:invoice, site: site) }
 
-      specify { described_class.search(invoice.reference).should eq [invoice] }
-      specify { described_class.search(invoice.site.hostname).should eq [invoice] }
-      specify { described_class.search(invoice.site.dev_hostnames).should eq [invoice] }
-      specify { described_class.search(invoice.user.email).should eq [invoice] }
-      specify { described_class.search(invoice.user.name).should eq [invoice] }
+      specify { expect(described_class.search(invoice.reference)).to eq [invoice] }
+      specify { expect(described_class.search(invoice.site.hostname)).to eq [invoice] }
+      specify { expect(described_class.search(invoice.site.dev_hostnames)).to eq [invoice] }
+      specify { expect(described_class.search(invoice.user.email)).to eq [invoice] }
+      specify { expect(described_class.search(invoice.user.name)).to eq [invoice] }
     end
   end # Scopes
 
@@ -291,12 +318,12 @@ describe Invoice, :addons do
       let(:invoice) { create(:invoice) }
 
       it 'sets customer & site info' do
-        invoice.customer_full_name.should eq invoice.user.billing_name
-        invoice.customer_email.should eq invoice.user.billing_email
-        invoice.customer_country.should eq invoice.user.billing_country
-        invoice.customer_company_name.should eq invoice.user.company_name
-        invoice.customer_billing_address.should eq invoice.user.billing_address
-        invoice.site_hostname.should eq invoice.site.hostname
+        expect(invoice.customer_full_name).to eq invoice.user.billing_name
+        expect(invoice.customer_email).to eq invoice.user.billing_email
+        expect(invoice.customer_country).to eq invoice.user.billing_country
+        expect(invoice.customer_company_name).to eq invoice.user.company_name
+        expect(invoice.customer_billing_address).to eq invoice.user.billing_address
+        expect(invoice.site_hostname).to eq invoice.site.hostname
       end
     end
 
@@ -309,8 +336,8 @@ describe Invoice, :addons do
         it 'succeeds the invoice and decrements its user balance' do
           invoice.save!
 
-          invoice.user.balance.should eq 2000
-          invoice.should be_paid
+          expect(invoice.user.balance).to eq 2000
+          expect(invoice).to be_paid
         end
       end
     end
@@ -331,11 +358,11 @@ describe Invoice, :addons do
     let(:invoice) { @invoice }
 
     describe "#first_paid_item" do
-      it { invoice.reload.first_paid_item.should eq @paid_plan }
+      it { expect(invoice.reload.first_paid_item).to eq @paid_plan }
     end
 
     describe "#last_transaction" do
-      it { invoice.last_transaction.should eq @paid_transaction }
+      it { expect(invoice.last_transaction).to eq @paid_transaction }
     end
 
   end # Instance Methods

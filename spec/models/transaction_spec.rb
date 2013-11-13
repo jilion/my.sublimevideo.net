@@ -13,14 +13,45 @@ describe Transaction, :vcr do
   context "Factory" do
     subject { transaction }
 
-    its(:user)      { should be_present }
-    its(:invoices)  { should be_present }
-    its(:order_id)  { should =~ /^[a-z0-9]{30}$/ }
-    its(:amount)    { should eq open_invoice.amount + failed_invoice.amount }
-    its(:pay_id)    { should be_nil }
-    its(:nc_status) { should be_nil }
-    its(:status)    { should be_nil }
-    its(:error)     { should be_nil }
+    describe '#user' do
+      subject { super().user }
+      it      { should be_present }
+    end
+
+    describe '#invoices' do
+      subject { super().invoices }
+      it  { should be_present }
+    end
+
+    describe '#order_id' do
+      subject { super().order_id }
+      it  { should =~ /^[a-z0-9]{30}$/ }
+    end
+
+    describe '#amount' do
+      subject { super().amount }
+      it    { should eq open_invoice.amount + failed_invoice.amount }
+    end
+
+    describe '#pay_id' do
+      subject { super().pay_id }
+      it    { should be_nil }
+    end
+
+    describe '#nc_status' do
+      subject { super().nc_status }
+      it { should be_nil }
+    end
+
+    describe '#status' do
+      subject { super().status }
+      it    { should be_nil }
+    end
+
+    describe '#error' do
+      subject { super().error }
+      it     { should be_nil }
+    end
 
     it { should be_unprocessed } # initial state
     it { should be_valid }
@@ -35,7 +66,10 @@ describe Transaction, :vcr do
     describe "#at_least_one_invoice" do
       # subject { build(:transaction) }
 
-      its(:invoices) { should be_empty }
+      describe '#invoices' do
+        subject { super().invoices }
+        it { should be_empty }
+      end
       specify { should_not be_valid }
       specify { should have(1).error_on(:base) }
     end
@@ -58,21 +92,21 @@ describe Transaction, :vcr do
   describe "Callbacks" do
     describe "before_create :reject_paid_invoices" do
       it "should reject any paid invoices" do
-        new_transaction.invoices.should =~ [open_invoice, paid_invoice, failed_invoice]
+        expect(new_transaction.invoices).to match_array([open_invoice, paid_invoice, failed_invoice])
 
         new_transaction.save!
 
-        new_transaction.reload.invoices.should =~ [open_invoice, failed_invoice]
+        expect(new_transaction.reload.invoices).to match_array([open_invoice, failed_invoice])
       end
     end
 
     describe "before_create :set_user_id" do
       it "should set user_id" do
-        new_transaction.user.should be_nil
+        expect(new_transaction.user).to be_nil
 
         new_transaction.save!
 
-        new_transaction.reload.user.should eq open_invoice.user
+        expect(new_transaction.reload.user).to eq open_invoice.user
       end
     end
 
@@ -83,9 +117,9 @@ describe Transaction, :vcr do
 
           new_transaction.save!
 
-          new_transaction.pay_id.should be_nil
-          new_transaction.status.should be_nil
-          new_transaction.error.should  be_nil
+          expect(new_transaction.pay_id).to be_nil
+          expect(new_transaction.status).to be_nil
+          expect(new_transaction.error).to  be_nil
         end
       end
 
@@ -103,21 +137,21 @@ describe Transaction, :vcr do
 
           new_transaction.save!
 
-          new_transaction.pay_id.should    eq "123"
-          new_transaction.nc_status.should eq 0
-          new_transaction.status.should    eq 9
-          new_transaction.error.should     eq "!"
+          expect(new_transaction.pay_id).to    eq "123"
+          expect(new_transaction.nc_status).to eq 0
+          expect(new_transaction.status).to    eq 9
+          expect(new_transaction.error).to     eq "!"
         end
       end
     end
 
     describe "before_create :set_amount" do
       it "should set transaction amount to the sum of all its invoices amount" do
-        new_transaction.amount.should be_nil
+        expect(new_transaction.amount).to be_nil
 
         new_transaction.save!
 
-        new_transaction.reload.amount.should eq open_invoice.amount + failed_invoice.amount
+        expect(new_transaction.reload.amount).to eq open_invoice.amount + failed_invoice.amount
       end
     end
   end # Callbacks
@@ -136,7 +170,7 @@ describe Transaction, :vcr do
             it 'sets the state to waiting_d3d' do
               transaction.wait_d3d
 
-              transaction.state.should eq 'waiting_d3d'
+              expect(transaction.state).to eq 'waiting_d3d'
             end
           end
         end
@@ -148,7 +182,7 @@ describe Transaction, :vcr do
             it 'does not change the state' do
               transaction.wait_d3d
 
-              transaction.state.should eq state
+              expect(transaction.state).to eq state
             end
           end
         end
@@ -162,7 +196,7 @@ describe Transaction, :vcr do
             it 'sets the state to paid' do
               transaction.succeed
 
-              transaction.state.should eq 'paid'
+              expect(transaction.state).to eq 'paid'
             end
           end
         end
@@ -174,7 +208,7 @@ describe Transaction, :vcr do
             it 'does not change the state' do
               transaction.succeed
 
-              transaction.state.should eq state
+              expect(transaction.state).to eq state
             end
           end
         end
@@ -188,7 +222,7 @@ describe Transaction, :vcr do
             it 'sets the state to failed' do
               transaction.fail
 
-              transaction.state.should eq 'failed'
+              expect(transaction.state).to eq 'failed'
             end
           end
         end
@@ -200,7 +234,7 @@ describe Transaction, :vcr do
             it 'does not change the state' do
               transaction.fail
 
-              transaction.state.should eq state
+              expect(transaction.state).to eq state
             end
           end
         end
@@ -211,8 +245,8 @@ describe Transaction, :vcr do
       describe "after_transition on: [:succeed, :fail], do: :update_invoices" do
         describe "on :succeed" do
           it 'calls succeed on each of the transaction invoices' do
-            open_invoice.should_receive(:succeed!)
-            failed_invoice.should_receive(:succeed!)
+            expect(open_invoice).to receive(:succeed!)
+            expect(failed_invoice).to receive(:succeed!)
 
             transaction.succeed
           end
@@ -220,8 +254,8 @@ describe Transaction, :vcr do
 
         describe "on :fail" do
           it 'calls fail on each of the transaction invoices' do
-            open_invoice.should_receive(:fail!)
-            failed_invoice.should_receive(:fail!)
+            expect(open_invoice).to receive(:fail!)
+            expect(failed_invoice).to receive(:fail!)
 
             transaction.fail
           end
@@ -231,7 +265,7 @@ describe Transaction, :vcr do
       describe "after_transition on: :succeed, do: :send_charging_succeeded_email" do
         context "from open" do
           it "should send an email to invoice.user" do
-            BillingMailer.should delay(:transaction_succeeded).with(transaction.id)
+            expect(BillingMailer).to delay(:transaction_succeeded).with(transaction.id)
             transaction.succeed
           end
         end
@@ -240,7 +274,7 @@ describe Transaction, :vcr do
       describe "after_transition on: :fail, do: :send_charging_failed_email" do
         context "from open" do
           it "should send an email to invoice.user" do
-            BillingMailer.should delay(:transaction_failed).with(transaction.id)
+            expect(BillingMailer).to delay(:transaction_failed).with(transaction.id)
             transaction.fail
           end
         end
@@ -257,7 +291,7 @@ describe Transaction, :vcr do
     end
 
     describe "#failed" do
-      specify { Transaction.failed.should =~ [@failed_transaction] }
+      specify { expect(Transaction.failed).to match_array([@failed_transaction]) }
     end
   end # Scopes
 
@@ -276,14 +310,14 @@ describe Transaction, :vcr do
       end
 
       it "delays invoice charging for each active user (and only once!) with open or failed invoices" do
-        Transaction.should delay(:charge_invoices_by_user_id).with(site1.user.id)
+        expect(Transaction).to delay(:charge_invoices_by_user_id).with(site1.user.id)
 
         Transaction.charge_invoices
       end
 
       it "delays invoice charging only once per user" do
-        Transaction.stub(:delay) { double(charge_invoices_by_user_id: true) }
-        Transaction.should_receive(:delay).once
+        allow(Transaction).to receive(:delay) { double(charge_invoices_by_user_id: true) }
+        expect(Transaction).to receive(:delay).once
 
         Transaction.charge_invoices
       end
@@ -292,7 +326,7 @@ describe Transaction, :vcr do
     describe ".charge_invoices_by_user_id" do
       let(:user) { create(:user_no_cc, valid_cc_attributes) }
       before do
-        NewsletterSubscriptionManager.stub(:subscribe)
+        allow(NewsletterSubscriptionManager).to receive(:subscribe)
         user2 = create(:user_no_cc, valid_cc_attributes)
         site3 = create(:site, user: user2)
         @invoice1 = create(:invoice, site: site1, state: 'paid') # first invoice
@@ -302,46 +336,46 @@ describe Transaction, :vcr do
       end
 
       it "delays invoice charging for failed & open invoices" do
-        @invoice1.reload.should be_paid
-        @invoice2.reload.should be_failed
-        @invoice3.reload.should be_open
-        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice2.id, @invoice3.id]).and_return(an_instance_of(Transaction))
+        expect(@invoice1.reload).to be_paid
+        expect(@invoice2.reload).to be_failed
+        expect(@invoice3.reload).to be_open
+        expect(Transaction).to receive(:charge_by_invoice_ids).with([@invoice2.id, @invoice3.id]).and_return(an_instance_of(Transaction))
 
         Transaction.charge_invoices_by_user_id(user.id)
       end
 
       it "charges invoices" do
-        @invoice1.reload.should be_paid
-        @invoice2.reload.should be_failed
-        @invoice3.reload.should be_open
+        expect(@invoice1.reload).to be_paid
+        expect(@invoice2.reload).to be_failed
+        expect(@invoice3.reload).to be_open
 
         Transaction.charge_invoices_by_user_id(user.id)
 
-        @invoice1.reload.should be_paid
-        @invoice2.reload.should be_paid
-        @invoice3.reload.should be_paid
+        expect(@invoice1.reload).to be_paid
+        expect(@invoice2.reload).to be_paid
+        expect(@invoice3.reload).to be_paid
       end
 
       context "invoice with 15 failed transactions or more" do
         it "doesn't try to charge the invoice" do
           15.times { create(:transaction, invoices: [@invoice2], state: 'failed') }
-          Transaction.should_not_receive(:charge_by_invoice_ids)
+          expect(Transaction).not_to receive(:charge_by_invoice_ids)
 
           Transaction.charge_invoices_by_user_id(user.id)
 
-          @invoice2.reload.should be_failed
+          expect(@invoice2.reload).to be_failed
         end
 
         context "invoice is not the first one" do
           context "user is not a vip" do
             it "suspend the user" do
               15.times { create(:transaction, invoices: [@invoice2], state: 'failed') }
-              Transaction.should_not_receive(:charge_by_invoice_ids)
+              expect(Transaction).not_to receive(:charge_by_invoice_ids)
 
               Transaction.charge_invoices_by_user_id(user.id)
 
-              @invoice2.reload.should be_failed
-              user.reload.should be_suspended
+              expect(@invoice2.reload).to be_failed
+              expect(user.reload).to be_suspended
             end
           end
 
@@ -352,12 +386,12 @@ describe Transaction, :vcr do
 
             it "doesn't suspend the user" do
               15.times { create(:transaction, invoices: [@invoice2], state: 'failed') }
-              Transaction.should_not_receive(:charge_by_invoice_ids)
+              expect(Transaction).not_to receive(:charge_by_invoice_ids)
 
               Transaction.charge_invoices_by_user_id(user.id)
 
-              @invoice2.reload.should be_failed
-              user.reload.should be_active
+              expect(@invoice2.reload).to be_failed
+              expect(user.reload).to be_active
             end
           end
         end
@@ -369,7 +403,7 @@ describe Transaction, :vcr do
 
       context "with a credit card alias" do
         it "charges OgoneWrapper for the total amount of the open and failed invoices" do
-          OgoneWrapper.should_receive(:purchase).with(open_invoice.amount + failed_invoice.amount, user.cc_alias, {
+          expect(OgoneWrapper).to receive(:purchase).with(open_invoice.amount + failed_invoice.amount, user.cc_alias, {
             order_id: an_instance_of(String),
             description: an_instance_of(String),
             email: user.reload.email,
@@ -387,43 +421,43 @@ describe Transaction, :vcr do
         it "stores cc info from the user's cc info" do
           Transaction.charge_by_invoice_ids([open_invoice.id, failed_invoice.id, paid_invoice.id])
 
-          open_invoice.last_transaction.cc_type.should        eq user.cc_type
-          open_invoice.last_transaction.cc_last_digits.should eq user.cc_last_digits
-          open_invoice.last_transaction.cc_expire_on.should   eq user.cc_expire_on
+          expect(open_invoice.last_transaction.cc_type).to        eq user.cc_type
+          expect(open_invoice.last_transaction.cc_last_digits).to eq user.cc_last_digits
+          expect(open_invoice.last_transaction.cc_expire_on).to   eq user.cc_expire_on
         end
       end
 
       context "with a succeeding purchase" do
         context "credit card" do
           it "sets transaction and invoices to paid state" do
-            open_invoice.should be_open
-            Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card }).should be_true
-            open_invoice.last_transaction.should be_paid
-            open_invoice.reload.should be_paid
+            expect(open_invoice).to be_open
+            expect(Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })).to be_truthy
+            expect(open_invoice.last_transaction).to be_paid
+            expect(open_invoice.reload).to be_paid
           end
         end
 
         context "alias" do
           it "sets transaction and invoices to paid state" do
-            open_invoice.should be_open
-            Transaction.charge_by_invoice_ids([open_invoice.id]).should be_true
-            open_invoice.last_transaction.should be_paid
-            open_invoice.reload.should be_paid
+            expect(open_invoice).to be_open
+            expect(Transaction.charge_by_invoice_ids([open_invoice.id])).to be_truthy
+            expect(open_invoice.last_transaction).to be_paid
+            expect(open_invoice.reload).to be_paid
           end
         end
 
         context "with a purchase that need a 3d secure authentication" do
           before do
-            OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
+            allow(OgoneWrapper).to receive(:purchase) { double('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
           end
 
           context "alias" do
             it "should set transaction and invoices to waiting_d3d state" do
-              open_invoice.should be_open
-              Transaction.charge_by_invoice_ids([open_invoice.id]).should be_true
-              open_invoice.last_transaction.should be_failed
-              open_invoice.last_transaction.error.should eq "!"
-              open_invoice.reload.should be_failed
+              expect(open_invoice).to be_open
+              expect(Transaction.charge_by_invoice_ids([open_invoice.id])).to be_truthy
+              expect(open_invoice.last_transaction).to be_failed
+              expect(open_invoice.last_transaction.error).to eq "!"
+              expect(open_invoice.reload).to be_failed
             end
           end
         end
@@ -431,51 +465,51 @@ describe Transaction, :vcr do
 
       context "with a failing purchase" do
         context "with a purchase that raise an error" do
-          before { OgoneWrapper.stub(:purchase).and_raise("Purchase error!") }
+          before { allow(OgoneWrapper).to receive(:purchase).and_raise("Purchase error!") }
           it "should set transaction and invoices to failed state" do
-            open_invoice.should be_open
+            expect(open_invoice).to be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
-            open_invoice.last_transaction.should be_unprocessed
-            open_invoice.reload.should be_open
+            expect(open_invoice.last_transaction).to be_unprocessed
+            expect(open_invoice.reload).to be_open
           end
         end
 
         context "with a failing purchase due to an invalid credit card" do
-          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
+          before { allow(OgoneWrapper).to receive(:purchase) { double('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
           it "should set transaction and invoices to failed state" do
-            open_invoice.should be_open
+            expect(open_invoice).to be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
-            open_invoice.last_transaction.should be_failed
-            open_invoice.reload.should be_failed
+            expect(open_invoice.last_transaction).to be_failed
+            expect(open_invoice.reload).to be_failed
           end
         end
 
         context "with a failing purchase due to a refused purchase" do
-          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
+          before { allow(OgoneWrapper).to receive(:purchase) { double('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
           it "should set transaction and invoices to failed state" do
-            open_invoice.should be_open
+            expect(open_invoice).to be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
-            open_invoice.reload.should be_failed
+            expect(open_invoice.reload).to be_failed
           end
         end
 
         context "with a failing purchase due to a waiting authorization" do
-          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
+          before { allow(OgoneWrapper).to receive(:purchase) { double('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
           it "should not succeed nor fail transaction nor invoices" do
-            open_invoice.should be_open
+            expect(open_invoice).to be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
-            open_invoice.last_transaction.should be_waiting
-            open_invoice.reload.should be_waiting
+            expect(open_invoice.last_transaction).to be_waiting
+            expect(open_invoice.reload).to be_waiting
           end
         end
 
         context "with a failing purchase due to a uncertain result" do
-          before { OgoneWrapper.stub(:purchase) { double('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
+          before { allow(OgoneWrapper).to receive(:purchase) { double('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
           it "should not succeed nor fail transaction nor invoices, with status 2" do
-            open_invoice.should be_open
+            expect(open_invoice).to be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
-            open_invoice.last_transaction.should be_waiting
-            open_invoice.reload.should be_waiting
+            expect(open_invoice.last_transaction).to be_waiting
+            expect(open_invoice.reload).to be_waiting
           end
         end
 
@@ -548,144 +582,144 @@ describe Transaction, :vcr do
 
       context "STATUS is 9" do
         it "puts transaction in 'paid' state" do
-          subject.should be_unprocessed
+          expect(subject).to be_unprocessed
 
           subject.process_payment_response(@success_params)
 
-          subject.reload.should   be_paid
-          open_invoice.reload.should be_paid
-          failed_invoice.reload.should be_paid
+          expect(subject.reload).to   be_paid
+          expect(open_invoice.reload).to be_paid
+          expect(failed_invoice.reload).to be_paid
         end
       end
 
       context "STATUS is 51" do
         it "puts transaction in 'waiting' state" do
-          subject.should be_unprocessed
+          expect(subject).to be_unprocessed
 
           subject.process_payment_response(@waiting_params)
 
-          subject.reload.should    be_waiting
-          subject.nc_status.should eq 0
-          subject.status.should    eq 51
-          subject.error.should     eq "waiting"
-          open_invoice.reload.should  be_waiting
-          failed_invoice.reload.should  be_waiting
+          expect(subject.reload).to    be_waiting
+          expect(subject.nc_status).to eq 0
+          expect(subject.status).to    eq 51
+          expect(subject.error).to     eq "waiting"
+          expect(open_invoice.reload).to  be_waiting
+          expect(failed_invoice.reload).to  be_waiting
         end
       end
 
       context "STATUS is 0" do
         it "puts transaction in 'failed' state" do
-          subject.should be_unprocessed
+          expect(subject).to be_unprocessed
 
           subject.process_payment_response(@invalid_params)
 
-          subject.reload.should    be_failed
-          subject.nc_status.should eq 5
-          subject.status.should    eq 0
-          subject.error.should     eq "invalid"
-          open_invoice.reload.should  be_failed
-          failed_invoice.reload.should  be_failed
+          expect(subject.reload).to    be_failed
+          expect(subject.nc_status).to eq 5
+          expect(subject.status).to    eq 0
+          expect(subject.error).to     eq "invalid"
+          expect(open_invoice.reload).to  be_failed
+          expect(failed_invoice.reload).to  be_failed
         end
       end
 
       context "STATUS is 46" do
         it "puts transaction in 'failed' state" do
-          subject.should be_unprocessed
-          subject.error.should be_nil
+          expect(subject).to be_unprocessed
+          expect(subject.error).to be_nil
 
           subject.process_payment_response(@d3d_params)
 
-          subject.reload.should   be_failed
-          subject.error.should    eq "!"
-          open_invoice.reload.should be_failed
-          failed_invoice.reload.should be_failed
+          expect(subject.reload).to   be_failed
+          expect(subject.error).to    eq "!"
+          expect(open_invoice.reload).to be_failed
+          expect(failed_invoice.reload).to be_failed
         end
       end
 
       context "STATUS is 93" do
         it "puts transaction in 'failed' state" do
-          subject.should be_unprocessed
+          expect(subject).to be_unprocessed
 
           subject.process_payment_response(@refused_params)
 
-          subject.reload.should    be_failed
-          subject.nc_status.should eq 3
-          subject.status.should    eq 93
-          subject.error.should     eq "refused"
+          expect(subject.reload).to    be_failed
+          expect(subject.nc_status).to eq 3
+          expect(subject.status).to    eq 93
+          expect(subject.error).to     eq "refused"
 
-          open_invoice.reload.should be_failed
-          failed_invoice.reload.should be_failed
+          expect(open_invoice.reload).to be_failed
+          expect(failed_invoice.reload).to be_failed
         end
       end
 
       context "STATUS is 92" do
         it "puts transaction in 'waiting' state" do
-          subject.should be_unprocessed
-          Notifier.should_receive(:send)
+          expect(subject).to be_unprocessed
+          expect(Notifier).to receive(:send)
 
           subject.process_payment_response(@unknown_params)
 
-          subject.reload.should    be_waiting
-          subject.nc_status.should eq 2
-          subject.status.should    eq 92
-          subject.error.should     eq "unknown"
+          expect(subject.reload).to    be_waiting
+          expect(subject.nc_status).to eq 2
+          expect(subject.status).to    eq 92
+          expect(subject.error).to     eq "unknown"
 
-          open_invoice.reload.should be_waiting
-          failed_invoice.reload.should be_waiting
+          expect(open_invoice.reload).to be_waiting
+          expect(failed_invoice.reload).to be_waiting
         end
       end
 
       context "first STATUS is 51, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
-          subject.should be_unprocessed
+          expect(subject).to be_unprocessed
 
           subject.process_payment_response(@waiting_params)
 
-          subject.reload.should    be_waiting
-          subject.nc_status.should eq 0
-          subject.status.should    eq 51
-          subject.error.should     eq "waiting"
-          subject.should be_waiting
+          expect(subject.reload).to    be_waiting
+          expect(subject.nc_status).to eq 0
+          expect(subject.status).to    eq 51
+          expect(subject.error).to     eq "waiting"
+          expect(subject).to be_waiting
 
-          open_invoice.reload.should be_waiting
-          failed_invoice.reload.should be_waiting
+          expect(open_invoice.reload).to be_waiting
+          expect(failed_invoice.reload).to be_waiting
 
           subject.process_payment_response(@success_params)
 
-          subject.reload.should    be_paid
-          subject.nc_status.should eq 0
-          subject.status.should    eq 9
-          subject.error.should     eq "!"
+          expect(subject.reload).to    be_paid
+          expect(subject.nc_status).to eq 0
+          expect(subject.status).to    eq 9
+          expect(subject.error).to     eq "!"
 
-          open_invoice.reload.should be_paid
-          failed_invoice.reload.should be_paid
+          expect(open_invoice.reload).to be_paid
+          expect(failed_invoice.reload).to be_paid
         end
       end
 
       context "first STATUS is 92, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
-          subject.should be_unprocessed
-          Notifier.should_receive(:send)
+          expect(subject).to be_unprocessed
+          expect(Notifier).to receive(:send)
 
           subject.process_payment_response(@unknown_params)
 
-          subject.reload.should    be_waiting
-          subject.nc_status.should eq 2
-          subject.status.should    eq 92
-          subject.error.should     eq "unknown"
+          expect(subject.reload).to    be_waiting
+          expect(subject.nc_status).to eq 2
+          expect(subject.status).to    eq 92
+          expect(subject.error).to     eq "unknown"
 
-          open_invoice.reload.should be_waiting
-          failed_invoice.reload.should be_waiting
+          expect(open_invoice.reload).to be_waiting
+          expect(failed_invoice.reload).to be_waiting
 
           subject.process_payment_response(@success_params)
 
-          subject.reload.should be_paid
-          subject.nc_status.should eq 0
-          subject.status.should    eq 9
-          subject.error.should     eq "!"
+          expect(subject.reload).to be_paid
+          expect(subject.nc_status).to eq 0
+          expect(subject.status).to    eq 9
+          expect(subject.error).to     eq "!"
 
-          open_invoice.reload.should be_paid
-          failed_invoice.reload.should be_paid
+          expect(open_invoice.reload).to be_paid
+          expect(failed_invoice.reload).to be_paid
         end
       end
     end
@@ -694,7 +728,7 @@ describe Transaction, :vcr do
       subject { create(:transaction, invoices: [open_invoice, failed_invoice]) }
 
       it "should create a description with invoices references" do
-        subject.description.should eq "##{open_invoice.reference},##{failed_invoice.reference}"
+        expect(subject.description).to eq "##{open_invoice.reference},##{failed_invoice.reference}"
       end
     end
 

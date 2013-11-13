@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe TransactionsController do
 
-  it { post(with_subdomain('my', 'transaction/callback')).should route_to('transactions#callback') }
+  it { expect(post(with_subdomain('my', 'transaction/callback'))).to route_to('transactions#callback') }
 
 end

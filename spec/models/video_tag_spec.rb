@@ -15,7 +15,7 @@ describe VideoTag do
     end
 
     it "returns integer" do
-      described_class.count(_site_token: site_token).should eq(42)
+      expect(described_class.count(_site_token: site_token)).to eq(42)
     end
   end
 
@@ -23,7 +23,7 @@ describe VideoTag do
     let(:video_tag) { described_class.new(title: 'Video Title', created_at: 1.day.ago) }
 
     it "slices only needed data" do
-      video_tag.backbone_data.should eq('title' => 'Video Title')
+      expect(video_tag.backbone_data).to eq('title' => 'Video Title')
     end
   end
 
@@ -31,7 +31,7 @@ describe VideoTag do
     let(:video_tag) { described_class.new(uid: 'uid') }
 
     it "uses uid" do
-      video_tag.to_param.should eq video_tag.uid
+      expect(video_tag.to_param).to eq video_tag.uid
     end
   end
 end

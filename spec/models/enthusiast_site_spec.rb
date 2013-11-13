@@ -6,8 +6,15 @@ describe EnthusiastSite do
   context "with valid attributes" do
     subject { create(:enthusiast_site) }
 
-    its(:hostname)   { should eq "youtube.com" }
-    its(:enthusiast) { should be_present }
+    describe '#hostname' do
+      subject { super().hostname }
+      it   { should eq "youtube.com" }
+    end
+
+    describe '#enthusiast' do
+      subject { super().enthusiast }
+      it { should be_present }
+    end
 
     it { should be_valid }
   end
@@ -17,7 +24,7 @@ describe EnthusiastSite do
 
     it { should validate_presence_of(:hostname) }
 
-    specify { EnthusiastSite.validators_on(:hostname).map(&:class).should == [ActiveRecord::Validations::PresenceValidator, HostnameValidator] }
+    specify { expect(EnthusiastSite.validators_on(:hostname).map(&:class)).to eq([ActiveRecord::Validations::PresenceValidator, HostnameValidator]) }
   end
 
 end

@@ -12,7 +12,7 @@ describe SettingsGenerator, :addons do
       subject { settings }
 
       it 'has default license' do
-        settings.license.should eq({
+        expect(settings.license).to eq({
           hosts: ["test.com"],
           staging_hosts: [],
           dev_hosts: ["127.0.0.1", "localhost"],
@@ -23,7 +23,7 @@ describe SettingsGenerator, :addons do
       end
 
       it 'has default app_settings' do
-        settings.app_settings.should eq({
+        expect(settings.app_settings).to eq({
           "stats" => {
             settings: {
               enable: true,
@@ -43,13 +43,13 @@ describe SettingsGenerator, :addons do
 
       describe 'settings.kits["1"][:plugins]' do
         it 'has 3 plugins' do
-          settings.kits['1'][:plugins].should have(3).items
+          expect(settings.kits['1'][:plugins].size).to eq(3)
         end
       end
 
       describe 'settings.kits["1"][:plugins]["videoPlayer"]' do
         it 'has the right settings for ["videoPlayer"][:plugins]["logo"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['logo'].should eq({
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:plugins]['logo']).to eq({
             settings: {
               enable: true,
               type: 'sv',
@@ -79,7 +79,7 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["initial"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['initial'].should eq({
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:plugins]['initial']).to eq({
             settings: {
               overlay_enable: true,
               overlay_visibility: 'autofade',
@@ -101,7 +101,7 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["embed"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed'].should eq({
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed']).to eq({
             settings: {
               enable: true,
               type: 'manual',
@@ -121,7 +121,7 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['controls'].should eq({
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:plugins]['controls']).to eq({
             settings: {
               enable: true,
               visibility: 'autohide'
@@ -139,7 +139,7 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:settings].should eq({
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:settings]).to eq({
             volume_enable: true,
             fullmode_enable: true,
             fullmode_priority: 'screen',
@@ -148,7 +148,7 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:allowed_settings].should eq({
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:allowed_settings]).to eq({
             volume_enable: {
               values: [true, false]
             },
@@ -165,13 +165,13 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
-          settings.kits['1'][:plugins]['videoPlayer'][:id].should eq 'sa.sh.si'
+          expect(settings.kits['1'][:plugins]['videoPlayer'][:id]).to eq 'sa.sh.si'
         end
       end
 
       describe 'settings.kits["1"][:plugins]["lightbox"]' do
         it 'has the right settings for ["lightbox"][:settings]' do
-          settings.kits['1'][:plugins]['lightbox'][:settings].should eq({
+          expect(settings.kits['1'][:plugins]['lightbox'][:settings]).to eq({
             on_open: 'play',
             overlay_color: "#000",
             overlay_opacity: 0.7,
@@ -182,7 +182,7 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["lightbox"][:allowed_settings]' do
-          settings.kits['1'][:plugins]['lightbox'][:allowed_settings].should eq({
+          expect(settings.kits['1'][:plugins]['lightbox'][:allowed_settings]).to eq({
             close_button_enable: {
               values: [true, false],
             },
@@ -205,25 +205,27 @@ describe SettingsGenerator, :addons do
         end
 
         it 'has the right settings for ["lightbox"][:id]' do
-          settings.kits['1'][:plugins]['lightbox'][:id].should eq 'sa.sl.sm'
+          expect(settings.kits['1'][:plugins]['lightbox'][:id]).to eq 'sa.sl.sm'
         end
       end
 
       describe 'settings.kits["1"][:plugins]["imageViewer"]' do
         it 'has the right settings for ["imageViewer"][:settings]' do
-          settings.kits['1'][:plugins]['imageViewer'][:settings].should eq({})
+          expect(settings.kits['1'][:plugins]['imageViewer'][:settings]).to eq({})
         end
 
         it 'has the right settings for ["imageViewer"][:allowed_settings]' do
-          settings.kits['1'][:plugins]['imageViewer'][:allowed_settings].should eq({})
+          expect(settings.kits['1'][:plugins]['imageViewer'][:allowed_settings]).to eq({})
         end
 
         it 'has the right settings for ["imageViewer"][:id]' do
-          settings.kits['1'][:plugins]['imageViewer'][:id].should eq 'sa.sn.so'
+          expect(settings.kits['1'][:plugins]['imageViewer'][:id]).to eq 'sa.sn.so'
         end
       end
 
-      its(:default_kit) { should eq('1') }
+      describe '#default_kit' do
+        it { expect(settings.default_kit).to eq('1') }
+      end
 
       describe 'cdn_files' do
         describe 'new settings' do
@@ -346,7 +348,7 @@ describe SettingsGenerator, :addons do
               t.exports=i,t.exports||e});;sublime_.component('settings');})();
 CONTENT
             File.open(subject.cdn_files[0].file) do |f|
-              f.read.gsub(/\{/, " {\n  ").gsub(/(\},|\],)/, "\\1\n  ").should eq expected.strip
+              expect(f.read.gsub(/\{/, " {\n  ").gsub(/(\},|\],)/, "\\1\n  ")).to eq expected.strip
             end
           end
         end

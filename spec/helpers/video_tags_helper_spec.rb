@@ -31,30 +31,30 @@ describe VideoTagsHelper do
 
   describe "#duration_string" do
     it "renders one second when less than a seconds only properly" do
-      Helper.duration_string(499).should eq "00:01"
+      expect(Helper.duration_string(499)).to eq "00:01"
     end
     it "renders seconds only properly" do
-      Helper.duration_string(59*1000).should eq "00:59"
+      expect(Helper.duration_string(59*1000)).to eq "00:59"
     end
     it "renders minutes only properly" do
-      Helper.duration_string(59*60*1000).should eq "59:00"
+      expect(Helper.duration_string(59*60*1000)).to eq "59:00"
     end
     it "renders hours only properly" do
-      Helper.duration_string(60*60*1000).should eq "1:00:00"
+      expect(Helper.duration_string(60*60*1000)).to eq "1:00:00"
     end
     it "renders a lot of hours only properly" do
-      Helper.duration_string(25*60*60*1000).should eq "25:00:00"
+      expect(Helper.duration_string(25*60*60*1000)).to eq "25:00:00"
     end
     it "renders complete duration properly" do
-      Helper.duration_string(1*60*60*1000 + 34*60*1000 + 23*1000).should eq "1:34:23"
+      expect(Helper.duration_string(1*60*60*1000 + 34*60*1000 + 23*1000)).to eq "1:34:23"
     end
     it "renders ?:??:?? if duration is nil" do
-      Helper.duration_string(nil).should eq "?:??:??"
+      expect(Helper.duration_string(nil)).to eq "?:??:??"
     end
   end
 
   describe "#last_starts_days" do
-    before { Helper.stub(:params) { params } }
+    before { allow(Helper).to receive(:params) { params } }
 
     context "no filter" do
       let(:params) { { } }

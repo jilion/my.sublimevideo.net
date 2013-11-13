@@ -17,7 +17,7 @@ describe App::Component, :fog_mock do
       end
 
       it 'returns the version ordered by created_at desc' do
-        component.versions.should eq [@version2, @version1]
+        expect(component.versions).to eq [@version2, @version1]
       end
     end
 
@@ -28,7 +28,7 @@ describe App::Component, :fog_mock do
         create(:billable_item, site: site_with_design, item: design)
         app_custom_design = create(:design)
 
-        component.sites.should eq([
+        expect(component.sites).to eq([
           site_with_design,
         ])
       end
@@ -52,7 +52,7 @@ describe App::Component, :fog_mock do
   describe "#app_component" do
     it "return the app component" do
       component
-      App::Component.app_component.should eq(component)
+      expect(App::Component.app_component).to eq(component)
     end
   end
 
@@ -62,7 +62,7 @@ describe App::Component, :fog_mock do
     component_version2 = App::ComponentVersion.create(token: component.token, version: '2.0.0', zip: zip)
 
     # FUCK THIS FUCKING TEST!!!!!!!!!!
-    component.reload.versions.should eq [component_version2, component_version1]
+    expect(component.reload.versions).to eq [component_version2, component_version1]
   end
 
   describe '#versions_for_stage' do
@@ -73,19 +73,19 @@ describe App::Component, :fog_mock do
 
     context 'aplha stage given' do
       it 'returns alpha version only' do
-        component.versions_for_stage('alpha').should =~ [component_version_stable, component_version_beta, component_version_alpha]
+        expect(component.versions_for_stage('alpha')).to match_array([component_version_stable, component_version_beta, component_version_alpha])
       end
     end
 
     context 'beta stage given' do
       it 'returns beta and stable versions' do
-        component.versions_for_stage('beta').should =~ [component_version_stable, component_version_beta]
+        expect(component.versions_for_stage('beta')).to match_array([component_version_stable, component_version_beta])
       end
     end
 
     context 'stable stage given' do
       it 'returns alpha, beta and stable versions' do
-        component.versions_for_stage('stable').should =~ [component_version_stable]
+        expect(component.versions_for_stage('stable')).to match_array([component_version_stable])
       end
     end
   end

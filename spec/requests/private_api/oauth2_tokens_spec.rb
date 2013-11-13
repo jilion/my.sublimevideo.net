@@ -20,32 +20,32 @@ describe 'Private API Oauth2 tokens requests' do
     context 'non existing Oauth2 token' do
       it 'returns 404' do
         get 'private_api/oauth2_tokens/42.json', {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
     context 'invalidated token' do
       it 'returns 404' do
         get "private_api/oauth2_tokens/#{token2.token}.json", {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
     context 'unauthorized token' do
       it 'returns 404' do
         get "private_api/oauth2_tokens/#{token3.token}.json", {}, @env
-        response.status.should eq 404
-        MultiJson.load(response.body).should eq({ 'error' => 'Resource could not be found.' })
+        expect(response.status).to eq 404
+        expect(MultiJson.load(response.body)).to eq({ 'error' => 'Resource could not be found.' })
       end
     end
 
     context 'existing Oauth2 token' do
       it 'finds Oauth2 token per token' do
         get "private_api/oauth2_tokens/#{token1.token}.json", {}, @env
-        MultiJson.load(response.body)['access_token'].should eq token1.token
-        response.status.should eq 200
+        expect(MultiJson.load(response.body)['access_token']).to eq token1.token
+        expect(response.status).to eq 200
       end
     end
 

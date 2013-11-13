@@ -46,7 +46,7 @@ group :backend do
     end
   end
 
-  guard :rspec, cmd: 'rspec --fail-fast' do
+  guard :rspec, cmd: 'rspec --fail-fast', all_after_pass: false, all_on_start: false, keep_failed: false do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routing" }
     watch(%r{^spec/support/(controllers|mailers|models|presenters|features|routing)_helpers\.rb}) { |m| "spec/#{m[1]}" }

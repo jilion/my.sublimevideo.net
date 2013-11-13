@@ -16,7 +16,7 @@ describe SiteAdminStat do
     }
 
     it "returns starts array" do
-      SiteAdminStat.last_days_starts(site, 2).should eq [42, 2]
+      expect(SiteAdminStat.last_days_starts(site, 2)).to eq [42, 2]
     end
   end
 

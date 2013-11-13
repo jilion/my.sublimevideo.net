@@ -21,11 +21,11 @@ describe BillableItemActivity do
     let!(:billable_item_activity4) { create(:billable_item_activity, created_at: Time.utc(2013, 2, 24)) }
 
     describe '.before' do
-      it { described_class.before(Time.utc(2013, 2, 23)).should =~ [billable_item_activity1, billable_item_activity2] }
+      it { expect(described_class.before(Time.utc(2013, 2, 23))).to match_array([billable_item_activity1, billable_item_activity2]) }
     end
 
     describe '.during' do
-      it { described_class.during((Time.utc(2013, 2, 22)..Time.utc(2013, 2, 23))).should =~ [billable_item_activity2, billable_item_activity3] }
+      it { expect(described_class.during((Time.utc(2013, 2, 22)..Time.utc(2013, 2, 23)))).to match_array([billable_item_activity2, billable_item_activity3]) }
     end
   end
 

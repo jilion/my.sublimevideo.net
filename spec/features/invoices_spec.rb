@@ -18,9 +18,9 @@ feature "Site invoices page" do
       scenario "'Invoice' tab is visible and reachable" do
         click_link "Invoices"
 
-        current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
-        page.should have_content 'rymai.com'
-        page.should have_no_content 'No invoices'
+        expect(current_url).to eq("http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices")
+        expect(page).to have_content 'rymai.com'
+        expect(page).to have_no_content 'No invoices'
       end
     end
 
@@ -29,20 +29,20 @@ feature "Site invoices page" do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         SiteManager.new(@site).create
         @invoice = create(:paid_invoice, site: @site)
-        @invoice.should be_valid
+        expect(@invoice).to be_valid
         go 'my', "/sites/#{@site.to_param}/edit"
       end
 
       scenario "'Invoice' tab is visible and reachable" do
         click_link "Invoices"
 
-        current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
-        page.should have_content 'rymai.com'
-        page.should have_no_content 'No invoices'
-        page.should have_content 'Paid invoices'
+        expect(current_url).to eq("http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices")
+        expect(page).to have_content 'rymai.com'
+        expect(page).to have_no_content 'No invoices'
+        expect(page).to have_content 'Paid invoices'
         within '.past_invoices' do
-          page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-          page.should have_content "Status: Paid on #{I18n.l(@site.last_invoice.paid_at, format: :minutes_timezone)}"
+          expect(page).to have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
+          expect(page).to have_content "Status: Paid on #{I18n.l(@site.last_invoice.paid_at, format: :minutes_timezone)}"
         end
       end
     end
@@ -60,15 +60,15 @@ feature "Site invoices page" do
         scenario "it is possible to retry the payment" do
           click_button I18n.t('invoice.pay_outstanding_invoices', count: 1)
 
-          @site.invoices.with_state('failed').should be_empty
+          expect(@site.invoices.with_state('failed')).to be_empty
 
-          current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
+          expect(current_url).to eq("http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices")
 
-          page.should have_no_content 'failed invoices for a total'
+          expect(page).to have_no_content 'failed invoices for a total'
           within '.past_invoices' do
-            page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-            page.should have_content "Status: Paid on #{I18n.l(@invoice.reload.paid_at, format: :minutes_timezone)}"
-            page.should have_no_content "Status: Payment failed"
+            expect(page).to have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
+            expect(page).to have_content "Status: Paid on #{I18n.l(@invoice.reload.paid_at, format: :minutes_timezone)}"
+            expect(page).to have_no_content "Status: Payment failed"
           end
         end
       end
@@ -100,29 +100,29 @@ feature "Site invoice page" do
       end
 
       scenario "displays well" do
-        page.should have_content "Jilion SA"
-        page.should have_content "Invoice ID: #{@invoice.reference.upcase}"
-        page.should have_content "Status:"
-        page.should have_content "Paid on #{I18n.l(@invoice.paid_at, format: :minutes_timezone)}"
+        expect(page).to have_content "Jilion SA"
+        expect(page).to have_content "Invoice ID: #{@invoice.reference.upcase}"
+        expect(page).to have_content "Status:"
+        expect(page).to have_content "Paid on #{I18n.l(@invoice.paid_at, format: :minutes_timezone)}"
 
-        page.should have_content @site.hostname
-        page.should have_content @site.token
-        page.should have_content "Payment info:"
-        page.should have_content "Card type: #{I18n.t('user.credit_card.type.visa')}"
-        page.should have_content "Card no.: XXXXXXXXXXXX-1111"
+        expect(page).to have_content @site.hostname
+        expect(page).to have_content @site.token
+        expect(page).to have_content "Payment info:"
+        expect(page).to have_content "Card type: #{I18n.t('user.credit_card.type.visa')}"
+        expect(page).to have_content "Card no.: XXXXXXXXXXXX-1111"
 
-        page.should have_content "Bill To"
+        expect(page).to have_content "Bill To"
         @invoice.customer_billing_address.split("\n").each do |address_part|
-          page.should have_content(address_part)
+          expect(page).to have_content(address_part)
         end
 
-        page.should have_content "#{I18n.l(@invoice.invoice_items[0].started_at, format: :d_b_Y)} - #{I18n.l(@invoice.invoice_items[0].ended_at, format: :d_b_Y)}"
-        page.should have_content display_amount(@invoice.invoice_items[0].price)
+        expect(page).to have_content "#{I18n.l(@invoice.invoice_items[0].started_at, format: :d_b_Y)} - #{I18n.l(@invoice.invoice_items[0].ended_at, format: :d_b_Y)}"
+        expect(page).to have_content display_amount(@invoice.invoice_items[0].price)
 
-        page.should have_content "VAT 0%:"
-        page.should have_content display_amount(0)
+        expect(page).to have_content "VAT 0%:"
+        expect(page).to have_content display_amount(0)
 
-        page.should have_content display_amount(@invoice.amount)
+        expect(page).to have_content display_amount(@invoice.amount)
       end
     end
 
@@ -140,8 +140,8 @@ feature "Site invoice page" do
       end
 
       scenario "shows a special line" do
-        page.should have_content "From your balance:"
-        page.should have_content display_amount(@invoice.balance_deduction_amount)
+        expect(page).to have_content "From your balance:"
+        expect(page).to have_content display_amount(@invoice.balance_deduction_amount)
       end
     end
 
@@ -160,7 +160,7 @@ feature "Site invoice page" do
       end
 
       scenario "displays a note" do
-        page.should have_content "(-30% promotional discount)"
+        expect(page).to have_content "(-30% promotional discount)"
       end
     end
 
@@ -178,7 +178,7 @@ feature "Site invoice page" do
       end
 
       scenario "displays a note" do
-        page.should have_content "(-20% beta discount)"
+        expect(page).to have_content "(-20% beta discount)"
       end
     end
   end
@@ -196,8 +196,8 @@ feature "Site invoice page" do
     end
 
     scenario "shows a special line" do
-      page.should have_content "VAT 8%:"
-      page.should have_content display_amount(@invoice.vat_amount)
+      expect(page).to have_content "VAT 8%:"
+      expect(page).to have_content display_amount(@invoice.vat_amount)
     end
   end
 

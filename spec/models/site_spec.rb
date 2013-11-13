@@ -5,16 +5,55 @@ describe Site, :addons do
   context "Factory" do
     subject { create(:site) }
 
-    its(:user)                             { should be_present }
-    its(:hostname)                         { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                    { should eq '127.0.0.1, localhost' }
-    its(:extra_hostnames)                  { should be_nil }
-    its(:path)                             { should be_nil }
-    its(:wildcard)                         { should be_false }
-    its(:token)                            { should =~ /^[a-z0-9]{8}$/ }
-    its(:accessible_stage)                 { should eq "beta" }
-    its(:last_30_days_admin_starts)        { should eq 0 }
-    its(:last_30_days_starts)              { should eq 0 }
+    describe '#user' do
+      subject { super().user }
+      it                             { should be_present }
+    end
+
+    describe '#hostname' do
+      subject { super().hostname }
+      it                         { should =~ /jilion[0-9]+\.com/ }
+    end
+
+    describe '#dev_hostnames' do
+      subject { super().dev_hostnames }
+      it                    { should eq '127.0.0.1, localhost' }
+    end
+
+    describe '#extra_hostnames' do
+      subject { super().extra_hostnames }
+      it                  { should be_nil }
+    end
+
+    describe '#path' do
+      subject { super().path }
+      it                             { should be_nil }
+    end
+
+    describe '#wildcard' do
+      subject { super().wildcard }
+      it                         { should be_falsey }
+    end
+
+    describe '#token' do
+      subject { super().token }
+      it                            { should =~ /^[a-z0-9]{8}$/ }
+    end
+
+    describe '#accessible_stage' do
+      subject { super().accessible_stage }
+      it                 { should eq "beta" }
+    end
+
+    describe '#last_30_days_admin_starts' do
+      subject { super().last_30_days_admin_starts }
+      it        { should eq 0 }
+    end
+
+    describe '#last_30_days_starts' do
+      subject { super().last_30_days_starts }
+      it              { should eq 0 }
+    end
 
     it { should be_active } # initial state
     it { should be_valid }
@@ -41,8 +80,8 @@ describe Site, :addons do
       it "should return the last paid invoice" do
         invoice = create(:invoice, site: site)
 
-        site.last_invoice.should eq site.invoices.last
-        site.last_invoice.should eq invoice
+        expect(site.last_invoice).to eq site.invoices.last
+        expect(site.last_invoice).to eq invoice
       end
     end
   end
@@ -57,32 +96,44 @@ describe Site, :addons do
     it { should_not allow_value('dev').for(:accessible_stage) }
     it { should_not allow_value('fake').for(:accessible_stage) }
 
-    specify { Site.validators_on(:hostname).map(&:class).should eq [HostnameValidator] }
-    specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
-    specify { Site.validators_on(:staging_hostnames).map(&:class).should include ExtraHostnamesValidator }
-    specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
+    specify { expect(Site.validators_on(:hostname).map(&:class)).to eq [HostnameValidator] }
+    specify { expect(Site.validators_on(:extra_hostnames).map(&:class)).to include ExtraHostnamesValidator }
+    specify { expect(Site.validators_on(:staging_hostnames).map(&:class)).to include ExtraHostnamesValidator }
+    specify { expect(Site.validators_on(:dev_hostnames).map(&:class)).to include DevHostnamesValidator }
 
     describe "with no hostnames at all" do
       subject { build(:site, hostname: nil, extra_hostnames: nil, staging_hostnames: nil, dev_hostnames: nil) }
       it { should be_valid } # dev hostnames are set before validation
-      it { should have(0).error_on(:base) }
+      it { expect(subject.errors[:base].size).to eq(0) }
 
       context "after validation" do
         before { subject.valid? }
-        its(:hostname) { should == Site::DEFAULT_DOMAIN }
-        its(:dev_hostnames) { should == Site::DEFAULT_DEV_DOMAINS }
+
+        describe '#hostname' do
+          it { expect(subject.hostname).to eq(Site::DEFAULT_DOMAIN) }
+        end
+
+        describe '#dev_hostnames' do
+          it { expect(subject.dev_hostnames).to eq(Site::DEFAULT_DEV_DOMAINS) }
+        end
       end
     end
 
     describe "with blank hostnames" do
       subject { build(:site, hostname: "", extra_hostnames: "", dev_hostnames: "") }
       it { should be_valid } # dev hostnames are set before validation
-      it { should have(0).error_on(:base) }
+      it { expect(subject.errors[:base].size).to eq(0) }
 
       context "after validation" do
         before { subject.valid? }
-        its(:hostname) { should == Site::DEFAULT_DOMAIN }
-        its(:dev_hostnames) { should == Site::DEFAULT_DEV_DOMAINS }
+
+        describe '#hostname' do
+          it { expect(subject.hostname).to eq(Site::DEFAULT_DOMAIN) }
+        end
+
+        describe '#dev_hostnames' do
+          it { expect(subject.dev_hostnames).to eq(Site::DEFAULT_DEV_DOMAINS) }
+        end
       end
     end
   end # Validations
@@ -92,7 +143,7 @@ describe Site, :addons do
       describe "#{attr}=" do
         it "calls HostnameHandler.clean" do
           site = build_stubbed(:site)
-          HostnameHandler.should_receive(:clean).with("foo.com")
+          expect(HostnameHandler).to receive(:clean).with("foo.com")
 
           site.send("#{attr}=", "foo.com")
         end
@@ -103,17 +154,23 @@ describe Site, :addons do
       describe "sets to '' if nil is given" do
         subject { build_stubbed(:site, path: nil) }
 
-        its(:path) { should eq '' }
+        describe '#path' do
+          it { expect(subject.path).to eq('') }
+        end
       end
       describe "removes first and last /" do
         subject { build_stubbed(:site, path: '/users/thibaud/') }
 
-        its(:path) { should eq 'users/thibaud' }
+        describe '#path' do
+          it { expect(subject.path).to eq('users/thibaud') }
+        end
       end
       describe "downcases path" do
         subject { build_stubbed(:site, path: '/Users/thibaud') }
 
-        its(:path) { should eq 'users/thibaud' }
+        describe '#path' do
+          it { expect(subject.path).to eq('users/thibaud') }
+        end
       end
     end
   end
@@ -126,7 +183,7 @@ describe Site, :addons do
       with_versioning do
         site.update(hostname: "bob.com")
       end
-      site.versions.last.reify.hostname.should eq old_hostname
+      expect(site.versions.last.reify.hostname).to eq old_hostname
     end
   end # Versioning
 
@@ -137,17 +194,17 @@ describe Site, :addons do
 
       describe "set default hostname" do
         specify do
-          site.hostname.should be_nil
-          site.should be_valid
-          site.hostname.should eq Site::DEFAULT_DOMAIN
+          expect(site.hostname).to be_nil
+          expect(site).to be_valid
+          expect(site.hostname).to eq Site::DEFAULT_DOMAIN
         end
       end
 
       describe "set default dev hostnames" do
         specify do
-          site.dev_hostnames.should be_nil
-          site.should be_valid
-          site.dev_hostnames.should eq Site::DEFAULT_DEV_DOMAINS
+          expect(site.dev_hostnames).to be_nil
+          expect(site).to be_valid
+          expect(site.dev_hostnames).to eq Site::DEFAULT_DEV_DOMAINS
         end
       end
     end
@@ -157,14 +214,14 @@ describe Site, :addons do
 
       it "delays LoaderGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          LoaderGenerator.should delay(:update_all_stages!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id, deletable: true)
+          expect(LoaderGenerator).to delay(:update_all_stages!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id, deletable: true)
           site.update(accessible_stage: 'alpha')
         end
       end
 
       it "delays SettingsGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          SettingsGenerator.should delay(:update_all!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id)
+          expect(SettingsGenerator).to delay(:update_all!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id)
           site.update(accessible_stage: 'alpha')
         end
       end
@@ -177,14 +234,14 @@ describe Site, :addons do
     describe "after transition" do
       it "delays LoaderGenerator update" do
         Timecop.freeze do
-          LoaderGenerator.should delay(:update_all_stages!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id, deletable: true)
+          expect(LoaderGenerator).to delay(:update_all_stages!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id, deletable: true)
           site.suspend
         end
       end
 
       it "delays SettingsGenerator update" do
         Timecop.freeze do
-          SettingsGenerator.should delay(:update_all!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id)
+          expect(SettingsGenerator).to delay(:update_all!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id)
           site.suspend
         end
       end
@@ -201,25 +258,25 @@ describe Site, :addons do
         it 'suspends all billable items' do
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@classic_design)            .state('suspended').should have(1).item
-          site.billable_items.with_item(@flat_design)               .state('suspended').should have(1).item
-          site.billable_items.with_item(@light_design)              .state('suspended').should have(1).item
-          site.billable_items.with_item(@video_player_addon_plan_1) .state('suspended').should have(1).item
-          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('suspended').should have(1).item
-          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('suspended').should have(1).item
-          site.billable_items.with_item(@stats_addon_plan_1)        .state('suspended').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_1)         .state('suspended').should have(1).item
-          site.billable_items.with_item(@controls_addon_plan_1)     .state('suspended').should have(1).item
-          site.billable_items.with_item(@initial_addon_plan_1)      .state('suspended').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('suspended').should have(1).item
-          site.billable_items.with_item(@api_addon_plan_1)          .state('suspended').should have(1).item
-          site.billable_items.with_item(@support_addon_plan_1)      .state('suspended').should have(1).item
+          expect(site.reload.billable_items.size).to eq(13)
+          expect(site.billable_items.with_item(@classic_design)            .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@flat_design)               .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@light_design)              .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@video_player_addon_plan_1) .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@lightbox_addon_plan_1)     .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@image_viewer_addon_plan_1) .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@stats_addon_plan_1)        .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@logo_addon_plan_1)         .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@controls_addon_plan_1)     .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@initial_addon_plan_1)      .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@embed_addon_plan_1)        .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@api_addon_plan_1)          .state('suspended').size).to eq(1)
+          expect(site.billable_items.with_item(@support_addon_plan_1)      .state('suspended').size).to eq(1)
         end
 
         it "increments metrics" do
-          Librato.stub(:increment)
-          Librato.should_receive(:increment).with('sites.events', source: 'suspend')
+          allow(Librato).to receive(:increment)
+          expect(Librato).to receive(:increment).with('sites.events', source: 'suspend')
           site.suspend!
         end
       end
@@ -234,26 +291,26 @@ describe Site, :addons do
         end
 
         it 'unsuspend all billable items' do
-          site.reload.billable_items.should have(13).items
+          expect(site.reload.billable_items.size).to eq(13)
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
+          expect(site.reload.billable_items.size).to eq(13)
           site.unsuspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
-          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
-          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
-          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_1)         .state('subscribed').should have(1).item
-          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
-          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
+          expect(site.reload.billable_items.size).to eq(13)
+          expect(site.billable_items.with_item(@classic_design)            .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@flat_design)               .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@light_design)              .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@logo_addon_plan_1)         .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').size).to eq(1)
         end
       end
 
@@ -268,29 +325,29 @@ describe Site, :addons do
         end
 
         it 'unsuspend all billable items' do
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@logo_addon_plan_2).state('trial').should have(1).item
+          expect(site.reload.billable_items.size).to eq(13)
+          expect(site.billable_items.with_item(@logo_addon_plan_2).state('trial').size).to eq(1)
 
           site.suspend!
 
-          site.reload.billable_items.with_item(@logo_addon_plan_2).state('suspended').should have(1).item
+          expect(site.reload.billable_items.with_item(@logo_addon_plan_2).state('suspended').size).to eq(1)
 
           site.unsuspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
-          site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
-          site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
-          site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
-          site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_2)         .state('trial').should have(1).item
-          site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
-          site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
-          site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
+          expect(site.reload.billable_items.size).to eq(13)
+          expect(site.billable_items.with_item(@classic_design)            .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@flat_design)               .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@light_design)              .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@video_player_addon_plan_1) .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@logo_addon_plan_2)         .state('trial').size).to eq(1)
+          expect(site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').size).to eq(1)
+          expect(site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').size).to eq(1)
         end
       end
     end
@@ -302,11 +359,11 @@ describe Site, :addons do
 
       it "clear all billable items" do
         site.archive!
-        site.billable_items.should be_empty
+        expect(site.billable_items).to be_empty
       end
 
       it "increments metrics" do
-        Librato.should_receive(:increment).with('sites.events', source: 'archive')
+        expect(Librato).to receive(:increment).with('sites.events', source: 'archive')
         site.archive!
       end
 
@@ -320,9 +377,9 @@ describe Site, :addons do
         it "raises an exception" do
           expect { site.archive! }.to raise_error(ActiveRecord::ActiveRecordError)
 
-          @open_invoice.reload.should be_open
-          @failed_invoice.reload.should be_failed
-          @paid_invoice.reload.should be_paid
+          expect(@open_invoice.reload).to be_open
+          expect(@failed_invoice.reload).to be_failed
+          expect(@paid_invoice.reload).to be_paid
         end
       end
     end
@@ -339,19 +396,19 @@ describe Site, :addons do
       end
 
       describe ".active" do
-        specify { Site.active.should =~ [@site_active] }
+        specify { expect(Site.active).to match_array([@site_active]) }
       end
 
       describe ".suspended" do
-        specify { Site.suspended.should =~ [@site_suspended] }
+        specify { expect(Site.suspended).to match_array([@site_suspended]) }
       end
 
       describe ".archived" do
-        specify { Site.archived.should =~ [@site_archived] }
+        specify { expect(Site.archived).to match_array([@site_archived]) }
       end
 
       describe ".not_archived" do
-        specify { Site.not_archived.should =~ [@site_active, @site_suspended] }
+        specify { expect(Site.not_archived).to match_array([@site_active, @site_suspended]) }
       end
     end
 
@@ -364,27 +421,27 @@ describe Site, :addons do
       end
 
       describe ".without_hostnames" do
-        specify { Site.without_hostnames(%w[google.com facebook.com]).should =~ [@site_extra_hostnames, @site_next_cycle_plan] }
+        specify { expect(Site.without_hostnames(%w[google.com facebook.com])).to match_array([@site_extra_hostnames, @site_next_cycle_plan]) }
       end
 
       describe ".with_wildcard" do
-        specify { Site.with_wildcard.should =~ [@site_wildcard] }
+        specify { expect(Site.with_wildcard).to match_array([@site_wildcard]) }
       end
 
       describe ".with_path" do
-        specify { Site.with_path.should =~ [@site_path] }
+        specify { expect(Site.with_path).to match_array([@site_path]) }
       end
 
       describe ".with_extra_hostnames" do
-        specify { Site.with_extra_hostnames.should =~ [@site_extra_hostnames] }
+        specify { expect(Site.with_extra_hostnames).to match_array([@site_extra_hostnames]) }
       end
 
       describe '.created_on' do
-        specify { Site.created_on(3.days.from_now).should =~ [@site_next_cycle_plan] }
+        specify { expect(Site.created_on(3.days.from_now)).to match_array([@site_next_cycle_plan]) }
       end
 
       describe '.created_after' do
-        specify { Site.created_after(2.days.from_now).should =~ [@site_next_cycle_plan] }
+        specify { expect(Site.created_after(2.days.from_now)).to match_array([@site_next_cycle_plan]) }
       end
     end
 
@@ -417,11 +474,11 @@ describe Site, :addons do
       end
 
       describe '.paying' do
-        it { Site.paying.should =~ [site1] }
+        it { expect(Site.paying).to match_array([site1]) }
       end
 
       describe '.free' do
-        it { Site.free.should =~ [site2] }
+        it { expect(Site.free).to match_array([site2]) }
       end
     end
 
@@ -436,7 +493,7 @@ describe Site, :addons do
       end
 
       describe ".with_not_canceled_invoices" do
-        specify { Site.with_not_canceled_invoices.should =~ [@site_with_paid_invoice] }
+        specify { expect(Site.with_not_canceled_invoices).to match_array([@site_with_paid_invoice]) }
       end
     end
 
@@ -447,20 +504,20 @@ describe Site, :addons do
         @site3 = create(:site, created_at: 1.days.ago)
       end
 
-      specify { Site.where(created_at: 3.days.ago.midnight..2.days.ago.end_of_day).should =~ [@site1, @site2] }
-      specify { Site.where(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day).should =~ [@site3] }
+      specify { expect(Site.where(created_at: 3.days.ago.midnight..2.days.ago.end_of_day)).to match_array([@site1, @site2]) }
+      specify { expect(Site.where(created_at: 2.days.ago.end_of_day..1.day.ago.end_of_day)).to match_array([@site3]) }
     end
 
     describe '.search' do
       let(:site) { create(:site) }
 
-      specify { described_class.search(site.token).should eq [site] }
-      specify { described_class.search(site.hostname).should eq [site] }
-      specify { described_class.search(site.extra_hostnames).should eq [site] }
-      specify { described_class.search(site.staging_hostnames).should eq [site] }
-      specify { described_class.search(site.dev_hostnames).should eq [site] }
-      specify { described_class.search(site.user.email).should eq [site] }
-      specify { described_class.search(site.user.name).should eq [site] }
+      specify { expect(described_class.search(site.token)).to eq [site] }
+      specify { expect(described_class.search(site.hostname)).to eq [site] }
+      specify { expect(described_class.search(site.extra_hostnames)).to eq [site] }
+      specify { expect(described_class.search(site.staging_hostnames)).to eq [site] }
+      specify { expect(described_class.search(site.dev_hostnames)).to eq [site] }
+      specify { expect(described_class.search(site.user.email)).to eq [site] }
+      specify { expect(described_class.search(site.user.name)).to eq [site] }
     end
 
   end # Scopes

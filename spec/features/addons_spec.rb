@@ -9,9 +9,9 @@ feature 'special /addons page' do
     context 'without any site' do
       scenario 'redirects to /login and then to /assistant/new-site' do
         go 'my', 'addons'
-        current_url.should eq "http://my.sublimevideo.dev/login"
+        expect(current_url).to eq "http://my.sublimevideo.dev/login"
         fill_and_submit_login(@user)
-        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+        expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
       end
     end
 
@@ -23,9 +23,9 @@ feature 'special /addons page' do
 
       scenario 'redirects to /login and then to /sites/:token/addons' do
         go 'my', 'addons'
-        current_url.should eq "http://my.sublimevideo.dev/login"
+        expect(current_url).to eq "http://my.sublimevideo.dev/login"
         fill_and_submit_login(@user)
-        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+        expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
       end
     end
   end
@@ -38,7 +38,7 @@ feature 'special /addons page' do
 
       scenario 'redirects to /assistant/new-site' do
         go 'my', 'addons'
-        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
+        expect(current_url).to eq "http://my.sublimevideo.dev/assistant/new-site"
       end
     end
 
@@ -50,7 +50,7 @@ feature 'special /addons page' do
 
       scenario 'redirects /sites/:token/addons' do
         go 'my', 'addons'
-        current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+        expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
       end
     end
   end
@@ -63,7 +63,7 @@ feature 'special /addons page' do
 
     scenario 'redirects to /sites/:token/addons' do
       go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+      expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
     end
   end
 end
@@ -77,31 +77,31 @@ feature 'Add-on subscription shortcut' do
   scenario 'redirects to first site addon page' do
     go 'my', "sites/foo/addons/stats"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
   end
 
   scenario 'redirects to first site addons page' do
     go 'my', "sites/foo/addons/bar"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
   end
 
   scenario 'redirects sites/:token/addons/foo to /sites/:token/addons' do
     go 'my', "sites/#{@site.to_param}/addons/foo"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
   end
 
   scenario 'redirects sites/:token/addons?h=stats-realtime to /sites/:token/addons/stats' do
     go 'my', "sites/#{@site.to_param}/addons/stats?p=realtime"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats?p=realtime"
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats?p=realtime"
   end
 
   scenario 'redirects addons/stats to /sites/:token/addons/stats' do
     go 'my', "addons/stats"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/stats"
   end
 end
 
@@ -110,35 +110,35 @@ feature 'Choose add-ons' do
     sign_in_as :user_with_site
     @site = @current_user.sites.first
 
-    @site.reload.billable_items.should have(13).items
-    @site.billable_items.with_item(@classic_design)           .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@flat_design)              .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@light_design)             .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@logo_addon_plan_1)        .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
+    expect(@site.reload.billable_items.size).to eq(13)
+    expect(@site.billable_items.with_item(@classic_design)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@flat_design)              .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@light_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@logo_addon_plan_1)        .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').size).to eq(1)
 
-    @site.billable_item_activities.should have(13).items
-    @site.billable_item_activities.with_item(@classic_design)           .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@flat_design)              .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@light_design)             .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
+    expect(@site.billable_item_activities.size).to eq(13)
+    expect(@site.billable_item_activities.with_item(@classic_design)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@flat_design)              .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@light_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@video_player_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@image_viewer_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@controls_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@initial_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@embed_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@lightbox_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@api_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@support_addon_plan_1)     .state('subscribed').size).to eq(1)
 
     go 'my', "/sites/#{@site.to_param}/addons"
   end
@@ -147,40 +147,40 @@ feature 'Choose add-ons' do
     choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(2)
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
-    page.should have_content 'Your add-ons selection has been confirmed.'
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    expect(page).to have_content 'Your add-ons selection has been confirmed.'
 
-    @site.reload.billable_items.should have(13).items
-    @site.billable_items.with_item(@classic_design)           .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@flat_design)              .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@light_design)             .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@logo_addon_plan_2)        .state('trial').should have(1).item
+    expect(@site.reload.billable_items.size).to eq(13)
+    expect(@site.billable_items.with_item(@classic_design)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@flat_design)              .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@light_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@logo_addon_plan_2)        .state('trial').size).to eq(1)
 
-    @site.billable_item_activities.should have(13 + 2).items
-    @site.billable_item_activities.with_item(@classic_design)           .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@flat_design)              .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@light_design)             .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('canceled').should have(1).item
-    @site.billable_item_activities.with_item(@logo_addon_plan_2)        .state('trial').should have(1).item
+    expect(@site.billable_item_activities.size).to eq(13 + 2)
+    expect(@site.billable_item_activities.with_item(@classic_design)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@flat_design)              .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@light_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@video_player_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@image_viewer_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@controls_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@initial_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@embed_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@lightbox_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@api_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@support_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@logo_addon_plan_1)        .state('canceled').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@logo_addon_plan_2)        .state('trial').size).to eq(1)
   end
 
   scenario 'select checkbox add-on' do
@@ -188,42 +188,42 @@ feature 'Choose add-ons' do
     check "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.name}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(3)
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
-    page.should have_content 'Your add-ons selection has been confirmed.'
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    expect(page).to have_content 'Your add-ons selection has been confirmed.'
 
-    @site.reload.billable_items.should have(14).items
-    @site.billable_items.with_item(@classic_design)             .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@flat_design)                .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@light_design)               .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@video_player_addon_plan_1)  .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@image_viewer_addon_plan_1)  .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@controls_addon_plan_1)      .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@initial_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@embed_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@lightbox_addon_plan_1)      .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@stats_addon_plan_2)         .state('trial').should have(1).item
-    @site.billable_items.with_item(@logo_addon_plan_1)          .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@api_addon_plan_1)           .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@support_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@social_sharing_addon_plan_1).state('trial').should have(1).item
+    expect(@site.reload.billable_items.size).to eq(14)
+    expect(@site.billable_items.with_item(@classic_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@flat_design)                .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@light_design)               .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@video_player_addon_plan_1)  .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@image_viewer_addon_plan_1)  .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@controls_addon_plan_1)      .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@initial_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@embed_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@lightbox_addon_plan_1)      .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@stats_addon_plan_2)         .state('trial').size).to eq(1)
+    expect(@site.billable_items.with_item(@logo_addon_plan_1)          .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@api_addon_plan_1)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@support_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@social_sharing_addon_plan_1).state('trial').size).to eq(1)
 
-    @site.billable_item_activities.should have(13 + 3).items
-    @site.billable_item_activities.with_item(@classic_design)             .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@flat_design)                .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@light_design)               .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@video_player_addon_plan_1)  .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@image_viewer_addon_plan_1)  .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@controls_addon_plan_1)      .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@initial_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@embed_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@lightbox_addon_plan_1)      .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@logo_addon_plan_1)          .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@api_addon_plan_1)           .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@support_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('canceled').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_2)         .state('trial').should have(1).item
-    @site.billable_item_activities.with_item(@social_sharing_addon_plan_1).state('trial').should have(1).item
+    expect(@site.billable_item_activities.size).to eq(13 + 3)
+    expect(@site.billable_item_activities.with_item(@classic_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@flat_design)                .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@light_design)               .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@video_player_addon_plan_1)  .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@image_viewer_addon_plan_1)  .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@controls_addon_plan_1)      .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@initial_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@embed_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@lightbox_addon_plan_1)      .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@logo_addon_plan_1)          .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@api_addon_plan_1)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@support_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('canceled').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_2)         .state('trial').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@social_sharing_addon_plan_1).state('trial').size).to eq(1)
 
     go 'my', "/sites/#{@site.to_param}/addons"
 
@@ -231,42 +231,42 @@ feature 'Choose add-ons' do
     uncheck "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.name}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(3)
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
-    page.should have_content 'Your add-ons selection has been confirmed.'
+    expect(current_url).to eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    expect(page).to have_content 'Your add-ons selection has been confirmed.'
 
-    @site.reload.billable_items.should have(13).items
-    @site.billable_items.with_item(@classic_design)           .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@flat_design)              .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@light_design)             .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').should have(1).item
-    @site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@logo_addon_plan_1)        .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').should have(1).item
+    expect(@site.reload.billable_items.size).to eq(13)
+    expect(@site.billable_items.with_item(@classic_design)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@flat_design)              .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@light_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@video_player_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@image_viewer_addon_plan_1).state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@controls_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@initial_addon_plan_1)     .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@embed_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@lightbox_addon_plan_1)    .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@stats_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@logo_addon_plan_1)        .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@api_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_items.with_item(@support_addon_plan_1)     .state('subscribed').size).to eq(1)
 
-    @site.billable_item_activities.should have(16 + 3).items
-    @site.billable_item_activities.with_item(@classic_design)             .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@flat_design)                .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@light_design)               .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@video_player_addon_plan_1)  .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@image_viewer_addon_plan_1)  .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@controls_addon_plan_1)      .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@initial_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@embed_addon_plan_1)         .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@lightbox_addon_plan_1)      .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('subscribed').should have(2).item
-    @site.billable_item_activities.with_item(@logo_addon_plan_1)          .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@api_addon_plan_1)           .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@support_addon_plan_1)       .state('subscribed').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('canceled').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_2)         .state('trial').should have(1).item
-    @site.billable_item_activities.with_item(@social_sharing_addon_plan_1).state('trial').should have(1).item
-    @site.billable_item_activities.with_item(@stats_addon_plan_2)         .state('canceled').should have(1).item
-    @site.billable_item_activities.with_item(@social_sharing_addon_plan_1).state('canceled').should have(1).item
+    expect(@site.billable_item_activities.size).to eq(16 + 3)
+    expect(@site.billable_item_activities.with_item(@classic_design)             .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@flat_design)                .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@light_design)               .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@video_player_addon_plan_1)  .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@image_viewer_addon_plan_1)  .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@controls_addon_plan_1)      .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@initial_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@embed_addon_plan_1)         .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@lightbox_addon_plan_1)      .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('subscribed').size).to eq(2)
+    expect(@site.billable_item_activities.with_item(@logo_addon_plan_1)          .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@api_addon_plan_1)           .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@support_addon_plan_1)       .state('subscribed').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_1)         .state('canceled').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_2)         .state('trial').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@social_sharing_addon_plan_1).state('trial').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@stats_addon_plan_2)         .state('canceled').size).to eq(1)
+    expect(@site.billable_item_activities.with_item(@social_sharing_addon_plan_1).state('canceled').size).to eq(1)
   end
 end

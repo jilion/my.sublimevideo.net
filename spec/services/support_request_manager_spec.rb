@@ -19,8 +19,8 @@ describe SupportRequestManager do
       let(:user) { double(zendesk_id?: true) }
 
       it 'does nothing' do
-        ZendeskWrapper.should_not_receive(:create_user)
-        user.should_not_receive(:update_attribute)
+        expect(ZendeskWrapper).not_to receive(:create_user)
+        expect(user).not_to receive(:update_attribute)
 
         described_class.create_zendesk_user(user)
       end
@@ -30,8 +30,8 @@ describe SupportRequestManager do
       let(:user) { double(zendesk_id?: false) }
 
       it 'create a user in Zendesk and set the zendesk_id from it' do
-        ZendeskWrapper.should_receive(:create_user).with(user).and_return(OpenStruct.new(id: 42))
-        user.should_receive(:update_attribute).with(:zendesk_id, 42)
+        expect(ZendeskWrapper).to receive(:create_user).with(user).and_return(OpenStruct.new(id: 42))
+        expect(user).to receive(:update_attribute).with(:zendesk_id, 42)
 
         described_class.create_zendesk_user(user)
       end
@@ -41,42 +41,42 @@ describe SupportRequestManager do
   describe '#send' do
     context 'support request is valid' do
       before do
-        support_request1.stub(valid?: true)
+        allow(support_request1).to receive(:valid?).and_return(true)
       end
 
       it 'calls #set_user_zendesk_id if user has no zendesk_id' do
-        ZendeskWrapper.should_receive(:create_ticket).with(support_request1.to_params).and_return(ticket)
-        manager1.should_receive(:set_user_zendesk_id).with(ticket)
+        expect(ZendeskWrapper).to receive(:create_ticket).with(support_request1.to_params).and_return(ticket)
+        expect(manager1).to receive(:set_user_zendesk_id).with(ticket)
 
-        manager1.send.should be_true
+        expect(manager1.send).to be_truthy
       end
     end
 
     context 'support request is not valid' do
       before do
-        support_request1.stub(valid?: false)
+        allow(support_request1).to receive(:valid?).and_return(false)
       end
 
       it 'returns false' do
-        ZendeskWrapper.should_not_receive(:create_ticket)
-        manager1.should_not_receive(:set_user_zendesk_id)
+        expect(ZendeskWrapper).not_to receive(:create_ticket)
+        expect(manager1).not_to receive(:set_user_zendesk_id)
 
-        manager1.send.should be_false
+        expect(manager1.send).to be_falsey
       end
     end
   end
 
   describe '#set_user_zendesk_id' do
     it 'sets the zendesk_id of the user' do
-      ZendeskWrapper.should_receive(:verify_user)
-      support_request1.user.should_receive(:update_attribute).with(:zendesk_id, 12)
+      expect(ZendeskWrapper).to receive(:verify_user)
+      expect(support_request1.user).to receive(:update_attribute).with(:zendesk_id, 12)
 
       manager1.__send__(:set_user_zendesk_id, ticket)
     end
 
     it "calls #verify_user on the given ticket" do
-      support_request1.user.stub(:update_attribute)
-      ZendeskWrapper.should_receive(:verify_user)
+      allow(support_request1.user).to receive(:update_attribute)
+      expect(ZendeskWrapper).to receive(:verify_user)
 
       manager1.__send__(:set_user_zendesk_id, ticket)
     end

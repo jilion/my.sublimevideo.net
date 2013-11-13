@@ -16,28 +16,28 @@ describe "Admin::App::Components JSON actions" do
     context "authorized token" do
       it "returns 200 response" do
         get "app/components/#{component.token}/versions.json?auth_token=#{admin.authentication_token}", nil, headers
-        response.status.should eq 200
+        expect(response.status).to eq 200
       end
     end
 
     context "not existing component token" do
       it "returns an '401 Unauthorized' response" do
         get "app/components/argh/versions.json?auth_token=#{admin.authentication_token}", nil, headers
-        response.status.should eq 404
+        expect(response.status).to eq 404
       end
     end
 
     context "non-authorized token" do
       it "returns 200 response" do
         get "app/components/#{component.token}/versions.json?auth_token=argh", nil, headers
-        response.status.should eq 401
+        expect(response.status).to eq 401
       end
     end
 
     context "no token" do
       it "returns an '401 Unauthorized' response" do
         get "app/components/#{component.token}/versions.json", nil, headers
-        response.status.should eq 401
+        expect(response.status).to eq 401
       end
     end
   end
@@ -46,7 +46,7 @@ describe "Admin::App::Components JSON actions" do
     it "returns 200 & json" do
       component_version
       get "app/components/#{component.token}/versions.json?auth_token=#{admin.authentication_token}", nil, headers
-      response.status.should eq 200
+      expect(response.status).to eq 200
     end
   end
 
@@ -59,7 +59,7 @@ describe "Admin::App::Components JSON actions" do
             zip: zip,
             dependencies: { app: "2.0.0" }.to_json
           } }, headers
-        response.status.should eq 201
+        expect(response.status).to eq 201
       end
     end
 
@@ -70,7 +70,7 @@ describe "Admin::App::Components JSON actions" do
             version: component_version.version,
             zip: zip
           } }, headers
-        response.status.should eq 422
+        expect(response.status).to eq 422
       end
     end
 
@@ -80,7 +80,7 @@ describe "Admin::App::Components JSON actions" do
           version: {
             version: '2.0.0'
           } }, headers
-        response.status.should eq 422
+        expect(response.status).to eq 422
       end
     end
   end
