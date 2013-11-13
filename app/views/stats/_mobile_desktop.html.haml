@@ -13,10 +13,10 @@
           ])
 
       %ul.graph_legend
-        %li.graph_label_color_2{style:"margin-bottom:10px"}<
+        %li.graph_label_color_2{style:"margin-bottom:10px"}
           = display_percentage(stats.try_keys('d', :percent) { 0 }, strip_insignificant_zeros: false)
           %span desktop
-        %li.graph_label_color_3<
+        %li.graph_label_color_3
           = display_percentage(stats.try_keys('m', :percent) { 0 }, strip_insignificant_zeros: false)
           %span mobile
       .spacer
