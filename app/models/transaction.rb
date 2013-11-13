@@ -271,12 +271,12 @@ private
 
   # after_transition on: :succeed
   def _send_charging_succeeded_email
-    BillingMailer.delay(queue: 'my-mailer').transaction_succeeded(id)
+    BillingMailer.delay(queue: 'my').transaction_succeeded(id)
   end
 
   # after_transition on: :fail
   def _send_charging_failed_email
-    BillingMailer.delay(queue: 'my-mailer').transaction_failed(id)
+    BillingMailer.delay(queue: 'my').transaction_failed(id)
   end
 
 end

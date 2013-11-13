@@ -9,7 +9,7 @@ module App
     def create
       component_version.save!
       if ['app', 'main'].include? component_version.name
-        LoaderGenerator.delay(queue: 'my-high').update_all_dependant_sites(component_version.component_id, component_version.stage)
+        LoaderGenerator.delay(queue: 'my').update_all_dependant_sites(component_version.component_id, component_version.stage)
         CampfireWrapper.delay(queue: 'my').post("#{campfire_message} released")
       end
       true
@@ -19,7 +19,7 @@ module App
 
     def destroy
       component_version.destroy
-      LoaderGenerator.delay(queue: 'my-high').update_all_dependant_sites(component_version.component_id, component_version.stage)
+      LoaderGenerator.delay(queue: 'my').update_all_dependant_sites(component_version.component_id, component_version.stage)
       CampfireWrapper.delay(queue: 'my').post("#{campfire_message} DELETED!")
       true
     end

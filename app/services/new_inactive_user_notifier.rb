@@ -2,7 +2,7 @@ class NewInactiveUserNotifier
 
   def self.send_emails
    inactive_users do |user|
-      UserMailer.delay(queue: 'my-mailer').inactive_account(user.id)
+      UserMailer.delay(queue: 'my').inactive_account(user.id)
     end
   end
 

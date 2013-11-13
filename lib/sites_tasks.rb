@@ -1,8 +1,8 @@
 module SitesTasks
   def self.regenerate_templates(options = {})
     Site.where(token: SiteToken.tokens).pluck(:id).each do |site_id|
-      LoaderGenerator.delay(queue: 'my-high').update_all_stages!(site_id) if options[:loaders]
-      SettingsGenerator.delay(queue: 'my-high').update_all!(site_id) if options[:settings]
+      LoaderGenerator.delay(queue: 'my').update_all_stages!(site_id) if options[:loaders]
+      SettingsGenerator.delay(queue: 'my').update_all!(site_id) if options[:settings]
     end
     puts 'Important sites scheduled...' if Rails.env.development?
 

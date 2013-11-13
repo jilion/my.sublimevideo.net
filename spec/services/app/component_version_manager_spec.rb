@@ -29,7 +29,7 @@ describe App::ComponentVersionManager do
 
     context 'app component version' do
       it 'delays the update of all dependant sites loaders' do
-        LoaderGenerator.should delay(:update_all_dependant_sites, queue: 'my-high').with(app_component_version.component_id, app_component_version.stage)
+        LoaderGenerator.should delay(:update_all_dependant_sites, queue: 'my').with(app_component_version.component_id, app_component_version.stage)
         service.create
       end
 

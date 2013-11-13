@@ -45,7 +45,7 @@ class LoaderGenerator
     component = App::Component.find(component_id)
     component.clear_caches # force cache clearance
 
-    delay(queue: 'my-high').update_important_sites
+    delay(queue: 'my').update_important_sites
 
     sites = _sites_non_important(component: component, stage: stage)
     CampfireWrapper.delay(queue: 'my').post("Start updating all loaders for #{sites.count} sites with the #{stage} stage accessible")
@@ -59,7 +59,7 @@ class LoaderGenerator
     sites = Site.where(token: (::SiteToken.tokens + IMPORTANT_SITE_TOKENS))
     CampfireWrapper.delay(queue: 'my').post("Start updating all loaders for #{sites.count} *important* sites")
     sites.pluck(:id).each do |site_id|
-      delay(queue: 'my-high').update_all_stages!(site_id)
+      delay(queue: 'my').update_all_stages!(site_id)
     end
   end
 

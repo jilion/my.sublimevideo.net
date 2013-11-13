@@ -157,14 +157,14 @@ describe Site, :addons do
 
       it "delays LoaderGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          LoaderGenerator.should delay(:update_all_stages!, queue: 'my', at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
+          LoaderGenerator.should delay(:update_all_stages!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id, deletable: true)
           site.update(accessible_stage: 'alpha')
         end
       end
 
       it "delays SettingsGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          SettingsGenerator.should delay(:update_all!, queue: 'my', at: 5.seconds.from_now.to_i).with(site.id)
+          SettingsGenerator.should delay(:update_all!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id)
           site.update(accessible_stage: 'alpha')
         end
       end
@@ -177,14 +177,14 @@ describe Site, :addons do
     describe "after transition" do
       it "delays LoaderGenerator update" do
         Timecop.freeze do
-          LoaderGenerator.should delay(:update_all_stages!, queue: 'my', at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
+          LoaderGenerator.should delay(:update_all_stages!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id, deletable: true)
           site.suspend
         end
       end
 
       it "delays SettingsGenerator update" do
         Timecop.freeze do
-          SettingsGenerator.should delay(:update_all!, queue: 'my', at: 5.seconds.from_now.to_i).with(site.id)
+          SettingsGenerator.should delay(:update_all!, queue: 'my', at: 10.seconds.from_now.to_i).with(site.id)
           site.suspend
         end
       end
