@@ -1,4 +1,5 @@
 require 'fast_spec_helper'
+require 'timecop'
 require 'support/fixtures_helpers'
 
 require 'services/addons/custom_logo_uploader'
@@ -41,7 +42,9 @@ describe Addons::CustomLogoUploader do
 
   describe '#path' do
     it 'use the "identify" CLI tool' do
-      uploader.path.should eq "a/#{kit.site.token}/#{kit.identifier}/logo-custom-#{uploader.width}x#{uploader.height}-#{Time.now.to_i}@2x.png"
+      Timecop.freeze do
+        uploader.path.should eq "a/#{kit.site.token}/#{kit.identifier}/logo-custom-#{uploader.width}x#{uploader.height}-#{Time.now.to_i}@2x.png"
+      end
     end
   end
 

@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'timecop'
 require 'active_support/core_ext'
 require 'sidekiq'
 require 'config/sidekiq'
@@ -29,7 +28,6 @@ TweetsTrend = Class.new unless defined?(TweetsTrend)
 TailorMadePlayerRequestsTrend = Class.new unless defined?(TailorMadePlayerRequestsTrend)
 Tweet = Class.new unless defined?(Tweet)
 Tweet::KEYWORDS = ['rymai'] unless defined?(Tweet::KEYWORDS)
-
 
 describe Scheduler do
 
