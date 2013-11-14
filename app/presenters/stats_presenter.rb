@@ -124,9 +124,10 @@ class StatsPresenter
       hash
     end
 
-    _group_and_fill_missing_values_for_last_stats(reduced_stats.to_a,
-      from: options[:hours].hours.ago.change(min: 0),
-      to: 1.hour.ago.change(min: 0))
+    from = options[:hours] > 24 ? (options[:hours] + 24).hours.ago.midnight : options[:hours].hours.ago.change(min: 0)
+    to   = options[:hours] > 24 ? Time.now.utc.yesterday.midnight : 1.hour.ago.change(min: 0)
+
+    _group_and_fill_missing_values_for_last_stats(reduced_stats.to_a, from: from, to: to)
   end
 
   def _group_and_fill_missing_values_for_last_stats(stats, opts = {})
