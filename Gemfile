@@ -86,10 +86,6 @@ gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails'
 
-# Highest version change the query_values method behavior
-# https://github.com/sporkmonger/addressable/issues/77
-gem 'addressable', '~> 2.2.8', require: 'addressable/uri'
-
 # Stats
 gem 'crack'
 gem 'pusher'
