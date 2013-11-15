@@ -10,7 +10,7 @@ describe VideoStatsController do
     before do
       sign_in authenticated_user
       @site = create(:site, user: @authenticated_user)
-      video_tag = double(uid: '1', site_token: @site.token, sources: [])
+      video_tag = double(uid: '1', site_token: @site.token, sources: [], class: 'VideoTag')
       expect(VideoTag).to receive(:find).with('1', _site_token: @site.token) { video_tag }
     end
 
