@@ -30,5 +30,4 @@ class UsersTrend
       ar: User.archived.count
     }
   end
-
 end
