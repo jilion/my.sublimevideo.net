@@ -41,8 +41,10 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             pointStart: serie.startTime()
             pointInterval: 3600 * 24 * 1000
 
-    # @series.push this.timelineSitesEvents()
-    # @series.push this.timelineTweetsEvents()
+    @series.push this.timelineSiteAdminStatsEvents()
+    @series.push this.timelineSitesEvents()
+    @series.push this.timelineTweetsEvents()
+
     @series
 
   buildXAxis: ->
@@ -405,7 +407,29 @@ class AdminSublimeVideo.Helpers.ChartsHelper
       yAxis: this.buildYAxis()
 
 
+  timelineSiteAdminStatsEvents: ->
+    name: 'Site Admin Stats flags'
+    type: 'flags'
+    data: [{
+      x: Date.UTC(2013, 9, 23)
+      title: 'i'
+      text: 'Video plays and loads metrics collection method changed on this day.'
+    }]
+    lineWidth: 1
+    color: '#f8e9a1'
+    fillColor: '#f8e9a1'
+    width: 16
+    style:
+      color: '#6e4b00' # text color
+    states:
+      hover:
+        lineWidth: 1
+        fillColor: '#f8e9a1'
+    onSeries: 'site_admin_stats'
+    shape: 'squarepin'
+
   timelineSitesEvents: ->
+    name: 'Sites flags'
     type: 'flags'
     data: [{
       x: Date.UTC(2011, 2, 30)
@@ -416,10 +440,12 @@ class AdminSublimeVideo.Helpers.ChartsHelper
       title: 'V2'
       text: 'SublimeVideo unleashed!'
     }]
-    # onSeries: 'sites'
+    onSeries: 'sites'
     width: 16
+    shape: 'squarepin'
 
   timelineTweetsEvents: ->
+    name: 'Tweets flags'
     type: 'flags'
     data: [{
       x: Date.UTC(2011, 5, 10)
@@ -434,5 +460,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
       title: 'BP3'
       text: "World's First True HTML5 Fullscreen Video"
     }]
-    # onSeries: 'tweets'
+    onSeries: 'tweets'
     width: 16
+    shape: 'squarepin'
