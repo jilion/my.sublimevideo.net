@@ -2,31 +2,31 @@ require 'active_support/core_ext'
 
 class StatsPresenter
 
-  attr_reader :resource, :options
+  attr_reader :resource, :resource_name, :options
 
   DEFAULT_OPTIONS = {
     source: 'a',
     hours: 24
   }
 
+  # @param [Site, VideoTag] resource the record for which we'll retrieve stats
+  # @option options [String] source the source to filter the stats (a => all,
+  #   w => website, e => external)
+  # @option options [String, Fixnum] hours the number of hours to go back
+  # @option options [String] since the timestamp from where to retrieve plays
+  #
+  # @see SiteStatsPresenter
+  # @see VideoStatsPresenter
+  #
   def initialize(resource, options = {})
     @resource = resource
+    @resource_name = resource.class.to_s.sub(/Tag/, '')
     @options = DEFAULT_OPTIONS.merge(options.symbolize_keys.slice(:source, :hours, :since))
     @options[:hours] = @options[:hours].to_i
   end
 
-  def _last_stats_by_hour
-    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
-  end
-
-  def _last_stats_by_minute
-    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
-  end
-
-  private :_last_stats_by_hour, :_last_stats_by_minute
-
   def last_plays
-    raise NotImplementedError, "This #{self.class} cannot respond to: #{__method__}"
+    @last_plays ||= "Last#{resource_name}Play".constantize.last_plays(resource, options[:since])
   end
 
   def etag
@@ -73,6 +73,14 @@ class StatsPresenter
   end
 
   private
+
+  def _last_stats_by_hour
+    @_last_stats_by_hour ||= "#{resource_name}Stat".constantize.last_hours_stats(resource, options[:hours] + 24).reverse
+  end
+
+  def _last_stats_by_minute
+    @_last_stats_by_minute ||= "Last#{resource_name}Stat".constantize.last_stats(resource).reverse
+  end
 
   def _last_60_minutes_hits(field)
     stats = _last_stats_by_minute.map { |s| [s.time.to_i * 1000, s.send(field)] }

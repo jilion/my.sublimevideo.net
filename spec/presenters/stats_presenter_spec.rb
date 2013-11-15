@@ -6,24 +6,6 @@ require 'presenters/site_stats_presenter'
 describe StatsPresenter do
   let(:presenter) { described_class.new(nil) }
 
-  describe '#_last_stats_by_hour' do
-    it 'must be implemented by a subclass' do
-      expect { presenter.send :_last_stats_by_hour }.to raise_error(NotImplementedError)
-    end
-  end
-
-  describe '#_last_stats_by_minute' do
-    it 'must be implemented by a subclass' do
-      expect { presenter.send :_last_stats_by_minute }.to raise_error(NotImplementedError)
-    end
-  end
-
-  describe '#last_plays' do
-    it 'must be implemented by a subclass' do
-      expect { presenter.last_plays } .to raise_error(NotImplementedError)
-    end
-  end
-
   describe '#etag' do
     it 'must be implemented by a subclass' do
       expect { presenter.etag }.to raise_error(NotImplementedError)

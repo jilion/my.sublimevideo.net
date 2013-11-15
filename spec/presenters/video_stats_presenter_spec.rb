@@ -12,7 +12,7 @@ describe VideoStatsPresenter do
     stub_const('LastPlay', Class.new)
   end
 
-  let(:video_tag) { double('VideoTag', uid: 'foobar') }
+  let(:video_tag) { double('VideoTag', uid: 'foobar', class: 'VideoTag') }
   let(:presenter) { described_class.new(video_tag) }
   let(:stats_by_hour) do
     [

@@ -12,7 +12,7 @@ describe SiteStatsPresenter do
     stub_const('LastSitePlay', Class.new)
   end
 
-  let(:site) { double('Site', token: 'foobar') }
+  let(:site) { double('Site', token: 'foobar', class: 'Site') }
   let(:presenter) { described_class.new(site) }
   let(:stats_by_hour) do
     [
