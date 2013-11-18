@@ -6,7 +6,7 @@ describe "Admin::App::Components JSON actions" do
   let(:component_version) { App::ComponentVersion.create(token: component.token, version: '2.0.0', zip: fixture_file("app/e.zip")) }
   let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev', 'HTTP_AUTHORIZATION' => "Token token=\"#{ENV['PLAYER_ACCESS_TOKEN']}\"" } }
 
-  describe "Auhtentication" do
+  describe "Authentication" do
     context "authorized token" do
       it "returns 200 response" do
         get "app/components/#{component.token}/versions.json", nil, headers

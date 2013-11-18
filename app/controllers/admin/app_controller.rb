@@ -7,8 +7,7 @@ class Admin::AppController < Admin::AdminController
   def _authenticate
     authenticate_with_http_token do |token, options|
       token == ENV['PLAYER_ACCESS_TOKEN']
-    end or authenticate_admin!
+    end or (authenticate_admin! && require_role?('player'))
   end
 
-  before_filter { |controller| require_role?('player') }
 end
