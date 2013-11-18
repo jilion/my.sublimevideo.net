@@ -29,7 +29,7 @@ class UsersController < Devise::RegistrationsController
         respond_with resource, location: after_sign_up_path_for(@user)
       else
         set_flash_message :notice, :inactive_signed_up, reason: inactive_reason(@user) if is_navigational_format?
-        expire_session_data_after_sign_in!
+        expire_data_after_sign_in!
         respond_with @user, location: after_inactive_sign_up_path_for(@user)
       end
     else
@@ -87,8 +87,8 @@ class UsersController < Devise::RegistrationsController
   private
 
   def _configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
-    devise_parameter_sanitizer.for(:account_update) do |u|
+    devise_parameter_sanitizer.sanitize(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
+    devise_parameter_sanitizer.sanitize(:account_update) do |u|
       keys = [:email, :password, :name, :newsletter, :confirmation_comment,
         :postal_code, :country, :use_personal, :use_company, :use_clients,
         :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]

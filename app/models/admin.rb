@@ -1,8 +1,8 @@
 class Admin < ActiveRecord::Base
   ROLES = %w[marcom player twitter invoices god]
 
-  devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :lockable, :async
+  devise :database_authenticatable, :invitable, :registerable, :recoverable,
+         :rememberable, :trackable, :validatable, :lockable, :async
 
   serialize :roles, Array
 

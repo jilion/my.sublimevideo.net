@@ -2,7 +2,7 @@ class Admin::AdminsController < Admin::AdminController
   respond_to :js, :html
 
   before_filter { |controller| require_role?('god') }
-  before_filter :load_admin, only: [:edit, :update, :reset_auth_token, :destroy]
+  before_filter :load_admin, only: [:edit, :update, :destroy]
 
   has_scope :by_date
 
@@ -21,12 +21,6 @@ class Admin::AdminsController < Admin::AdminController
   def update
     @admin.update(params[:admin])
     respond_with(@admin, location: [:admin, :admins])
-  end
-
-  # PATCH /admins/:id/reset_auth_token
-  def reset_auth_token
-    @admin.reset_authentication_token!
-    respond_with(@admin, location: [:edit, :admin, @admin])
   end
 
   def destroy

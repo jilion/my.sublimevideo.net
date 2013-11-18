@@ -3,11 +3,3 @@
 = form_for @admin, url: "/admins/#{@admin.id}" do |f|
   = render 'admin/admins/form', f: f
 .spacer
-
-%h3 Authentication token (?auth_token=...)
-
-%p
-  Current auth token:
-  = @admin.authentication_token || 'None, please reset it if you need one.'
-
-= button_to 'Reset auth token', reset_auth_token_admin_admin_path(@admin), method: :patch, data: { confirm: 'Are you sure? The current will be overwritten.' }

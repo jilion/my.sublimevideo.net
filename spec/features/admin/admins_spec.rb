@@ -24,22 +24,6 @@ feature "Admin session:" do
   end
 end
 
-feature "Token authentication:" do
-  scenario "works" do
-    create(:admin, email: "john@doe.com", password: "123456")
-    admin = Admin.last
-    admin.reset_authentication_token!
-    go 'admin', "app/components.json?auth_token=#{admin.authentication_token}"
-    page.driver.status_code.should eq 200
-  end
-
-  scenario "fails" do
-    go 'admin', 'app/components.json?auth_token=FAIL'
-    page.driver.status_code.should eq 401
-    page.body.should include('Invalid authentication token.')
-  end
-end
-
 feature "Admins actions:" do
   background do
     sign_in_as :admin, email: "old@jilion.com"

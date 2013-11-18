@@ -69,11 +69,7 @@ MySublimeVideo::Application.routes.draw do
       end
       resources :enthusiasts, only: [:index, :show]
       resources :enthusiast_sites, only: []
-      resources :admins, only: [:index, :edit, :update, :destroy] do
-        member do
-          patch :reset_auth_token
-        end
-      end
+      resources :admins, only: [:index, :edit, :update, :destroy]
       resources :feedbacks, only: [:index]
       resources :tailor_made_player_requests, only: [:index, :show, :destroy]
 
