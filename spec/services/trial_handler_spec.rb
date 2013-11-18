@@ -139,7 +139,7 @@ describe TrialHandler do
       context 'an issue occurs' do
         before do
           service = double
-          SiteManager.should_receive(:new) { service }
+          AddonsSubscriber.should_receive(:new) { service }
           service.should_receive(:update_billable_items).and_raise Exception
         end
 

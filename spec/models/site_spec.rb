@@ -215,10 +215,8 @@ describe Site, :addons do
       context 'with a billable item in trial' do
         let(:site) do
           site = build(:site)
-          SiteManager.new(site).tap do |service|
-            service.create
-            service.update_billable_items({}, { logo: AddonPlan.get('logo', 'disabled').id })
-          end
+          SiteManager.new(site).create
+          AddonsSubscriber.new(site).update_billable_items({}, { logo: AddonPlan.get('logo', 'disabled').id })
           site
         end
 

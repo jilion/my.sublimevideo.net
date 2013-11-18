@@ -85,19 +85,19 @@ class Site < ActiveRecord::Base
     end
 
     before_transition on: :suspend do |site, transition|
-      SiteManager.new(site).suspend_billable_items
+      AddonsSubscriber.new(site).suspend_billable_items
       Librato.increment 'sites.events', source: 'suspend'
     end
 
     before_transition on: :unsuspend do |site, transition|
-      SiteManager.new(site).unsuspend_billable_items
+      AddonsSubscriber.new(site).unsuspend_billable_items
       Librato.increment 'sites.events', source: 'unsuspend'
     end
 
     before_transition on: :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
-      SiteManager.new(site).cancel_billable_items
+      AddonsSubscriber.new(site).cancel_billable_items
       Librato.increment 'sites.events', source: 'archive'
       site.archived_at = Time.now.utc
     end
