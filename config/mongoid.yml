@@ -25,6 +25,7 @@ production:
         identity_map_enabled: false
         skip_version_check: true
         preload_models: true
+        timeout: 30
         pool_size: 10
         use_utc: true
         safe: true
