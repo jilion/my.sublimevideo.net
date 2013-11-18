@@ -149,6 +149,7 @@ class LoaderGenerator
   def _s3_headers
     {
       'Cache-Control' => cache_control,
+      'Last-Modified' => Time.now.httpdate,
       'Content-Type'  => 'text/javascript',
       'x-amz-acl'     => 'public-read'
     }
