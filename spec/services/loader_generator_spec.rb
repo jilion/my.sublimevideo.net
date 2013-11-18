@@ -1,5 +1,6 @@
 require 'fast_spec_helper'
 require 'config/sidekiq'
+require 'timecop'
 require 'support/matchers/sidekiq_matchers'
 require 'rails/railtie' # for Carrierwave
 require 'config/carrierwave' # for fog_mock
@@ -297,6 +298,13 @@ describe LoaderGenerator, :fog_mock do
           it "has 1 min max-age cache control" do
             object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
             object_headers['Cache-Control'].should eq 's-maxage=300, max-age=120, public'
+          end
+          it "has Last-Modified" do
+            Timecop.freeze do
+              object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
+              time = object_headers['Last-Modified']
+              expect(Time.parse(time)).to eq Time.now.to_s
+            end
           end
         end
       end
