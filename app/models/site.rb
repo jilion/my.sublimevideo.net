@@ -5,9 +5,6 @@ class Site < ActiveRecord::Base
   include SiteModules::Billing
   include Searchable
 
-  DEFAULT_DOMAIN = 'please-edit.me'
-  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
-
   # Versioning
   has_paper_trail ignore: [
     :last_30_days_admin_starts,
@@ -68,11 +65,6 @@ class Site < ActiveRecord::Base
   # =============
   # = Callbacks =
   # =============
-
-  before_validation ->(site) do
-    site.hostname      = DEFAULT_DOMAIN if site.hostname.blank?
-    site.dev_hostnames = DEFAULT_DEV_DOMAINS if site.dev_hostnames.blank?
-  end
 
   # Only when accessible_stage change in admin
   after_save ->(site) do

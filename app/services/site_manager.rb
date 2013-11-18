@@ -1,3 +1,7 @@
+require 'rank_setter'
+require 'loader_generator'
+require 'settings_generator'
+
 class SiteManager
   attr_reader :site
 
@@ -9,6 +13,8 @@ class SiteManager
   def self.update_billable_items(site_id, designs, addon_plans, options = {})
     new(::Site.find(site_id)).update_billable_items(designs, addon_plans, options)
   end
+  DEFAULT_DOMAIN = 'please-edit.me'
+  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
 
   def initialize(site)
     @site = site
@@ -16,6 +22,8 @@ class SiteManager
 
   def create
     _transaction_with_graceful_fail do
+      site.hostname      = DEFAULT_DOMAIN if site.hostname.blank?
+      site.dev_hostnames = DEFAULT_DEV_DOMAINS if site.dev_hostnames.blank?
       site.save!
       _create_default_kit!
       _set_default_designs

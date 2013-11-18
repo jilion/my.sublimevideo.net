@@ -7,7 +7,7 @@ describe Site, :addons do
 
     its(:user)                             { should be_present }
     its(:hostname)                         { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                    { should eq '127.0.0.1, localhost' }
+    its(:dev_hostnames)                    { should be_nil }
     its(:extra_hostnames)                  { should be_nil }
     its(:path)                             { should be_nil }
     its(:wildcard)                         { should be_false }
@@ -61,30 +61,6 @@ describe Site, :addons do
     specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
     specify { Site.validators_on(:staging_hostnames).map(&:class).should include ExtraHostnamesValidator }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
-
-    describe "with no hostnames at all" do
-      subject { build(:site, hostname: nil, extra_hostnames: nil, staging_hostnames: nil, dev_hostnames: nil) }
-      it { should be_valid } # dev hostnames are set before validation
-      it { should have(0).error_on(:base) }
-
-      context "after validation" do
-        before { subject.valid? }
-        its(:hostname) { should == Site::DEFAULT_DOMAIN }
-        its(:dev_hostnames) { should == Site::DEFAULT_DEV_DOMAINS }
-      end
-    end
-
-    describe "with blank hostnames" do
-      subject { build(:site, hostname: "", extra_hostnames: "", dev_hostnames: "") }
-      it { should be_valid } # dev hostnames are set before validation
-      it { should have(0).error_on(:base) }
-
-      context "after validation" do
-        before { subject.valid? }
-        its(:hostname) { should == Site::DEFAULT_DOMAIN }
-        its(:dev_hostnames) { should == Site::DEFAULT_DEV_DOMAINS }
-      end
-    end
   end # Validations
 
   describe "Attributes Accessors" do
@@ -131,27 +107,6 @@ describe Site, :addons do
   end # Versioning
 
   describe "Callbacks" do
-
-    describe "before_validation" do
-      let(:site) { build_stubbed(:site, hostname: nil, dev_hostnames: nil) }
-
-      describe "set default hostname" do
-        specify do
-          site.hostname.should be_nil
-          site.should be_valid
-          site.hostname.should eq Site::DEFAULT_DOMAIN
-        end
-      end
-
-      describe "set default dev hostnames" do
-        specify do
-          site.dev_hostnames.should be_nil
-          site.should be_valid
-          site.dev_hostnames.should eq Site::DEFAULT_DEV_DOMAINS
-        end
-      end
-    end
-
     describe "after_save" do
       let(:site) { create(:site) }
 

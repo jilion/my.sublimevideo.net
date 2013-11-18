@@ -5,19 +5,15 @@ require 'config/sidekiq'
 require 'support/matchers/sidekiq_matchers'
 
 require 'models/app'
-require 'services/rank_setter'
-require 'services/loader_generator'
-require 'services/settings_generator'
 require 'services/site_manager'
 
 Site = Struct.new(:params) unless defined?(Site)
-AddonPlan = Class.new unless defined?(AddonPlan)
 ActiveRecord = Class.new unless defined?(ActiveRecord)
 ActiveRecord::RecordInvalid = Class.new(Exception) unless defined?(ActiveRecord::RecordInvalid)
 
 describe SiteManager do
   let(:user)    { double(sites: []) }
-  let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
+  let(:site)    { Struct.new(:user, :id, :hostname, :dev_hostnames).new(nil, 1234, nil, nil) }
   let(:service) { described_class.new(site) }
 
   before { Librato.stub(:increment) }
@@ -52,20 +48,18 @@ describe SiteManager do
       service.create.should be_true
     end
 
-    pending 'returns false if a ActiveRecord::RecordInvalid is raised' do
-      site.should_receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+    it 'sets hostname to DEFAULT_DOMAIN if hostname is blank?' do
+      allow_message_expectations_on_nil
+      site.hostname.stub(:blank?).and_return(true)
+      site.should_receive(:hostname=).with(described_class::DEFAULT_DOMAIN)
 
-      service.create.should be_false
-    end
-
-    it 'creates a default kit' do
-      service.should_receive(:_create_default_kit!)
       service.create.should be_true
     end
 
-    it 'sets default app designs and add-ons to site after creation' do
-      service.should_receive(:_set_default_designs)
-      service.should_receive(:_set_default_addon_plans)
+    it 'sets dev_hostnames to DEFAULT_DEV_DOMAINS if dev_hostnames are blank?' do
+      allow_message_expectations_on_nil
+      site.dev_hostnames.stub(:blank?).and_return(true)
+      site.should_receive(:dev_hostnames=).with(described_class::DEFAULT_DEV_DOMAINS)
 
       service.create.should be_true
     end
@@ -95,7 +89,7 @@ describe SiteManager do
       service.create.should be_true
     end
 
-    it "increments metrics" do
+    it 'increments metrics' do
       Librato.should_receive(:increment).with('sites.events', source: 'create')
 
       service.create.should be_true
