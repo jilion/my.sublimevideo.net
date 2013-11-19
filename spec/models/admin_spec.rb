@@ -85,7 +85,7 @@ end
 #  invitation_created_at  :datetime
 #  invitation_limit       :integer
 #  invitation_sent_at     :datetime
-#  invitation_token       :string(60)
+#  invitation_token       :string(255)
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
 #  last_sign_in_at        :datetime

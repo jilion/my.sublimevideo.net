@@ -1,25 +1,20 @@
-# coding: utf-8
 require 'spec_helper'
 
 describe "Admin::App::Components JSON actions" do
-  let(:admin) {
-    admin = create(:admin, roles: ['player'])
-    admin.reset_authentication_token!
-    admin
-  }
   let(:component) { App::Component.create(name: 'name', token: 'token') }
-  let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev' } }
+  let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev', 'HTTP_AUTHORIZATION' => "Token token=\"#{ENV['PLAYER_ACCESS_TOKEN']}\"" } }
 
-  describe "Auhtentication" do
+  describe "Authentication" do
     context "Authorized token" do
       it "returns 200 response" do
-        get "app/components.json?auth_token=#{admin.authentication_token}", nil, headers
+        get "app/components.json", nil, headers
         response.status.should eq 200
       end
     end
 
     context "Non-Authorized token" do
       it "returns 200 response" do
+        headers['HTTP_AUTHORIZATION'] = "Token token=\"argh\""
         get "app/components.json?auth_token=argh", nil, headers
         response.status.should eq 401
       end
@@ -27,6 +22,7 @@ describe "Admin::App::Components JSON actions" do
 
     context "No token" do
       it "returns an '401 Unauthorized' response" do
+        headers['HTTP_AUTHORIZATION'] = nil
         get 'app/components.json', nil, headers
         response.status.should eq 401
       end
@@ -36,7 +32,7 @@ describe "Admin::App::Components JSON actions" do
   describe "create" do
     context "valid params" do
       it "returns 201" do
-        post "app/components.json?auth_token=#{admin.authentication_token}", {
+        post "app/components.json", {
           component: {
             name: 'name',
             token: 'token'
@@ -47,7 +43,7 @@ describe "Admin::App::Components JSON actions" do
 
     context "duplicated component" do
       it "returns 422" do
-        post "app/components.json?auth_token=#{admin.authentication_token}", {
+        post "app/components.json", {
           component: {
             name: component.name,
             token: component.token
@@ -58,7 +54,7 @@ describe "Admin::App::Components JSON actions" do
 
     context "wrong params" do
       it "returns 422" do
-        post "app/components.json?auth_token=#{admin.authentication_token}", {
+        post "app/components.json", {
           component: {
             name: 'name'
           } }, headers

@@ -76,8 +76,10 @@ feature 'Password recovery' do
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [user.email]
       last_delivery.subject.should eq "Password reset instructions"
+      path = %r{href=\"https://my.sublimevideo.dev/(password/edit\?reset_password_token=\S+)\"}.match(last_delivery.body.encoded)[1]
 
-      go 'my', "password/edit?reset_password_token=#{user.reset_password_token}"
+      go 'my', path
+      current_url.should eq "http://my.sublimevideo.dev/#{path}"
 
       fill_in "Password", with: 'newpassword'
       click_button "Change"

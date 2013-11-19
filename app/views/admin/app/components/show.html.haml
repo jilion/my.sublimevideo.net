@@ -22,7 +22,7 @@
       %th= "Released at"
       %th= "Dependencies"
       %th= "Action"
-    - versions = @component.versions.with_deleted.all
+    - versions = @component.versions.with_deleted.load
     - versions.select! { |v| v.stage == params[:stage] } if params[:stage].present?
     - versions.sort.reverse.first(20).each do |version|
       - tr_class = version.deleted? ? "deleted" : ""

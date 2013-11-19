@@ -1,8 +1,8 @@
 class Admin < ActiveRecord::Base
   ROLES = %w[marcom player twitter invoices god]
 
-  devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :lockable, :async
+  devise :database_authenticatable, :invitable, :registerable, :recoverable,
+         :rememberable, :trackable, :validatable, :lockable, :async
 
   serialize :roles, Array
 
@@ -41,7 +41,7 @@ end
 #  invitation_created_at  :datetime
 #  invitation_limit       :integer
 #  invitation_sent_at     :datetime
-#  invitation_token       :string(60)
+#  invitation_token       :string(255)
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
 #  last_sign_in_at        :datetime

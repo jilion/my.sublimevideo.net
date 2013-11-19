@@ -29,7 +29,7 @@ class UsersController < Devise::RegistrationsController
         respond_with resource, location: after_sign_up_path_for(@user)
       else
         set_flash_message :notice, :inactive_signed_up, reason: inactive_reason(@user) if is_navigational_format?
-        expire_session_data_after_sign_in!
+        expire_data_after_sign_in!
         respond_with @user, location: after_inactive_sign_up_path_for(@user)
       end
     else
