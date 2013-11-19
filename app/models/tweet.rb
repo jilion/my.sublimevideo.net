@@ -52,9 +52,9 @@ class Tweet
 
   def favorite!
     result = if favorited?
-      TwitterWrapper.favorite_destroy(tweet_id)
+      TwitterWrapper.unfavorite(tweet_id)
     else
-      TwitterWrapper.favorite_create(tweet_id)
+      TwitterWrapper.favorite(tweet_id)
     end
     update_attribute(:favorited, !favorited) unless result.nil?
   end
