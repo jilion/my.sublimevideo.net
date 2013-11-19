@@ -8,6 +8,7 @@ feature 'Confirmation' do
     click_link "Didn't receive confirmation instructions?"
 
     fill_in 'user[email]',    with: user.email
+    Sidekiq::Worker.clear_all
     click_button 'Resend'
 
     Sidekiq::Worker.drain_all
