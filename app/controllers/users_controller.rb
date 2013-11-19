@@ -87,8 +87,8 @@ class UsersController < Devise::RegistrationsController
   private
 
   def _configure_permitted_parameters
-    devise_parameter_sanitizer.sanitize(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
-    devise_parameter_sanitizer.sanitize(:account_update) do |u|
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email, :password, :terms_and_conditions) }
+    devise_parameter_sanitizer.for(:account_update) do |u|
       keys = [:email, :password, :name, :newsletter, :confirmation_comment,
         :postal_code, :country, :use_personal, :use_company, :use_clients,
         :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]

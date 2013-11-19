@@ -165,7 +165,7 @@ CREATE TABLE admins (
     last_sign_in_ip character varying(255),
     failed_attempts integer DEFAULT 0,
     locked_at timestamp without time zone,
-    invitation_token character varying(60),
+    invitation_token character varying(255),
     invitation_sent_at timestamp without time zone,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -1740,13 +1740,6 @@ CREATE INDEX index_app_plugins_on_design_id_and_addon_id ON app_plugins USING bt
 
 
 --
--- Name: index_billable_item_activities_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_billable_item_activities_on_item_type_and_item_id ON billable_item_activities USING btree (item_type, item_id);
-
-
---
 -- Name: index_billable_item_activities_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1929,20 +1922,6 @@ CREATE INDEX index_sites_on_created_at ON sites USING btree (created_at);
 
 
 --
--- Name: index_sites_on_first_admin_starts_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_sites_on_first_admin_starts_on ON sites USING btree (first_admin_starts_on);
-
-
---
--- Name: index_sites_on_hostname; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_sites_on_hostname ON sites USING btree (hostname);
-
-
---
 -- Name: index_sites_on_id_and_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2027,13 +2006,6 @@ CREATE INDEX index_users_on_created_at ON users USING btree (created_at);
 
 
 --
--- Name: index_users_on_current_sign_in_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_users_on_current_sign_in_at ON users USING btree (current_sign_in_at);
-
-
---
 -- Name: index_users_on_email_and_archived_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2048,38 +2020,10 @@ CREATE INDEX index_users_on_id_and_state ON users USING btree (id, state);
 
 
 --
--- Name: index_users_on_last_invoiced_amount; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_users_on_last_invoiced_amount ON users USING btree (last_invoiced_amount);
-
-
---
--- Name: index_users_on_referrer_site_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_users_on_referrer_site_token ON users USING btree (referrer_site_token);
-
-
---
 -- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
-
-
---
--- Name: index_users_on_total_invoiced_amount; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_users_on_total_invoiced_amount ON users USING btree (total_invoiced_amount);
-
-
---
--- Name: index_versions_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_versions_on_item_type_and_item_id ON versions USING btree (item_type, item_id);
 
 
 --
@@ -2324,3 +2268,7 @@ INSERT INTO schema_migrations (version) VALUES ('20131016130457');
 INSERT INTO schema_migrations (version) VALUES ('20131028104646');
 
 INSERT INTO schema_migrations (version) VALUES ('20131030134524');
+
+INSERT INTO schema_migrations (version) VALUES ('20131114083403');
+
+INSERT INTO schema_migrations (version) VALUES ('20131119093021');

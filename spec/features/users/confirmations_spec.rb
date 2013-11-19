@@ -4,10 +4,20 @@ feature 'Confirmation' do
   scenario "confirmation" do
     user = create(:user, name: "John Doe", email: "john@doe.com", password: "123456")
 
-    go 'my', "/confirmation?confirmation_token=#{user.confirmation_token}"
+    go 'my', 'login'
+    click_link "Didn't receive confirmation instructions?"
 
-    current_url.should eq "http://my.sublimevideo.dev/account/more-info"
-    page.should have_content I18n.t('devise.confirmations.user.confirmed')
+    fill_in 'user[email]',    with: user.email
+    click_button 'Resend'
+
+    Sidekiq::Worker.drain_all
+    path = %r{href=\"https://my.sublimevideo.dev/(confirmation\?confirmation_token=\S+)\"}.match(ActionMailer::Base.deliveries.last.body.encoded)[1]
+
+    go 'my', path
+    current_url.should eq "http://my.sublimevideo.dev/login"
+
+    fill_and_submit_login(user, password: '123456')
+    current_url.should eq 'http://my.sublimevideo.dev/account/more-info'
 
     fill_in "Name",               with: "John Doe"
     fill_in "Zip or Postal Code", with: "2001"

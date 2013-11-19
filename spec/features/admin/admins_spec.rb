@@ -73,9 +73,12 @@ feature "Admins invitations:" do
 
   scenario "accept invitation" do
     invited_admin = send_invite_to(:admin, "invited@admin.com")
+    Sidekiq::Worker.drain_all
+    path = %r{https://admin.sublimevideo.dev/(invitation/accept\?invitation_token=\S+)}.match(ActionMailer::Base.deliveries.last.body.encoded)[1]
 
-    go 'admin', "invitation/accept?invitation_token=#{invited_admin.invitation_token}"
-    current_url.should eq "http://admin.sublimevideo.dev/invitation/accept\?invitation_token=#{invited_admin.invitation_token}"
+    go 'admin', path
+    current_url.should eq "http://admin.sublimevideo.dev/#{path}"
+
     fill_in "Password", with: "123456"
     click_button "Go!"
 

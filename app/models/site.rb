@@ -239,8 +239,6 @@ end
 # Indexes
 #
 #  index_sites_on_created_at                       (created_at)
-#  index_sites_on_first_admin_starts_on            (first_admin_starts_on)
-#  index_sites_on_hostname                         (hostname)
 #  index_sites_on_id_and_state                     (id,state)
 #  index_sites_on_last_30_days_admin_starts        (last_30_days_admin_starts)
 #  index_sites_on_plan_id                          (plan_id)

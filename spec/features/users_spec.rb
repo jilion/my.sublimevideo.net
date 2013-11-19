@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'spec_helper'
 
 feature 'Redirections' do
@@ -88,8 +87,8 @@ feature 'Email update' do
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [User.last.unconfirmed_email]
       last_delivery.subject.should eq "Confirm your email address"
-
-      go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
+      path = %r{href=\"https://my.sublimevideo.dev/(confirmation\?confirmation_token=\S+)\"}.match(last_delivery.body.encoded)[1]
+      go 'my', path
 
       User.last.email.should eq "new@jilion.com"
       current_url.should eq "http://my.sublimevideo.dev/assistant/new-site" # redirected from /sites
