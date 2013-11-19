@@ -6,7 +6,7 @@ describe TwitterWrapper do
 
   describe 'method_missing' do
     it 'delegates to Twitter if possible' do
-      Twitter.should_receive(:favorites)
+      TwitterWrapper.client.should_receive(:favorites)
 
       TwitterWrapper.favorites
     end
