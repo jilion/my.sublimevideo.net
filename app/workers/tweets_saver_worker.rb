@@ -4,8 +4,8 @@ class TweetsSaverWorker
 
   def perform(keyword)
     max_id = nil
-    while search = _remote_search(keyword, max_id) and !search.results.empty?
-      search.results.each do |tweet|
+    while search = _remote_search(keyword, max_id) and !search.to_a.empty?
+      search.to_a.each do |tweet|
         if local_tweet = _find_tweet(tweet.id)
           local_tweet.add_to_set(keywords: keyword) unless local_tweet.keywords.include?(keyword)
         else

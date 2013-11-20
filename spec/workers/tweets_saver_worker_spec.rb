@@ -20,8 +20,8 @@ describe TweetsSaverWorker do
 
   describe 'actual work' do
     before do
-      expect(worker).to receive(:_remote_search).with('rymai', nil).once { double(max_id: 1, results: [twitter_tweet]) }
-      expect(worker).to receive(:_remote_search).with('rymai', 1).once { double(max_id: 2, results: []) }
+      expect(worker).to receive(:_remote_search).with('rymai', nil).once { double(max_id: 1, to_a: [twitter_tweet]) }
+      expect(worker).to receive(:_remote_search).with('rymai', 1).once { double(max_id: 2, to_a: []) }
     end
 
     context 'tweet does not exist in the DB yet' do
