@@ -86,13 +86,12 @@ describe Tweet do
     let(:twitter_tweet) do
       double(
         id: 42,
+        in_reply_to_user_id: 2,
+        in_reply_to_screen_name: 'bar',
         user: double(
           id: 1,
+          screen_name: 'foo',
           profile_image_url_https: 'https://twitter.com/image.jpg',
-          from_user_id: 12,
-          from_user: 'foo',
-          to_user_id: 2,
-          to_user: 'bar'
         ),
         lang: 'fr',
         source: 'twitter',
@@ -107,26 +106,15 @@ describe Tweet do
       tweet = Tweet.last
       expect(tweet.tweet_id).to eq          twitter_tweet.id
       expect(tweet.keywords).to eq          ['sublimevideo']
-      expect(tweet.from_user_id).to eq      twitter_tweet.user.from_user_id
-      expect(tweet.from_user).to eq         twitter_tweet.user.from_user
-      expect(tweet.to_user_id).to eq        twitter_tweet.user.to_user_id
-      expect(tweet.to_user).to eq           twitter_tweet.user.to_user
+      expect(tweet.from_user_id).to eq      twitter_tweet.user.id
+      expect(tweet.from_user).to eq         twitter_tweet.user.screen_name
+      expect(tweet.to_user_id).to eq        twitter_tweet.in_reply_to_user_id
+      expect(tweet.to_user).to eq           twitter_tweet.in_reply_to_screen_name
       expect(tweet.iso_language_code).to eq twitter_tweet.lang
       expect(tweet.profile_image_url).to eq twitter_tweet.user.profile_image_url_https
       expect(tweet.source).to eq            twitter_tweet.source
       expect(tweet.content).to eq           twitter_tweet.text
       expect(tweet.tweeted_at.to_i).to eq   twitter_tweet.created_at.to_i
-    end
-
-    context 'twitter tweet has no from_user_id' do
-      before { twitter_tweet.user.stub(from_user_id: nil) }
-
-      it 'uses tweet.user.id instead of tweet.from_user_id' do
-        described_class.create_from_twitter_tweet!(twitter_tweet)
-
-        tweet = Tweet.last
-        expect(tweet.from_user_id).to eq twitter_tweet.user.id
-      end
     end
   end
 
