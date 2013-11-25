@@ -40,7 +40,6 @@
             %span{ style: "color:orange" }= transaction.state
           - when 'failed'
             %strong{ style: "color:red" }= transaction.state
-            = " (#{invoice.transactions.failed.size}/15)"
           - when 'paid'
             %span{ style: "color:green" }= transaction.state
 
