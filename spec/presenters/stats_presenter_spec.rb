@@ -17,13 +17,14 @@ describe SiteStatsPresenter do
   FakeSiteStat = Struct.new(:time, :bp, :co, :de, :lo, :st)
   FakeLastSiteStat = Struct.new(:time, :lo, :st)
   FakeLastSitePlay = Struct.new(:time, :lo, :st)
+  SiteStat = Class.new
   before do
     stub_const('VideoStat', Class.new)
     stub_const('LastVideoStat', Class.new)
     stub_const('LastPlay', Class.new)
   end
 
-  let(:site) { double('Site', token: 'foobar') }
+  let(:site) { double('Site', token: 'foobar', class: 'Site') }
   let(:presenter) { described_class.new(site) }
   let(:stats_by_hour) do
     [
@@ -56,6 +57,24 @@ describe SiteStatsPresenter do
       FakeLastSitePlay.new(2.minutes.ago.change(sec: 0), 5, nil),
       FakeLastSitePlay.new(1.minutes.ago.change(sec: 0), nil, 3)
     ]
+  end
+
+  describe '#_last_stats_by_hour' do
+    it 'add 1 hour when hours <= 24' do
+      expect(SiteStat).to receive(:last_hours_stats).with(site, 25) { [] }
+
+      presenter.send :_last_stats_by_hour
+    end
+
+    context 'hours > 24' do
+      let(:presenter) { described_class.new(site, hours: 25) }
+
+      it 'add 24 hour when hours > 24' do
+        expect(SiteStat).to receive(:last_hours_stats).with(site, 49) { [] }
+
+        presenter.send :_last_stats_by_hour
+      end
+    end
   end
 
   describe '.initialize' do

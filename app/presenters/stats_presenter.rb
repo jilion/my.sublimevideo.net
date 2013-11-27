@@ -74,8 +74,11 @@ class StatsPresenter
 
   private
 
+  def _hours_offset
+    @_hours_offset ||= _by_day? ? 24 : 1
+  end
   def _last_stats_by_hour
-    @_last_stats_by_hour ||= "#{resource_name}Stat".constantize.last_hours_stats(resource, options[:hours] + 24).reverse
+    @_last_stats_by_hour ||= "#{resource_name}Stat".constantize.last_hours_stats(resource, options[:hours] + _hours_offset).reverse
   end
 
   def _last_stats_by_minute
