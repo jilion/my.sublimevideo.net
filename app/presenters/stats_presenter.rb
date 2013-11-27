@@ -74,9 +74,22 @@ class StatsPresenter
 
   private
 
+  def _by_day?
+    @_by_day ||= options[:hours] > 24
+  end
+
   def _hours_offset
     @_hours_offset ||= _by_day? ? 24 : 1
   end
+
+  def _hours_stats_from_time
+    @_hours_stats_from_time ||= _by_day? ? (options[:hours] + _hours_offset).hours.ago.midnight : options[:hours].hours.ago.change(min: 0)
+  end
+
+  def _hours_stats_to_time
+    @_hours_stats_to_time ||= _hours_offset.hours.ago.send(_by_day? ? :midnight : :change, min: 0)
+  end
+
   def _last_stats_by_hour
     @_last_stats_by_hour ||= "#{resource_name}Stat".constantize.last_hours_stats(resource, options[:hours] + _hours_offset).reverse
   end
@@ -129,20 +142,17 @@ class StatsPresenter
         0
       end
 
-      time = options[:hours] > 24 ? stat.time.midnight : stat.time
+      time = _by_day? ? stat.time.midnight : stat.time
       hash[time.to_i * 1000] += total.to_i
 
       hash
     end
 
-    from = options[:hours] > 24 ? (options[:hours] + 24).hours.ago.midnight : options[:hours].hours.ago.change(min: 0)
-    to   = options[:hours] > 24 ? Time.now.utc.yesterday.midnight : 1.hour.ago.change(min: 0)
-
-    _group_and_fill_missing_values_for_last_stats(reduced_stats.to_a, from: from, to: to)
+    _group_and_fill_missing_values_for_last_stats(reduced_stats.to_a, from: _hours_stats_from_time, to: _hours_stats_to_time)
   end
 
   def _group_and_fill_missing_values_for_last_stats(stats, opts = {})
-    opts = opts.symbolize_keys.reverse_merge(default_value: 0, period: options[:hours] > 24 ? :day : :hour)
+    opts = opts.symbolize_keys.reverse_merge(default_value: 0, period: _by_day? ? :day : :hour)
 
     opts[:from] = opts[:from].midnight if opts[:period] == :day
 

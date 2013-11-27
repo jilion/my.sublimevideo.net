@@ -174,7 +174,7 @@ describe SiteStatsPresenter do
 
     context 'source == "a"' do
       it 'has 24 items' do
-        expect(presenter.loads).to have(24).items
+        expect(presenter.loads.size).to eq 24
       end
 
       it 'has a value of 0 for missing hours' do
@@ -190,7 +190,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'w') }
 
       it 'has 24 items' do
-        expect(presenter.loads).to have(24).items
+        expect(presenter.loads.size).to eq 24
       end
 
       it 'has a value of 0 for missing hours' do
@@ -206,7 +206,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'e') }
 
       it 'has 24 items' do
-        expect(presenter.loads).to have(24).items
+        expect(presenter.loads.size).to eq 24
       end
 
       it 'has a value of 0 for missing hours' do
@@ -224,7 +224,7 @@ describe SiteStatsPresenter do
 
     context 'source == "a"' do
       it 'has 24 items' do
-        expect(presenter.plays).to have(24).items
+        expect(presenter.plays.size).to eq 24
       end
 
       it 'has a value of 0 for missing hours' do
@@ -240,7 +240,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'w') }
 
       it 'has 24 items' do
-        expect(presenter.plays).to have(24).items
+        expect(presenter.plays.size).to eq 24
       end
 
       it 'has a value of 0 for missing hours' do
@@ -256,7 +256,7 @@ describe SiteStatsPresenter do
       let(:presenter) { described_class.new(site, source: 'e') }
 
       it 'has 24 items' do
-        expect(presenter.plays).to have(24).items
+        expect(presenter.plays.size).to eq 24
       end
 
       it 'has a value of 0 for missing hours' do
@@ -273,7 +273,7 @@ describe SiteStatsPresenter do
     before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
 
     it 'has 60 items' do
-      expect(presenter.last_60_minutes_loads).to have(60).items
+      expect(presenter.last_60_minutes_loads.size).to eq 60
     end
 
     it 'has a value of 0 for missing minutes' do
@@ -289,7 +289,7 @@ describe SiteStatsPresenter do
     before { expect(presenter).to receive(:_last_stats_by_minute) { stats_by_minute } }
 
     it 'has 60 items' do
-      expect(presenter.last_60_minutes_plays).to have(60).items
+      expect(presenter.last_60_minutes_plays.size).to eq 60
     end
 
     it 'has a value of 0 for missing minutes' do
