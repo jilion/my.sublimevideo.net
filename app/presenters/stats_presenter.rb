@@ -87,7 +87,7 @@ class StatsPresenter
   end
 
   def _hours_stats_to_time
-    @_hours_stats_to_time ||= _hours_offset.hours.ago.send(_by_day? ? :midnight : :change, min: 0)
+    @_hours_stats_to_time ||= _by_day? ? _hours_offset.hours.ago.midnight : _hours_offset.hours.ago.change(min: 0)
   end
 
   def _last_stats_by_hour
