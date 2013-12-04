@@ -636,6 +636,7 @@ DEPENDENCIES
   honeybadger
   hpricot
   http_content_type
+  i18n
   kaminari
   kgio
   launchy
