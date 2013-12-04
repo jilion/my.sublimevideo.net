@@ -12,7 +12,7 @@ test:
         - localhost:27017
       options:
         retry_interval: 0
-	max_retries: 0
+	      max_retries: 0
 production:
   sessions:
     default:
