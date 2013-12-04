@@ -18,7 +18,7 @@ gem 'moped', github: 'mongoid/moped'
 gem 'haml'
 gem 'rabl'
 gem 'coffee-rails'
-gem 'kaminari', github: 'kolodovskyy/kaminari' # https://github.com/amatsuda/kaminari/pull/433
+gem 'kaminari'
 gem 'liquid'
 gem 'hpricot'
 gem 'display_case'
