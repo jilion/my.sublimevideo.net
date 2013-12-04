@@ -160,7 +160,7 @@ end
 group :test do
   gem 'shoulda-matchers'
   gem 'ffaker'
-  gem 'capybara'
+  gem 'capybara', '~> 2.1.0'
   gem 'capybara-email'
   gem 'poltergeist'
   gem 'show_me_the_cookies'
