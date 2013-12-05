@@ -165,7 +165,7 @@ group :test do
   gem 'poltergeist'
   gem 'show_me_the_cookies'
   gem 'webmock'
-  gem 'typhoeus'
+  # gem 'typhoeus'
   gem 'vcr'
   gem 'codeclimate-test-reporter', require: false
 
