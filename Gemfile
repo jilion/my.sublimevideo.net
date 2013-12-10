@@ -7,7 +7,7 @@ gem 'rails', '~> 4.0.2'
 gem 'i18n'
 gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
-gem 'sublime_video_layout', '~> 2.6' # hosted on gemfury
+gem 'sublime_video_layout', '~> 2.7' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.6' # hosted on gemfury
 
 # Databases
