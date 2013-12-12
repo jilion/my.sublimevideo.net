@@ -26,7 +26,7 @@ gem 'display_case'
 gem 'rails_autolink'
 # until > 1.4.0 is released
 gem 'premailer-rails', github: 'fphilipe/premailer-rails'
-gem 'turbolinks'
+gem 'turbolinks', '~> 1.3.1'
 gem 'google-analytics-turbolinks'
 
 # Admin charts
