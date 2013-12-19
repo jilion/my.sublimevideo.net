@@ -6,14 +6,6 @@ GIT
       compass (>= 0.12.2)
 
 GIT
-  remote: git://github.com/fphilipe/premailer-rails.git
-  revision: 72a2b3f3e698e63445ac52b889d2d259eaeb8a53
-  specs:
-    premailer-rails (1.6.0)
-      actionmailer (>= 3, < 5)
-      premailer (~> 1.7, >= 1.7.9)
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: e77ae4a972bb330b79955f181e50a0d2347fdedc
   specs:
@@ -391,6 +383,9 @@ GEM
     premailer (1.7.9)
       css_parser (>= 1.1.9)
       htmlentities (>= 4.0.0)
+    premailer-rails (1.6.1)
+      actionmailer (>= 3, < 5)
+      premailer (~> 1.7, >= 1.7.9)
     prowl (0.1.3)
     pry (0.9.12.4)
       coderay (~> 1.0)
@@ -656,7 +651,7 @@ DEPENDENCIES
   pg
   poltergeist
   powder
-  premailer-rails!
+  premailer-rails
   prowl
   public_suffix
   pusher
