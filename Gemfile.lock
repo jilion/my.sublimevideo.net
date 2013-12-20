@@ -1,15 +1,15 @@
 GIT
   remote: git://github.com/Compass/compass-rails.git
-  revision: 4d7b4dcbfce5673a535e73ff61ee35aacd42cdb7
+  revision: f9b3315a7404dfe81b69ebd827ad194be6c3bfa2
   specs:
     compass-rails (1.1.2)
       compass (>= 0.12.2)
 
 GIT
   remote: git://github.com/fphilipe/premailer-rails.git
-  revision: 72a2b3f3e698e63445ac52b889d2d259eaeb8a53
+  revision: 6d6079875fa99cb95c02e961f96b244b25e5b61c
   specs:
-    premailer-rails (1.6.0)
+    premailer-rails (1.6.1)
       actionmailer (>= 3, < 5)
       premailer (~> 1.7, >= 1.7.9)
 
@@ -25,9 +25,11 @@ GIT
 
 GIT
   remote: git://github.com/leehambley/rack-google-analytics.git
-  revision: ad0d20c0a471f9d019c0724eceaf54a460c51c49
+  revision: f15411e8619186d5f21cc484066a1d5fd707a968
   specs:
-    rack-google-analytics (0.12.0)
+    rack-google-analytics (0.14.0)
+      actionpack
+      activesupport
 
 GIT
   remote: git://github.com/mbleigh/acts-as-taggable-on.git
@@ -38,7 +40,7 @@ GIT
 
 GIT
   remote: git://github.com/mongoid/mongoid.git
-  revision: c6c80fce9b356180e11f922332c68d4310cf2f92
+  revision: fc589421bf8bcc85769400563ac43afa3fa6af29
   specs:
     mongoid (4.0.0.alpha1)
       activemodel (~> 4.0.0)
@@ -48,12 +50,12 @@ GIT
 
 GIT
   remote: git://github.com/mongoid/moped.git
-  revision: da92f1b4e935e2831986d26e8d89bf7edaf8c02a
-  ref: da92f1b4e935e2831986d26e8d89bf7edaf8c02a
+  revision: 9a88cd9758456b14ea1df03772f20ec482e91d21
   specs:
-    moped (2.0.0.beta3)
-      bson (~> 2.0.0.rc3)
-      optionable (~> 0.1.1)
+    moped (2.0.0.beta4)
+      bson (~> 2.0)
+      connection_pool (~> 1.2)
+      optionable (~> 0.2.0)
 
 GIT
   remote: git://github.com/pelle/oauth-plugin.git
@@ -67,7 +69,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/sprockets-rails.git
-  revision: 10042f650681d9740cb664772284865860561771
+  revision: 25eee989fbb3a11d96241d1a7e79bb9670e51f5b
   specs:
     sprockets-rails (2.0.1)
       actionpack (>= 3.0)
@@ -96,7 +98,7 @@ GEM
     active_utils (2.0.1)
       activesupport (>= 2.3.11)
       i18n
-    activemerchant (1.42.2)
+    activemerchant (1.42.3)
       active_utils (~> 2.0, >= 2.0.1)
       activesupport (>= 2.3.14, < 5.0.0)
       builder (>= 2.1.2, < 4.0.0)
@@ -160,7 +162,7 @@ GEM
     chunky_png (1.2.9)
     climate_control (0.0.3)
       activesupport (>= 3.0)
-    cliver (0.3.1)
+    cliver (0.3.2)
     cocaine (0.5.3)
       climate_control (>= 0.0.3, < 1.0)
     codeclimate-test-reporter (0.2.0)
@@ -217,7 +219,7 @@ GEM
     equalizer (0.0.7)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    excon (0.28.0)
+    excon (0.31.0)
     execjs (2.0.2)
     factory_girl (4.3.0)
       activesupport (>= 3.0.0)
@@ -234,9 +236,9 @@ GEM
       faraday (>= 0.7.4, < 0.9)
     ffaker (1.22.1)
     ffi (1.9.3)
-    fog (1.18.0)
+    fog (1.19.0)
       builder
-      excon (~> 0.28.0)
+      excon (~> 0.31.0)
       formatador (~> 0.2.0)
       mime-types
       multi_json (~> 1.0)
@@ -249,7 +251,7 @@ GEM
     google-analytics-turbolinks (0.0.3)
     groupdate (1.0.4)
       activerecord (>= 3.0.0)
-    guard (2.2.4)
+    guard (2.2.5)
       formatador (>= 0.2.4)
       listen (~> 2.1)
       lumberjack (~> 1.0)
@@ -283,8 +285,7 @@ GEM
       faraday (~> 0.8)
       multi_json (~> 1.7)
     hike (1.2.3)
-    honeybadger (1.9.5)
-      faraday (~> 0.7)
+    honeybadger (1.10.1)
       json
     hpricot (0.8.6)
     htmlentities (4.3.1)
@@ -339,7 +340,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     memcachier (0.0.2)
-    memoizable (0.2.0)
+    memoizable (0.3.1)
       thread_safe (~> 0.1.3)
     method_source (0.8.2)
     mime-types (1.25.1)
@@ -360,7 +361,7 @@ GEM
       moped
       newrelic_rpm (~> 3.6.0)
     newrelic_rpm (3.6.9.171)
-    nokogiri (1.6.0)
+    nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     oauth (0.4.7)
     oauth2 (0.9.2)
@@ -370,16 +371,16 @@ GEM
       multi_json (~> 1.0)
       multi_xml (~> 0.5)
       rack (~> 1.2)
-    oj (2.4.1)
-    optionable (0.1.1)
+    oj (2.5.1)
+    optionable (0.2.0)
     origin (2.0.0)
     orm_adapter (0.5.0)
     paper_trail (3.0.0.beta1)
       activerecord (>= 3.0, < 5.0)
     paranoia (2.0.1)
       activerecord (~> 4.0)
-    pg (0.17.0)
-    phantomjs (1.9.2.0)
+    pg (0.17.1)
+    phantomjs (1.9.2.1)
     poltergeist (1.5.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -435,9 +436,9 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     raindrops (0.12.0)
-    rake (10.1.0)
+    rake (10.1.1)
     rb-fsevent (0.9.3)
-    rb-inotify (0.9.2)
+    rb-inotify (0.9.3)
       ffi (>= 0.5.0)
     redis (3.0.6)
     redis-namespace (1.4.1)
@@ -465,7 +466,7 @@ GEM
     ruby_gntp (0.3.4)
     rubyzip (1.1.0)
     safe_yaml (0.9.7)
-    sass (3.2.12)
+    sass (3.2.13)
     sass-rails (4.0.1)
       railties (>= 4.0.0, < 5.0)
       sass (>= 3.1.10)
@@ -476,11 +477,11 @@ GEM
       activesupport (>= 3.0.0)
     show_me_the_cookies (2.1.0)
       capybara (~> 2.0)
-    sidekiq (2.17.0)
+    sidekiq (2.17.1)
       celluloid (>= 0.15.2)
       connection_pool (>= 1.0.0)
       json
-      redis (>= 3.0.4)
+      redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
     signature (0.1.7)
     simple_oauth (0.2.0)
@@ -536,7 +537,7 @@ GEM
       polyglot (>= 0.3.1)
     turbolinks (1.3.1)
       coffee-rails
-    twitter (5.2.0)
+    twitter (5.3.0)
       addressable (~> 2.3)
       buftok (~> 0.2.0)
       descendants_tracker (~> 0.0.1)
@@ -545,13 +546,13 @@ GEM
       http (~> 0.5.0)
       http_parser.rb (~> 0.6.0)
       json (~> 1.8)
-      memoizable (~> 0.2.0)
+      memoizable (~> 0.3.1)
       simple_oauth (~> 0.2.0)
     twitter-stream (0.1.12)
       eventmachine (>= 0.12.8)
       roauth (>= 0.0.2)
     tzinfo (0.3.38)
-    uglifier (2.3.2)
+    uglifier (2.4.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     unf (0.1.3)
@@ -566,7 +567,7 @@ GEM
     vcr (2.8.0)
     warden (1.2.3)
       rack (>= 1.0)
-    webmock (1.16.0)
+    webmock (1.16.1)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
     websocket-driver (0.3.1)
