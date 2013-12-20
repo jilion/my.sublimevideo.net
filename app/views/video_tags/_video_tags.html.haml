@@ -1,6 +1,6 @@
 .main_table_wrap
   %table.main
-    - cache [params.except(:search, :utf8, :site_id), @video_tags.count] do
+    - cache [@site.token, params, @video_tags.count] do
       %col
       %col.stats
       %col
