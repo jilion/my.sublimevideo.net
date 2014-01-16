@@ -5,9 +5,6 @@ class Site < ActiveRecord::Base
   include SiteModules::Billing
   include Searchable
 
-  DEFAULT_DOMAIN = 'please-edit.me'
-  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
-
   # Versioning
   has_paper_trail ignore: [
     :last_30_days_admin_starts,
@@ -69,11 +66,6 @@ class Site < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation ->(site) do
-    site.hostname      = DEFAULT_DOMAIN if site.hostname.blank?
-    site.dev_hostnames = DEFAULT_DEV_DOMAINS if site.dev_hostnames.blank?
-  end
-
   # Only when accessible_stage change in admin
   after_save ->(site) do
     site.delay_update_loaders_and_settings if site.accessible_stage_changed?
@@ -93,19 +85,19 @@ class Site < ActiveRecord::Base
     end
 
     before_transition on: :suspend do |site, transition|
-      SiteManager.new(site).suspend_billable_items
+      AddonsSubscriber.new(site).suspend_billable_items
       Librato.increment 'sites.events', source: 'suspend'
     end
 
     before_transition on: :unsuspend do |site, transition|
-      SiteManager.new(site).unsuspend_billable_items
+      AddonsSubscriber.new(site).unsuspend_billable_items
       Librato.increment 'sites.events', source: 'unsuspend'
     end
 
     before_transition on: :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
-      SiteManager.new(site).cancel_billable_items
+      AddonsSubscriber.new(site).cancel_billable_items
       Librato.increment 'sites.events', source: 'archive'
       site.archived_at = Time.now.utc
     end

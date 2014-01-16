@@ -38,7 +38,7 @@
       = raw "#{link_to 'Learn more', docs_url('site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
     .entry.dev_hostnames
       = f.label :dev_hostnames, '', class: 'icon'
-      = f.text_field :dev_hostnames, class: 'text', placeholder: Site::DEFAULT_DEV_DOMAINS + ', mydomain.local, mydomain.dev', autocomplete: :off
+      = f.text_field :dev_hostnames, class: 'text', placeholder: SiteManager::DEFAULT_DEV_DOMAINS + ', mydomain.local, mydomain.dev', autocomplete: :off
     .spacer
   .break
 

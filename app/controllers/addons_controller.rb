@@ -29,7 +29,7 @@ class AddonsController < ApplicationController
 
   # PUT /sites/:site_id/addons/subscribe
   def subscribe
-    SiteManager.new(@site).update_billable_items(params[:designs], params[:addon_plans])
+    AddonsSubscriber.new(@site).update_billable_items(params[:designs], params[:addon_plans])
 
     redirect_to [@site, :addons], notice: t('flash.addons.subscribe.notice')
   end

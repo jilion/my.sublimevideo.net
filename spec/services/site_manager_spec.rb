@@ -5,45 +5,32 @@ require 'config/sidekiq'
 require 'support/matchers/sidekiq_matchers'
 
 require 'models/app'
-require 'services/rank_setter'
-require 'services/loader_generator'
-require 'services/settings_generator'
 require 'services/site_manager'
 
 Site = Struct.new(:params) unless defined?(Site)
-AddonPlan = Class.new unless defined?(AddonPlan)
 ActiveRecord = Class.new unless defined?(ActiveRecord)
 ActiveRecord::RecordInvalid = Class.new(Exception) unless defined?(ActiveRecord::RecordInvalid)
 
 describe SiteManager do
   let(:user)    { double(sites: []) }
-  let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
+  let(:site)    { Struct.new(:user, :id, :hostname, :dev_hostnames).new(nil, 1234, nil, nil) }
   let(:service) { described_class.new(site) }
 
-  before { Librato.stub(:increment) }
-
-  describe '.subscribe_site_to_addon' do
-    it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      Site.should_receive(:find) { site }
-      SiteManager.should_receive(:new).with(site) do |service|
-        service.should_receive(:update_billable_items).with({}, { 'embed' => 42 })
-        service
-      end
-
-      described_class.subscribe_site_to_addon(site.id, 'embed', 42)
-    end
+  before do
+    Site.stub(:transaction).and_yield
+    site.stub(:save!)
+    service.stub(:_create_default_kit!)
+    service.stub(:_set_default_billable_items)
+    Librato.stub(:increment)
   end
 
   describe '#create' do
+    let(:addons_subscriber) { double('AddonsSubscriber') }
     before do
-      Site.stub(:transaction).and_yield
-      service.stub(:_create_default_kit!)
-      service.stub(:_set_default_designs)
-      service.stub(:_set_default_addon_plans)
-      site.stub(:loaders_updated_at=)
-      site.stub(:settings_updated_at=)
-      site.stub(:addons_updated_at=)
-      site.stub(:save!)
+      service.stub(:touch_timestamps)
+      service.stub(:delay_jobs)
+      AddonsSubscriber.should_receive(:new).with(site).and_return(addons_subscriber)
+      addons_subscriber.stub(:update_billable_items)
     end
 
     it 'saves site twice' do
@@ -52,6 +39,23 @@ describe SiteManager do
       service.create.should be_true
     end
 
+    it 'sets hostname to DEFAULT_DOMAIN if hostname is blank?' do
+      allow_message_expectations_on_nil
+      site.hostname.stub(:blank?).and_return(true)
+      site.should_receive(:hostname=).with(described_class::DEFAULT_DOMAIN)
+
+      service.create.should be_true
+    end
+
+    it 'sets dev_hostnames to DEFAULT_DEV_DOMAINS if dev_hostnames are blank?' do
+      allow_message_expectations_on_nil
+      site.dev_hostnames.stub(:blank?).and_return(true)
+      site.should_receive(:dev_hostnames=).with(described_class::DEFAULT_DEV_DOMAINS)
+
+      service.create.should be_true
+    end
+
+    # Fails when the real ActiveRecord::RecordInvalid class is defined... (for instance when running the full suite)
     pending 'returns false if a ActiveRecord::RecordInvalid is raised' do
       site.should_receive(:save!).and_raise(ActiveRecord::RecordInvalid)
 
@@ -64,38 +68,24 @@ describe SiteManager do
     end
 
     it 'sets default app designs and add-ons to site after creation' do
-      service.should_receive(:_set_default_designs)
-      service.should_receive(:_set_default_addon_plans)
+      service.should_receive(:_set_default_billable_items)
 
       service.create.should be_true
     end
 
     it 'touches loaders_updated_at & settings_updated_at' do
-      site.should_receive(:loaders_updated_at=)
-      site.should_receive(:settings_updated_at=)
+      service.should_receive(:touch_timestamps).with(%w[loaders settings])
 
       service.create.should be_true
     end
 
-    it 'delays the update of all loader stages' do
-      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+    it 'delays the update of the site rankings' do
+      service.should_receive(:delay_jobs).with(:rank_update)
 
       service.create.should be_true
     end
 
-    it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all!).with(site.id)
-
-      service.create.should be_true
-    end
-
-    it 'delays the calculation of google and alexa ranks' do
-      RankSetter.should delay(:set_ranks, queue: 'my-low').with(site.id)
-
-      service.create.should be_true
-    end
-
-    it "increments metrics" do
+    it 'increments metrics' do
       Librato.should_receive(:increment).with('sites.events', source: 'create')
 
       service.create.should be_true
@@ -105,10 +95,9 @@ describe SiteManager do
   describe '#update' do
     let(:attributes) { { hostname: 'test.com' } }
     before do
-      Site.stub(:transaction).and_yield
+      service.stub(:touch_timestamps)
+      service.stub(:delay_jobs)
       site.stub(:attributes=)
-      site.stub(:settings_updated_at=)
-      site.stub(:save!)
     end
 
     it 'assignes attributes' do
@@ -123,6 +112,7 @@ describe SiteManager do
       service.update(attributes).should be_true
     end
 
+    # Fails when the real ActiveRecord::RecordInvalid class is defined... (for instance when running the full suite)
     pending 'returns false if a ActiveRecord::RecordInvalid is raised' do
       site.should_receive(:save!).and_raise(ActiveRecord::RecordInvalid)
 
@@ -130,13 +120,13 @@ describe SiteManager do
     end
 
     it 'touches settings_updated_at' do
-      site.should_receive(:settings_updated_at=)
+      service.should_receive(:touch_timestamps).with('settings')
 
       service.update(attributes).should be_true
     end
 
     it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all!).with(site.id)
+      service.should_receive(:delay_jobs).with(:settings_update)
 
       service.update(attributes).should be_true
     end
@@ -148,51 +138,43 @@ describe SiteManager do
     end
   end
 
-  describe '#update_billable_items' do
-    before do
-      Site.stub(:transaction).and_yield
-      service.stub(:_update_design_subscriptions)
-      service.stub(:_update_addon_subscriptions)
-      site.stub(:loaders_updated_at=)
-      site.stub(:settings_updated_at=)
-      site.stub(:addons_updated_at=)
-      site.stub(:save!)
+  describe '#touch_timestamps' do
+    context 'single timestamps' do
+      it 'touches appropriate timestamp' do
+        site.should_receive(:loaders_updated_at=)
+
+        service.touch_timestamps('loaders').should be_true
+      end
     end
 
-    it 'sets designs billable items' do
-      service.should_receive(:_update_design_subscriptions).with({ foo: '0' }, {})
+    context 'multiple timestamps' do
+      it 'touches appropriate timestamps' do
+        site.should_receive(:loaders_updated_at=)
+        site.should_receive(:settings_updated_at=)
+        site.should_receive(:addons_updated_at=)
 
-      service.update_billable_items({ foo: '0' }, {})
+        service.touch_timestamps(%w[loaders settings addons]).should be_true
+      end
+    end
+  end
+
+  describe '#delay_jobs' do
+    context 'single job' do
+      it 'delays the right job' do
+        LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+
+        service.delay_jobs(:loader_update)
+      end
     end
 
-    it 'sets addon plans billable items' do
-      service.should_receive(:_update_addon_subscriptions).with({ foo: '42' }, {})
+    context 'multiple jobs' do
+      it 'delays the right jobs' do
+        LoaderGenerator.should delay(:update_all_stages!).with(site.id)
+        SettingsGenerator.should delay(:update_all!).with(site.id)
+        RankSetter.should delay(:set_ranks, queue: 'my-low').with(site.id)
 
-      service.update_billable_items({}, { foo: '42' })
-    end
-
-    it 'saves site' do
-      site.should_receive(:save!)
-
-      service.update_billable_items({}, {})
-    end
-
-    it 'touches addons_updated_at' do
-      site.should_receive(:addons_updated_at=)
-
-      service.update_billable_items({}, {})
-    end
-
-    it 'delays the update of all loader stages' do
-      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
-
-      service.update_billable_items({}, {})
-    end
-
-    it 'delays the update of all settings types' do
-      SettingsGenerator.should delay(:update_all!).with(site.id)
-
-      service.update_billable_items({}, {})
+        service.delay_jobs(:loader_update, :settings_update, :rank_update)
+      end
     end
   end
 

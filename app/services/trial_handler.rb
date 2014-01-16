@@ -36,7 +36,7 @@ class TrialHandler
 
     new_subscriptions, emails = _new_subscriptions_and_emails
 
-    SiteManager.new(site).update_billable_items(new_subscriptions[:designs], new_subscriptions[:addon_plans])
+    AddonsSubscriber.new(site).update_billable_items(new_subscriptions[:designs], new_subscriptions[:addon_plans])
 
     emails.each do |email|
       BillingMailer.delay(queue: 'my').trial_has_expired(site.id, email[:item_class], email[:item_id])

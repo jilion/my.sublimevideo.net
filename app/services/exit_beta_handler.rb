@@ -29,7 +29,7 @@ class ExitBetaHandler
       end
     end
 
-    SiteManager.delay(queue: 'my').update_billable_items(site.id, subscriptions[:designs], subscriptions[:addon_plans])
+    AddonsSubscriber.delay(queue: 'my').update_billable_items(site.id, subscriptions[:designs], subscriptions[:addon_plans])
   end
 
 end

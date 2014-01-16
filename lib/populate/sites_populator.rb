@@ -10,7 +10,8 @@ class SitesPopulator < Populator
         created_at = rand(24).months.ago
         Timecop.travel(created_at)
         site = user.sites.build(hostname: hostname)
-        service = SiteManager.new(site).tap { |s| s.create }
+        SiteManager.new(site).create
+        addons_subscriber = AddonsSubscriber.new(site)
         if rand >= 0.3
           designs, addon_plans = {}, {}
           Design.custom.each do |design|
@@ -20,7 +21,7 @@ class SitesPopulator < Populator
             addon_plans[addon_plan.addon_name] = addon_plan.id if rand >= 0.6
           end
           options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
-          service.update_billable_items(designs, addon_plans, options)
+          addons_subscriber.update_billable_items(designs, addon_plans, options)
         end
         if rand >= 0.5
           Timecop.return
@@ -38,17 +39,17 @@ class SitesPopulator < Populator
       sites.each do |site_data|
         puts "Create site #{site_data['hostname']} [#{site_data['token']}] with the real-time stats add-on"
         site = user.sites.build(hostname: site_data['hostname'])
-        service = SiteManager.new(site)
-        service.create
-        service.update_billable_items({}, { 'stats' => realtime_stats_addon_plan.id }, { force: 'sponsored' })
-        service.site.update_column(:token, site_data['token'])
-        SiteCountersUpdater.new(service.site).update
+        SiteManager.new(site).create
+        addons_subscriber = AddonsSubscriber.new(site)
+        addons_subscriber.update_billable_items({}, { 'stats' => realtime_stats_addon_plan.id }, { force: 'sponsored' })
+        addons_subscriber.site.update_column(:token, site_data['token'])
+        SiteCountersUpdater.new(addons_subscriber.site).update
       end
     end
 
     sv_site = User.first.sites.first
     sv_site.update_attributes(token: SiteToken[:www], hostname: 'sublimevideo.net')
-    SiteManager.new(sv_site).update_billable_items({}, { stats: AddonPlan.get('stats', 'realtime').id }, { force: 'subscribed' })
+    AddonsSubscriber.new(sv_site).update_billable_items({}, { stats: AddonPlan.get('stats', 'realtime').id }, { force: 'subscribed' })
   end
 
 end

@@ -115,13 +115,13 @@ class Admin::SitesController < Admin::AdminController
   def _update_design_subscription(design)
     options = { allow_custom: true, force: params[:state].presence || false }
     design_subscriptions = { design.name => (params[:state] == 'canceled' ? '0' : design.id) }
-    SiteManager.new(@site).update_billable_items(design_subscriptions, {}, options)
+    AddonsSubscriber.new(@site).update_billable_items(design_subscriptions, {}, options)
   end
 
   def _update_addon_plan_subscription(addon_plan)
     options = { allow_custom: true, force: params[:state].presence || false }
     addon_plan_subscriptions = { addon_plan.addon_name => (params[:state] == 'canceled' ? '0' : addon_plan.id) }
-    SiteManager.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
+    AddonsSubscriber.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
   end
 
   def _respond_for_site_with_notice(text)
