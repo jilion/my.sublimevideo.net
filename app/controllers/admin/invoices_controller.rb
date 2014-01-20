@@ -22,7 +22,14 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /invoices/:id
   def show
-    redirect_to edit_admin_invoice_path(params[:id])
+    @invoice = Invoice.includes(:user).where(reference: params[:id]).first!
+    respond_with(@invoice) do |format|
+      if @invoice
+        format.html { render template: '/invoices/show', layout: 'invoices' }
+      else
+        format.html { redirect_to [:admin, :invoices], notice: "Invoice with reference ##{params[:id]} not found." }
+      end
+    end
   end
 
   # GET /invoices/:id/edit
