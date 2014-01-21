@@ -101,7 +101,7 @@ describe Scheduler do
     end
 
     it "schedules NewInactiveUserNotifier.send_emails" do
-      NewInactiveUserNotifier.should delay(:send_emails,
+      NewInactiveUserNotifier.should_not delay(:send_emails,
         queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
