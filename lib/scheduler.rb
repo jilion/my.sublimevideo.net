@@ -22,7 +22,7 @@ module Scheduler
     TrialHandler.delay(options).activate_billable_items_out_of_trial
     SiteCountersUpdater.delay(options).update_not_archived_sites
     CreditCardExpirationNotifier.delay(options).send_emails
-    NewInactiveUserNotifier.delay(options).send_emails
+    # NewInactiveUserNotifier.delay(options).send_emails
     UsersTrend.delay(options).create_trends
     SitesTrend.delay(options).create_trends
     BillingsTrend.delay(options).create_trends
