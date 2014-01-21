@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UserMailer do
   let(:user) { create(:user) }
 
-  it_behaves_like "common mailer checks", %w[welcome inactive_account], params: -> { FactoryGirl.create(:user) }, no_signature: true
+  it_behaves_like "common mailer checks", %w[welcome], params: -> { FactoryGirl.create(:user) }, no_signature: true
   it_behaves_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: -> { FactoryGirl.create(:user).id }
 
   describe "#welcome" do
@@ -15,17 +15,6 @@ describe UserMailer do
     it { last_delivery.to.should eq [user.email] }
     it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.welcome') }
     it { last_delivery.body.encoded.should include "Welcome to SublimeVideo!" }
-  end
-
-  describe "#inactive_account" do
-    before do
-      described_class.inactive_account(user.id).deliver
-      last_delivery = ActionMailer::Base.deliveries.last
-    end
-
-    it { last_delivery.to.should eq [user.email] }
-    it { last_delivery.subject.should eq I18n.t('mailer.user_mailer.inactive_account') }
-    it { last_delivery.body.encoded.should include "It's been a week since you've signed up to SublimeVideo" }
   end
 
   describe "#account_suspended" do
