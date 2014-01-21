@@ -100,7 +100,7 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules NewInactiveUserNotifier.send_emails" do
+    it "doesn't schedule NewInactiveUserNotifier.send_emails" do
       NewInactiveUserNotifier.should_not delay(:send_emails,
         queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
