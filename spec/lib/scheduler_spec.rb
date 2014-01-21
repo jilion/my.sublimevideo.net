@@ -10,7 +10,6 @@ require 'services/trial_handler'
 require 'services/invoice_creator'
 require 'services/site_counters_updater'
 require 'services/credit_card_expiration_notifier'
-require 'services/new_inactive_user_notifier'
 require 'workers/tweets_saver_worker'
 require 'workers/tweets_syncer_worker'
 require 'scheduler'
@@ -94,14 +93,6 @@ describe Scheduler do
 
     it "schedules User.send_emails" do
       CreditCardExpirationNotifier.should delay(:send_emails,
-        queue: 'my-low',
-        at: Time.now.utc.tomorrow.midnight.to_i
-      )
-      described_class.schedule_daily_tasks
-    end
-
-    it "doesn't schedule NewInactiveUserNotifier.send_emails" do
-      NewInactiveUserNotifier.should_not delay(:send_emails,
         queue: 'my-low',
         at: Time.now.utc.tomorrow.midnight.to_i
       )
