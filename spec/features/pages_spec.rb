@@ -49,57 +49,6 @@ feature "Help page" do
     end
   end
 
-  context "user has the 'email' support level" do
-    background do
-      sign_in_as :user
-      site = build(:site, user: @current_user)
-      SiteManager.new(site).create
-      go 'my', "/sites/#{site.to_param}/addons"
-      choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
-      expect { click_button 'Confirm selection' }.to change(site.billable_item_activities, :count).by(2)
-      UserSupportManager.new(@current_user).level.should eq 'email'
-      Sidekiq::Worker.clear_all
-      go 'my', '/help'
-    end
-
-    describe "new" do
-      scenario "has access to the form" do
-        page.should have_content 'Use the form below'
-        page.should have_selector 'form.new_support_request'
-      end
-
-      scenario "submit a valid support request", :vcr do
-        fill_in "Subject", with: "SUBJECT"
-        fill_in "Description of your issue or question", with: "DESCRIPTION"
-
-        PusherWrapper.stub(:trigger)
-        click_button "Send"
-        page.should have_content I18n.t('flash.support_requests.create.notice')
-        @current_user.reload.zendesk_id.should be_present
-      end
-
-      scenario "submit a support request with an invalid subject" do
-        fill_in "Subject", with: ""
-        fill_in "Description of your issue or question", with: "DESCRIPTION"
-        click_button "Send"
-
-        current_url.should eq "http://my.sublimevideo.dev/help"
-        page.should have_content "Subject can't be blank"
-        page.should have_no_content I18n.t('flash.support_requests.create.notice')
-      end
-
-      scenario "submit a support request with an invalid message" do
-        fill_in "Subject", with: "SUBJECT"
-        fill_in "Description of your issue or question", with: ""
-        click_button "Send"
-
-        current_url.should eq "http://my.sublimevideo.dev/help"
-        page.should have_content "Message can't be blank"
-        page.should have_no_content I18n.t('flash.support_requests.create.notice')
-      end
-    end
-  end
-
 end
 
 feature "Suspended page" do

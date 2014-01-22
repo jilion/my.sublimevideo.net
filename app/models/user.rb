@@ -180,10 +180,6 @@ class User < ActiveRecord::Base
     name.presence || email
   end
 
-  def support_requests
-    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
-  end
-
   private
 
   # after_save

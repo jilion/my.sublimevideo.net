@@ -62,8 +62,6 @@ MySublimeVideo::Application.routes.draw do
         member do
           get :become
           get :invoices
-          get :support_requests
-          get :new_support_request
           delete :oauth_revoke
         end
       end
@@ -254,7 +252,6 @@ MySublimeVideo::Application.routes.draw do
       post '/' => 'feedbacks#create'
     end
 
-    resource :support_request, only: [:create], path: 'help'
     %w[support].each { |action| get action, to: redirect('/help') }
 
     scope 'pusher' do

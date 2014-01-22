@@ -74,9 +74,6 @@ MySublimeVideo.UI.prepareKitEditor = ->
   $('form.kit_editor').each ->
     new MySublimeVideo.UI.KitEditor
 
-MySublimeVideo.UI.prepareSupportRequest = ->
-  new MySublimeVideo.Helpers.SupportRequest() if $('#new_support_request').exists()
-
 MySublimeVideo.UI.prepareFeedbackForm = ->
   new MySublimeVideo.Helpers.FeedbackForm() if $('#new_feedback').exists()
 
@@ -106,7 +103,6 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareExpandableItems()
   MySublimeVideo.UI.prepareKitsPage()
   MySublimeVideo.UI.prepareKitEditor()
-  MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()
   MySublimeVideo.UI.prepareVideoTagsTable()
   MySublimeVideo.UI.TableSortLinks.setup()

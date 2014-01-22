@@ -1,9 +1,9 @@
 class Admin::UsersController < Admin::AdminController
-  respond_to :html, except: [:invoices, :support_requests]
-  respond_to :js, only: [:index, :invoices, :support_requests]
+  respond_to :html, except: [:invoices]
+  respond_to :js, only: [:index, :invoices]
 
   before_filter :_set_default_scopes, only: [:index]
-  before_filter :_set_user, only: [:update, :destroy, :become, :invoices, :support_requests, :new_support_request, :oauth_revoke]
+  before_filter :_set_user, only: [:update, :destroy, :become, :invoices, :oauth_revoke]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
@@ -70,17 +70,6 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /users/:id/invoices
   def invoices
-  end
-
-  # GET /users/:id/support_requests
-  def support_requests
-  end
-
-  # GET /users/:id/new_support_request
-  def new_support_request
-    SupportRequestManager.create_zendesk_user(@user)
-
-    redirect_to ENV['ZENDESK_BASE_URL'] + "/tickets/new?requester_id=#{@user.zendesk_id}"
   end
 
   # DELETE /users/:id/oauth_revoke

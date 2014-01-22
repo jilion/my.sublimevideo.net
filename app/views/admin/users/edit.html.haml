@@ -47,12 +47,6 @@
 %hr
 %br
 
-#support_requests
-  %h3= link_to 'View support requests', support_requests_admin_user_path(@user), data: { remote: true }
-%br
-%hr
-%br
-
 - if has_role?('invoices')
   #invoices
     %h3= link_to 'View invoices', invoices_admin_user_path(@user), data: { remote: true }
