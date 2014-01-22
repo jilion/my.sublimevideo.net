@@ -6,6 +6,5 @@ describe Admin::UsersController do
   it { get(with_subdomain('admin', 'users/1')).should                      route_to('admin/users#show', id: '1') }
   it { get(with_subdomain('admin', 'users/1/become')).should               route_to('admin/users#become', id: '1') }
   it { put(with_subdomain('admin', 'users/1')).should                      route_to('admin/users#update', id: '1') }
-  it { get(with_subdomain('admin', 'users/1/new_support_request')).should  route_to('admin/users#new_support_request', id: '1') }
 
 end
