@@ -62,18 +62,6 @@ feature 'New kit' do
     last_kit_should_be_created(@site, 'My awesome player!')
   end
 
-  scenario 'chooses a design update data-settings', :js do
-    find('video#standard')['data-settings'].should include 'player-kit: 1'
-
-    select 'Flat', from: 'Player design:'
-    sleep 1
-    find('video#standard')['data-settings'].should include 'player-kit: 2'
-
-    select 'Light', from: 'Player design:'
-    sleep 1
-    find('video#standard')['data-settings'].should include 'player-kit: 3'
-  end
-
   scenario 'chooses a design reload partial but keeps modified settings', :js do
     click_link 'Basic Player settings'
     find('#kit_setting-initial-overlay_enable[value="1"]').should be_checked
@@ -84,23 +72,8 @@ feature 'New kit' do
     find('#kit_setting-initial-overlay_enable[value="1"]').should_not be_checked
   end
 
-  scenario 'sharing settings are not visible' do
-    page.should have_no_content 'Sharing settings'
-  end
-
-  describe 'With the sharing add-on' do
-    background do
-      go 'my', "/sites/#{@site.to_param}/addons"
-      check "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.name}"
-      expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(1)
-      @site.subscribed_to?(@social_sharing_addon_plan_1).should be_true
-      go 'my', "/sites/#{@site.to_param}/players"
-      click_link 'New Player'
-    end
-
-    scenario 'sharing settings are visible' do
-      page.should have_content 'Sharing settings'
-    end
+  scenario 'sharing settings are visible' do
+    page.should have_content 'Sharing settings'
   end
 end
 

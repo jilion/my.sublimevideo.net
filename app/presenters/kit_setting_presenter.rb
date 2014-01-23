@@ -74,13 +74,7 @@ class KitSettingPresenter
   private
 
   def load_settings
-    load_settings_from_parameters || load_settings_from_kit
-  end
-
-  def load_settings_from_parameters
-    if @view.params[:kit] && @view.params[:kit][:settings]
-      @view.params[:kit][:settings]
-    end
+    load_settings_from_kit
   end
 
   def load_settings_from_kit
