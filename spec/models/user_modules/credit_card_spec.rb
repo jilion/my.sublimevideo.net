@@ -23,36 +23,6 @@ describe UserModules::CreditCard do
       it { should_not be_pending_credit_card }
     end
 
-    describe "persisted record with pending cc" do
-      let(:user) {
-        user = build(:user_no_cc, valid_cc_attributes)
-        user.prepare_pending_credit_card
-        user
-      }
-      subject { user }
-
-      its(:cc_type)        { should be_nil }
-      its(:cc_last_digits) { should be_nil }
-      its(:cc_expire_on)   { should be_nil }
-      its(:cc_updated_at)  { should be_nil }
-
-      its(:pending_cc_type)        { should eq 'visa' }
-      its(:pending_cc_last_digits) { should eq '1111' }
-      its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
-      its(:pending_cc_updated_at)  { should be_present }
-
-      its(:cc_brand)              { should be_nil }
-      its(:cc_full_name)          { should be_nil }
-      its(:cc_number)             { should be_nil }
-      its(:cc_expiration_year)    { should be_nil }
-      its(:cc_expiration_month)   { should be_nil }
-      its(:cc_verification_value) { should be_nil }
-
-      it { should be_valid }
-      it { should_not be_credit_card }
-      it { should be_pending_credit_card }
-    end
-
     describe "persisted record with cc_number == ''" do
       subject { build(:user_no_cc, valid_cc_attributes.merge(cc_number: '')) }
 
@@ -101,38 +71,6 @@ describe UserModules::CreditCard do
       it { should be_valid }
       it { should be_credit_card }
       it { should_not be_pending_credit_card }
-    end
-
-    describe "persisted record with saved cc and with a new pending cc" do
-      let(:user) {
-        user = create(:user)
-        user = User.find(user.id)
-        user.attributes = valid_cc_attributes_master
-        user.prepare_pending_credit_card
-        user
-      }
-      subject { user }
-
-      its(:cc_type)        { should eq 'visa' }
-      its(:cc_last_digits) { should eq '1111' }
-      its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
-      its(:cc_updated_at)  { should be_present }
-
-      its(:pending_cc_type)        { should eq 'master' }
-      its(:pending_cc_last_digits) { should eq '9999' }
-      its(:pending_cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
-      its(:pending_cc_updated_at)  { should be_present }
-
-      its(:cc_brand)              { should be_nil }
-      its(:cc_full_name)          { should be_nil }
-      its(:cc_number)             { should be_nil }
-      its(:cc_expiration_year)    { should be_nil }
-      its(:cc_expiration_month)   { should be_nil }
-      its(:cc_verification_value) { should be_nil }
-
-      it { should be_valid }
-      it { should be_credit_card }
-      it { should be_pending_credit_card }
     end
   end
 
@@ -189,8 +127,6 @@ describe UserModules::CreditCard do
         it { subject.should_not be_credit_card_expire_this_month }
         it { subject.should be_credit_card_expired }
       end
-    end
-
     end
 
   end
