@@ -25,9 +25,4 @@ namespace :sites do
   task subscribe_all_sites_to_best_addon_plans: :environment do
     timed { puts SitesTasks.subscribe_all_sites_to_best_addon_plans }
   end
-
-  desc "Exit beta"
-  task exit_beta: :environment do
-    timed { puts SitesTasks.exit_beta }
-  end
 end

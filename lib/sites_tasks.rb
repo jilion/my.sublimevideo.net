@@ -36,22 +36,4 @@ module SitesTasks
 
     "Schedule finished: #{scheduled} sites will be subscribed to the best add-ons"
   end
-
-  def self.exit_beta
-    # 1. Exit beta for all designs & addon plans by setting required_stage to 'stable' and settings stable_at.
-    beta_designs = Design.where(stable_at: nil)
-    beta_addon_plans = AddonPlan.where(stable_at: nil)
-    beta_designs.update_all(stable_at: Time.now.utc, required_stage: 'stable')
-    beta_addon_plans.update_all(stable_at: Time.now.utc, required_stage: 'stable')
-
-    # 2. Delays SiteManager.update_billable_items for all non-archived sites
-    scheduled = 0
-    Site.not_archived.pluck(:id).each do |site_id|
-      ExitBetaHandler.delay(queue: 'my').exit_beta(site_id)
-      scheduled += 1
-      puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
-    end
-
-    "Schedule finished: #{scheduled} sites will be moved out of beta"
-  end
 end
