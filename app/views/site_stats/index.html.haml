@@ -9,11 +9,9 @@
 
   .com_text
     %p
-      = "SublimeVideo's statistics add-on offers a truly comprehensive, real-time picture of your site’s video traffic from any device, whether generated from mobile or desktop, HTML5 or Flash."
-      = link_to 'Read more', docs_url('addons/stats')
-      or
-      = link_to 'Get the Real-Time Statistics add-on', addon_path('stats', p: 'realtime')
-      for your site.
+      = succeed '.' do
+        = "SublimeVideo's statistics add-on offers a truly comprehensive, real-time picture of your site’s video traffic from any device, whether generated from mobile or desktop, HTML5 or Flash."
+        = link_to 'Read more', docs_url('addons/stats')
     %p
       This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on
       = link_to 'sublimevideo.net', layout_url('')

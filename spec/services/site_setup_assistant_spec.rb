@@ -21,7 +21,7 @@ describe SiteSetupAssistant do
 
       it 'returns "player"' do
         service.current_step.should eq 'player'
-        service.current_step_number.should eq 3
+        service.current_step_number.should eq 2
       end
     end
   end

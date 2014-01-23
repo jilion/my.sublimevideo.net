@@ -51,28 +51,32 @@ describe SettingsGenerator, :addons do
         it 'has the right settings for ["videoPlayer"][:plugins]["logo"]' do
           settings.kits['1'][:plugins]['videoPlayer'][:plugins]['logo'].should eq({
             settings: {
-              enable: true,
+              enable: false,
               type: 'sv',
               visibility: 'autohide',
               position: 'bottom-right',
-              image_url: '',
+              image_url: nil,
               link_url: nil
             },
             allowed_settings: {
               enable: {
-                values: [true]
+                values: [true, false]
               },
               type: {
-                values: ['sv']
+                values: ['sv', 'custom']
               },
               visibility: {
                 values: ['autohide', 'visible']
               },
               position: {
-                values: ['bottom-right']
+                values: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
               },
-              image_url: {},
-              link_url: {}
+              image_url: {
+                values: nil
+              },
+              link_url: {
+                values: nil
+              }
             },
             id: "sa.sh.sp"
           })
@@ -112,7 +116,7 @@ describe SettingsGenerator, :addons do
                 values: [true, false]
               },
               type: {
-                values: ['manual']
+                values: ['manual', 'auto']
               },
               size: {}
             },
@@ -261,20 +265,20 @@ describe SettingsGenerator, :addons do
               "plugins": {
               "logo": {
               "settings": {
-              "enable":true,"type":"sv","visibility":"autohide","position":"bottom-right","imageUrl":"","linkUrl":null},
+              "enable":false,"type":"sv","visibility":"autohide","position":"bottom-right","imageUrl":null,"linkUrl":null},
               "allowedSettings": {
               "enable": {
-              "values":[true]},
+              "values":[true,false]},
               "type": {
-              "values":["sv"]},
+              "values":["sv","custom"]},
               "visibility": {
               "values":["autohide","visible"]},
               "position": {
-              "values":["bottom-right"]},
+              "values":["top-left","top-right","bottom-left","bottom-right"]},
               "imageUrl": {
-              },
+              "values":null},
               "linkUrl": {
-              }},
+              "values":null}},
               "id":"sa.sh.sp","module":"sublime/video/plugins/logo/logo"},
               "controls": {
               "settings": {
@@ -296,6 +300,30 @@ describe SettingsGenerator, :addons do
               "overlayColor": {
               "values":["#000"]}},
               "id":"sa.sh.sv","module":"sublime/video/plugins/poster/start_controller"},
+              "sharing": {
+              "settings": {
+              "enable":true,"icon":"default","url":null,"buttons":["twitter","facebook"],
+              "image":"auto","text":null,"twitterText":null,"twitterVia":null,"linkEnable":true},
+              "allowedSettings": {
+              "enable": {
+              "values":[true,false]},
+              "icon": {
+              "values":["default","alt"]},
+              "url": {
+              "values":null},
+              "buttons": {
+              },
+              "image": {
+              "values":["auto","poster"]},
+              "text": {
+              },
+              "twitterText": {
+              },
+              "twitterVia": {
+              },
+              "linkEnable": {
+              "values":[true,false]}},
+              "id":"sa.sh.ua","module":"sublime/video/plugins/social_sharing/social_sharing"},
               "embed": {
               "settings": {
               "enable":true,"type":"manual","size":"640"},
@@ -303,10 +331,25 @@ describe SettingsGenerator, :addons do
               "enable": {
               "values":[true,false]},
               "type": {
-              "values":["manual"]},
+              "values":["manual","auto"]},
               "size": {
               }},
-              "id":"sa.sh.ub","module":"sublime/video/plugins/embed/embed"}},
+              "id":"sa.sh.ub","module":"sublime/video/plugins/embed/embed"},
+              "cuezones": {
+              "settings": {
+              },
+              "allowedSettings": {
+              },
+              "id":"sa.sh.ud","module":"sublime/video/plugins/cuepoints/cue_zones"},
+              "googleAnalytics": {
+              "settings": {
+              "enable":false,"account":null},
+              "allowedSettings": {
+              "enable": {
+              "values":[true,false]},
+              "account": {
+              "values":null}},
+              "id":"sa.sh.uf","module":"sublime/video/plugins/google_analytics/google_analytics"}},
               "settings": {
               "volumeEnable":true,"fullmodeEnable":true,"fullmodePriority":"screen","onEnd":"nothing"},
               "allowedSettings": {
