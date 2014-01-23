@@ -21,6 +21,11 @@ namespace :sites do
     timed { puts SitesTasks.regenerate_templates(loaders: true, settings: true) }
   end
 
+  desc "Sponsor all sites for premium add-ons (except for Stats and Support)"
+  task subscribe_all_sites_to_best_addon_plans: :environment do
+    timed { puts SitesTasks.subscribe_all_sites_to_best_addon_plans }
+  end
+
   desc "Exit beta"
   task exit_beta: :environment do
     timed { puts SitesTasks.exit_beta }
