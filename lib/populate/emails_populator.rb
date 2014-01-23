@@ -15,16 +15,6 @@ class EmailsPopulator < Populator
     UserMailer.account_unsuspended(user.id).deliver!
     UserMailer.account_archived(user.id).deliver!
 
-    BillingMailer.trial_will_expire(trial_design.id).deliver!
-    BillingMailer.trial_has_expired(site.id, trial_design.item.class.to_s, trial_design.item_id).deliver!
-    BillingMailer.trial_will_expire(trial_addon_plan.id).deliver!
-    BillingMailer.trial_has_expired(site.id, trial_addon_plan.item.class.to_s, trial_addon_plan.item_id).deliver!
-
-    BillingMailer.credit_card_will_expire(user.id).deliver!
-
-    BillingMailer.transaction_succeeded(transaction.id).deliver!
-    BillingMailer.transaction_failed(transaction.id).deliver!
-
     MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
   end
 

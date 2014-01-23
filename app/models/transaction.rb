@@ -38,9 +38,6 @@ class Transaction < ActiveRecord::Base
 
     before_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:_set_fields_from_ogone_response]
     after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:_update_invoices]
-
-    after_transition on: :succeed, do: :_send_charging_succeeded_email
-    after_transition on: :fail, do: :_send_charging_failed_email
   end
 
   # ==========
@@ -267,16 +264,6 @@ private
              end
 
     invoices.map(&:"#{action}!") if action
-  end
-
-  # after_transition on: :succeed
-  def _send_charging_succeeded_email
-    BillingMailer.delay(queue: 'my').transaction_succeeded(id)
-  end
-
-  # after_transition on: :fail
-  def _send_charging_failed_email
-    BillingMailer.delay(queue: 'my').transaction_failed(id)
   end
 
 end

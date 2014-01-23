@@ -138,7 +138,6 @@ feature "Suspended page" do
 
         current_url.should eq "http://my.sublimevideo.dev/suspended"
 
-        BillingMailer.should delay(:transaction_succeeded)
         UserMailer.should delay(:account_unsuspended).with(@current_user.id)
         LoaderGenerator.should delay(:update_all_stages!).with(@site.id, deletable: true)
         SettingsGenerator.should delay(:update_all!).with(@site.id)

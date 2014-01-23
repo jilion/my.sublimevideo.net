@@ -227,24 +227,6 @@ describe Transaction, :vcr do
           end
         end
       end
-
-      describe "after_transition on: :succeed, do: :send_charging_succeeded_email" do
-        context "from open" do
-          it "should send an email to invoice.user" do
-            BillingMailer.should delay(:transaction_succeeded).with(transaction.id)
-            transaction.succeed
-          end
-        end
-      end
-
-      describe "after_transition on: :fail, do: :send_charging_failed_email" do
-        context "from open" do
-          it "should send an email to invoice.user" do
-            BillingMailer.should delay(:transaction_failed).with(transaction.id)
-            transaction.fail
-          end
-        end
-      end
     end # Transitions
 
   end # State Machine
