@@ -14,6 +14,21 @@ module UsersTasks
     end
   end
 
+  def self.cancel_failed_invoices_and_unsuspend_everyone
+    puts "#{Invoice.where(state: 'failed').count} failed invoices will be canceled"unless Rails.env.test?
+    Invoice.where(state: 'failed').update_all(state: 'canceled')
+    failed_invoices_count = Invoice.where(state: 'failed').count
+    puts "Failed invoices: #{failed_invoices_count}" unless Rails.env.test?
+    return if failed_invoices_count > 0
+
+    unsuspended = 0
+    User.suspended.find_each do |user|
+      UserManager.new(user).unsuspend
+      unsuspended += 1
+    end
+    puts "#{unsuspended} users has been unsuspended" unless Rails.env.test?
+  end
+
   private
 
   def self.campaign_monitor_import(users, custom_fields)
