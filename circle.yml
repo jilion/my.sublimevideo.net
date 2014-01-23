@@ -7,6 +7,10 @@ machine:
     my.lvh.me: 127.0.0.1
     admin.lvh.me: 127.0.0.1
 deployment:
+  staging:
+    branch: free
+    heroku:
+      appname: sv-my-staging
   production:
     branch: master
     heroku:
