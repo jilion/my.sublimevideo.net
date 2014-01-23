@@ -58,7 +58,7 @@ class SiteManager
   def unsuspend_billable_items
     _set_default_designs
     site.billable_items.where(state: 'suspended').each do |billable_item|
-      billable_item.state = _new_billable_item_state(billable_item.item)
+      billable_item.state = _new_billable_item_state(billable_item.item, force: 'sponsored')
       billable_item.save!
     end
   end

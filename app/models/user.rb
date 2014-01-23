@@ -63,15 +63,10 @@ class User < ActiveRecord::Base
   validates :company_url, hostname: true, allow_blank: true
   validates :terms_and_conditions, acceptance: true, allow_nil: false, on: :create
 
-  validate :validates_credit_card_attributes # in user/credit_card
-
   # =============
   # = Callbacks =
   # =============
 
-  before_save :prepare_pending_credit_card, if: ->(user) { user.credit_card(true).valid? } # in user/credit_card
-
-  after_save :register_credit_card_on_file, if: ->(user) { user.cc_register } # in user/credit_card
   after_save :_update_newsletter_subscription
   after_update :_update_newsletter_user_infos
 

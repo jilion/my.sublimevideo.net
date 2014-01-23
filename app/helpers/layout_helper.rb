@@ -17,11 +17,7 @@ module LayoutHelper
   end
 
   def sticky_notices(user, sites)
-    { credit_card_warning: user, billing_address_incomplete: user }.reduce({}) do |a, (method, arg)|
-      result = send(method, arg)
-      a[method] = result if result
-      a
-    end
+    {}
   end
 
   def svg(width, height, options = {}, &block)

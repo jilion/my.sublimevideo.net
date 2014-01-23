@@ -127,49 +127,6 @@ describe User do
 
   describe "Callbacks" do
 
-    describe "before_save :prepare_pending_credit_card & after_save :register_credit_card_on_file" do
-
-      context "when user had no cc info before", :vcr do
-        subject do
-          user = create(:user_no_cc)
-          user.reload
-          user.update(valid_cc_attributes)
-          user
-        end
-
-        it { should be_valid }
-        its(:cc_type)        { should eq 'visa' }
-        its(:cc_last_digits) { should eq '1111' }
-        its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
-
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
-      end
-
-      context "when user has cc info before", :vcr do
-        subject { create(:user) }
-        before do
-          subject.cc_type.should eq 'visa'
-          subject.cc_last_digits.should eq '1111'
-          subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
-
-          subject.attributes = valid_cc_attributes_master
-          subject.save!
-          subject.reload
-        end
-
-        it { should be_valid }
-        its(:cc_type)        { should eq 'master' }
-        its(:cc_last_digits) { should eq '9999' }
-        its(:cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
-
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
-      end
-    end
-
     describe "after_save :_update_newsletter_subscription" do
       context "user sign-up" do
         context "user subscribes to the newsletter" do

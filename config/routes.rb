@@ -77,9 +77,6 @@ MySublimeVideo::Application.routes.draw do
           get :yearly
           get :top_customers
         end
-        member do
-          patch :retry_charging
-        end
       end
 
       get 'stats/single/:page' => 'stats#show', as: 'single_stat'
@@ -210,9 +207,7 @@ MySublimeVideo::Application.routes.draw do
         get :fields, on: :collection
       end
 
-      resources :invoices, only: [:index] do
-        put :retry, on: :collection
-      end
+      resources :invoices, only: [:index]
 
       resources :video_tags, only: [:index], path: 'videos' do
         resources :video_stats, only: [:index], path: 'stats', as: :stats
@@ -236,12 +231,6 @@ MySublimeVideo::Application.routes.draw do
     get '/videos/new' => 'video_codes#new', as: 'new_video_code'
     get '/stats-demo' => 'site_stats#index', site_id: SiteToken[:www], demo: true
     get '/stats' => redirect('/stats-demo')
-
-    resources :invoices, only: [:show] do
-      put :retry_all, on: :collection
-    end
-
-    post '/transaction/callback' => 'transactions#callback'
 
     resources :deals, only: [:show], path: 'd'
 

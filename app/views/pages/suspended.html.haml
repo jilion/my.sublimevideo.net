@@ -4,22 +4,6 @@
   - failed_invoices = current_user.invoices.with_state('failed')
 
   %h3.section_title Suspension reason
-  - if failed_invoices.any?
-    %p= "You currently have #{t('invoice.failed_invoices', count: failed_invoices.count)}."
-    .content_left
-      #site.invoices
-        %h3.section_title Your failed invoices
-        #invoices_summary
-          #failed_invoices.past_invoices.dark_box
-            = t("user.have_to_pay_following_invoices", count: failed_invoices.size)
-            %ul= render partial: 'invoices/invoice_row', collection: failed_invoices, as: 'invoice'
-            - if !current_user.cc_expired?
-              = form_tag retry_all_invoices_path, method: 'put' do
-                .entry= submit_tag t('invoice.retry_invoices'), class: "blue_button"
-
-    .content_right= render 'users/billing_info'
-
-  - else
-    %p
-      Unknown reason.
-      = raw t('app.please_email_to_know_more_about_it', email: mail_to(t("mailer.billing.email").html_safe, t("mailer.billing.email"), class: "hl"))
+  %p
+    Unknown reason.
+    = raw t('app.please_email_to_know_more_about_it', email: mail_to(t("mailer.info.email").html_safe, t("mailer.info.email"), class: "hl"))

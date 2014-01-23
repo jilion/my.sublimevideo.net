@@ -4,7 +4,7 @@ class EmailsPopulator < Populator
     trial_design        = user.billable_items.designs.state('trial').first || user.billable_items.designs.first
     trial_addon_plan    = user.billable_items.addon_plans.state('trial').first || user.billable_items.addon_plans.first
     site                = user.sites.paying.last || user.sites.last
-    invoice             = site.invoices.not_paid.last || InvoiceCreator.build_for_month(1.month.ago, site).tap { |s| s.save }.invoice
+    invoice             = site.invoices.not_paid.last
     transaction         = invoice.transactions.last || Transaction.new(invoices: [invoice])
 
     DeviseMailer.confirmation_instructions(user).deliver!

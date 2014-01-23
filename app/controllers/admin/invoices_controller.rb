@@ -1,5 +1,4 @@
 class Admin::InvoicesController < Admin::AdminController
-  include InvoicesControllerHelper
 
   respond_to :js, :html, :json
   respond_to :json, only: [:index]
@@ -43,14 +42,6 @@ class Admin::InvoicesController < Admin::AdminController
   def edit
     @invoice = Invoice.includes(:user).where(reference: params[:id]).first!
     respond_with(@invoice)
-  end
-
-  # PATCH /invoices/:id/retry_charging
-  def retry_charging
-    @invoice = Invoice.where(reference: params[:id]).first!
-    _retry_invoices([@invoice])
-
-    respond_with(@invoice, location: [:edit, :admin, @invoice])
   end
 
   def monthly
