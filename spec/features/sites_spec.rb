@@ -195,7 +195,7 @@ def last_site_should_be_created(hostname)
   site.designs.should have(3).items
   site.addon_plans.should have(10).items
 
-  current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/addons"
+  current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/player"
   page.should have_content hostname
   page.should have_content 'Site has been successfully registered.'
 end
