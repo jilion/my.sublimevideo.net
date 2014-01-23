@@ -6,4 +6,4 @@
 .entry#sharing_twitter_text_box
   %label.icon{ for: "sharing_twitter_text" } Twitter text
   - value = MSVVideoCode.video.getSetting('sharing', 'twitter_text', MSVVideoCode.kits.selected)
-  %input#sharing_twitter_text.text.kit_setting{ type: 'text', size: 50, placeholder: "Twitter text", value: value, data: { addon: 'sharing', setting: 'twitter_text' } }/
+  %input#sharing_twitter_text.text.kit_setting{ type: 'text', size: 50, placeholder: "Twitter text", value: value, data: { addon: 'sharing', setting: 'twitter_text' } }

@@ -11,5 +11,5 @@
 .entry#sharing_url_box
   %label.icon{ for: "sharing_url_src" } Sharing URL
   - value = MSVVideoCode.video.getSetting('sharing', 'url', MSVVideoCode.kits.selected)
-  %input#sharing_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: value, data: { addon: 'sharing', setting: 'url' } }/
+  %input#sharing_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: value, data: { addon: 'sharing', setting: 'url' } }
   %span#sharing_url_src_invalid.inline_alert{ style: "display:none" } Please provide a valid URL
