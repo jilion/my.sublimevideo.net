@@ -2,16 +2,20 @@ require 'fast_spec_helper'
 require 'sidekiq'
 require 'sidekiq/testing'
 
-require 'workers/site_counter_incrementer_worker'
+require 'workers/stats_sponsorer_worker'
 
 Site = Struct.new(:params) unless defined?(Site)
+SiteManager = Class.new unless defined?(SiteManager)
+AddonPlan = Class.new unless defined?(AddonPlan)
 
-describe SiteCounterIncrementerWorker do
-  let(:params) { ['site_token', 'last_30_days_video_tags'] }
+describe StatsSponsorerWorker do
+  let(:params) { ['site_token'] }
   let(:site) { double(Site) }
+  let(:site_manager) { double(Site) }
 
   before {
     Site.stub_chain(:where, :first) { site }
+    SiteManager.stub(:new) { site_manager }
   }
 
   it "performs async job" do
@@ -24,8 +28,9 @@ describe SiteCounterIncrementerWorker do
     expect(described_class.get_sidekiq_options['queue']).to eq 'my-low'
   end
 
-  it "increments site counter" do
-    expect(site).to receive(:increment!).with('last_30_days_video_tags')
+  it "sponsorize stats addon" do
+    expect(AddonPlan).to receive(:get).with('stats', 'realtime') { double(id: 1) }
+    expect(site_manager).to receive(:update_billable_items).with({}, { 'stats' => 1 }, { force: 'sponsored' })
     described_class.new.perform(*params)
   end
 
