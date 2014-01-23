@@ -190,17 +190,17 @@ MySublimeVideo::Application.routes.draw do
 
     scope 'assistant' do
       match 'new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
-      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put, :patch]
+      get   ':site_id/addons' => redirect { |params, req| "/assistant/#{params[:site_id]}/player" }
       match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put, :patch]
       get   ':site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
       match ':site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
     end
 
-    resources :addons, only: [:index, :show]
+    get 'addons(/*anything)' => redirect('/sites')
 
     resources :sites, only: [:index, :edit, :update, :destroy] do
-      resources :addons, only: [:index, :show] do
-        put :subscribe, on: :collection
+      member do
+        get '/addons(/*)' => redirect { |params, req| "/sites/#{params[:id]}/edit" }
       end
 
       resources :kits, except: [:destroy], path: 'players' do

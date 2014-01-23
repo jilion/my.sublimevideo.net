@@ -20,7 +20,6 @@
         = svg 8, 5, class: "arrow" do
           %path{ d: "M4,5l4-5H0L4,5z", fill: "rgba(9,23,69,0.5)" }
       %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
-        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Add-ons', [site, :addons]
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Players', [site, :kits]
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Videos', site_video_tags_path(site)
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Loader code', '', class: 'loader_code', data: { token: site.token }

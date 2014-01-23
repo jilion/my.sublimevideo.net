@@ -54,10 +54,6 @@ MySublimeVideo.UI.prepareSitesStatus = ->
   if ($table = $('#sites_table_wrap')).exists()
     new MySublimeVideo.UI.SitesStatus($table)
 
-MySublimeVideo.UI.prepareAddonsChooser = ->
-  if ($form = $('#edit_addons')).exists()
-    new MySublimeVideo.UI.AddonsChooser($form)
-
 MySublimeVideo.UI.prepareGrandFatherPlanPopUp = ->
   if ($textDiv = $('#grandfather_plan')).exists()
     new MySublimeVideo.UI.GrandFatherPlanPopUp($textDiv)
@@ -98,7 +94,6 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareHidableNotices()
   MySublimeVideo.UI.prepareLoaderCodePopups()
   MySublimeVideo.UI.prepareSitesStatus()
-  MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
   MySublimeVideo.UI.prepareExpandableItems()
   MySublimeVideo.UI.prepareKitsPage()
