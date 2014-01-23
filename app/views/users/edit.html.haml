@@ -43,9 +43,9 @@
   .spacer
 
 .content_right
-  = render 'users/balance_info'
-  %h3.section_title Billing information
-  = render 'users/billing_info'
+  -#= render 'users/balance_info'
+  -#%h3.section_title Billing information
+  -#= render 'users/billing_info'
 
   - unless current_user.invoices.not_paid.any?
     #delete_account
