@@ -91,9 +91,6 @@ gem 'crack'
 gem 'pusher'
 gem 'redis'
 
-# Tickets
-gem 'zendesk_api'
-
 # App
 gem 'solve'
 

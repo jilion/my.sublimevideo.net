@@ -40,7 +40,7 @@
 
 %p
   %strong Zendesk ticket:
-  = link_to "https://sublimevideo.zendesk.com/agent/#/tickets/#{@tailor_made_player_request.zendesk_ticket_id}", "https://sublimevideo.zendesk.com/agent/#/tickets/#{@tailor_made_player_request.zendesk_ticket_id}"
+  = link_to "#{ENV['ZENDESK_BASE_URL']}/agent/#/tickets/#{@tailor_made_player_request.zendesk_ticket_id}", "#{ENV['ZENDESK_BASE_URL']}/agent/#/tickets/#{@tailor_made_player_request.zendesk_ticket_id}"
 
 %br
 %hr

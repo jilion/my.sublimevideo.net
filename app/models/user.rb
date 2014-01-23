@@ -75,8 +75,6 @@ class User < ActiveRecord::Base
   after_save :_update_newsletter_subscription
   after_update :_update_newsletter_user_infos
 
-  after_update :_zendesk_update
-
   # =================
   # = State Machine =
   # =================
@@ -199,14 +197,6 @@ class User < ActiveRecord::Base
 
     if email_changed? || name_changed?
       NewsletterSubscriptionManager.delay(queue: 'my').update(self.id, email_was || email)
-    end
-  end
-
-  # after_update
-  def _zendesk_update
-    if zendesk_id? && (email_changed? || (name_changed? && name?))
-      updated_field = email_changed? ? { email: email } : { name: name }
-      ZendeskWrapper.delay(queue: 'my-low').update_user(zendesk_id, updated_field)
     end
   end
 
