@@ -200,7 +200,7 @@ class SiteManager
       end
     elsif design_or_addon.beta?
       'beta'
-    elsif design_or_addon.free? || TrialHandler.new(site).out_of_trial?(design_or_addon)
+    elsif design_or_addon.free?
       'subscribed'
     else
       'trial'

@@ -25,7 +25,6 @@ class SitesPopulator < Populator
         if rand >= 0.5
           Timecop.return
           Timecop.travel(created_at + 30.days)
-          TrialHandler.new(site).activate_billable_items_out_of_trial
         end
         Timecop.return
         puts "#{site.hostname} created for #{user.name}"
