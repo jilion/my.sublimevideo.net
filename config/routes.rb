@@ -232,6 +232,8 @@ MySublimeVideo::Application.routes.draw do
     get '/stats-demo' => 'site_stats#index', site_id: SiteToken[:www], demo: true
     get '/stats' => redirect('/stats-demo')
 
+    resources :invoices, only: [:show]
+
     resources :deals, only: [:show], path: 'd'
 
     scope 'feedback' do

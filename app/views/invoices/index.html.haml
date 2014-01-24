@@ -10,29 +10,7 @@
     - open_or_failed_invoices = @invoices.open_or_failed
     - paid_invoices = @invoices.paid
     #invoices_summary.content_left
-      - if open_or_failed_invoices.any?
-        .past_invoices.dark_box
-          %h3.section_title Outstanding invoices
-          %ul= render partial: 'invoice_row', collection: open_or_failed_invoices, as: 'invoice'
-          %strong
-            Total due:
-            = display_amount(open_or_failed_invoices.to_a.sum(&:amount))
-        - if !current_user.cc? || current_user.cc_expired?
-          %p.alert
-            = raw t('app.please_link', link: link_to('add a valid credit card', [:edit, :billing], class: 'hl'))
-            = t('user.payment.and_retry_here') if @site.invoices_failed?
-            %span><= '.'
-        - else
-          = form_for @site, url: retry_site_invoices_path(site_id: @site.to_param), html: { method: 'put' } do |f|
-            - unless @site.invoices_failed?
-              %p.note Open invoices will automatically be charged (unless their total amount is less than $1), but you can still pay them manually if you prefer.
-            .entry.update= f.submit t('invoice.pay_outstanding_invoices', count: open_or_failed_invoices.size), class: 'blue_button'
-
       - if paid_invoices.any?
         .past_invoices.dark_box
           %h3.section_title Paid invoices
           %ul= render partial: 'invoice_row', collection: paid_invoices, as: 'invoice'
-
-    .content_right
-      = render 'users/balance_info'
-      = render 'users/billing_info'

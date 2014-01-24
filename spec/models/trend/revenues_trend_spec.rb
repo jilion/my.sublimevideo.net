@@ -31,47 +31,31 @@ describe RevenuesTrend do
       it 'creates revenues_stats stats for 5 days ago' do
         billings_stat = described_class.all.entries[0]
         billings_stat['d'].should eq 5.days.ago.midnight
-        billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
-          'stats' => { 'realtime' => (@stats_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        billings_stat['r'].should == {}
       end
 
       it 'creates revenues_stats stats for 4 days ago' do
         billings_stat = described_class.all.entries[1]
         billings_stat['d'].should eq 4.days.ago.midnight
-        billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
-          'stats' => { 'realtime' => (@stats_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        billings_stat['r'].should == {}
       end
 
       it 'creates revenues_stats stats for 3 days ago' do
         billings_stat = described_class.all.entries[2]
         billings_stat['d'].should eq 3.days.ago.midnight
-        billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
-          'support' => { 'vip' => (@support_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        billings_stat['r'].should == {}
       end
 
       it 'creates revenues_stats stats for 2 days ago' do
         billings_stat = described_class.all.entries[3]
         billings_stat['d'].should eq 2.days.ago.midnight
-        billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
-          'support' => { 'vip' => (@support_addon_plan_2.price.to_f * 12 / 365).round },
-          'logo' => { 'disabled' => (@logo_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        billings_stat['r'].should == {}
       end
 
       it 'creates revenues_stats stats for 1 day ago' do
         billings_stat = described_class.all.entries[4]
         billings_stat['d'].should eq 1.day.ago.midnight
-        billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f * 12 / 365).round },
-          'logo' => { 'disabled' => (@logo_addon_plan_2.price.to_f * 12 / 365).round }
-        }
+        billings_stat['r'].should == {}
       end
     end
   end
