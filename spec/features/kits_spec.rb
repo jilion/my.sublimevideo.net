@@ -62,7 +62,7 @@ feature 'New kit' do
     last_kit_should_be_created(@site, 'My awesome player!')
   end
 
-  scenario 'chooses a design reload partial but keeps modified settings', :js do
+  pending 'chooses a design reload partial but keeps modified settings', :js do
     click_link 'Basic Player settings'
     find('#kit_setting-initial-overlay_enable[value="1"]').should be_checked
     uncheck 'kit_setting-initial-overlay_enable'
