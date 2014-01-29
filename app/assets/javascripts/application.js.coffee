@@ -23,6 +23,7 @@ window.MySublimeVideo =
   Helpers: {}
   Routers: {}
   Views: {}
+  Empty: {}
 
 window.spinOptions =
   color:  '#d5e5ff'
