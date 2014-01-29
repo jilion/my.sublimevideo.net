@@ -26,10 +26,16 @@ module SitesTasks
     subscriptions[:cuezones] = AddonPlan.get('cuezones', 'standard').id
     subscriptions[:google_analytics] = AddonPlan.get('google_analytics', 'standard').id
     subscriptions[:support] = AddonPlan.get('support', 'standard').id # downgrade everyone to no support
+    realtime_stats = AddonPlan.get('stats', 'realtime')
 
     scheduled = 0
     Site.active.find_each do |site|
-      SiteManager.delay(queue: 'my').update_billable_items(site.id, {}, subscriptions, force: 'sponsored')
+      new_subscriptions = subscriptions.dup
+      if site.subscribed_to?(realtime_stats)
+        new_subscriptions[:stats] = realtime_stats.id # force realtime stats to be sponsored (in the case of the addon being in trial for example)
+      end
+
+      SiteManager.delay(queue: 'my').update_billable_items(site.id, {}, new_subscriptions, force: 'sponsored')
       scheduled += 1
       puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
     end

@@ -45,7 +45,8 @@ describe SitesTasks do
         embed: AddonPlan.get('embed', 'manual').id,
         cuezones: '0',
         google_analytics: '0',
-        support: AddonPlan.get('support', 'vip').id
+        support: AddonPlan.get('support', 'vip').id,
+        stats: AddonPlan.get('stats', 'realtime').id
       })
 
       Sidekiq::Worker.clear_all
@@ -65,6 +66,7 @@ describe SitesTasks do
       expect(site2.billable_items.with_item(AddonPlan.get('cuezones', 'standard')).size).to eq 0
       expect(site2.billable_items.with_item(AddonPlan.get('google_analytics', 'standard')).size).to eq 0
       expect(site2.billable_items.with_item(AddonPlan.get('support', 'vip')).state('trial').size).to eq 1
+      expect(site2.billable_items.with_item(AddonPlan.get('stats', 'realtime')).state('trial').size).to eq 1
 
       described_class.subscribe_all_sites_to_best_addon_plans
 
@@ -83,6 +85,7 @@ describe SitesTasks do
       expect(site2.billable_items.with_item(AddonPlan.get('cuezones', 'standard')).state('sponsored').size).to eq 1
       expect(site2.billable_items.with_item(AddonPlan.get('google_analytics', 'standard')).state('sponsored').size).to eq 1
       expect(site2.billable_items.with_item(AddonPlan.get('support', 'standard')).state('subscribed').size).to eq 1
+      expect(site2.billable_items.with_item(AddonPlan.get('stats', 'realtime')).state('sponsored').size).to eq 1
     end
   end
 
