@@ -15,7 +15,7 @@ module UsersTasks
   end
 
   def self.cancel_failed_invoices_and_unsuspend_everyone
-    puts "#{Invoice.where(state: 'failed').count} failed invoices will be canceled"unless Rails.env.test?
+    puts "#{Invoice.where(state: 'failed').count} failed invoices will be canceled" unless Rails.env.test?
     Invoice.where(state: 'failed').update_all(state: 'canceled')
     failed_invoices_count = Invoice.where(state: 'failed').count
     puts "Failed invoices: #{failed_invoices_count}" unless Rails.env.test?

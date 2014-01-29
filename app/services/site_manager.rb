@@ -75,7 +75,8 @@ class SiteManager
       yield
     end
     true
-  rescue ActiveRecord::RecordInvalid => ex
+  rescue => ex
+    Rails.logger.info ex.inspect
     false
   end
 
