@@ -1,9 +1,9 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  config.middleware.insert_before Rack::Cache, Rack::Auth::Basic, "Staging" do |u, p|
+  config.middleware.insert 0, Rack::SslEnforcer, force_secure_cookies: false
+  config.middleware.insert_after Rack::SslEnforcer, Rack::Auth::Basic, "Staging" do |u, p|
     [u, p] == ['jilion', ENV['PRIVATE_CODE']]
   end
-  config.middleware.insert_before Rack::Cache, Rack::SslEnforcer, force_secure_cookies: false
 
   # One-line logs
   config.lograge.enabled = true
