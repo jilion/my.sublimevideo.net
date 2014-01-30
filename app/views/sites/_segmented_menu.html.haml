@@ -1,6 +1,5 @@
 %ul.segmented_menu.sticky
-  = li_menu_link 'Add-ons', path: site_addons_path(site), class: 'first', regex: %r{/sites/#{site.token}/addons}
-  = li_menu_link 'Players', path: site_kits_path(site), regex: %r{/sites/#{site.token}/players}
+  = li_menu_link 'Players', path: site_kits_path(site), class: 'first', regex: %r{/sites/#{site.token}/players}
   = li_menu_link 'Videos', path: site_video_tags_path(site), regex: %r{/sites/#{site.token}/videos}
   = li_menu_link 'Stats', path: site_stats_path(site) if site.realtime_stats_active?
   = li_menu_link 'Settings', path: edit_site_path(site)

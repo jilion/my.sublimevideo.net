@@ -201,7 +201,7 @@ describe Site, :addons do
         it 'suspends all billable items' do
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(16).items
           site.billable_items.with_item(@classic_design)            .state('suspended').should have(1).item
           site.billable_items.with_item(@flat_design)               .state('suspended').should have(1).item
           site.billable_items.with_item(@light_design)              .state('suspended').should have(1).item
@@ -209,10 +209,13 @@ describe Site, :addons do
           site.billable_items.with_item(@lightbox_addon_plan_1)     .state('suspended').should have(1).item
           site.billable_items.with_item(@image_viewer_addon_plan_1) .state('suspended').should have(1).item
           site.billable_items.with_item(@stats_addon_plan_1)        .state('suspended').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_1)         .state('suspended').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_3)         .state('suspended').should have(1).item
           site.billable_items.with_item(@controls_addon_plan_1)     .state('suspended').should have(1).item
           site.billable_items.with_item(@initial_addon_plan_1)      .state('suspended').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('suspended').should have(1).item
+          site.billable_items.with_item(@social_sharing_addon_plan_1).state('suspended').should have(1).item
+          site.billable_items.with_item(@cuezones_addon_plan_1)     .state('suspended').should have(1).item
+          site.billable_items.with_item(@google_analytics_addon_plan_1).state('suspended').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_2)        .state('suspended').should have(1).item
           site.billable_items.with_item(@api_addon_plan_1)          .state('suspended').should have(1).item
           site.billable_items.with_item(@support_addon_plan_1)      .state('suspended').should have(1).item
         end
@@ -234,13 +237,13 @@ describe Site, :addons do
         end
 
         it 'unsuspend all billable items' do
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(16).items
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(16).items
           site.unsuspend!
 
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(16).items
           site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
           site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
           site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
@@ -248,10 +251,13 @@ describe Site, :addons do
           site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
           site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
           site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_1)         .state('subscribed').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_3)         .state('sponsored').should have(1).item
           site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
           site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@social_sharing_addon_plan_1).state('sponsored').should have(1).item
+          site.billable_items.with_item(@cuezones_addon_plan_1)     .state('sponsored').should have(1).item
+          site.billable_items.with_item(@google_analytics_addon_plan_1).state('sponsored').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_2)        .state('sponsored').should have(1).item
           site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
           site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end
@@ -268,7 +274,7 @@ describe Site, :addons do
         end
 
         it 'unsuspend all billable items' do
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(16).items
           site.billable_items.with_item(@logo_addon_plan_2).state('trial').should have(1).item
 
           site.suspend!
@@ -277,7 +283,7 @@ describe Site, :addons do
 
           site.unsuspend!
 
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(16).items
           site.billable_items.with_item(@classic_design)            .state('subscribed').should have(1).item
           site.billable_items.with_item(@flat_design)               .state('subscribed').should have(1).item
           site.billable_items.with_item(@light_design)              .state('subscribed').should have(1).item
@@ -285,10 +291,13 @@ describe Site, :addons do
           site.billable_items.with_item(@lightbox_addon_plan_1)     .state('subscribed').should have(1).item
           site.billable_items.with_item(@image_viewer_addon_plan_1) .state('subscribed').should have(1).item
           site.billable_items.with_item(@stats_addon_plan_1)        .state('subscribed').should have(1).item
-          site.billable_items.with_item(@logo_addon_plan_2)         .state('trial').should have(1).item
+          site.billable_items.with_item(@logo_addon_plan_2)         .state('sponsored').should have(1).item
           site.billable_items.with_item(@controls_addon_plan_1)     .state('subscribed').should have(1).item
           site.billable_items.with_item(@initial_addon_plan_1)      .state('subscribed').should have(1).item
-          site.billable_items.with_item(@embed_addon_plan_1)        .state('subscribed').should have(1).item
+          site.billable_items.with_item(@social_sharing_addon_plan_1).state('sponsored').should have(1).item
+          site.billable_items.with_item(@cuezones_addon_plan_1)     .state('sponsored').should have(1).item
+          site.billable_items.with_item(@google_analytics_addon_plan_1).state('sponsored').should have(1).item
+          site.billable_items.with_item(@embed_addon_plan_2)        .state('sponsored').should have(1).item
           site.billable_items.with_item(@api_addon_plan_1)          .state('subscribed').should have(1).item
           site.billable_items.with_item(@support_addon_plan_1)      .state('subscribed').should have(1).item
         end

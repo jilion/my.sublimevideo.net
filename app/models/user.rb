@@ -63,19 +63,12 @@ class User < ActiveRecord::Base
   validates :company_url, hostname: true, allow_blank: true
   validates :terms_and_conditions, acceptance: true, allow_nil: false, on: :create
 
-  validate :validates_credit_card_attributes # in user/credit_card
-
   # =============
   # = Callbacks =
   # =============
 
-  before_save :prepare_pending_credit_card, if: ->(user) { user.credit_card(true).valid? } # in user/credit_card
-
-  after_save :register_credit_card_on_file, if: ->(user) { user.cc_register } # in user/credit_card
   after_save :_update_newsletter_subscription
   after_update :_update_newsletter_user_infos
-
-  after_update :_zendesk_update
 
   # =================
   # = State Machine =
@@ -180,10 +173,6 @@ class User < ActiveRecord::Base
     name.presence || email
   end
 
-  def support_requests
-    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
-  end
-
   private
 
   # after_save
@@ -203,14 +192,6 @@ class User < ActiveRecord::Base
 
     if email_changed? || name_changed?
       NewsletterSubscriptionManager.delay(queue: 'my').update(self.id, email_was || email)
-    end
-  end
-
-  # after_update
-  def _zendesk_update
-    if zendesk_id? && (email_changed? || (name_changed? && name?))
-      updated_field = email_changed? ? { email: email } : { name: name }
-      ZendeskWrapper.delay(queue: 'my-low').update_user(zendesk_id, updated_field)
     end
   end
 

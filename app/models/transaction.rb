@@ -38,9 +38,6 @@ class Transaction < ActiveRecord::Base
 
     before_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:_set_fields_from_ogone_response]
     after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:_update_invoices]
-
-    after_transition on: :succeed, do: :_send_charging_succeeded_email
-    after_transition on: :fail, do: :_send_charging_failed_email
   end
 
   # ==========
@@ -53,162 +50,11 @@ class Transaction < ActiveRecord::Base
 
   MAX_ATTEMPTS_BEFORE_SUSPEND = 15
 
-  # =================
-  # = Class Methods =
-  # =================
-
-  def self.charge_invoices
-    User.active.uniq.joins(:invoices).merge(Invoice.open_or_failed).find_in_batches(batch_size: 100) do |users|
-      now = Time.now.utc
-      users.each_with_index do |user, index|
-        delay(queue: 'my', at: (now + index * 5.seconds).to_i).charge_invoices_by_user_id(user.id)
-      end
-    end
-  end
-
-  def self.charge_invoices_by_user_id(user_id)
-    return unless user = User.active.find(user_id)
-
-    invoices = user.invoices.open_or_failed.to_a
-    chargeable = invoices.any? && _suspend_user_if_needed(invoices)
-
-    charge_by_invoice_ids(invoices.map(&:id).sort) if chargeable
-  end
-
-  def self.charge_by_invoice_ids(invoice_ids, options = {})
-    transaction = new(invoices: Invoice.where(id: invoice_ids))
-
-    if transaction.save
-      if payment = transaction.execute_payment(options)
-        transaction.process_payment_response(payment.params)
-      end
-    end
-
-    transaction
-  end
-
-  def execute_payment(opts = {})
-    begin
-      OgoneWrapper.purchase(amount, user.cc_alias, _payment_options(opts))
-    rescue => ex
-      Notifier.send("Exception during charging: #{ex.message}", exception: ex)
-      nil
-    end
-  end
-
-  def self._suspend_user_if_needed(invoices)
-    invoices.each do |invoice|
-      if invoice.transactions.failed.count >= MAX_ATTEMPTS_BEFORE_SUSPEND
-        UserManager.new(invoice.user).suspend unless invoice.user.vip?
-
-        return false
-      end
-    end
-
-    true
-  end
-
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  # Called from Transaction.charge_by_invoice_ids and from TransactionsController#callback
-  def process_payment_response(payment_params)
-    @ogone_response_info = payment_params
-
-    case payment_params['STATUS']
-
-    # STATUS == 9, Payment requested:
-    #   The payment has been accepted.
-    #   An authorization code is available in the field "ACCEPTANCE".
-    when '9'
-      _process_payment_success(payment_params)
-
-    # STATUS == 51, Authorization waiting:
-    #   The authorization will be processed offline.
-    #   This is the standard response if the merchant has chosen offline processing in his account configuration
-    when '51'
-      _process_payment_waiting(payment_params)
-
-    # NCSTATUS == 5
-    #   STATUS == 0, Invalid or incomplete:
-    #     At least one of the payment data fields is invalid or missing.
-    #     The NCERROR  and NCERRORPLUS  fields contains an explanation of the error
-    #     (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
-    #     After correcting the error, the customer can retry the authorization process.
-    #
-    # NCSTATUS == 3
-    #   STATUS == 2, Authorization refused:
-    #     The authorization has been declined by the financial institution.
-    #     The customer can retry the authorization process after selecting a different payment method (or card brand).
-    #   STATUS == 93, Payment refused:
-    #     A technical problem arose.
-    #
-    # STATUS == 46, Waiting for identification (3-D Secure):
-    # THIS SHOULD NEVER HAPPEN...
-    when '0', '2', '46', '93'
-      _process_payment_fail(payment_params)
-
-    # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
-    #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
-    #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
-    #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
-    when '52', '92'
-      _process_payment_uncertain(payment_params)
-
-    else
-      _process_payment_unknown(payment_params)
-    end
-
-    self
-  end
-
   def description
     @description ||= invoices.map { |invoice| "##{invoice.reference}" }.join(',')
   end
 
-private
-
-  def _process_payment_success(payment_params)
-    Librato.increment 'payments.success', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-    self.succeed
-  end
-
-  def _process_payment_waiting(payment_params)
-    Librato.increment 'payments.waiting', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-    self.wait # add a waiting state for invoice & transaction
-  end
-
-  def _process_payment_fail(payment_params)
-    Librato.increment 'payments.fail', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-    self.fail
-  end
-
-  def _process_payment_uncertain(payment_params)
-    Librato.increment 'payments.uncertain', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-    Notifier.send("Transaction ##{self.id} (PAYID: #{payment_params['PAYID']}) has an uncertain state, please investigate quickly!")
-    self.wait
-  end
-
-  def _process_payment_unknown(payment_params)
-    Notifier.send("Transaction unknown status: #{payment_params['STATUS']}")
-    self.wait
-  end
-
-  def _payment_options(options = {})
-    options.merge!({
-      order_id: order_id,
-      description: description.to(99),
-      email: user.email,
-      billing_address: {
-        address1: user.billing_address_1,
-        zip: user.billing_postal_code,
-        city: user.billing_city,
-        country: user.billing_country
-      },
-      paramplus: 'PAYMENT=TRUE'
-    })
-  end
+  private
 
   # before_validation
   def _reject_paid_invoices
@@ -267,16 +113,6 @@ private
              end
 
     invoices.map(&:"#{action}!") if action
-  end
-
-  # after_transition on: :succeed
-  def _send_charging_succeeded_email
-    BillingMailer.delay(queue: 'my').transaction_succeeded(id)
-  end
-
-  # after_transition on: :fail
-  def _send_charging_failed_email
-    BillingMailer.delay(queue: 'my').transaction_failed(id)
   end
 
 end

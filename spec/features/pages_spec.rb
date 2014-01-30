@@ -49,57 +49,6 @@ feature "Help page" do
     end
   end
 
-  context "user has the 'email' support level" do
-    background do
-      sign_in_as :user
-      site = build(:site, user: @current_user)
-      SiteManager.new(site).create
-      go 'my', "/sites/#{site.to_param}/addons"
-      choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
-      expect { click_button 'Confirm selection' }.to change(site.billable_item_activities, :count).by(2)
-      UserSupportManager.new(@current_user).level.should eq 'email'
-      Sidekiq::Worker.clear_all
-      go 'my', '/help'
-    end
-
-    describe "new" do
-      scenario "has access to the form" do
-        page.should have_content 'Use the form below'
-        page.should have_selector 'form.new_support_request'
-      end
-
-      scenario "submit a valid support request", :vcr do
-        fill_in "Subject", with: "SUBJECT"
-        fill_in "Description of your issue or question", with: "DESCRIPTION"
-
-        PusherWrapper.stub(:trigger)
-        click_button "Send"
-        page.should have_content I18n.t('flash.support_requests.create.notice')
-        @current_user.reload.zendesk_id.should be_present
-      end
-
-      scenario "submit a support request with an invalid subject" do
-        fill_in "Subject", with: ""
-        fill_in "Description of your issue or question", with: "DESCRIPTION"
-        click_button "Send"
-
-        current_url.should eq "http://my.sublimevideo.dev/help"
-        page.should have_content "Subject can't be blank"
-        page.should have_no_content I18n.t('flash.support_requests.create.notice')
-      end
-
-      scenario "submit a support request with an invalid message" do
-        fill_in "Subject", with: "SUBJECT"
-        fill_in "Description of your issue or question", with: ""
-        click_button "Send"
-
-        current_url.should eq "http://my.sublimevideo.dev/help"
-        page.should have_content "Message can't be blank"
-        page.should have_no_content I18n.t('flash.support_requests.create.notice')
-      end
-    end
-  end
-
 end
 
 feature "Suspended page" do
@@ -134,80 +83,7 @@ feature "Suspended page" do
 
         current_url.should eq "http://my.sublimevideo.dev/suspended"
       end
-
-      scenario "can visit the edit credit card page" do
-        go 'my', 'account/billing/edit'
-
-        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
-      end
-
-      scenario "and an expired credit card, should be able to visit the credit card form page" do
-        @current_user.cc_expire_on = 1.month.ago
-        @current_user.save(validate: false)
-        @current_user.reload.should be_cc_expired
-        go 'my', 'sites'
-
-        current_url.should eq "http://my.sublimevideo.dev/suspended"
-
-        page.should have_content "Your account is suspended"
-        page.should have_content "Your credit card is expired"
-        page.should have_content "#{I18n.t('user.credit_card.type.visa')} ending in 1111"
-        page.should have_content "Update credit card"
-        page.should have_content "Please pay the following invoice in order to reactivate your account:"
-        page.should have_content "$19.90 on #{I18n.l(@invoice.created_at, format: :d_b_Y)}."
-        page.should have_content "Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)} with the following error:"
-        page.should have_content "\"#{@invoice.last_transaction.error}\""
-
-        click_link "Update credit card"
-
-        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
-      end
     end
-
   end
 
-  context "logged-in user with aliased cc", :vcr do
-    background do
-      sign_in_as :user_with_aliased_cc
-    end
-
-    context "with a suspended user" do
-      background do
-        @site = build(:site, user: @current_user)
-        SiteManager.new(@site).create
-        @invoice = create(:failed_invoice, site: @site, last_failed_at: Time.utc(2010,2,10), amount: 1990)
-        @transaction = create(:failed_transaction, invoices: [@invoice], error: "Credit Card expired")
-        UserManager.new(@current_user).suspend
-        @site.reload.should be_suspended
-        @current_user.reload.should be_suspended
-      end
-
-      scenario "and a valid credit card with 1 or more failed invoices" do
-        ActionMailer::Base.deliveries.clear
-        Sidekiq::Worker.clear_all
-        go 'my', 'suspended'
-
-        current_url.should eq "http://my.sublimevideo.dev/suspended"
-
-        BillingMailer.should delay(:transaction_succeeded)
-        UserMailer.should delay(:account_unsuspended).with(@current_user.id)
-        LoaderGenerator.should delay(:update_all_stages!).with(@site.id, deletable: true)
-        SettingsGenerator.should delay(:update_all!).with(@site.id)
-
-        click_button I18n.t('invoice.retry_invoices')
-
-        @invoice.reload.should be_paid
-
-        current_url.should eq "http://my.sublimevideo.dev/sites"
-
-        @site.invoices.with_state('failed').should be_empty
-        @site.reload.should be_active
-        @current_user.reload.should be_active
-
-        go 'my', 'suspended'
-        current_url.should eq "http://my.sublimevideo.dev/sites"
-      end
-    end
-
-  end
 end

@@ -31,12 +31,6 @@ feature 'Redirects' do
       current_url.should eq 'http://my.sublimevideo.dev/account'
     end
 
-    scenario 'redirect /card/foo/bar to /account/billing/edit' do
-      go 'my', 'card/foo/bar'
-
-      current_url.should eq 'http://my.sublimevideo.dev/account/billing/edit'
-    end
-
     scenario "redirect /stats to /stats-demo" do
       stub_site_stats
       go 'my', 'stats'

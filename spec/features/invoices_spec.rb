@@ -56,23 +56,6 @@ feature "Site invoices page" do
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
 
-      describe "retry the payment" do
-        scenario "it is possible to retry the payment" do
-          click_button I18n.t('invoice.pay_outstanding_invoices', count: 1)
-
-          @site.invoices.with_state('failed').should be_empty
-
-          current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
-
-          page.should have_no_content 'failed invoices for a total'
-          within '.past_invoices' do
-            page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-            page.should have_content "Status: Paid on #{I18n.l(@invoice.reload.paid_at, format: :minutes_timezone)}"
-            page.should have_no_content "Status: Payment failed"
-          end
-        end
-      end
-
     end
   end
 

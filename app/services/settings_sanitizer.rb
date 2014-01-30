@@ -72,7 +72,7 @@ class SettingsSanitizer
       @sanitized_settings[addon_name][setting_key] = compute_size(setting_value)
 
     when 'array'
-      @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, setting_template[:item][:values])
+      @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, setting_template[:item][:values] || setting_template[:item]['values'] || [])
     end
   end
 
@@ -102,6 +102,7 @@ class SettingsSanitizer
 
   def keep_allowed_values(values, allowed_values)
     values = string_to_array(values) if values.is_a?(String)
+
     values & allowed_values
   end
 

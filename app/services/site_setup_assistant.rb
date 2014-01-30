@@ -1,9 +1,9 @@
 class SiteSetupAssistant
 
-  STEPS = %w[new_site addons player publish_video summary]
+  STEPS = %w[new_site player publish_video summary]
 
   def self.step_number(step_name)
-    STEPS.index(step_name) + 1
+    (STEPS.index(step_name) || 1) + 1
   end
 
   def initialize(site)
@@ -15,11 +15,15 @@ class SiteSetupAssistant
   end
 
   def current_step
-    @site.current_assistant_step || 'addons'
+    (@site.current_assistant_step || STEPS[1]).sub('addons', 'player')
   end
 
   def current_step_number
     self.class.step_number(current_step)
+  end
+
+  def steps_count
+    STEPS.size
   end
 
 end

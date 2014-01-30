@@ -62,8 +62,6 @@ MySublimeVideo::Application.routes.draw do
         member do
           get :become
           get :invoices
-          get :support_requests
-          get :new_support_request
           delete :oauth_revoke
         end
       end
@@ -78,9 +76,6 @@ MySublimeVideo::Application.routes.draw do
           get :monthly
           get :yearly
           get :top_customers
-        end
-        member do
-          patch :retry_charging
         end
       end
 
@@ -174,10 +169,8 @@ MySublimeVideo::Application.routes.draw do
 
     scope 'account' do
       get 'edit' => redirect('/account')
-      resource :billing, only: [:edit, :update]
       resources :applications, controller: 'client_applications', as: 'client_applications' # don't change this, used by oauth-plugin
     end
-    get '/card(/*anything)' => redirect('/account/billing/edit')
 
     get '/newsletter/subscribe' => 'newsletter#subscribe', as: 'newsletter_subscribe'
 
@@ -192,17 +185,17 @@ MySublimeVideo::Application.routes.draw do
 
     scope 'assistant' do
       match 'new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
-      match ':site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put, :patch]
+      get   ':site_id/addons' => redirect { |params, req| "/assistant/#{params[:site_id]}/player" }
       match ':site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put, :patch]
       get   ':site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
       match ':site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
     end
 
-    resources :addons, only: [:index, :show]
+    get 'addons(/*anything)' => redirect('/sites')
 
     resources :sites, only: [:index, :edit, :update, :destroy] do
-      resources :addons, only: [:index, :show] do
-        put :subscribe, on: :collection
+      member do
+        get '/addons(/*)' => redirect { |params, req| "/sites/#{params[:id]}/edit" }
       end
 
       resources :kits, except: [:destroy], path: 'players' do
@@ -214,9 +207,7 @@ MySublimeVideo::Application.routes.draw do
         get :fields, on: :collection
       end
 
-      resources :invoices, only: [:index] do
-        put :retry, on: :collection
-      end
+      resources :invoices, only: [:index]
 
       resources :video_tags, only: [:index], path: 'videos' do
         resources :video_stats, only: [:index], path: 'stats', as: :stats
@@ -241,11 +232,7 @@ MySublimeVideo::Application.routes.draw do
     get '/stats-demo' => 'site_stats#index', site_id: SiteToken[:www], demo: true
     get '/stats' => redirect('/stats-demo')
 
-    resources :invoices, only: [:show] do
-      put :retry_all, on: :collection
-    end
-
-    post '/transaction/callback' => 'transactions#callback'
+    resources :invoices, only: [:show]
 
     resources :deals, only: [:show], path: 'd'
 
@@ -254,7 +241,6 @@ MySublimeVideo::Application.routes.draw do
       post '/' => 'feedbacks#create'
     end
 
-    resource :support_request, only: [:create], path: 'help'
     %w[support].each { |action| get action, to: redirect('/help') }
 
     scope 'pusher' do

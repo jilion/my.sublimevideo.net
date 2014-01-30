@@ -6,29 +6,21 @@ class UserManager
   end
 
   def create
-    user.save!
-    # UserMailer.delay(queue: 'my').welcome(user.id) # Temporary until we rewrite the email content
-    NewsletterSubscriptionManager.delay(queue: 'my').sync_from_service(user.id)
-    _increment_librato('create')
-
-    true
-  rescue
-    false
+    _transaction_with_graceful_fail do
+      user.save!
+      # UserMailer.delay(queue: 'my').welcome(user.id) # Temporary until we rewrite the email content
+      NewsletterSubscriptionManager.delay(queue: 'my').sync_from_service(user.id)
+      _increment_librato('create')
+    end
   end
 
   %w[suspend unsuspend].each do |method_name|
     define_method(method_name) do
-      begin
-        User.transaction do
-          user.send("#{method_name}!")
-          send("_#{method_name}_all_sites")
-        end
+      _transaction_with_graceful_fail do
+        user.send("#{method_name}!")
+        send("_#{method_name}_all_sites")
         UserMailer.delay(queue: 'my').send("account_#{method_name}ed", user.id)
         _increment_librato(method_name)
-
-        true
-      rescue
-        false
       end
     end
   end
@@ -36,28 +28,34 @@ class UserManager
   def archive(options = {})
     { feedback: nil, skip_password: false }.merge!(options)
 
-    _archive_site_and_save_feedback(options)
+    _transaction_with_graceful_fail do
+      _archive_site_and_save_feedback(options)
 
-    NewsletterSubscriptionManager.delay(queue: 'my').unsubscribe(user.id)
-    UserMailer.delay(queue: 'my').account_archived(user.id)
-    _increment_librato('archive')
-
-    true
-  rescue
-    false
+      NewsletterSubscriptionManager.delay(queue: 'my').unsubscribe(user.id)
+      UserMailer.delay(queue: 'my').account_archived(user.id)
+      _increment_librato('archive')
+    end
   end
 
   private
 
-  def _archive_site_and_save_feedback(options)
+  def _transaction_with_graceful_fail
     User.transaction do
-      _password_check! unless options.delete(:skip_password)
-      user.archive!
-      _archive_all_sites
-      _revoke_all_oauth_tokens
-
-      options[:feedback].save! if options[:feedback]
+      yield
     end
+    true
+  rescue => ex
+    Rails.logger.info ex.inspect
+    false
+  end
+
+  def _archive_site_and_save_feedback(options)
+    _password_check! unless options.delete(:skip_password)
+    user.archive!
+    _archive_all_sites
+    _revoke_all_oauth_tokens
+
+    options[:feedback].save! if options[:feedback]
   end
 
   def _password_check!

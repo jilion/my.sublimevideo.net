@@ -15,16 +15,8 @@ feature 'assistant pages' do
       click_button 'Next'
       site = @current_user.sites.last
 
-      current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/addons"
-      page.should have_content 'Site has been successfully registered.'
-      page.should have_content 'Choose player add-ons for rymai.me'
-      site.current_assistant_step.should eq 'addons'
-
-      choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
-      expect { click_button 'Next' }.to change(site.billable_item_activities, :count).by(2)
-
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/player"
-      page.should have_content 'Your add-ons selection has been confirmed.'
+      page.should have_content 'Site has been successfully registered.'
       page.should have_content 'Create a player for rymai.me'
       site.reload.current_assistant_step.should eq 'player'
 
@@ -50,10 +42,10 @@ feature 'assistant pages' do
       go 'my', ''
     end
 
-    scenario 'goes to /assistant/:token/addons' do
-      page.should have_content 'step 2 of 5'
+    scenario 'goes to /assistant/:token/player' do
+      page.should have_content 'step 2 of 4'
       click_link 'Finish setup'
-      current_url.should eq "http://my.sublimevideo.dev/assistant/#{@site.to_param}/addons"
+      current_url.should eq "http://my.sublimevideo.dev/assistant/#{@site.to_param}/player"
     end
 
   end
@@ -67,7 +59,7 @@ feature 'assistant pages' do
     end
 
     scenario 'goes to /assistant/:token/player' do
-      page.should have_content 'step 2 of 5'
+      page.should have_content 'step 2 of 4'
       click_link 'Finish setup'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{@site.to_param}/player"
     end
@@ -82,7 +74,7 @@ feature 'assistant pages' do
     end
 
     scenario 'goes to /assistant/:token/player' do
-      page.should have_content 'step 3 of 5'
+      page.should have_content 'step 2 of 4'
       click_link 'Finish setup'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{@site.to_param}/player"
     end

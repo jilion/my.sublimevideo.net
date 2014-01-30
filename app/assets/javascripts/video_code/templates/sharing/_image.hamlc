@@ -18,5 +18,5 @@
   %label{ for: "sharing_image_url" } Image URL
 
 .entry
-  %input.text.kit_setting#sharing_image_url_field{ type: 'text', size: 50, placeholder: "Image URL", value: if custom_url then setting else '', data: { addon: 'sharing', setting: 'image' }, style: "display:#{display}" }/
+  %input.text.kit_setting#sharing_image_url_field{ type: 'text', size: 50, placeholder: "Image URL", value: if custom_url then setting else '', data: { addon: 'sharing', setting: 'image' }, style: "display:#{display}" }
 .spacer

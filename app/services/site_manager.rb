@@ -58,7 +58,7 @@ class SiteManager
   def unsuspend_billable_items
     _set_default_designs
     site.billable_items.where(state: 'suspended').each do |billable_item|
-      billable_item.state = _new_billable_item_state(billable_item.item)
+      billable_item.state = _new_billable_item_state(billable_item.item, force: 'sponsored')
       billable_item.save!
     end
   end
@@ -75,7 +75,8 @@ class SiteManager
       yield
     end
     true
-  rescue ActiveRecord::RecordInvalid
+  rescue => ex
+    Rails.logger.info ex.inspect
     false
   end
 
@@ -149,7 +150,7 @@ class SiteManager
   end
 
   def _set_default_addon_plans
-    _update_addon_subscriptions(_free_addon_plans_subscriptions_hash)
+    _update_addon_subscriptions(_free_addon_plans_subscriptions_hash, force: 'sponsored')
   end
 
   def _cancel_design(design)
@@ -176,10 +177,19 @@ class SiteManager
   end
 
   def _free_addon_plans_subscriptions_hash(*args)
-    AddonPlan.free_addon_plans(*args).reduce({}) do |hash, addon_plan|
-      hash[addon_plan.addon_name.to_sym] = addon_plan.id
-      hash
+    hash = AddonPlan.free_addon_plans(*args).reduce({}) do |h, addon_plan|
+      h[addon_plan.addon_name.to_sym] = addon_plan.id
+      h
     end
+
+    # These addon plans will be sponsored
+    hash[:logo] = AddonPlan.get('logo', 'custom').id
+    hash[:social_sharing] = AddonPlan.get('social_sharing', 'standard').id
+    hash[:embed] = AddonPlan.get('embed', 'auto').id
+    hash[:cuezones] = AddonPlan.get('cuezones', 'standard').id
+    hash[:google_analytics] = AddonPlan.get('google_analytics', 'standard').id
+
+    hash
   end
 
   def _new_billable_item_state(design_or_addon, options = {})
@@ -191,7 +201,7 @@ class SiteManager
       end
     elsif design_or_addon.beta?
       'beta'
-    elsif design_or_addon.free? || TrialHandler.new(site).out_of_trial?(design_or_addon)
+    elsif design_or_addon.free?
       'subscribed'
     else
       'trial'

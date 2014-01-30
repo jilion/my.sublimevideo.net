@@ -1,5 +1,0 @@
-- if current_user.cc_expired?
-  = t('user.credit_card.expired')
-- else
-  = raw t('user.credit_card.will_expire')
-= raw t('app.please_link_dot', link: link_to(t('user.credit_card.add'), [:edit, :billing]))

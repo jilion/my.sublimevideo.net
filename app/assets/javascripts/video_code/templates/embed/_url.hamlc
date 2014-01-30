@@ -8,5 +8,5 @@
   .entry
     %label.icon{ for: "embed_url_src" } Embed URL
     - value = MSVVideoCode.video.getSetting('embed', 'url', MSVVideoCode.kits.selected)
-    %input#embed_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: value, data: { addon: 'embed', setting: 'url' } }/
+    %input#embed_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: value, data: { addon: 'embed', setting: 'url' } }
     %span#embed_url_src_invalid.inline_alert{ style: "display:none" } Please provide a valid URL

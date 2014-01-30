@@ -19,4 +19,4 @@
     - else
       .finish
         = link_to 'Finish setup', send(:"assistant_#{assistant.current_step}_url", site), class: 'finish_button'
-        %span.steps= "step #{assistant.current_step_number} of 5"
+        %span.steps= "step #{assistant.current_step_number} of #{assistant.steps_count}"

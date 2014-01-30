@@ -127,49 +127,6 @@ describe User do
 
   describe "Callbacks" do
 
-    describe "before_save :prepare_pending_credit_card & after_save :register_credit_card_on_file" do
-
-      context "when user had no cc info before", :vcr do
-        subject do
-          user = create(:user_no_cc)
-          user.reload
-          user.update(valid_cc_attributes)
-          user
-        end
-
-        it { should be_valid }
-        its(:cc_type)        { should eq 'visa' }
-        its(:cc_last_digits) { should eq '1111' }
-        its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
-
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
-      end
-
-      context "when user has cc info before", :vcr do
-        subject { create(:user) }
-        before do
-          subject.cc_type.should eq 'visa'
-          subject.cc_last_digits.should eq '1111'
-          subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
-
-          subject.attributes = valid_cc_attributes_master
-          subject.save!
-          subject.reload
-        end
-
-        it { should be_valid }
-        its(:cc_type)        { should eq 'master' }
-        its(:cc_last_digits) { should eq '9999' }
-        its(:cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
-
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
-      end
-    end
-
     describe "after_save :_update_newsletter_subscription" do
       context "user sign-up" do
         context "user subscribes to the newsletter" do
@@ -212,67 +169,6 @@ describe User do
           user
           NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
           user.update_attribute(:newsletter, false)
-        end
-      end
-    end
-
-    describe "after_update :_zendesk_update" do
-      let(:user) { create(:user) }
-      before do
-        NewsletterSubscriptionManager.stub(:sync_from_service)
-      end
-
-      context "user has no zendesk_id" do
-        it "doesn't delay ZendeskWrapper.update_user" do
-          ZendeskWrapper.should_not delay(:update_user)
-          user.update_attribute(:email, '9876@example.org')
-        end
-      end
-
-      context "user has a zendesk_id", :vcr do
-        before { user.update_attribute(:zendesk_id, 59438671) }
-
-        context "user updated his email" do
-          let(:new_email) { "9877@example.org" }
-
-          it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
-            user.update_attribute(:email, new_email)
-            ZendeskWrapper.should delay(:update_user).with(user.zendesk_id, email: new_email)
-            user.confirm!
-          end
-
-          it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            user.update_attribute(:email, new_email)
-            Sidekiq::Worker.clear_all
-            user.confirm!
-
-            Sidekiq::Worker.drain_all
-            ZendeskWrapper.user(59438671).identities.last.value.should eq new_email
-          end
-        end
-
-        context "user updated his name" do
-          let(:new_name) { "Remy" }
-
-          it "delays ZendeskWrapper.update_user" do
-            ZendeskWrapper.should delay(:update_user).with(user.zendesk_id, name: new_name)
-            user.update_attribute(:name, new_name)
-          end
-
-          it "updates user's name on Zendesk", :vcr do
-            Sidekiq::Worker.clear_all
-            user.update_attribute(:name, new_name)
-
-            Sidekiq::Worker.drain_all
-            ZendeskWrapper.user(59438671).name.should eq new_name
-          end
-
-          context "name has changed to ''" do
-            it "doesn't update user's name on Zendesk" do
-              ZendeskWrapper.should_not delay(:update_user)
-              user.update_attribute(:name, '')
-            end
-          end
         end
       end
     end

@@ -68,6 +68,12 @@ def instantiate_variables
   @social_sharing_addon        = Addon.get('social_sharing')
   @social_sharing_addon_plan_1 = AddonPlan.get('social_sharing', 'standard')
 
+  @cuezones_addon        = Addon.get('cuezones')
+  @cuezones_addon_plan_1 = AddonPlan.get('cuezones', 'standard')
+
+  @google_analytics_addon        = Addon.get('google_analytics')
+  @google_analytics_addon_plan_1 = AddonPlan.get('google_analytics', 'standard')
+
   @embed_addon        = Addon.get('embed')
   @embed_addon_plan_1 = AddonPlan.get('embed', 'manual')
   @embed_addon_plan_2 = AddonPlan.get('embed', 'auto')

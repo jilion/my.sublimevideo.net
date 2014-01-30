@@ -4,7 +4,7 @@ class EmailsPopulator < Populator
     trial_design        = user.billable_items.designs.state('trial').first || user.billable_items.designs.first
     trial_addon_plan    = user.billable_items.addon_plans.state('trial').first || user.billable_items.addon_plans.first
     site                = user.sites.paying.last || user.sites.last
-    invoice             = site.invoices.not_paid.last || InvoiceCreator.build_for_month(1.month.ago, site).tap { |s| s.save }.invoice
+    invoice             = site.invoices.not_paid.last
     transaction         = invoice.transactions.last || Transaction.new(invoices: [invoice])
 
     DeviseMailer.confirmation_instructions(user).deliver!
@@ -14,16 +14,6 @@ class EmailsPopulator < Populator
     UserMailer.account_suspended(user.id).deliver!
     UserMailer.account_unsuspended(user.id).deliver!
     UserMailer.account_archived(user.id).deliver!
-
-    BillingMailer.trial_will_expire(trial_design.id).deliver!
-    BillingMailer.trial_has_expired(site.id, trial_design.item.class.to_s, trial_design.item_id).deliver!
-    BillingMailer.trial_will_expire(trial_addon_plan.id).deliver!
-    BillingMailer.trial_has_expired(site.id, trial_addon_plan.item.class.to_s, trial_addon_plan.item_id).deliver!
-
-    BillingMailer.credit_card_will_expire(user.id).deliver!
-
-    BillingMailer.transaction_succeeded(transaction.id).deliver!
-    BillingMailer.transaction_failed(transaction.id).deliver!
 
     MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
   end

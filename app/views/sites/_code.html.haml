@@ -10,18 +10,3 @@
 %form
   .embed_code.entry
     %textarea{ readonly: true, onclick: "this.focus();this.select();" }><= sublimevideo_script_tag_for(site)
-
-.break
-
-%p.desc
-  If you prefer to use the
-  = link_to 'beta version', docs_url('beta/releases'), class: 'hl', onclick: 'window.open(this); return false'
-  of the SublimeVideo player, copy
-  = link_to 'this code', '#', class: 'hl', onclick: "$('##{"beta_code_#{site.token}"}').toggle();return false;"
-  instead.
-
-.beta_code{ id: "beta_code_#{site.token}", style: 'display:none' }
-  %form
-    .embed_code.entry
-      %textarea{ readonly: true, onclick: "this.focus();this.select();" }><= sublimevideo_script_tag_for(site, 'beta')
-  %p.desc Please note you should not insert the two loaders' codes in the same web page. If you wish to test both, please use different web pages for each.

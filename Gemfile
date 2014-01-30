@@ -63,9 +63,6 @@ gem 'unf' # encoding for fog
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'cocaine'
 
-
-gem 'activemerchant'
-
 gem 'public_suffix'
 
 gem 'rubyzip'
@@ -90,9 +87,6 @@ gem 'librato-rails'
 gem 'crack'
 gem 'pusher'
 gem 'redis'
-
-# Tickets
-gem 'zendesk_api'
 
 # App
 gem 'solve'
