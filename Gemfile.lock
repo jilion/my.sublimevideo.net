@@ -488,10 +488,10 @@ GEM
       haml
       jquery-rails
       rails (>= 3.2.12)
-    sublime_video_private_api (1.6.0)
-      activesupport (>= 3.2)
-      faraday-http-cache (~> 0.3)
-      her (~> 0.6)
+    sublime_video_private_api (1.6.1)
+      activesupport (~> 4.0.3)
+      faraday-http-cache (~> 0.4.0)
+      her (~> 0.6.8)
       kaminari
       multi_json
       rescue_me
