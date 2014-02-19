@@ -7,7 +7,7 @@ module Trend
 
     index({ d: 1 }, { unique: true })
 
-    default_scope order_by(d: 1)
+    default_scope -> { order_by(d: 1) }
   end
 
   # send time as id for backbonejs model

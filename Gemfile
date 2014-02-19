@@ -3,7 +3,7 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 
 ruby '2.0.0'
 
-gem 'rails', '~> 4.0.2'
+gem 'rails', '~> 4.0.3'
 gem 'i18n'
 gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
@@ -48,6 +48,7 @@ gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
 gem 'oj' # Faster JSON
 gem 'kgio' # Faster IO
+gem 'faraday', '~> 0.8.9'
 
 gem 'state_machine'
 gem 'paper_trail', '3.0.0.beta1'
@@ -71,7 +72,7 @@ gem 'countries'
 gem 'country_select'
 gem 'snail'
 gem 'PageRankr'
-gem 'twitter'
+gem 'twitter', '~> 5.3.0'
 gem 'array_stats'
 gem 'createsend' # Campaign Monitor
 gem 'http_content_type'
