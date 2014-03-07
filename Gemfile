@@ -74,7 +74,7 @@ gem 'snail'
 gem 'PageRankr'
 gem 'twitter', '~> 5.3.0'
 gem 'array_stats'
-gem 'createsend' # Campaign Monitor
+gem 'createsend', '~> 3.4' # Campaign Monitor
 gem 'http_content_type'
 
 # Monitoring
