@@ -97,7 +97,7 @@ gem 'backbone-rails'
 gem 'haml_coffee_assets'
 gem 'sass-rails'
 gem 'chosen-rails', github: 'jilion/chosen-rails'
-gem 'compass-rails', github: 'Compass/compass-rails'
+gem 'compass-rails', github: 'Compass/compass-rails', ref: 'e01e1cf2057f2390728d526bb4ee065be15b2abc'
 gem 'uglifier'
 
 group :production do

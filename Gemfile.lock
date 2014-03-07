@@ -1,8 +1,9 @@
 GIT
   remote: git://github.com/Compass/compass-rails.git
-  revision: 91a0e538a40edeb7d321c7b57c2240695398b012
+  revision: e01e1cf2057f2390728d526bb4ee065be15b2abc
+  ref: e01e1cf2057f2390728d526bb4ee065be15b2abc
   specs:
-    compass-rails (1.1.3)
+    compass-rails (1.1.2)
       compass (>= 0.12.2)
 
 GIT
