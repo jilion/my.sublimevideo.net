@@ -26,7 +26,8 @@
         - if site.realtime_stats_active?
           %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Stats', [site, :stats]
         %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Settings', [:edit, site]
-        %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Invoices', [site, :invoices]
+        - if site.invoices.any?
+          %li{ class: cycle('', 'alt', name: "actions")}= link_to 'Past invoices', [site, :invoices]
       %div{ id: "loader_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
     .token
       %small

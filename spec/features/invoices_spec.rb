@@ -16,7 +16,7 @@ feature "Site invoices page" do
       end
 
       scenario "'Invoice' tab is visible and reachable" do
-        click_link "Invoices"
+        click_link "Past invoices"
 
         current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
         page.should have_content 'rymai.com'
@@ -34,7 +34,7 @@ feature "Site invoices page" do
       end
 
       scenario "'Invoice' tab is visible and reachable" do
-        click_link "Invoices"
+        click_link "Past invoices"
 
         current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
         page.should have_content 'rymai.com'

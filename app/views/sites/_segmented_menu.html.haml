@@ -3,4 +3,4 @@
   = li_menu_link 'Videos', path: site_video_tags_path(site), regex: %r{/sites/#{site.token}/videos}
   = li_menu_link 'Stats', path: site_stats_path(site) if site.realtime_stats_active?
   = li_menu_link 'Settings', path: edit_site_path(site)
-  = li_menu_link 'Invoices', path: site_invoices_path(site), class: 'last'
+  = li_menu_link 'Past invoices', path: site_invoices_path(site), class: 'last' if site.invoices.any?
