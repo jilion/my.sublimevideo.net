@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com account
 
-ruby '2.0.0'
+ruby '2.1.0'
 
-gem 'rails', '~> 4.0.3'
+gem 'rails', '~> 4.0.4'
 gem 'i18n'
 gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
@@ -95,7 +95,7 @@ gem 'solve'
 gem 'execjs'
 gem 'backbone-rails'
 gem 'haml_coffee_assets'
-gem 'sass-rails'
+gem 'sass-rails', '~> 4.0.2'
 gem 'chosen-rails', github: 'jilion/chosen-rails'
 gem 'compass-rails', github: 'Compass/compass-rails', ref: 'e01e1cf2057f2390728d526bb4ee065be15b2abc'
 gem 'uglifier'
