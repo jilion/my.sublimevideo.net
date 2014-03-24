@@ -146,7 +146,7 @@ describe HostnameHandler do
     it { subject.dev_invalid?("google.local").should be_false }
     it { subject.dev_invalid?("localhost").should be_false }
     it { subject.dev_invalid?("localhost:8888").should be_false }
-    it { subject.dev_invalid?("google.prod").should be_false }
+    it { subject.dev_invalid?("google.prod").should be_true }
     it { subject.dev_invalid?("google.dev").should be_false }
     it { subject.dev_invalid?("google.test").should be_false }
     it { subject.dev_invalid?("http://www.localhost:3000").should be_false }
