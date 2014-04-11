@@ -5,15 +5,13 @@ ruby '2.1.0'
 
 gem 'rails', '~> 4.0.4'
 gem 'i18n'
-gem 'sprockets-rails', github: 'rails/sprockets-rails'
 
 gem 'sublime_video_layout', '~> 2.7' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.6' # hosted on gemfury
 
 # Databases
 gem 'pg'
-gem 'mongoid', github: 'mongoid'
-gem 'moped', github: 'mongoid/moped'
+gem 'mongoid', '~> 4.0.0.beta1'
 
 # Views
 gem 'haml'
@@ -53,7 +51,7 @@ gem 'faraday', '~> 0.8.9'
 gem 'state_machine'
 gem 'paper_trail', '3.0.0.beta1'
 gem 'uniquify'
-gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on' # Need > 2.4.1
+gem 'acts-as-taggable-on'
 gem 'paranoia'
 
 gem 'responders'
