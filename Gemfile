@@ -40,7 +40,7 @@ gem 'oauth'
 gem 'oauth-plugin', github: 'pelle/oauth-plugin' # Rails 4 support
 
 # Internals
-gem 'sidekiq'
+gem 'sidekiq', '~> 2.17'
 
 gem 'rescue_me'
 gem 'libxml-ruby', require: 'libxml'
