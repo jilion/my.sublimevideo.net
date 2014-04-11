@@ -51,7 +51,7 @@ gem 'faraday', '~> 0.8.9'
 gem 'state_machine'
 gem 'paper_trail', '3.0.0.beta1'
 gem 'uniquify'
-gem 'acts-as-taggable-on'
+gem 'acts-as-taggable-on', github: 'mbleigh/acts-as-taggable-on'
 gem 'paranoia'
 
 gem 'responders'
