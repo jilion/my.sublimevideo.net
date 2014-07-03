@@ -36,6 +36,7 @@ module MySublimeVideo
     # Required from sublime_video_layout, needed for rake assets:precompile when
     # initialize_on_precompile is false
     config.assets.precompile += %w[email.css errors.css ie.css]
+    config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
