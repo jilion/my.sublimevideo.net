@@ -3,7 +3,7 @@ source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com acco
 
 ruby '2.1.2'
 
-gem 'rails', '4.0.5'
+gem 'rails', '4.0.8'
 gem 'i18n'
 
 gem 'sublime_video_layout', '~> 2.7' # hosted on gemfury
