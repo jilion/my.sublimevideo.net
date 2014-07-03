@@ -159,6 +159,7 @@ group :test do
   gem 'show_me_the_cookies'
   gem 'webmock'
   gem 'vcr'
+  gem 'simplecov', '~> 0.7.1'
   gem 'codeclimate-test-reporter', require: false
 
   gem 'database_cleaner'
