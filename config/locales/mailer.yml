@@ -3,7 +3,6 @@ en:
     intro_generic:       "Dear SublimeVideo user,"
     intro_name:          "Dear %{name},"
     signature:           "The SublimeVideo Team"
-    reply_to_this_email: "Simply respond to this email if you have any questions or feedback."
 
     billing_mailer:
       trial_will_expire:
