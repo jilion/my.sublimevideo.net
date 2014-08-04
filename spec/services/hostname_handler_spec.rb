@@ -60,6 +60,7 @@ describe HostnameHandler do
     it { subject.main_invalid?("operaunite.com").should be_false }
     it { subject.main_invalid?("еаои.рф").should be_false }
     it { subject.main_invalid?("pepe.pm").should be_false }
+    it { subject.main_invalid?("google.uk").should be_false }
 
     it { subject.main_invalid?("3ffe:505:2::1").should be_true } # ipv6
     it { subject.main_invalid?("127.0.0.1").should be_true }
