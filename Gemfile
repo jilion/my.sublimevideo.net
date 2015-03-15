@@ -1,16 +1,16 @@
 source 'https://rubygems.org'
 source 'https://8dezqz7z7HWea9vtaFwg:@gem.fury.io/me/' # thibaud@jilion.com account
 
-ruby '2.1.2'
+ruby '2.1.5'
 
 gem 'rails', '4.0.8'
 gem 'i18n'
 
-gem 'sublime_video_layout', '~> 2.7' # hosted on gemfury
+gem 'sublime_video_layout', '2.8.2' # hosted on gemfury
 gem 'sublime_video_private_api', '~> 1.6' # hosted on gemfury
 
 # Databases
-gem 'pg'
+gem 'pg', '0.17.1'
 gem 'mongoid', '~> 4.0.0.beta1'
 
 # Views

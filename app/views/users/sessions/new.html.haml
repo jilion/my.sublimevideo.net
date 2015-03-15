@@ -20,7 +20,5 @@
   .entry.submit.login
     = f.submit "Log In", class: "blue_button"
     %ul.form_list
-      %li.signup= link_to "Don't have an account yet?",  signup_user_url
       %li= link_to "Forgot your password?", new_user_password_url
-      %li= link_to "Didn't receive confirmation instructions?", new_user_confirmation_url
   .spacer
