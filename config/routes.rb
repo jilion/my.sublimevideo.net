@@ -127,6 +127,8 @@ MySublimeVideo::Application.routes.draw do
 
   constraints SubdomainConstraint.new('my') do
     get  '/signup' => redirect('http://docs.sublimevideo.net/dailymotion-acquisition-faq')
+    get  '/sites/new' => redirect('http://docs.sublimevideo.net/dailymotion-acquisition-faq')
+    get  '/assistant/new-site' => redirect('http://docs.sublimevideo.net/dailymotion-acquisition-faq')
 
     namespace :private_api do
       resources :users, only: [:show]
